@@ -1,7 +1,7 @@
 # See https://help.github.com/articles/ignoring-files/ for more about ignoring files.
 
 # dependencies
-/node_modules
+node_modules/
 /.pnp
 .pnp.*
 .yarn/*
@@ -14,11 +14,21 @@
 /coverage
 
 # next.js
-/.next/
+.next/
 /out/
 
 # production
 /build
+
+# turborepo
+.turbo/
+
+# python
+.venv/
+.venv-kitchen/
+__pycache__/
+*.pyc
+*.egg-info/
 
 # misc
 .DS_Store
@@ -35,8 +45,8 @@ yarn-error.log*
 !.env.example
 
 # prisma dev database
-/prisma/dev.db
-/prisma/dev.db-journal
+**/prisma/dev.db
+**/prisma/dev.db-journal
 
 # vercel
 .vercel
