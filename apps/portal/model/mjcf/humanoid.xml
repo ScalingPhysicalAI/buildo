@@ -1,0 +1,824 @@
+<mujoco model="Humanoid">
+  <option integrator="implicitfast"/>
+<default>
+  <geom contype="2" conaffinity="1"/>
+</default>
+<compiler angle="radian"/>
+
+  <asset>
+  <mesh file="meshes/kitchen_cup_object_visual.stl" name="kitchen_cup_object_visual"/>
+  <mesh file="meshes/kitchen_painting_node_152476_stats_0.stl" name="kitchen_painting_node_152476_stats_0"/>
+  <mesh file="meshes/kitchen_frame_mtl_0_1.stl" name="kitchen_frame_mtl_0_1"/>
+  <mesh file="meshes/kitchen_seamless_oats_texture_by_hhh316_d30r0ml1_2.stl" name="kitchen_seamless_oats_texture_by_hhh316_d30r0ml1_2"/>
+  <mesh file="meshes/kitchen_oats_3.stl" name="kitchen_oats_3"/>
+  <mesh file="meshes/kitchen_coffee_4.stl" name="kitchen_coffee_4"/>
+  <mesh file="meshes/kitchen_coffee_beans1_5.stl" name="kitchen_coffee_beans1_5"/>
+  <mesh file="meshes/kitchen_sugar_6.stl" name="kitchen_sugar_6"/>
+  <mesh file="meshes/kitchen_sugartext1_7.stl" name="kitchen_sugartext1_7"/>
+  <mesh file="meshes/kitchen_m_1_8.stl" name="kitchen_m_1_8"/>
+  <mesh file="meshes/kitchen_flour_9.stl" name="kitchen_flour_9"/>
+  <mesh file="meshes/kitchen_standardmaterial12_10.stl" name="kitchen_standardmaterial12_10"/>
+  <mesh file="meshes/kitchen_22_11.stl" name="kitchen_22_11"/>
+  <mesh file="meshes/kitchen_standardmaterial14_12.stl" name="kitchen_standardmaterial14_12"/>
+  <mesh file="meshes/kitchen_24_13.stl" name="kitchen_24_13"/>
+  <mesh file="meshes/kitchen_standardmaterial13_14.stl" name="kitchen_standardmaterial13_14"/>
+  <mesh file="meshes/kitchen_material__4010_jar0_15.stl" name="kitchen_material__4010_jar0_15"/>
+  <mesh file="meshes/kitchen_material__4010_jar1_15.stl" name="kitchen_material__4010_jar1_15"/>
+  <mesh file="meshes/kitchen_material__4010_jar2_15.stl" name="kitchen_material__4010_jar2_15"/>
+  <mesh file="meshes/kitchen_material__4010_jar3_15.stl" name="kitchen_material__4010_jar3_15"/>
+  <mesh file="meshes/kitchen_material__4010_jar4_15.stl" name="kitchen_material__4010_jar4_15"/>
+  <mesh file="meshes/kitchen_material__4010_lid_15.stl" name="kitchen_material__4010_lid_15"/>
+  <mesh file="meshes/kitchen_standardmaterial5_16.stl" name="kitchen_standardmaterial5_16"/>
+  <mesh file="meshes/kitchen_standardmaterial_17.stl" name="kitchen_standardmaterial_17"/>
+  <mesh file="meshes/kitchen_standardmaterial4_18.stl" name="kitchen_standardmaterial4_18"/>
+  <mesh file="meshes/kitchen_standardmaterial1_19.stl" name="kitchen_standardmaterial1_19"/>
+  <mesh file="meshes/kitchen_standardmaterial3_20.stl" name="kitchen_standardmaterial3_20"/>
+  <mesh file="meshes/kitchen_standardmaterial6_21.stl" name="kitchen_standardmaterial6_21"/>
+  <mesh file="meshes/kitchen_standardmaterial2_22.stl" name="kitchen_standardmaterial2_22"/>
+  <mesh file="meshes/kitchen_material__2_23.stl" name="kitchen_material__2_23"/>
+  <mesh file="meshes/kitchen_material__11_24.stl" name="kitchen_material__11_24"/>
+  <mesh file="meshes/kitchen_material__5_25.stl" name="kitchen_material__5_25"/>
+  <mesh file="meshes/kitchen_material__3_26.stl" name="kitchen_material__3_26"/>
+  <mesh file="meshes/kitchen_material__9_27.stl" name="kitchen_material__9_27"/>
+  <mesh file="meshes/kitchen_122_28.stl" name="kitchen_122_28"/>
+  <mesh file="meshes/kitchen_metal_silver_29.stl" name="kitchen_metal_silver_29"/>
+  <mesh file="meshes/kitchen_material_2_30.stl" name="kitchen_material_2_30"/>
+  <mesh file="meshes/kitchen_material_3_31.stl" name="kitchen_material_3_31"/>
+  <mesh file="meshes/kitchen_color_m02_32.stl" name="kitchen_color_m02_32"/>
+  <mesh file="meshes/kitchen_color_c01_33.stl" name="kitchen_color_c01_33"/>
+  <mesh file="meshes/kitchen_porcelain_a01_white_10cm_34.stl" name="kitchen_porcelain_a01_white_10cm_34"/>
+  <mesh file="meshes/kitchen_35_35.stl" name="kitchen_35_35"/>
+  <mesh file="meshes/kitchen_utensils_wood_2_36.stl" name="kitchen_utensils_wood_2_36"/>
+  <mesh file="meshes/kitchen_vray_07___default1_37.stl" name="kitchen_vray_07___default1_37"/>
+  <mesh file="meshes/kitchen_utensils_wood_4_38.stl" name="kitchen_utensils_wood_4_38"/>
+  <mesh file="meshes/kitchen_cable_white1_39.stl" name="kitchen_cable_white1_39"/>
+  <mesh file="meshes/kitchen_utensils_wood_3_40.stl" name="kitchen_utensils_wood_3_40"/>
+  <mesh file="meshes/kitchen_black_gloss1_41.stl" name="kitchen_black_gloss1_41"/>
+  <mesh file="meshes/kitchen_metal_black1_42.stl" name="kitchen_metal_black1_42"/>
+  <mesh file="meshes/kitchen_utensils_wood_1_43.stl" name="kitchen_utensils_wood_1_43"/>
+  <mesh file="meshes/kitchen_glass_realtime1_44.stl" name="kitchen_glass_realtime1_44"/>
+  <mesh file="meshes/kitchen_material_7_45.stl" name="kitchen_material_7_45"/>
+  <mesh file="meshes/kitchen_material_4_46.stl" name="kitchen_material_4_46"/>
+  <mesh file="meshes/kitchen_translucent_glass_blue_47.stl" name="kitchen_translucent_glass_blue_47"/>
+  <mesh file="meshes/kitchen_white_milgard_frame_48.stl" name="kitchen_white_milgard_frame_48"/>
+  <mesh file="meshes/kitchen_white_milgard_glass_48.stl" name="kitchen_white_milgard_glass_48"/>
+  <mesh file="meshes/kitchen_m_0137_black_49.stl" name="kitchen_m_0137_black_49"/>
+  <mesh file="meshes/kitchen_plastic_02_50.stl" name="kitchen_plastic_02_50"/>
+  <mesh file="meshes/kitchen_silver_01__stainless_51.stl" name="kitchen_silver_01__stainless_51"/>
+  <mesh file="meshes/kitchen_plastic_03_52.stl" name="kitchen_plastic_03_52"/>
+  <mesh file="meshes/kitchen_m_6_stainless_steel_metal_texture_seamless_hr_aluminium1_53.stl" name="kitchen_m_6_stainless_steel_metal_texture_seamless_hr_aluminium1_53"/>
+  <mesh file="meshes/kitchen_large_plastic_03_54.stl" name="kitchen_large_plastic_03_54"/>
+  <mesh file="meshes/kitchen_medium_plastic_03_55.stl" name="kitchen_medium_plastic_03_55"/>
+  <mesh file="meshes/kitchen_small_plastic_03_56.stl" name="kitchen_small_plastic_03_56"/>
+  <mesh file="meshes/kitchen_xtra_large_plastic_03_57.stl" name="kitchen_xtra_large_plastic_03_57"/>
+  <mesh file="meshes/kitchen_m_211_parquet_medium_color_pbr_texture_seamless_hr_58.stl" name="kitchen_m_211_parquet_medium_color_pbr_texture_seamless_hr_58"/>
+  <mesh file="meshes/kitchen_white_ceramic_59.stl" name="kitchen_white_ceramic_59"/>
+  <mesh file="meshes/kitchen_am134_14_wood_1_60.stl" name="kitchen_am134_14_wood_1_60"/>
+  <mesh file="meshes/kitchen_siyah_61.stl" name="kitchen_siyah_61"/>
+  <mesh file="meshes/kitchen_krom_62.stl" name="kitchen_krom_62"/>
+  <mesh file="meshes/kitchen_beyaz_63.stl" name="kitchen_beyaz_63"/>
+  <mesh file="meshes/kitchen_metallic_paint_silver_64.stl" name="kitchen_metallic_paint_silver_64"/>
+  <mesh file="meshes/kitchen_material__0ww_65.stl" name="kitchen_material__0ww_65"/>
+  <mesh file="meshes/kitchen_beyazx_66.stl" name="kitchen_beyazx_66"/>
+  <mesh file="meshes/kitchen_material__0_67.stl" name="kitchen_material__0_67"/>
+  <mesh file="meshes/kitchen_steel_polished_68.stl" name="kitchen_steel_polished_68"/>
+  <mesh file="meshes/kitchen_bricks_tiles_d01_50cm_69.stl" name="kitchen_bricks_tiles_d01_50cm_69"/>
+  <mesh file="meshes/kitchen_flooring_parquet_parallel_h01_120cm_70.stl" name="kitchen_flooring_parquet_parallel_h01_120cm_70"/>
+  <mesh file="meshes/kitchen_stucco_a02_color_50cm_white_71.stl" name="kitchen_stucco_a02_color_50cm_white_71"/>
+  <mesh file="meshes/kitchen_cadeira_mesa__010_mater_02_25x25mm_72.stl" name="kitchen_cadeira_mesa__010_mater_02_25x25mm_72"/>
+  <mesh file="meshes/kitchen_cadeira_mesa__010_mater_01_73.stl" name="kitchen_cadeira_mesa__010_mater_01_73"/>
+  <mesh file="meshes/kitchen_cadeira_mesa__010_mater_03_25x25mm_74.stl" name="kitchen_cadeira_mesa__010_mater_03_25x25mm_74"/>
+  <mesh file="meshes/kitchen_cozinha_bancada_marmore_biancone_120cm_75.stl" name="kitchen_cozinha_bancada_marmore_biancone_120cm_75"/>
+  <mesh file="meshes/kitchen_pia_cozinha_dupla_quadrada_050_mater_02_below_76.stl" name="kitchen_pia_cozinha_dupla_quadrada_050_mater_02_below_76"/>
+  <mesh file="meshes/kitchen_pia_cozinha_dupla_quadrada_050_mater_02_above_76.stl" name="kitchen_pia_cozinha_dupla_quadrada_050_mater_02_above_76"/>
+  <mesh file="meshes/kitchen_churrasqueira_gabinetes_puxadores_77.stl" name="kitchen_churrasqueira_gabinetes_puxadores_77"/>
+  <mesh file="meshes/kitchen_cozinha_gabinete_lixeira_cesto_plastico_78.stl" name="kitchen_cozinha_gabinete_lixeira_cesto_plastico_78"/>
+  <mesh file="meshes/kitchen_cozinha__gabinete_lixeira_formica_branca_79.stl" name="kitchen_cozinha__gabinete_lixeira_formica_branca_79"/>
+  <mesh file="meshes/kitchen_cozinha_gabinete_lixeira_metais_80.stl" name="kitchen_cozinha_gabinete_lixeira_metais_80"/>
+  <mesh file="meshes/kitchen_cozinha_gabinetes_frente_formica_81.stl" name="kitchen_cozinha_gabinetes_frente_formica_81"/>
+  <mesh file="meshes/kitchen_cozinha_ilha_madeira_bancada_280x50cm_82.stl" name="kitchen_cozinha_ilha_madeira_bancada_280x50cm_82"/>
+  <mesh file="meshes/kitchen_alvenaria_branca_83.stl" name="kitchen_alvenaria_branca_83"/>
+  <mesh file="meshes/kitchen_churrasqueira_m_quna_lava_pratos_puxador_84.stl" name="kitchen_churrasqueira_m_quna_lava_pratos_puxador_84"/>
+  <mesh file="meshes/kitchen_m_quna_lava_pratos_corpo_metalico_85.stl" name="kitchen_m_quna_lava_pratos_corpo_metalico_85"/>
+  <mesh file="meshes/kitchen_luminaria_pendente_110_mater_05_lampara_86.stl" name="kitchen_luminaria_pendente_110_mater_05_lampara_86"/>
+  <mesh file="meshes/kitchen_luminaria_pendente_110_mater_07_lampara_87.stl" name="kitchen_luminaria_pendente_110_mater_07_lampara_87"/>
+  <mesh file="meshes/kitchen_luminaria_pendente_110_mater_06_lampara_88.stl" name="kitchen_luminaria_pendente_110_mater_06_lampara_88"/>
+  <mesh file="meshes/kitchen_luminaria_pendente_110_mater_08_lampara_89.stl" name="kitchen_luminaria_pendente_110_mater_08_lampara_89"/>
+  <mesh file="meshes/kitchen_luminaria_pendente_110_mater_02_met_interno_90.stl" name="kitchen_luminaria_pendente_110_mater_02_met_interno_90"/>
+  <mesh file="meshes/kitchen_luminaria_pendente_110_mater_01_met_externo_91.stl" name="kitchen_luminaria_pendente_110_mater_01_met_externo_91"/>
+  <mesh file="meshes/kitchen_steel_polished_3_92.stl" name="kitchen_steel_polished_3_92"/>
+  <mesh file="meshes/kitchen_luminaria_pendente_110_mater_03_met_corrente_93.stl" name="kitchen_luminaria_pendente_110_mater_03_met_corrente_93"/>
+  <mesh file="meshes/kitchen_wood_mahogany_33_46_100cm_94.stl" name="kitchen_wood_mahogany_33_46_100cm_94"/>
+  <mesh file="meshes/kitchen_chrome_95.stl" name="kitchen_chrome_95"/>
+  <mesh file="meshes/kitchen_stainless_steel_aluminium_96.stl" name="kitchen_stainless_steel_aluminium_96"/>
+  <mesh file="meshes/kitchen_glass_gray_97.stl" name="kitchen_glass_gray_97"/>
+  <mesh file="meshes/kitchen_color_m07_98.stl" name="kitchen_color_m07_98"/>
+  <mesh file="meshes/kitchen_brass_99.stl" name="kitchen_brass_99"/>
+  <mesh file="meshes/kitchen_color_m06_100.stl" name="kitchen_color_m06_100"/>
+  <mesh file="meshes/kitchen_frontcolor_coffeemachine_body_101.stl" name="kitchen_frontcolor_coffeemachine_body_101"/>
+  <mesh file="meshes/kitchen_frontcolor_coffeemachine_trim_101.stl" name="kitchen_frontcolor_coffeemachine_trim_101"/>
+  <mesh file="meshes/kitchen_frontcolor_coffeemachine_top_101.stl" name="kitchen_frontcolor_coffeemachine_top_101"/>
+  <mesh file="meshes/kitchen_frontcolor_bowl_101.stl" name="kitchen_frontcolor_bowl_101"/>
+  <mesh file="meshes/kitchen_frontcolor_fruit_yellow_101.stl" name="kitchen_frontcolor_fruit_yellow_101"/>
+  <mesh file="meshes/kitchen_frontcolor_fruit_red_101.stl" name="kitchen_frontcolor_fruit_red_101"/>
+  <mesh file="meshes/kitchen_frontcolor_juicer_base_101.stl" name="kitchen_frontcolor_juicer_base_101"/>
+  <mesh file="meshes/kitchen_frontcolor_juicer_body_101.stl" name="kitchen_frontcolor_juicer_body_101"/>
+  <mesh file="meshes/kitchen_frontcolor_juicer_lid_101.stl" name="kitchen_frontcolor_juicer_lid_101"/>
+  <mesh file="meshes/kitchen_frontcolor_book_cover_101.stl" name="kitchen_frontcolor_book_cover_101"/>
+  <mesh file="meshes/kitchen_frontcolor_book_pages_101.stl" name="kitchen_frontcolor_book_pages_101"/>
+  <mesh file="meshes/kitchen_frontcolor_book_navy_101.stl" name="kitchen_frontcolor_book_navy_101"/>
+  <mesh file="meshes/kitchen_frontcolor_fork_101.stl" name="kitchen_frontcolor_fork_101"/>
+  <mesh file="meshes/kitchen_frontcolor_saucer_101.stl" name="kitchen_frontcolor_saucer_101"/>
+  <mesh file="meshes/kitchen_frontcolor_pancake_top_101.stl" name="kitchen_frontcolor_pancake_top_101"/>
+  <mesh file="meshes/kitchen_frontcolor_bread1_101.stl" name="kitchen_frontcolor_bread1_101"/>
+  <mesh file="meshes/kitchen_frontcolor_bread2_101.stl" name="kitchen_frontcolor_bread2_101"/>
+  <mesh file="meshes/kitchen_frontcolor_knife_101.stl" name="kitchen_frontcolor_knife_101"/>
+  <mesh file="meshes/kitchen_frontcolor_pancake_side_101.stl" name="kitchen_frontcolor_pancake_side_101"/>
+  <mesh file="meshes/kitchen_frontcolor_plate_101.stl" name="kitchen_frontcolor_plate_101"/>
+  <mesh file="meshes/kitchen_frontcolor_shelf_connector_101.stl" name="kitchen_frontcolor_shelf_connector_101"/>
+  <mesh file="meshes/kitchen_frontcolor__default_101.stl" name="kitchen_frontcolor__default_101"/>
+  <mesh file="meshes/kitchen_m_0133_gray_102.stl" name="kitchen_m_0133_gray_102"/>
+  <mesh file="meshes/kitchen_color_6_103.stl" name="kitchen_color_6_103"/>
+  <mesh file="meshes/kitchen_steel_polished_2_controls_104.stl" name="kitchen_steel_polished_2_controls_104"/>
+  <mesh file="meshes/kitchen_steel_polished_2_body_104.stl" name="kitchen_steel_polished_2_body_104"/>
+  <mesh file="meshes/kitchen_steel_polished_2_hood_104.stl" name="kitchen_steel_polished_2_hood_104"/>
+    <mesh name="base_link" content_type="model/stl" file="meshes/base_link.stl" scale="0.001 0.001 0.001"/>
+    <mesh name="wheelbase_lift_1" content_type="model/stl" file="meshes/wheelbase_lift_1.stl" scale="0.001 0.001 0.001"/>
+    <mesh name="rotation_waist_joint_1" content_type="model/stl" file="meshes/rotation_waist_joint_1.stl" scale="0.001 0.001 0.001"/>
+    <mesh name="chest_enclosure_2_1" content_type="model/stl" file="meshes/chest_enclosure_2_1.stl" scale="0.001 0.001 0.001"/>
+    <mesh name="rotation_shoulder_joint_1" content_type="model/stl" file="meshes/rotation_shoulder_joint_1.stl" scale="0.001 0.001 0.001"/>
+    <mesh name="rotation_shoulder_joint_2" content_type="model/stl" file="meshes/rotation_shoulder_joint_2.stl" scale="0.001 0.001 0.001"/>
+    <mesh name="rotation_arm_joint_1" content_type="model/stl" file="meshes/rotation_arm_joint_1.stl" scale="0.001 0.001 0.001"/>
+    <mesh name="rotation_arm_joint_2" content_type="model/stl" file="meshes/rotation_arm_joint_2.stl" scale="0.001 0.001 0.001"/>
+    <mesh name="arm_joint_1" content_type="model/stl" file="meshes/arm_joint_1.stl" scale="0.001 0.001 0.001"/>
+    <mesh name="arm_joint_2" content_type="model/stl" file="meshes/arm_joint_2.stl" scale="0.001 0.001 0.001"/>
+    <mesh name="forearm_joint_1" content_type="model/stl" file="meshes/forearm_joint_1.stl" scale="0.001 0.001 0.001"/>
+    <mesh name="forearm_joint_2" content_type="model/stl" file="meshes/forearm_joint_2.stl" scale="0.001 0.001 0.001"/>
+    <mesh name="actuator_stepper_dummy_1" content_type="model/stl" file="meshes/actuator_stepper_dummy_1.stl" scale="0.001 0.001 0.001"/>
+    <mesh name="actuator_dummy_1" content_type="model/stl" file="meshes/actuator_dummy_1.stl" scale="0.001 0.001 0.001"/>
+    <mesh name="actuator_dummy_2" content_type="model/stl" file="meshes/actuator_dummy_2.stl" scale="0.001 0.001 0.001"/>
+    <mesh name="actuator_dummy_3" content_type="model/stl" file="meshes/actuator_dummy_3.stl" scale="0.001 0.001 0.001"/>
+    <mesh name="actuator_dummy_4" content_type="model/stl" file="meshes/actuator_dummy_4.stl" scale="0.001 0.001 0.001"/>
+    <mesh name="actuator_dummy_5" content_type="model/stl" file="meshes/actuator_dummy_5.stl" scale="0.001 0.001 0.001"/>
+    <mesh name="actuator_dummy_6" content_type="model/stl" file="meshes/actuator_dummy_6.stl" scale="0.001 0.001 0.001"/>
+    <mesh name="actuator_dummy_7" content_type="model/stl" file="meshes/actuator_dummy_7.stl" scale="0.001 0.001 0.001"/>
+    <mesh name="actuator_dummy_8" content_type="model/stl" file="meshes/actuator_dummy_8.stl" scale="0.001 0.001 0.001"/>
+    <mesh name="actuator_dummy_9" content_type="model/stl" file="meshes/actuator_dummy_9.stl" scale="0.001 0.001 0.001"/>
+    <mesh name="actuator_dummy_10" content_type="model/stl" file="meshes/actuator_dummy_10.stl" scale="0.001 0.001 0.001"/>
+    <mesh name="neck_joint_3dp_1" content_type="model/stl" file="meshes/neck_joint_3dp_1.stl" scale="0.001 0.001 0.001"/>
+    <mesh name="face_cover_3_1" content_type="model/stl" file="meshes/face_cover_3_1.stl" scale="0.001 0.001 0.001"/>
+    <mesh name="servo_spacer_hand_1" content_type="model/stl" file="meshes/servo_spacer_hand_1.stl" scale="0.001 0.001 0.001"/>
+    <mesh name="servo_spacer_hand_2" content_type="model/stl" file="meshes/servo_spacer_hand_2.stl" scale="0.001 0.001 0.001"/>
+    <mesh name="wrist_cover_1" content_type="model/stl" file="meshes/wrist_cover_1.stl" scale="0.001 0.001 0.001"/>
+    <mesh name="wrist_cover_2" content_type="model/stl" file="meshes/wrist_cover_2.stl" scale="0.001 0.001 0.001"/>
+    <mesh name="wheels_1" content_type="model/stl" file="meshes/wheels_1.stl" scale="0.001 0.001 0.001"/>
+    <mesh name="wheels_2" content_type="model/stl" file="meshes/wheels_2.stl" scale="0.001 0.001 0.001"/>
+    <mesh name="caster_plate_1" content_type="model/stl" file="meshes/caster_plate_1.stl" scale="0.001 0.001 0.001"/>
+    <mesh name="caster_wheel_1" content_type="model/stl" file="meshes/caster_wheel_1.stl" scale="0.001 0.001 0.001"/>
+    <mesh name="caster_plate_2" content_type="model/stl" file="meshes/caster_plate_2.stl" scale="0.001 0.001 0.001"/>
+    <mesh name="caster_wheel_2" content_type="model/stl" file="meshes/caster_wheel_2.stl" scale="0.001 0.001 0.001"/>
+    <mesh name="palm_right_1" content_type="model/stl" file="meshes/palm_right_1.stl" scale="0.001 0.001 0.001"/>
+    <mesh name="finger_knuckle_1" content_type="model/stl" file="meshes/finger_knuckle_1.stl" scale="0.001 0.001 0.001"/>
+    <mesh name="finger_knuckle_2" content_type="model/stl" file="meshes/finger_knuckle_2.stl" scale="0.001 0.001 0.001"/>
+    <mesh name="finger_knuckle_3" content_type="model/stl" file="meshes/finger_knuckle_3.stl" scale="0.001 0.001 0.001"/>
+    <mesh name="finger_knuckle_4" content_type="model/stl" file="meshes/finger_knuckle_4.stl" scale="0.001 0.001 0.001"/>
+    <mesh name="thumb_knuckle_1" content_type="model/stl" file="meshes/thumb_knuckle_1.stl" scale="0.001 0.001 0.001"/>
+    <mesh name="finger_rear_1" content_type="model/stl" file="meshes/finger_rear_1.stl" scale="0.001 0.001 0.001"/>
+    <mesh name="finger_rear_2" content_type="model/stl" file="meshes/finger_rear_2.stl" scale="0.001 0.001 0.001"/>
+    <mesh name="finger_rear_3" content_type="model/stl" file="meshes/finger_rear_3.stl" scale="0.001 0.001 0.001"/>
+    <mesh name="finger_rear_4" content_type="model/stl" file="meshes/finger_rear_4.stl" scale="0.001 0.001 0.001"/>
+    <mesh name="finger_mid_pinky_1" content_type="model/stl" file="meshes/finger_mid_pinky_1.stl" scale="0.001 0.001 0.001"/>
+    <mesh name="finger_mid_1" content_type="model/stl" file="meshes/finger_mid_1.stl" scale="0.001 0.001 0.001"/>
+    <mesh name="finger_mid_2" content_type="model/stl" file="meshes/finger_mid_2.stl" scale="0.001 0.001 0.001"/>
+    <mesh name="finger_mid_small_1" content_type="model/stl" file="meshes/finger_mid_small_1.stl" scale="0.001 0.001 0.001"/>
+    <mesh name="finger_mid_small_2" content_type="model/stl" file="meshes/finger_mid_small_2.stl" scale="0.001 0.001 0.001"/>
+    <mesh name="finger_tip_small_1" content_type="model/stl" file="meshes/finger_tip_small_1.stl" scale="0.001 0.001 0.001"/>
+    <mesh name="finger_tip_1" content_type="model/stl" file="meshes/finger_tip_1.stl" scale="0.001 0.001 0.001"/>
+    <mesh name="finger_tip_2" content_type="model/stl" file="meshes/finger_tip_2.stl" scale="0.001 0.001 0.001"/>
+    <mesh name="finger_tip_small_2" content_type="model/stl" file="meshes/finger_tip_small_2.stl" scale="0.001 0.001 0.001"/>
+    <mesh name="finger_tip_small_3" content_type="model/stl" file="meshes/finger_tip_small_3.stl" scale="0.001 0.001 0.001"/>
+    <mesh name="palm_top_right_1" content_type="model/stl" file="meshes/palm_top_right_1.stl" scale="0.001 0.001 0.001"/>
+    <mesh name="palm_left_1" content_type="model/stl" file="meshes/palm_left_1.stl" scale="0.001 0.001 0.001"/>
+    <mesh name="finger_knuckle_5" content_type="model/stl" file="meshes/finger_knuckle_5.stl" scale="0.001 0.001 0.001"/>
+    <mesh name="finger_knuckle_6" content_type="model/stl" file="meshes/finger_knuckle_6.stl" scale="0.001 0.001 0.001"/>
+    <mesh name="finger_knuckle_7" content_type="model/stl" file="meshes/finger_knuckle_7.stl" scale="0.001 0.001 0.001"/>
+    <mesh name="finger_knuckle_8" content_type="model/stl" file="meshes/finger_knuckle_8.stl" scale="0.001 0.001 0.001"/>
+    <mesh name="thumb_knuckle_2" content_type="model/stl" file="meshes/thumb_knuckle_2.stl" scale="0.001 0.001 0.001"/>
+    <mesh name="finger_rear_5" content_type="model/stl" file="meshes/finger_rear_5.stl" scale="0.001 0.001 0.001"/>
+    <mesh name="finger_rear_6" content_type="model/stl" file="meshes/finger_rear_6.stl" scale="0.001 0.001 0.001"/>
+    <mesh name="finger_rear_7" content_type="model/stl" file="meshes/finger_rear_7.stl" scale="0.001 0.001 0.001"/>
+    <mesh name="finger_rear_8" content_type="model/stl" file="meshes/finger_rear_8.stl" scale="0.001 0.001 0.001"/>
+    <mesh name="finger_mid_pinky_2" content_type="model/stl" file="meshes/finger_mid_pinky_2.stl" scale="0.001 0.001 0.001"/>
+    <mesh name="finger_mid_3" content_type="model/stl" file="meshes/finger_mid_3.stl" scale="0.001 0.001 0.001"/>
+    <mesh name="finger_mid_4" content_type="model/stl" file="meshes/finger_mid_4.stl" scale="0.001 0.001 0.001"/>
+    <mesh name="finger_mid_small_3" content_type="model/stl" file="meshes/finger_mid_small_3.stl" scale="0.001 0.001 0.001"/>
+    <mesh name="finger_mid_small_4" content_type="model/stl" file="meshes/finger_mid_small_4.stl" scale="0.001 0.001 0.001"/>
+    <mesh name="finger_tip_small_4" content_type="model/stl" file="meshes/finger_tip_small_4.stl" scale="0.001 0.001 0.001"/>
+    <mesh name="finger_tip_3" content_type="model/stl" file="meshes/finger_tip_3.stl" scale="0.001 0.001 0.001"/>
+    <mesh name="finger_tip_4" content_type="model/stl" file="meshes/finger_tip_4.stl" scale="0.001 0.001 0.001"/>
+    <mesh name="finger_tip_small_5" content_type="model/stl" file="meshes/finger_tip_small_5.stl" scale="0.001 0.001 0.001"/>
+    <mesh name="finger_tip_small_6" content_type="model/stl" file="meshes/finger_tip_small_6.stl" scale="0.001 0.001 0.001"/>
+    <mesh name="palm_top_left_1" content_type="model/stl" file="meshes/palm_top_left_1.stl" scale="0.001 0.001 0.001"/>
+    <mesh name="chest_enclosure_2_front_1" content_type="model/stl" file="meshes/chest_enclosure_2_front_1.stl" scale="0.001 0.001 0.001"/>
+  </asset>
+
+  <worldbody>
+  <geom name="kitchen_painting_node_152476_stats_0" type="mesh" mesh="kitchen_painting_node_152476_stats_0" rgba="0.4980 0.4235 0.3647 1.0000" contype="0" conaffinity="0"/>
+  <geom name="kitchen_frame_mtl_0_1" type="mesh" mesh="kitchen_frame_mtl_0_1" rgba="0.0471 0.0471 0.0471 1.0000" contype="0" conaffinity="0"/>
+  <geom name="kitchen_seamless_oats_texture_by_hhh316_d30r0ml1_2" type="mesh" mesh="kitchen_seamless_oats_texture_by_hhh316_d30r0ml1_2" rgba="0.8118 0.7137 0.5686 1.0000" contype="0" conaffinity="0"/>
+  <geom name="kitchen_oats_3" type="mesh" mesh="kitchen_oats_3" rgba="0.3216 0.3216 0.3216 1.0000" contype="0" conaffinity="0"/>
+  <geom name="kitchen_coffee_4" type="mesh" mesh="kitchen_coffee_4" rgba="0.3412 0.3412 0.3412 1.0000" contype="0" conaffinity="0"/>
+  <geom name="kitchen_coffee_beans1_5" type="mesh" mesh="kitchen_coffee_beans1_5" rgba="0.3686 0.2275 0.1529 1.0000" contype="0" conaffinity="0"/>
+  <geom name="kitchen_sugar_6" type="mesh" mesh="kitchen_sugar_6" rgba="0.3412 0.3412 0.3412 1.0000" contype="0" conaffinity="0"/>
+  <geom name="kitchen_sugartext1_7" type="mesh" mesh="kitchen_sugartext1_7" rgba="0.8902 0.8902 0.8902 1.0000" contype="0" conaffinity="0"/>
+  <geom name="kitchen_m_1_8" type="mesh" mesh="kitchen_m_1_8" rgba="0.8863 0.8824 0.8824 1.0000" contype="0" conaffinity="0"/>
+  <geom name="kitchen_flour_9" type="mesh" mesh="kitchen_flour_9" rgba="0.3294 0.3294 0.3294 1.0000" contype="0" conaffinity="0"/>
+  <geom name="kitchen_standardmaterial12_10" type="mesh" mesh="kitchen_standardmaterial12_10" rgba="0.6980 0.3725 0.2275 1.0000" contype="0" conaffinity="0"/>
+  <geom name="kitchen_22_11" type="mesh" mesh="kitchen_22_11" rgba="0.7800 0.5000 0.1000 1.0000" contype="0" conaffinity="0"/>
+  <geom name="kitchen_standardmaterial14_12" type="mesh" mesh="kitchen_standardmaterial14_12" rgba="0.6500 0.1800 0.0900 1.0000" contype="0" conaffinity="0"/>
+  <geom name="kitchen_24_13" type="mesh" mesh="kitchen_24_13" rgba="0.7200 0.5500 0.1300 1.0000" contype="0" conaffinity="0"/>
+  <geom name="kitchen_standardmaterial13_14" type="mesh" mesh="kitchen_standardmaterial13_14" rgba="0.6667 0.5451 0.3922 1.0000" contype="0" conaffinity="0"/>
+  <geom name="kitchen_material__4010_jar0_15" type="mesh" mesh="kitchen_material__4010_jar0_15" rgba="0.7500 0.4500 0.1200 0.4500" contype="0" conaffinity="0"/>
+  <geom name="kitchen_material__4010_jar1_15" type="mesh" mesh="kitchen_material__4010_jar1_15" rgba="0.5500 0.3000 0.0800 0.4500" contype="0" conaffinity="0"/>
+  <geom name="kitchen_material__4010_jar2_15" type="mesh" mesh="kitchen_material__4010_jar2_15" rgba="0.7000 0.5500 0.1500 0.4500" contype="0" conaffinity="0"/>
+  <geom name="kitchen_material__4010_jar3_15" type="mesh" mesh="kitchen_material__4010_jar3_15" rgba="0.3500 0.4000 0.1200 0.4500" contype="0" conaffinity="0"/>
+  <geom name="kitchen_material__4010_jar4_15" type="mesh" mesh="kitchen_material__4010_jar4_15" rgba="0.6000 0.1500 0.0800 0.4500" contype="0" conaffinity="0"/>
+  <geom name="kitchen_material__4010_lid_15" type="mesh" mesh="kitchen_material__4010_lid_15" rgba="0.2200 0.2100 0.2000 1.0000" contype="0" conaffinity="0"/>
+  <geom name="kitchen_standardmaterial5_16" type="mesh" mesh="kitchen_standardmaterial5_16" rgba="0.8500 0.4500 0.0600 1.0000" contype="0" conaffinity="0"/>
+  <geom name="kitchen_standardmaterial_17" type="mesh" mesh="kitchen_standardmaterial_17" rgba="0.5800 0.2000 0.0900 1.0000" contype="0" conaffinity="0"/>
+  <geom name="kitchen_standardmaterial4_18" type="mesh" mesh="kitchen_standardmaterial4_18" rgba="0.3800 0.4600 0.1800 1.0000" contype="0" conaffinity="0"/>
+  <geom name="kitchen_standardmaterial1_19" type="mesh" mesh="kitchen_standardmaterial1_19" rgba="0.8000 0.6000 0.0800 1.0000" contype="0" conaffinity="0"/>
+  <geom name="kitchen_standardmaterial3_20" type="mesh" mesh="kitchen_standardmaterial3_20" rgba="0.6627 0.6627 0.6627 1.0000" contype="0" conaffinity="0"/>
+  <geom name="kitchen_standardmaterial6_21" type="mesh" mesh="kitchen_standardmaterial6_21" rgba="0.7000 0.4000 0.1000 0.4000" contype="0" conaffinity="0"/>
+  <geom name="kitchen_standardmaterial2_22" type="mesh" mesh="kitchen_standardmaterial2_22" rgba="0.7500 0.4500 0.1200 0.4000" contype="0" conaffinity="0"/>
+  <geom name="kitchen_material__2_23" type="mesh" mesh="kitchen_material__2_23" rgba="0.1000 0.3200 0.1200 1.0000" contype="0" conaffinity="0"/>
+  <geom name="kitchen_material__11_24" type="mesh" mesh="kitchen_material__11_24" rgba="0.0900 0.3400 0.1100 1.0000" contype="0" conaffinity="0"/>
+  <geom name="kitchen_material__5_25" type="mesh" mesh="kitchen_material__5_25" rgba="0.0700 0.2400 0.0900 1.0000" contype="0" conaffinity="0"/>
+  <geom name="kitchen_material__3_26" type="mesh" mesh="kitchen_material__3_26" rgba="0.3725 0.2745 0.1804 1.0000" contype="0" conaffinity="0"/>
+  <geom name="kitchen_material__9_27" type="mesh" mesh="kitchen_material__9_27" rgba="0.1300 0.3600 0.1500 1.0000" contype="0" conaffinity="0"/>
+  <geom name="kitchen_122_28" type="mesh" mesh="kitchen_122_28" rgba="0.9490 0.9490 0.9490 1.0000" contype="0" conaffinity="0"/>
+  <geom name="kitchen_metal_silver_29" type="mesh" mesh="kitchen_metal_silver_29" rgba="0.9176 0.9137 0.9333 1.0000" contype="0" conaffinity="0"/>
+  <geom name="kitchen_material_2_30" type="mesh" mesh="kitchen_material_2_30" rgba="0.1000 0.3200 0.1200 1.0000" contype="0" conaffinity="0"/>
+  <geom name="kitchen_material_3_31" type="mesh" mesh="kitchen_material_3_31" rgba="0.4500 0.3000 0.2000 1.0000" contype="0" conaffinity="0"/>
+  <geom name="kitchen_color_m02_32" type="mesh" mesh="kitchen_color_m02_32" rgba="0.7765 0.7765 0.7765 1.0000" contype="0" conaffinity="0"/>
+  <geom name="kitchen_color_c01_33" type="mesh" mesh="kitchen_color_c01_33" rgba="1.0000 0.8980 0.8000 1.0000" contype="0" conaffinity="0"/>
+  <geom name="kitchen_porcelain_a01_white_10cm_34" type="mesh" mesh="kitchen_porcelain_a01_white_10cm_34" rgba="0.6745 0.8000 0.7216 1.0000" contype="0" conaffinity="0"/>
+  <geom name="kitchen_35_35" type="mesh" mesh="kitchen_35_35" rgba="0.6353 0.5255 0.4157 1.0000" contype="0" conaffinity="0"/>
+  <geom name="kitchen_utensils_wood_2_36" type="mesh" mesh="kitchen_utensils_wood_2_36" rgba="0.3490 0.2275 0.0941 1.0000" contype="0" conaffinity="0"/>
+  <geom name="kitchen_vray_07___default1_37" type="mesh" mesh="kitchen_vray_07___default1_37" rgba="0.6392 0.6392 0.6118 1.0000" contype="0" conaffinity="0"/>
+  <geom name="kitchen_utensils_wood_4_38" type="mesh" mesh="kitchen_utensils_wood_4_38" rgba="0.7765 0.6549 0.4784 1.0000" contype="0" conaffinity="0"/>
+  <geom name="kitchen_cable_white1_39" type="mesh" mesh="kitchen_cable_white1_39" rgba="0.9373 0.9373 0.9373 1.0000" contype="0" conaffinity="0"/>
+  <geom name="kitchen_utensils_wood_3_40" type="mesh" mesh="kitchen_utensils_wood_3_40" rgba="0.8157 0.7216 0.5686 1.0000" contype="0" conaffinity="0"/>
+  <geom name="kitchen_black_gloss1_41" type="mesh" mesh="kitchen_black_gloss1_41" rgba="0.0039 0.0039 0.0000 1.0000" contype="0" conaffinity="0"/>
+  <geom name="kitchen_metal_black1_42" type="mesh" mesh="kitchen_metal_black1_42" rgba="0.2118 0.2039 0.2039 1.0000" contype="0" conaffinity="0"/>
+  <geom name="kitchen_utensils_wood_1_43" type="mesh" mesh="kitchen_utensils_wood_1_43" rgba="0.6902 0.5294 0.3412 1.0000" contype="0" conaffinity="0"/>
+  <geom name="kitchen_glass_realtime1_44" type="mesh" mesh="kitchen_glass_realtime1_44" rgba="0.6118 0.6118 0.6118 1.0000" contype="0" conaffinity="0"/>
+  <geom name="kitchen_material_7_45" type="mesh" mesh="kitchen_material_7_45" rgba="0.4980 0.4980 0.4980 1.0000" contype="0" conaffinity="0"/>
+  <geom name="kitchen_material_4_46" type="mesh" mesh="kitchen_material_4_46" rgba="0.1373 0.1373 0.1373 1.0000" contype="0" conaffinity="0"/>
+  <geom name="kitchen_translucent_glass_blue_47" type="mesh" mesh="kitchen_translucent_glass_blue_47" rgba="0.3922 0.5843 0.9294 1.0000" contype="0" conaffinity="0"/>
+  <geom name="kitchen_white_milgard_frame_48" type="mesh" mesh="kitchen_white_milgard_frame_48" rgba="1.0000 1.0000 1.0000 1.0000" contype="0" conaffinity="0"/>
+  <geom name="kitchen_white_milgard_glass_48" type="mesh" mesh="kitchen_white_milgard_glass_48" rgba="0.3200 0.5800 0.7200 0.4000" contype="0" conaffinity="0"/>
+  <geom name="kitchen_m_0137_black_49" type="mesh" mesh="kitchen_m_0137_black_49" rgba="0.0000 0.0000 0.0000 1.0000" contype="0" conaffinity="0"/>
+  <geom name="kitchen_plastic_02_50" type="mesh" mesh="kitchen_plastic_02_50" rgba="0.5098 0.5098 0.5098 1.0000" contype="0" conaffinity="0"/>
+  <geom name="kitchen_silver_01__stainless_51" type="mesh" mesh="kitchen_silver_01__stainless_51" rgba="0.7686 0.7804 0.7804 1.0000" contype="0" conaffinity="0"/>
+  <geom name="kitchen_plastic_03_52" type="mesh" mesh="kitchen_plastic_03_52" rgba="0.2078 0.2078 0.2078 1.0000" contype="0" conaffinity="0"/>
+  <geom name="kitchen_m_6_stainless_steel_metal_texture_seamless_hr_aluminium1_53" type="mesh" mesh="kitchen_m_6_stainless_steel_metal_texture_seamless_hr_aluminium1_53" rgba="0.7882 0.7882 0.7882 1.0000" contype="0" conaffinity="0"/>
+  <geom name="kitchen_large_plastic_03_54" type="mesh" mesh="kitchen_large_plastic_03_54" rgba="0.8471 0.8471 0.8471 1.0000" contype="0" conaffinity="0"/>
+  <geom name="kitchen_medium_plastic_03_55" type="mesh" mesh="kitchen_medium_plastic_03_55" rgba="0.4863 0.4824 0.4784 1.0000" contype="0" conaffinity="0"/>
+  <geom name="kitchen_small_plastic_03_56" type="mesh" mesh="kitchen_small_plastic_03_56" rgba="1.0000 1.0000 1.0000 1.0000" contype="0" conaffinity="0"/>
+  <geom name="kitchen_xtra_large_plastic_03_57" type="mesh" mesh="kitchen_xtra_large_plastic_03_57" rgba="0.2745 0.2706 0.2824 1.0000" contype="0" conaffinity="0"/>
+  <geom name="kitchen_m_211_parquet_medium_color_pbr_texture_seamless_hr_58" type="mesh" mesh="kitchen_m_211_parquet_medium_color_pbr_texture_seamless_hr_58" rgba="0.5098 0.4039 0.3098 1.0000" contype="0" conaffinity="0"/>
+  <geom name="kitchen_white_ceramic_59" type="mesh" mesh="kitchen_white_ceramic_59" rgba="0.9608 0.9608 0.9608 1.0000" contype="0" conaffinity="0"/>
+  <geom name="kitchen_am134_14_wood_1_60" type="mesh" mesh="kitchen_am134_14_wood_1_60" rgba="0.6902 0.5765 0.4667 1.0000" contype="0" conaffinity="0"/>
+  <geom name="kitchen_siyah_61" type="mesh" mesh="kitchen_siyah_61" rgba="0.0980 0.0980 0.0980 1.0000" contype="0" conaffinity="0"/>
+  <geom name="kitchen_krom_62" type="mesh" mesh="kitchen_krom_62" rgba="0.1765 0.1765 0.1765 1.0000" contype="0" conaffinity="0"/>
+  <geom name="kitchen_beyaz_63" type="mesh" mesh="kitchen_beyaz_63" rgba="0.5765 0.5765 0.5765 1.0000" contype="0" conaffinity="0"/>
+  <geom name="kitchen_metallic_paint_silver_64" type="mesh" mesh="kitchen_metallic_paint_silver_64" rgba="0.3922 0.3804 0.3725 1.0000" contype="0" conaffinity="0"/>
+  <geom name="kitchen_material__0ww_65" type="mesh" mesh="kitchen_material__0ww_65" rgba="0.8667 0.8667 0.8667 1.0000" contype="0" conaffinity="0"/>
+  <geom name="kitchen_beyazx_66" type="mesh" mesh="kitchen_beyazx_66" rgba="0.4471 0.6118 0.7922 1.0000" contype="0" conaffinity="0"/>
+  <geom name="kitchen_material__0_67" type="mesh" mesh="kitchen_material__0_67" rgba="0.1176 0.1176 0.1176 1.0000" contype="0" conaffinity="0"/>
+  <geom name="kitchen_steel_polished_68" type="mesh" mesh="kitchen_steel_polished_68" rgba="0.8500 0.8600 0.8700 1.0000" contype="0" conaffinity="0"/>
+  <geom name="kitchen_bricks_tiles_d01_50cm_69" type="mesh" mesh="kitchen_bricks_tiles_d01_50cm_69" rgba="0.9000 0.8900 0.8600 1.0000" contype="0" conaffinity="0"/>
+  <geom name="kitchen_flooring_parquet_parallel_h01_120cm_70" type="mesh" mesh="kitchen_flooring_parquet_parallel_h01_120cm_70" rgba="0.7000 0.4600 0.3200 1.0000" contype="0" conaffinity="0"/>
+  <geom name="kitchen_stucco_a02_color_50cm_white_71" type="mesh" mesh="kitchen_stucco_a02_color_50cm_white_71" rgba="0.8824 0.8824 0.8824 1.0000" contype="0" conaffinity="0"/>
+  <geom name="kitchen_cadeira_mesa__010_mater_02_25x25mm_72" type="mesh" mesh="kitchen_cadeira_mesa__010_mater_02_25x25mm_72" rgba="0.3412 0.2235 0.1412 1.0000" contype="0" conaffinity="0"/>
+  <geom name="kitchen_cadeira_mesa__010_mater_01_73" type="mesh" mesh="kitchen_cadeira_mesa__010_mater_01_73" rgba="0.6588 0.6588 0.6588 1.0000" contype="0" conaffinity="0"/>
+  <geom name="kitchen_cadeira_mesa__010_mater_03_25x25mm_74" type="mesh" mesh="kitchen_cadeira_mesa__010_mater_03_25x25mm_74" rgba="0.5608 0.4196 0.2980 1.0000" contype="0" conaffinity="0"/>
+  <geom name="kitchen_cozinha_bancada_marmore_biancone_120cm_75" type="mesh" mesh="kitchen_cozinha_bancada_marmore_biancone_120cm_75" rgba="0.9500 0.9500 0.9400 1.0000" contype="0" conaffinity="0"/>
+  <geom name="kitchen_pia_cozinha_dupla_quadrada_050_mater_02_below_76" type="mesh" mesh="kitchen_pia_cozinha_dupla_quadrada_050_mater_02_below_76" rgba="0.0600 0.0600 0.0700 1.0000" contype="0" conaffinity="0"/>
+  <geom name="kitchen_pia_cozinha_dupla_quadrada_050_mater_02_above_76" type="mesh" mesh="kitchen_pia_cozinha_dupla_quadrada_050_mater_02_above_76" rgba="0.8500 0.8600 0.8700 1.0000" contype="0" conaffinity="0"/>
+  <geom name="kitchen_churrasqueira_gabinetes_puxadores_77" type="mesh" mesh="kitchen_churrasqueira_gabinetes_puxadores_77" rgba="0.6902 0.6902 0.6902 1.0000" contype="0" conaffinity="0"/>
+  <geom name="kitchen_cozinha_gabinete_lixeira_cesto_plastico_78" type="mesh" mesh="kitchen_cozinha_gabinete_lixeira_cesto_plastico_78" rgba="0.7686 0.7647 0.7373 1.0000" contype="0" conaffinity="0"/>
+  <geom name="kitchen_cozinha__gabinete_lixeira_formica_branca_79" type="mesh" mesh="kitchen_cozinha__gabinete_lixeira_formica_branca_79" rgba="0.3250 0.1650 0.0780 1.0000" contype="0" conaffinity="0"/>
+  <geom name="kitchen_cozinha_gabinete_lixeira_metais_80" type="mesh" mesh="kitchen_cozinha_gabinete_lixeira_metais_80" rgba="0.6902 0.6902 0.6902 1.0000" contype="0" conaffinity="0"/>
+  <geom name="kitchen_cozinha_gabinetes_frente_formica_81" type="mesh" mesh="kitchen_cozinha_gabinetes_frente_formica_81" rgba="0.3250 0.1650 0.0780 1.0000" contype="0" conaffinity="0"/>
+  <geom name="kitchen_cozinha_ilha_madeira_bancada_280x50cm_82" type="mesh" mesh="kitchen_cozinha_ilha_madeira_bancada_280x50cm_82" rgba="0.3250 0.1650 0.0780 1.0000" contype="0" conaffinity="0"/>
+  <geom name="kitchen_alvenaria_branca_83" type="mesh" mesh="kitchen_alvenaria_branca_83" rgba="0.3250 0.1650 0.0780 1.0000" contype="0" conaffinity="0"/>
+  <geom name="kitchen_churrasqueira_m_quna_lava_pratos_puxador_84" type="mesh" mesh="kitchen_churrasqueira_m_quna_lava_pratos_puxador_84" rgba="0.7294 0.7294 0.7294 1.0000" contype="0" conaffinity="0"/>
+  <geom name="kitchen_m_quna_lava_pratos_corpo_metalico_85" type="mesh" mesh="kitchen_m_quna_lava_pratos_corpo_metalico_85" rgba="0.6902 0.6902 0.6902 1.0000" contype="0" conaffinity="0"/>
+  <geom name="kitchen_luminaria_pendente_110_mater_05_lampara_86" type="mesh" mesh="kitchen_luminaria_pendente_110_mater_05_lampara_86" rgba="0.1137 0.1137 0.1137 1.0000" contype="0" conaffinity="0"/>
+  <geom name="kitchen_luminaria_pendente_110_mater_07_lampara_87" type="mesh" mesh="kitchen_luminaria_pendente_110_mater_07_lampara_87" rgba="0.6588 0.6588 0.6588 1.0000" contype="0" conaffinity="0"/>
+  <geom name="kitchen_luminaria_pendente_110_mater_06_lampara_88" type="mesh" mesh="kitchen_luminaria_pendente_110_mater_06_lampara_88" rgba="0.5020 0.5020 0.5020 1.0000" contype="0" conaffinity="0"/>
+  <geom name="kitchen_luminaria_pendente_110_mater_08_lampara_89" type="mesh" mesh="kitchen_luminaria_pendente_110_mater_08_lampara_89" rgba="0.9922 0.9922 0.9922 1.0000" contype="0" conaffinity="0"/>
+  <geom name="kitchen_luminaria_pendente_110_mater_02_met_interno_90" type="mesh" mesh="kitchen_luminaria_pendente_110_mater_02_met_interno_90" rgba="0.9176 0.9176 0.9176 1.0000" contype="0" conaffinity="0"/>
+  <geom name="kitchen_luminaria_pendente_110_mater_01_met_externo_91" type="mesh" mesh="kitchen_luminaria_pendente_110_mater_01_met_externo_91" rgba="0.3255 0.3255 0.3255 1.0000" contype="0" conaffinity="0"/>
+  <geom name="kitchen_steel_polished_3_92" type="mesh" mesh="kitchen_steel_polished_3_92" rgba="0.8500 0.8600 0.8700 1.0000" contype="0" conaffinity="0"/>
+  <geom name="kitchen_luminaria_pendente_110_mater_03_met_corrente_93" type="mesh" mesh="kitchen_luminaria_pendente_110_mater_03_met_corrente_93" rgba="0.5490 0.5490 0.5490 1.0000" contype="0" conaffinity="0"/>
+  <geom name="kitchen_wood_mahogany_33_46_100cm_94" type="mesh" mesh="kitchen_wood_mahogany_33_46_100cm_94" rgba="0.3255 0.1647 0.0784 1.0000" contype="0" conaffinity="0"/>
+  <geom name="kitchen_chrome_95" type="mesh" mesh="kitchen_chrome_95" rgba="0.8800 0.8900 0.9000 1.0000" contype="0" conaffinity="0"/>
+  <geom name="kitchen_stainless_steel_aluminium_96" type="mesh" mesh="kitchen_stainless_steel_aluminium_96" rgba="0.8500 0.8600 0.8700 1.0000" contype="0" conaffinity="0"/>
+  <geom name="kitchen_glass_gray_97" type="mesh" mesh="kitchen_glass_gray_97" rgba="0.7373 0.7373 0.7373 1.0000" contype="0" conaffinity="0"/>
+  <geom name="kitchen_color_m07_98" type="mesh" mesh="kitchen_color_m07_98" rgba="0.2275 0.2275 0.2275 1.0000" contype="0" conaffinity="0"/>
+  <geom name="kitchen_brass_99" type="mesh" mesh="kitchen_brass_99" rgba="0.7529 0.6431 0.4000 1.0000" contype="0" conaffinity="0"/>
+  <geom name="kitchen_color_m06_100" type="mesh" mesh="kitchen_color_m06_100" rgba="0.3373 0.3373 0.3373 1.0000" contype="0" conaffinity="0"/>
+  <geom name="kitchen_frontcolor_coffeemachine_body_101" type="mesh" mesh="kitchen_frontcolor_coffeemachine_body_101" rgba="0.0600 0.0600 0.0700 1.0000" contype="0" conaffinity="0"/>
+  <geom name="kitchen_frontcolor_coffeemachine_trim_101" type="mesh" mesh="kitchen_frontcolor_coffeemachine_trim_101" rgba="0.8000 0.8100 0.8300 1.0000" contype="0" conaffinity="0"/>
+  <geom name="kitchen_frontcolor_coffeemachine_top_101" type="mesh" mesh="kitchen_frontcolor_coffeemachine_top_101" rgba="0.0600 0.0600 0.0700 1.0000" contype="0" conaffinity="0"/>
+  <geom name="kitchen_frontcolor_bowl_101" type="mesh" mesh="kitchen_frontcolor_bowl_101" rgba="0.8200 0.8300 0.8400 0.5500" contype="0" conaffinity="0"/>
+  <geom name="kitchen_frontcolor_fruit_yellow_101" type="mesh" mesh="kitchen_frontcolor_fruit_yellow_101" rgba="0.8800 0.7200 0.1000 1.0000" contype="0" conaffinity="0"/>
+  <geom name="kitchen_frontcolor_fruit_red_101" type="mesh" mesh="kitchen_frontcolor_fruit_red_101" rgba="0.7200 0.1000 0.0800 1.0000" contype="0" conaffinity="0"/>
+  <geom name="kitchen_frontcolor_juicer_base_101" type="mesh" mesh="kitchen_frontcolor_juicer_base_101" rgba="0.8000 0.2400 0.0500 1.0000" contype="0" conaffinity="0"/>
+  <geom name="kitchen_frontcolor_juicer_body_101" type="mesh" mesh="kitchen_frontcolor_juicer_body_101" rgba="0.8000 0.8100 0.8300 1.0000" contype="0" conaffinity="0"/>
+  <geom name="kitchen_frontcolor_juicer_lid_101" type="mesh" mesh="kitchen_frontcolor_juicer_lid_101" rgba="0.0700 0.0700 0.0800 1.0000" contype="0" conaffinity="0"/>
+  <geom name="kitchen_frontcolor_book_cover_101" type="mesh" mesh="kitchen_frontcolor_book_cover_101" rgba="0.4500 0.1100 0.1200 1.0000" contype="0" conaffinity="0"/>
+  <geom name="kitchen_frontcolor_book_pages_101" type="mesh" mesh="kitchen_frontcolor_book_pages_101" rgba="0.9300 0.8800 0.7800 1.0000" contype="0" conaffinity="0"/>
+  <geom name="kitchen_frontcolor_book_navy_101" type="mesh" mesh="kitchen_frontcolor_book_navy_101" rgba="0.1000 0.1600 0.3800 1.0000" contype="0" conaffinity="0"/>
+  <geom name="kitchen_frontcolor_fork_101" type="mesh" mesh="kitchen_frontcolor_fork_101" rgba="0.8000 0.8100 0.8200 1.0000" contype="0" conaffinity="0"/>
+  <geom name="kitchen_frontcolor_saucer_101" type="mesh" mesh="kitchen_frontcolor_saucer_101" rgba="0.9400 0.9200 0.8700 1.0000" contype="0" conaffinity="0"/>
+  <geom name="kitchen_frontcolor_pancake_top_101" type="mesh" mesh="kitchen_frontcolor_pancake_top_101" rgba="0.8500 0.6000 0.5600 1.0000" contype="0" conaffinity="0"/>
+  <geom name="kitchen_frontcolor_bread1_101" type="mesh" mesh="kitchen_frontcolor_bread1_101" rgba="0.5500 0.3500 0.1800 1.0000" contype="0" conaffinity="0"/>
+  <geom name="kitchen_frontcolor_bread2_101" type="mesh" mesh="kitchen_frontcolor_bread2_101" rgba="0.5500 0.3500 0.1800 1.0000" contype="0" conaffinity="0"/>
+  <geom name="kitchen_frontcolor_knife_101" type="mesh" mesh="kitchen_frontcolor_knife_101" rgba="0.8000 0.8100 0.8200 1.0000" contype="0" conaffinity="0"/>
+  <geom name="kitchen_frontcolor_pancake_side_101" type="mesh" mesh="kitchen_frontcolor_pancake_side_101" rgba="0.8500 0.6000 0.5600 1.0000" contype="0" conaffinity="0"/>
+  <geom name="kitchen_frontcolor_plate_101" type="mesh" mesh="kitchen_frontcolor_plate_101" rgba="0.9400 0.9200 0.8700 1.0000" contype="0" conaffinity="0"/>
+  <geom name="kitchen_frontcolor_shelf_connector_101" type="mesh" mesh="kitchen_frontcolor_shelf_connector_101" rgba="0.3250 0.1650 0.0780 1.0000" contype="0" conaffinity="0"/>
+  <geom name="kitchen_frontcolor__default_101" type="mesh" mesh="kitchen_frontcolor__default_101" rgba="1.0000 1.0000 1.0000 1.0000" contype="0" conaffinity="0"/>
+  <geom name="kitchen_m_0133_gray_102" type="mesh" mesh="kitchen_m_0133_gray_102" rgba="0.3490 0.3490 0.3490 1.0000" contype="0" conaffinity="0"/>
+  <geom name="kitchen_color_6_103" type="mesh" mesh="kitchen_color_6_103" rgba="0.1176 0.1176 0.1176 1.0000" contype="0" conaffinity="0"/>
+  <geom name="kitchen_steel_polished_2_controls_104" type="mesh" mesh="kitchen_steel_polished_2_controls_104" rgba="0.8500 0.8600 0.8700 1.0000" contype="0" conaffinity="0"/>
+  <geom name="kitchen_steel_polished_2_body_104" type="mesh" mesh="kitchen_steel_polished_2_body_104" rgba="0.0500 0.0500 0.0500 1.0000" contype="0" conaffinity="0"/>
+  <geom name="kitchen_steel_polished_2_hood_104" type="mesh" mesh="kitchen_steel_polished_2_hood_104" rgba="0.8500 0.8600 0.8700 1.0000" contype="0" conaffinity="0"/>
+  <geom name="kitchen_wall_south" type="box" group="3" pos="0.0 -2.75 1.85" size="3.85 0.12 1.85" contype="1" conaffinity="1"/>
+  <geom name="kitchen_wall_north" type="box" group="3" pos="0.0 7.71 1.85" size="3.85 0.12 1.85" contype="1" conaffinity="1"/>
+  <geom name="kitchen_wall_east" type="box" group="3" pos="3.73 2.48 1.85" size="0.12 5.3500000000000005 1.85" contype="1" conaffinity="1"/>
+  <geom name="kitchen_wall_west" type="box" group="3" pos="-3.73 2.48 1.85" size="0.12 5.3500000000000005 1.85" contype="1" conaffinity="1"/>
+  <geom name="kitchen_floor" type="box" group="3" pos="0.0 2.48 -0.05" size="3.85 5.3500000000000005 0.05" contype="4" conaffinity="4"/>
+  <geom name="kitchen_west_counter_shallow_counter" type="box" group="3" pos="-3.225 2.75 0.455" size="0.375 1.15 0.455" contype="1" conaffinity="1"/>
+  <geom name="kitchen_west_counter_shallow_cabinet" type="box" group="3" pos="-3.225 2.75 1.95" size="0.375 1.15 0.55" contype="1" conaffinity="1"/>
+  <geom name="kitchen_west_counter_deep_counter" type="box" group="3" pos="-2.75 4.275 0.455" size="0.8500000000000001 0.3750000000000002 0.455" contype="1" conaffinity="1"/>
+  <geom name="kitchen_west_counter_deep_cabinet" type="box" group="3" pos="-2.75 4.275 1.95" size="0.8500000000000001 0.3750000000000002 0.55" contype="1" conaffinity="1"/>
+  <geom name="kitchen_island" type="box" group="3" pos="-0.475 2.3 0.455" size="1.475 0.7 0.455" contype="1" conaffinity="1"/>
+  <geom name="kitchen_north_run" type="box" group="3" pos="-0.5 4.9 1.45" size="1.35 1.1 1.45" contype="1" conaffinity="1"/>
+  <geom name="kitchen_center_table" type="box" group="3" pos="-0.49 1.505 0.43" size="1.26 0.3450000000000001 0.43" contype="1" conaffinity="1"/>
+
+    <body gravcomp="1" name="virtual_base_x" pos="0 0 0.115" quat="0.707107 0.707107 0 0">
+      <inertial pos="0 0 0" mass="0.001" diaginertia="1e-06 1e-06 1e-06"/>
+      <joint name="virtual_base_x" type="slide" range="-50 50" actuatorfrcrange="-80 80" axis="1 0 0"/>
+      <body gravcomp="1" name="virtual_base_y">
+        <inertial pos="0 0 0" mass="0.001" diaginertia="1e-06 1e-06 1e-06"/>
+        <joint name="virtual_base_y" type="slide" range="-50 50" actuatorfrcrange="-80 80" axis="0 0 -1"/>
+        <body gravcomp="1" name="base_link">
+          <inertial pos="0.188499 0.0930267 0.147618" quat="0.636731 0.30753 -0.307589 0.636701" mass="10.665" diaginertia="0.391271 0.319605 0.304661"/>
+          <joint name="virtual_base_yaw" actuatorfrcrange="-40 40" axis="0 1 0"/>
+          <geom type="mesh" contype="0" conaffinity="0" group="1" rgba="0.7 0.7 0.7 1" density="0" mesh="base_link"/>
+          <geom type="mesh" rgba="0.7 0.7 0.7 1" mesh="base_link"/>
+          <geom name="lift_sleeve" type="box" pos="0.191000 0.562177 0.086750" size="0.064500 0.112500 0.060500" rgba="0.08 0.08 0.08 1" contype="0" conaffinity="0"/>
+          <body gravcomp="1" name="wheelbase_lift_1" pos="0.2555 -0.01 0.08675">
+            <inertial pos="-0.0669937 0.607829 0.000137511" quat="0.502161 0.497728 -0.503194 0.496887" mass="2.32765" diaginertia="0.0490221 0.0480686 0.00793223"/>
+            <joint name="Slider 2" type="slide" range="0 0.3" actuatorfrcrange="-100 100" axis="0 1 0" damping="2.0"/>
+            <geom pos="-0.2555 0.01 -0.08675" quat="1 0 0 0" type="mesh" contype="0" conaffinity="0" group="1" rgba="0.7 0.7 0.7 1" density="0" mesh="wheelbase_lift_1"/>
+            <geom pos="-0.2555 0.01 -0.08675" quat="1 0 0 0" type="mesh" rgba="0.7 0.7 0.7 1" mesh="wheelbase_lift_1"/>
+            <body gravcomp="1" name="rotation_waist_joint_1" pos="0.0395 1.68836 0.03025">
+              <inertial pos="-0.103209 -0.792823 -0.0272519" quat="0.185248 0.677641 0.223343 0.675725" mass="1.18908" diaginertia="0.00348547 0.00334766 0.00153143"/>
+              <joint name="Revolute 3" pos="-0.0557143 -0.833911 0.0187388" axis="0 -1 0" damping="1.0"/>
+              <geom pos="-0.295 -1.67836 -0.117" quat="1 0 0 0" type="mesh" contype="0" conaffinity="0" group="1" rgba="0.7 0.7 0.7 1" density="0" mesh="rotation_waist_joint_1"/>
+              <geom pos="-0.295 -1.67836 -0.117" quat="1 0 0 0" type="mesh" rgba="0.7 0.7 0.7 1" mesh="rotation_waist_joint_1"/>
+              <geom pos="-0.295 -1.67836 -0.117" quat="1 0 0 0" type="mesh" contype="0" conaffinity="0" group="1" rgba="0.7 0.7 0.7 1" density="0" mesh="actuator_stepper_dummy_1"/>
+              <geom pos="-0.295 -1.67836 -0.117" quat="1 0 0 0" type="mesh" rgba="0.7 0.7 0.7 1" mesh="actuator_stepper_dummy_1"/>
+              <body gravcomp="1" name="chest_enclosure_2_1" pos="-0.999277 -0.746828 -0.29825">
+                <inertial pos="0.888444 0.241079 0.26317" quat="0.511651 0.493597 -0.517464 0.476242" mass="3.67797" diaginertia="0.121129 0.104655 0.0294736"/>
+                <joint name="Revolute 4" range="-1.91986 0" actuatorfrcrange="-100 100" pos="0.794777 -0.0809921 0.310243" axis="-1 0 0" damping="2.0"/>
+                <geom pos="0.704277 -0.931527 0.18125" quat="1 0 0 0" type="mesh" contype="0" conaffinity="0" group="1" rgba="0.7 0.7 0.7 1" density="0" mesh="chest_enclosure_2_1"/>
+                <geom pos="0.704277 -0.931527 0.18125" quat="1 0 0 0" type="mesh" rgba="0.7 0.7 0.7 1" mesh="chest_enclosure_2_1"/>
+                <geom pos="0.704277 -0.931527 0.18125" quat="1 0 0 0" type="mesh" contype="0" conaffinity="0" group="1" rgba="0.7 0.7 0.7 1" density="0" mesh="actuator_dummy_1"/>
+                <geom pos="0.704277 -0.931527 0.18125" quat="1 0 0 0" type="mesh" rgba="0.7 0.7 0.7 1" mesh="actuator_dummy_1"/>
+                <geom pos="0.704277 -0.931527 0.18125" quat="1 0 0 0" type="mesh" contype="0" conaffinity="0" group="1" rgba="0.7 0.7 0.7 1" density="0" mesh="actuator_dummy_2"/>
+                <geom pos="0.704277 -0.931527 0.18125" quat="1 0 0 0" type="mesh" rgba="0.7 0.7 0.7 1" mesh="actuator_dummy_2"/>
+                <geom pos="0.704277 -0.931527 0.18125" quat="1 0 0 0" type="mesh" contype="0" conaffinity="0" group="1" rgba="0.7 0.7 0.7 1" density="0" mesh="chest_enclosure_2_front_1"/>
+                <geom pos="0.704277 -0.931527 0.18125" quat="1 0 0 0" type="mesh" rgba="0.7 0.7 0.7 1" mesh="chest_enclosure_2_front_1"/>
+                <body gravcomp="1" name="rotation_shoulder_joint_1" pos="0.806027 1.23403 0.2925">
+                  <inertial pos="-0.0684915 -0.848778 -0.0201098" quat="0.695871 0.125554 0.125554 0.695871" mass="0.66616" diaginertia="0.000920944 0.000831363 0.000767581"/>
+                  <joint name="Revolute 5" range="-3.14159 0.785398" actuatorfrcrange="-100 100" pos="-0.02235 -0.804778 -0.0245002" axis="1 0 0" damping="2.0"/>
+                  <geom pos="-0.10175 -2.16555 -0.11125" type="mesh" contype="0" conaffinity="0" group="1" rgba="0.7 0.7 0.7 1" density="0" mesh="rotation_shoulder_joint_1"/>
+                  <geom pos="-0.10175 -2.16555 -0.11125" type="mesh" rgba="0.7 0.7 0.7 1" mesh="rotation_shoulder_joint_1"/>
+                  <geom pos="-0.10175 -2.16556 -0.11125" type="mesh" contype="0" conaffinity="0" group="1" rgba="0.7 0.7 0.7 1" density="0" mesh="actuator_dummy_3"/>
+                  <geom pos="-0.10175 -2.16556 -0.11125" type="mesh" rgba="0.7 0.7 0.7 1" mesh="actuator_dummy_3"/>
+                  <body gravcomp="1" name="rotation_arm_joint_1" pos="-0.1621 -0.820378 -1.34128">
+                    <inertial pos="0.08875 -0.0572699 1.34421" quat="0.663243 -0.24517 0.24517 0.663243" mass="0.121882" diaginertia="0.000235235 0.000204 0.000111765"/>
+                    <joint name="Revolute 7" range="0 3.14159" actuatorfrcrange="-100 100" pos="0.0857473 0.0154979 1.36688" axis="0 0 -1" damping="2.0"/>
+                    <geom pos="0.06035 -1.34518 1.23003" quat="1 0 0 0" type="mesh" contype="0" conaffinity="0" group="1" rgba="0.7 0.7 0.7 1" density="0" mesh="rotation_arm_joint_1"/>
+                    <geom pos="0.06035 -1.34518 1.23003" quat="1 0 0 0" type="mesh" rgba="0.7 0.7 0.7 1" mesh="rotation_arm_joint_1"/>
+                    <body gravcomp="1" name="arm_joint_1" pos="0.06035 1.23738 1.28503">
+                      <inertial pos="0.0235639 -1.41009 0.0268498" quat="0.495453 0.504506 -0.495453 0.504506" mass="1.28386" diaginertia="0.00485528 0.00461222 0.00155106"/>
+                      <joint name="Revolute 9" range="-1.5708 1.5708" actuatorfrcrange="-100 100" pos="0.0284 -1.31688 -0.0171502" axis="0 -1 0" damping="2.0"/>
+                      <geom pos="0 -2.58256 -0.055" quat="1 0 0 0" type="mesh" contype="0" conaffinity="0" group="1" rgba="0.7 0.7 0.7 1" density="0" mesh="arm_joint_1"/>
+                      <geom pos="0 -2.58256 -0.055" quat="1 0 0 0" type="mesh" rgba="0.7 0.7 0.7 1" mesh="arm_joint_1"/>
+                      <geom pos="0 -2.58256 -0.055" quat="1 0 0 0" type="mesh" contype="0" conaffinity="0" group="1" rgba="0.7 0.7 0.7 1" density="0" mesh="actuator_dummy_5"/>
+                      <geom pos="0 -2.58256 -0.055" quat="1 0 0 0" type="mesh" rgba="0.7 0.7 0.7 1" mesh="actuator_dummy_5"/>
+                      <geom pos="0 -2.58256 -0.055" quat="1 0 0 0" type="mesh" contype="0" conaffinity="0" group="1" rgba="0.7 0.7 0.7 1" density="0" mesh="actuator_dummy_7"/>
+                      <geom pos="0 -2.58256 -0.055" quat="1 0 0 0" type="mesh" rgba="0.7 0.7 0.7 1" mesh="actuator_dummy_7"/>
+                      <body gravcomp="1" name="forearm_joint_1" pos="-0.0432 -0.3432 0.1087">
+                        <inertial pos="0.0596929 -1.21202 -0.0818502" quat="0.397769 0.584619 -0.397769 0.584619" mass="0.733876" diaginertia="0.00155363 0.00147194 0.000846688"/>
+                        <joint name="Revolute 11" range="-1.74533 1.74533" actuatorfrcrange="-100 100" pos="0.0215 -1.11968 -0.0378502" axis="-1 0 0" damping="2.0"/>
+                        <geom pos="0.0432 -2.23936 -0.1637" quat="1 0 0 0" type="mesh" contype="0" conaffinity="0" group="1" rgba="0.7 0.7 0.7 1" density="0" mesh="forearm_joint_1"/>
+                        <geom pos="0.0432 -2.23936 -0.1637" quat="1 0 0 0" type="mesh" rgba="0.7 0.7 0.7 1" mesh="forearm_joint_1"/>
+                        <geom pos="0.0432 -2.23936 -0.1637" quat="1 0 0 0" type="mesh" contype="0" conaffinity="0" group="1" rgba="0.7 0.7 0.7 1" density="0" mesh="actuator_dummy_10"/>
+                        <geom pos="0.0432 -2.23936 -0.1637" quat="1 0 0 0" type="mesh" rgba="0.7 0.7 0.7 1" mesh="actuator_dummy_10"/>
+                        <body gravcomp="1" name="servo_spacer_hand_1" pos="-0.01335 -2.23935 -0.10715">
+                          <inertial pos="0.0723115 0.957657 0.0252998" quat="0.655684 0 0 0.755035" mass="0.0491123" diaginertia="6.31667e-05 5.08851e-05 2.60518e-05"/>
+                          <joint name="Revolute 26" range="-1.5708 1.5708" actuatorfrcrange="-100 100" pos="0.03605 0.973578 0.0726297" axis="0 -1 0" damping="2.0"/>
+                          <geom pos="0.05655 0 -0.05655" type="mesh" contype="0" conaffinity="0" group="1" rgba="0.7 0.7 0.7 1" density="0" mesh="servo_spacer_hand_1"/>
+                          <geom pos="0.05655 0 -0.05655" type="mesh" rgba="0.7 0.7 0.7 1" mesh="servo_spacer_hand_1"/>
+                          <geom pos="0.05655 0 -0.05655" quat="1 0 0 0" type="mesh" contype="0" conaffinity="0" group="1" rgba="0.7 0.7 0.7 1" density="0" mesh="wrist_cover_1"/>
+                          <geom pos="0.05655 0 -0.05655" quat="1 0 0 0" type="mesh" rgba="0.7 0.7 0.7 1" mesh="wrist_cover_1"/>
+                          <body gravcomp="1" name="palm_right_1" pos="0.0235 0.0357 0">
+                            <inertial pos="0.044103 0.815385 0.0251616" quat="0.717615 0.696404 -0.00531281 -0.00455146" mass="0.205779" diaginertia="0.000602117 0.000457754 0.000256792"/>
+                            <joint name="Revolute 43" range="-0.261799 1.5708" actuatorfrcrange="-100 100" pos="0.0502186 0.903309 0.0497498" damping="2.0"/>
+                            <geom pos="0.03305 -0.0357 -0.05655" quat="1 0 0 0" type="mesh" contype="0" conaffinity="0" group="1" rgba="0.7 0.7 0.7 1" density="0" mesh="palm_right_1"/>
+                            <geom pos="0.03305 -0.0357 -0.05655" quat="1 0 0 0" type="mesh" rgba="0.7 0.7 0.7 1" mesh="palm_right_1"/>
+                            <geom pos="0.03305 -0.0357 -0.05655" type="mesh" contype="0" conaffinity="0" group="1" rgba="0.7 0.7 0.7 1" density="0" mesh="finger_knuckle_1"/>
+                            <geom pos="0.03305 -0.0357 -0.05655" type="mesh" rgba="0.7 0.7 0.7 1" mesh="finger_knuckle_1"/>
+                            <geom pos="0.03305 -0.0357 -0.05655" type="mesh" contype="0" conaffinity="0" group="1" rgba="0.7 0.7 0.7 1" density="0" mesh="finger_knuckle_2"/>
+                            <geom pos="0.03305 -0.0357 -0.05655" type="mesh" rgba="0.7 0.7 0.7 1" mesh="finger_knuckle_2"/>
+                            <geom pos="0.03305 -0.0357 -0.05655" type="mesh" contype="0" conaffinity="0" group="1" rgba="0.7 0.7 0.7 1" density="0" mesh="finger_knuckle_3"/>
+                            <geom pos="0.03305 -0.0357 -0.05655" type="mesh" rgba="0.7 0.7 0.7 1" mesh="finger_knuckle_3"/>
+                            <geom pos="0.03305 -0.0357 -0.05655" type="mesh" contype="0" conaffinity="0" group="1" rgba="0.7 0.7 0.7 1" density="0" mesh="finger_knuckle_4"/>
+                            <geom pos="0.03305 -0.0357 -0.05655" type="mesh" rgba="0.7 0.7 0.7 1" mesh="finger_knuckle_4"/>
+                            <geom pos="0.03305 -0.0357 -0.05655" quat="1 0 0 0" type="mesh" contype="0" conaffinity="0" group="1" rgba="0.7 0.7 0.7 1" density="0" mesh="palm_top_right_1"/>
+                            <geom pos="0.03305 -0.0357 -0.05655" quat="1 0 0 0" type="mesh" rgba="0.7 0.7 0.7 1" mesh="palm_top_right_1"/>
+                            <body gravcomp="1" name="finger_rear_1" pos="0.823514 0.804374 -0.012858">
+                              <inertial pos="-0.783033 -0.0709914 -0.00657199" quat="0.707107 0.707107 0 0" mass="0.00598112" diaginertia="1e-06 1e-06 1e-09"/>
+                              <joint name="Revolute 49" range="0 1.5708" actuatorfrcrange="-100 100" pos="-0.786171 -0.0483304 -0.00764926" axis="0 -0.130526 0.991445" damping="0.1"/>
+                              <geom pos="-0.790464 -0.840074 -0.043692" quat="1 0 0 0" type="mesh" contype="0" conaffinity="0" group="1" rgba="0.7 0.7 0.7 1" density="0" mesh="finger_rear_1"/>
+                              <geom pos="-0.790464 -0.840074 -0.043692" quat="1 0 0 0" type="mesh" rgba="0.7 0.7 0.7 1" mesh="finger_rear_1"/>
+                              <body gravcomp="1" name="finger_mid_pinky_1" pos="-0.032222 -0.027505 -0.003622">
+                                <inertial pos="-0.75109 -0.0673852 -0.00606341" mass="0.00264731" diaginertia="1e-09 1e-09 1e-09"/>
+                                <joint name="Revolute 53" range="0 1.5708" actuatorfrcrange="-100 100" pos="-0.752896 -0.055653 -0.000543374" axis="0 -0.130526 0.991445" damping="0.1"/>
+                                <geom pos="-0.758242 -0.812569 -0.04007" quat="1 0 0 0" type="mesh" contype="0" conaffinity="0" group="1" rgba="0.7 0.7 0.7 1" density="0" mesh="finger_mid_pinky_1"/>
+                                <geom pos="-0.758242 -0.812569 -0.04007" quat="1 0 0 0" type="mesh" rgba="0.7 0.7 0.7 1" mesh="finger_mid_pinky_1"/>
+                                <body gravcomp="1" name="finger_tip_small_1" pos="-0.015367 -0.034228 -0.004506">
+                                  <inertial pos="-0.735476 -0.0524772 -0.00411086" mass="0.00362902" diaginertia="1e-09 1e-09 1e-09"/>
+                                  <joint name="Revolute 58" range="0 1.5708" actuatorfrcrange="-100 100" pos="-0.736079 -0.0353926 0.00212376" axis="0 -0.130526 0.991445" damping="0.1"/>
+                                  <geom pos="-0.742875 -0.778341 -0.035564" quat="1 0 0 0" type="mesh" contype="0" conaffinity="0" group="1" rgba="0.7 0.7 0.7 1" density="0" mesh="finger_tip_small_1"/>
+                                  <geom pos="-0.742875 -0.778341 -0.035564" quat="1 0 0 0" type="mesh" rgba="0.7 0.7 0.7 1" mesh="finger_tip_small_1"/>
+                                </body>
+                              </body>
+                            </body>
+                            <body gravcomp="1" name="finger_rear_2" pos="0.815276 0.824631 0.011942">
+                              <inertial pos="-0.774795 -0.099269 -0.00158058" quat="0.707107 0.707107 0 0" mass="0.00598112" diaginertia="1e-06 1e-06 1e-09"/>
+                              <joint name="Revolute 50" range="0 1.5708" actuatorfrcrange="-100 100" pos="-0.776712 -0.0801868 0.00323044" axis="0 -0.043619 0.999048" damping="0.1"/>
+                              <geom pos="-0.782226 -0.860331 -0.068492" quat="1 0 0 0" type="mesh" contype="0" conaffinity="0" group="1" rgba="0.7 0.7 0.7 1" density="0" mesh="finger_rear_2"/>
+                              <geom pos="-0.782226 -0.860331 -0.068492" quat="1 0 0 0" type="mesh" rgba="0.7 0.7 0.7 1" mesh="finger_rear_2"/>
+                              <body gravcomp="1" name="finger_mid_1" pos="-0.032469 -0.024894 -0.001087">
+                                <inertial pos="-0.74248 -0.104177 -0.00179177" mass="0.00535945" diaginertia="3.34e-07 3.34e-07 3.34e-07"/>
+                                <joint name="Revolute 54" range="0 1.5708" actuatorfrcrange="-100 100" pos="-0.740779 -0.0878627 0.00289541" axis="0 -0.043619 0.999048" damping="0.1"/>
+                                <geom pos="-0.749757 -0.835437 -0.067405" quat="1 0 0 0" type="mesh" contype="0" conaffinity="0" group="1" rgba="0.7 0.7 0.7 1" density="0" mesh="finger_mid_1"/>
+                                <geom pos="-0.749757 -0.835437 -0.067405" quat="1 0 0 0" type="mesh" rgba="0.7 0.7 0.7 1" mesh="finger_mid_1"/>
+                                <body gravcomp="1" name="finger_tip_1" pos="-0.027474 -0.033668 -0.00147">
+                                  <inertial pos="-0.71489 -0.0984806 -0.00153746" mass="0.00449619" diaginertia="3.34e-07 3.34e-07 3.34e-07"/>
+                                  <joint name="Revolute 59" range="0 1.5708" actuatorfrcrange="-100 100" pos="-0.710353 -0.0852683 -0.00497442" axis="0 -0.043619 0.999048" damping="0.1"/>
+                                  <geom pos="-0.722283 -0.801769 -0.065935" quat="1 0 0 0" type="mesh" contype="0" conaffinity="0" group="1" rgba="0.7 0.7 0.7 1" density="0" mesh="finger_tip_1"/>
+                                  <geom pos="-0.722283 -0.801769 -0.065935" quat="1 0 0 0" type="mesh" rgba="0.7 0.7 0.7 1" mesh="finger_tip_1"/>
+                                </body>
+                              </body>
+                            </body>
+                            <body gravcomp="1" name="finger_rear_3" pos="0.811143 0.848679 0.031898">
+                              <inertial pos="-0.770662 -0.127077 0.008302" quat="0.707107 0.707107 0 0" mass="0.00598112" diaginertia="1e-06 1e-06 1e-09"/>
+                              <joint name="Revolute 51" range="0 1.5708" actuatorfrcrange="-100 100" pos="-0.774759 -0.104228 0.0112578" axis="0 0.043619 0.999048" damping="0.1"/>
+                              <geom pos="-0.778093 -0.884379 -0.088448" quat="1 0 0 0" type="mesh" contype="0" conaffinity="0" group="1" rgba="0.7 0.7 0.7 1" density="0" mesh="finger_rear_3"/>
+                              <geom pos="-0.778093 -0.884379 -0.088448" quat="1 0 0 0" type="mesh" rgba="0.7 0.7 0.7 1" mesh="finger_rear_3"/>
+                              <body gravcomp="1" name="finger_mid_2" pos="-0.032469 -0.022061 0.000963">
+                                <inertial pos="-0.738347 -0.134818 0.0086432" mass="0.00535945" diaginertia="3.34e-07 3.34e-07 3.34e-07"/>
+                                <joint name="Revolute 55" range="0 1.5708" actuatorfrcrange="-100 100" pos="-0.736646 -0.118157 0.0118906" axis="0 0.043619 0.999048" damping="0.1"/>
+                                <geom pos="-0.745624 -0.862318 -0.089411" quat="1 0 0 0" type="mesh" contype="0" conaffinity="0" group="1" rgba="0.7 0.7 0.7 1" density="0" mesh="finger_mid_2"/>
+                                <geom pos="-0.745624 -0.862318 -0.089411" quat="1 0 0 0" type="mesh" rgba="0.7 0.7 0.7 1" mesh="finger_mid_2"/>
+                                <body gravcomp="1" name="finger_tip_2" pos="-0.027474 -0.031271 0.001366">
+                                  <inertial pos="-0.710757 -0.131517 0.00850399" mass="0.00449619" diaginertia="3.34e-07 3.34e-07 3.34e-07"/>
+                                  <joint name="Revolute 60" range="0 1.5708" actuatorfrcrange="-100 100" pos="-0.70622 -0.118655 0.00392858" axis="0 0.043619 0.999048" damping="0.1"/>
+                                  <geom pos="-0.71815 -0.831047 -0.090777" quat="1 0 0 0" type="mesh" contype="0" conaffinity="0" group="1" rgba="0.7 0.7 0.7 1" density="0" mesh="finger_tip_2"/>
+                                  <geom pos="-0.71815 -0.831047 -0.090777" quat="1 0 0 0" type="mesh" rgba="0.7 0.7 0.7 1" mesh="finger_tip_2"/>
+                                </body>
+                              </body>
+                            </body>
+                            <body gravcomp="1" name="finger_rear_4" pos="0.810905 0.875624 0.047017">
+                              <inertial pos="-0.770424 -0.153735 0.023014" quat="0.707107 0.707107 0 0" mass="0.00598112" diaginertia="1e-06 1e-06 1e-09"/>
+                              <joint name="Revolute 52" range="0 1.5708" actuatorfrcrange="-100 100" pos="-0.766595 -0.132138 0.0161101" axis="0 0.130526 0.991445" damping="0.1"/>
+                              <geom pos="-0.777855 -0.911324 -0.103567" quat="1 0 0 0" type="mesh" contype="0" conaffinity="0" group="1" rgba="0.7 0.7 0.7 1" density="0" mesh="finger_rear_4"/>
+                              <geom pos="-0.777855 -0.911324 -0.103567" quat="1 0 0 0" type="mesh" rgba="0.7 0.7 0.7 1" mesh="finger_rear_4"/>
+                              <body gravcomp="1" name="finger_mid_small_1" pos="-0.032222 -0.019093 0.002513">
+                                <inertial pos="-0.738389 -0.161808 0.0240884" mass="0.00422993" diaginertia="1e-09 1e-09 1e-09"/>
+                                <joint name="Revolute 56" range="0 1.5708" actuatorfrcrange="-100 100" pos="-0.740297 -0.145809 0.0259797" axis="0 0.130526 0.991445" damping="0.1"/>
+                                <geom pos="-0.745633 -0.892231 -0.10608" quat="1 0 0 0" type="mesh" contype="0" conaffinity="0" group="1" rgba="0.7 0.7 0.7 1" density="0" mesh="finger_mid_small_1"/>
+                                <geom pos="-0.745633 -0.892231 -0.10608" quat="1 0 0 0" type="mesh" rgba="0.7 0.7 0.7 1" mesh="finger_mid_small_1"/>
+                                <body gravcomp="1" name="finger_tip_small_2" pos="-0.022308 -0.02931 0.003859">
+                                  <inertial pos="-0.715926 -0.155485 0.0232678" mass="0.00362902" diaginertia="1e-09 1e-09 1e-09"/>
+                                  <joint name="Revolute 61" range="0 1.5708" actuatorfrcrange="-100 100" pos="-0.716529 -0.137369 0.0248681" axis="0 0.130526 0.991445" damping="0.1"/>
+                                  <geom pos="-0.723325 -0.862921 -0.109939" quat="1 0 0 0" type="mesh" contype="0" conaffinity="0" group="1" rgba="0.7 0.7 0.7 1" density="0" mesh="finger_tip_small_2"/>
+                                  <geom pos="-0.723325 -0.862921 -0.109939" quat="1 0 0 0" type="mesh" rgba="0.7 0.7 0.7 1" mesh="finger_tip_small_2"/>
+                                </body>
+                              </body>
+                            </body>
+                            <body gravcomp="1" name="thumb_knuckle_1" pos="0.042936 0.792561 0.068234">
+                              <inertial pos="-0.00220341 -0.0117404 0.0150305" mass="0.0041633" diaginertia="1e-09 1e-09 1e-09"/>
+                              <joint name="Revolute 48" range="-0.174533 1.22173" actuatorfrcrange="-100 100" pos="0.00296988 0.00324205 0.000957523" axis="-0.707107 0.5 0.5" damping="0.1"/>
+                              <geom pos="-0.009886 -0.828261 -0.124784" quat="1 0 0 0" type="mesh" contype="0" conaffinity="0" group="1" rgba="0.7 0.7 0.7 1" density="0" mesh="thumb_knuckle_1"/>
+                              <geom pos="-0.009886 -0.828261 -0.124784" quat="1 0 0 0" type="mesh" rgba="0.7 0.7 0.7 1" mesh="thumb_knuckle_1"/>
+                              <body gravcomp="1" name="finger_mid_small_2" pos="0.56071 -0.306336 -0.498182">
+                                <inertial pos="-0.562688 0.277829 0.529953" mass="0.00422993" diaginertia="1e-09 1e-09 1e-09"/>
+                                <joint name="Revolute 57" range="0 1.5708" actuatorfrcrange="-100 100" pos="-0.558511 0.289287 0.520377" axis="0.707099 0.503258 0.496732" damping="0.1"/>
+                                <geom pos="-0.570596 -0.521925 0.373398" quat="1 0 0 0" type="mesh" contype="0" conaffinity="0" group="1" rgba="0.7 0.7 0.7 1" density="0" mesh="finger_mid_small_2"/>
+                                <geom pos="-0.570596 -0.521925 0.373398" quat="1 0 0 0" type="mesh" rgba="0.7 0.7 0.7 1" mesh="finger_mid_small_2"/>
+                                <body gravcomp="1" name="finger_tip_small_3" pos="-0.011124 -0.000166 0.016151">
+                                  <inertial pos="-0.551371 0.261582 0.530179" mass="0.00362902" diaginertia="1e-09 1e-09 1e-09"/>
+                                  <joint name="Revolute 62" range="0 1.5708" actuatorfrcrange="-100 100" pos="-0.549181 0.273779 0.522659" axis="0.707099 0.503258 0.496732" damping="0.1"/>
+                                  <geom pos="-0.559472 -0.521759 0.357247" quat="1 0 0 0" type="mesh" contype="0" conaffinity="0" group="1" rgba="0.7 0.7 0.7 1" density="0" mesh="finger_tip_small_3"/>
+                                  <geom pos="-0.559472 -0.521759 0.357247" quat="1 0 0 0" type="mesh" rgba="0.7 0.7 0.7 1" mesh="finger_tip_small_3"/>
+                                </body>
+                              </body>
+                            </body>
+                          </body>
+                        </body>
+                      </body>
+                    </body>
+                  </body>
+                </body>
+                <body gravcomp="1" name="rotation_shoulder_joint_2" pos="0.806027 1.23403 0.5105">
+                  <inertial pos="0.241992 -0.848778 -0.23811" quat="0.695871 -0.125554 -0.125554 0.695871" mass="0.66616" diaginertia="0.000920944 0.000831363 0.000767581"/>
+                  <joint name="Revolute 6" range="-0.785398 3.14159" actuatorfrcrange="-100 100" pos="0.19585 -0.808269 -0.259677" axis="-1 0 0" damping="2.0"/>
+                  <geom pos="-0.10175 -2.16555 -0.32925" type="mesh" contype="0" conaffinity="0" group="1" rgba="0.7 0.7 0.7 1" density="0" mesh="rotation_shoulder_joint_2"/>
+                  <geom pos="-0.10175 -2.16555 -0.32925" type="mesh" rgba="0.7 0.7 0.7 1" mesh="rotation_shoulder_joint_2"/>
+                  <geom pos="-0.10175 -2.16556 -0.32925" type="mesh" contype="0" conaffinity="0" group="1" rgba="0.7 0.7 0.7 1" density="0" mesh="actuator_dummy_4"/>
+                  <geom pos="-0.10175 -2.16556 -0.32925" type="mesh" rgba="0.7 0.7 0.7 1" mesh="actuator_dummy_4"/>
+                  <body gravcomp="1" name="rotation_arm_joint_2" pos="0.3356 -1.19738 -1.55928">
+                    <inertial pos="-0.08875 0.31973 1.34421" quat="0.663243 -0.24517 0.24517 0.663243" mass="0.121882" diaginertia="0.000235235 0.000204 0.000111765"/>
+                    <joint name="Revolute 8" range="-3.14159 0" actuatorfrcrange="-100 100" pos="-0.08875 0.3926 1.36688" axis="0 0 -1" damping="2.0"/>
+                    <geom pos="-0.43735 -0.968177 1.23003" quat="1 0 0 0" type="mesh" contype="0" conaffinity="0" group="1" rgba="0.7 0.7 0.7 1" density="0" mesh="rotation_arm_joint_2"/>
+                    <geom pos="-0.43735 -0.968177 1.23003" quat="1 0 0 0" type="mesh" rgba="0.7 0.7 0.7 1" mesh="rotation_arm_joint_2"/>
+                    <body gravcomp="1" name="arm_joint_2" pos="-0.43735 1.61438 1.28503">
+                      <inertial pos="0.353436 -1.41009 0.0268498" quat="0.504506 0.495453 -0.504506 0.495453" mass="1.28386" diaginertia="0.00485528 0.00461222 0.00155106"/>
+                      <joint name="Revolute 10" range="-1.5708 1.5708" actuatorfrcrange="-100 100" pos="0.3486 -1.31688 -0.0171502" axis="0 -1 0" damping="2.0"/>
+                      <geom pos="0 -2.58256 -0.055" quat="1 0 0 0" type="mesh" contype="0" conaffinity="0" group="1" rgba="0.7 0.7 0.7 1" density="0" mesh="arm_joint_2"/>
+                      <geom pos="0 -2.58256 -0.055" quat="1 0 0 0" type="mesh" rgba="0.7 0.7 0.7 1" mesh="arm_joint_2"/>
+                      <geom pos="0 -2.58256 -0.055" quat="1 0 0 0" type="mesh" contype="0" conaffinity="0" group="1" rgba="0.7 0.7 0.7 1" density="0" mesh="actuator_dummy_6"/>
+                      <geom pos="0 -2.58256 -0.055" quat="1 0 0 0" type="mesh" rgba="0.7 0.7 0.7 1" mesh="actuator_dummy_6"/>
+                      <geom pos="0 -2.58256 -0.055" quat="1 0 0 0" type="mesh" contype="0" conaffinity="0" group="1" rgba="0.7 0.7 0.7 1" density="0" mesh="actuator_dummy_8"/>
+                      <geom pos="0 -2.58256 -0.055" quat="1 0 0 0" type="mesh" rgba="0.7 0.7 0.7 1" mesh="actuator_dummy_8"/>
+                      <body gravcomp="1" name="forearm_joint_2" pos="0 -0.3432 -0.055">
+                        <inertial pos="0.360507 -1.21202 0.0818498" quat="0.584619 0.397769 -0.584619 0.397769" mass="0.733876" diaginertia="0.00155363 0.00147194 0.000846688"/>
+                        <joint name="Revolute 12" range="-1.74533 1.74533" actuatorfrcrange="-100 100" pos="0.3987 -1.11968 0.0378498" axis="1 0 0" damping="2.0"/>
+                        <geom pos="0 -2.23936 0" quat="1 0 0 0" type="mesh" contype="0" conaffinity="0" group="1" rgba="0.7 0.7 0.7 1" density="0" mesh="forearm_joint_2"/>
+                        <geom pos="0 -2.23936 0" quat="1 0 0 0" type="mesh" rgba="0.7 0.7 0.7 1" mesh="forearm_joint_2"/>
+                        <geom pos="0 -2.23936 0" quat="1 0 0 0" type="mesh" contype="0" conaffinity="0" group="1" rgba="0.7 0.7 0.7 1" density="0" mesh="actuator_dummy_9"/>
+                        <geom pos="0 -2.23936 0" quat="1 0 0 0" type="mesh" rgba="0.7 0.7 0.7 1" mesh="actuator_dummy_9"/>
+                        <body gravcomp="1" name="servo_spacer_hand_2" pos="0.26985 -2.23935 -0.26985">
+                          <inertial pos="0.0913885 0.957657 0.3517" quat="0.755035 0 0 0.655684" mass="0.0491123" diaginertia="6.31667e-05 5.08851e-05 2.60518e-05"/>
+                          <joint name="Revolute 27" range="-1.5708 1.5708" actuatorfrcrange="-100 100" pos="0.12765 0.973578 0.30437" axis="0 -1 0" damping="2.0"/>
+                          <geom pos="-0.26985 0 0.26985" type="mesh" contype="0" conaffinity="0" group="1" rgba="0.7 0.7 0.7 1" density="0" mesh="servo_spacer_hand_2"/>
+                          <geom pos="-0.26985 0 0.26985" type="mesh" rgba="0.7 0.7 0.7 1" mesh="servo_spacer_hand_2"/>
+                          <geom pos="-0.26985 0 0.26985" quat="1 0 0 0" type="mesh" contype="0" conaffinity="0" group="1" rgba="0.7 0.7 0.7 1" density="0" mesh="wrist_cover_2"/>
+                          <geom pos="-0.26985 0 0.26985" quat="1 0 0 0" type="mesh" rgba="0.7 0.7 0.7 1" mesh="wrist_cover_2"/>
+                          <body gravcomp="1" name="palm_left_1" pos="-0.0235 0.0357 0">
+                            <inertial pos="0.119597 0.815385 0.351606" quat="0.717609 0.696411 0.00524294 0.0046221" mass="0.205779" diaginertia="0.000602119 0.000457754 0.000256794"/>
+                            <joint name="Revolute 64" range="-0.261799 1.5708" actuatorfrcrange="-100 100" pos="0.111289 0.910443 0.32725" axis="0 0 -1" damping="2.0"/>
+                            <geom pos="-0.24635 -0.0357 0.26985" quat="1 0 0 0" type="mesh" contype="0" conaffinity="0" group="1" rgba="0.7 0.7 0.7 1" density="0" mesh="palm_left_1"/>
+                            <geom pos="-0.24635 -0.0357 0.26985" quat="1 0 0 0" type="mesh" rgba="0.7 0.7 0.7 1" mesh="palm_left_1"/>
+                            <geom pos="-0.24635 -0.0357 0.26985" type="mesh" contype="0" conaffinity="0" group="1" rgba="0.7 0.7 0.7 1" density="0" mesh="finger_knuckle_5"/>
+                            <geom pos="-0.24635 -0.0357 0.26985" type="mesh" rgba="0.7 0.7 0.7 1" mesh="finger_knuckle_5"/>
+                            <geom pos="-0.24635 -0.0357 0.26985" type="mesh" contype="0" conaffinity="0" group="1" rgba="0.7 0.7 0.7 1" density="0" mesh="finger_knuckle_6"/>
+                            <geom pos="-0.24635 -0.0357 0.26985" type="mesh" rgba="0.7 0.7 0.7 1" mesh="finger_knuckle_6"/>
+                            <geom pos="-0.24635 -0.0357 0.26985" type="mesh" contype="0" conaffinity="0" group="1" rgba="0.7 0.7 0.7 1" density="0" mesh="finger_knuckle_7"/>
+                            <geom pos="-0.24635 -0.0357 0.26985" type="mesh" rgba="0.7 0.7 0.7 1" mesh="finger_knuckle_7"/>
+                            <geom pos="-0.24635 -0.0357 0.26985" type="mesh" contype="0" conaffinity="0" group="1" rgba="0.7 0.7 0.7 1" density="0" mesh="finger_knuckle_8"/>
+                            <geom pos="-0.24635 -0.0357 0.26985" type="mesh" rgba="0.7 0.7 0.7 1" mesh="finger_knuckle_8"/>
+                            <geom pos="-0.24635 -0.0357 0.26985" quat="1 0 0 0" type="mesh" contype="0" conaffinity="0" group="1" rgba="0.7 0.7 0.7 1" density="0" mesh="palm_top_left_1"/>
+                            <geom pos="-0.24635 -0.0357 0.26985" quat="1 0 0 0" type="mesh" rgba="0.7 0.7 0.7 1" mesh="palm_top_left_1"/>
+                            <body gravcomp="1" name="finger_rear_5" pos="-0.658705 0.859377 -0.039248">
+                              <inertial pos="0.781924 -0.125988 0.346217" quat="0.707107 0.707107 0 0" mass="0.00598112" diaginertia="1e-06 1e-06 1e-09"/>
+                              <joint name="Revolute 70" range="0 1.5708" actuatorfrcrange="-100 100" pos="0.778095 -0.104391 0.353121" axis="0 0.130526 -0.991445" damping="0.1"/>
+                              <geom pos="0.412355 -0.895077 0.309098" quat="1 0 0 0" type="mesh" contype="0" conaffinity="0" group="1" rgba="0.7 0.7 0.7 1" density="0" mesh="finger_rear_5"/>
+                              <geom pos="0.412355 -0.895077 0.309098" quat="1 0 0 0" type="mesh" rgba="0.7 0.7 0.7 1" mesh="finger_rear_5"/>
+                              <body gravcomp="1" name="finger_mid_pinky_2" pos="0.032222 -0.027505 -0.003621">
+                                <inertial pos="0.749981 -0.122373 0.34666" mass="0.00264731" diaginertia="1e-09 1e-09 1e-09"/>
+                                <joint name="Revolute 74" range="0 1.5708" actuatorfrcrange="-100 100" pos="0.751787 -0.109612 0.344364" axis="0 0.130526 -0.991445" damping="0.1"/>
+                                <geom pos="0.380133 -0.867572 0.312719" quat="1 0 0 0" type="mesh" contype="0" conaffinity="0" group="1" rgba="0.7 0.7 0.7 1" density="0" mesh="finger_mid_pinky_2"/>
+                                <geom pos="0.380133 -0.867572 0.312719" quat="1 0 0 0" type="mesh" rgba="0.7 0.7 0.7 1" mesh="finger_mid_pinky_2"/>
+                                <body gravcomp="1" name="finger_tip_small_4" pos="0.015367 -0.034228 -0.004506">
+                                  <inertial pos="0.734367 -0.107468 0.348632" mass="0.00362902" diaginertia="1e-09 1e-09 1e-09"/>
+                                  <joint name="Revolute 79" range="0 1.5708" actuatorfrcrange="-100 100" pos="0.73497 -0.0893514 0.347031" axis="0 0.130526 -0.991445" damping="0.1"/>
+                                  <geom pos="0.364766 -0.833344 0.317225" quat="1 0 0 0" type="mesh" contype="0" conaffinity="0" group="1" rgba="0.7 0.7 0.7 1" density="0" mesh="finger_tip_small_4"/>
+                                  <geom pos="0.364766 -0.833344 0.317225" quat="1 0 0 0" type="mesh" rgba="0.7 0.7 0.7 1" mesh="finger_tip_small_4"/>
+                                </body>
+                              </body>
+                            </body>
+                            <body gravcomp="1" name="finger_rear_6" pos="-0.651205 0.848737 -0.017896">
+                              <inertial pos="0.774424 -0.123373 0.354656" quat="0.707107 0.707107 0 0" mass="0.00598112" diaginertia="1e-06 1e-06 1e-09"/>
+                              <joint name="Revolute 71" range="0 1.5708" actuatorfrcrange="-100 100" pos="0.778521 -0.100524 0.3517" axis="0 0.043619 -0.999048" damping="0.1"/>
+                              <geom pos="0.404855 -0.884437 0.287746" quat="1 0 0 0" type="mesh" contype="0" conaffinity="0" group="1" rgba="0.7 0.7 0.7 1" density="0" mesh="finger_rear_6"/>
+                              <geom pos="0.404855 -0.884437 0.287746" quat="1 0 0 0" type="mesh" rgba="0.7 0.7 0.7 1" mesh="finger_rear_6"/>
+                              <body gravcomp="1" name="finger_mid_3" pos="0.032469 -0.024894 -0.001086">
+                                <inertial pos="0.742109 -0.128281 0.354437" mass="0.00535945" diaginertia="3.34e-07 3.34e-07 3.34e-07"/>
+                                <joint name="Revolute 75" range="0 1.5708" actuatorfrcrange="-100 100" pos="0.740408 -0.11162 0.35119" axis="0 0.043619 -0.999048" damping="0.1"/>
+                                <geom pos="0.372386 -0.859543 0.288832" quat="1 0 0 0" type="mesh" contype="0" conaffinity="0" group="1" rgba="0.7 0.7 0.7 1" density="0" mesh="finger_mid_3"/>
+                                <geom pos="0.372386 -0.859543 0.288832" quat="1 0 0 0" type="mesh" rgba="0.7 0.7 0.7 1" mesh="finger_mid_3"/>
+                                <body gravcomp="1" name="finger_tip_3" pos="0.027474 -0.033668 -0.00147">
+                                  <inertial pos="0.714519 -0.122584 0.354681" mass="0.00449619" diaginertia="3.34e-07 3.34e-07 3.34e-07"/>
+                                  <joint name="Revolute 80" range="0 1.5708" actuatorfrcrange="-100 100" pos="0.709982 -0.109721 0.359256" axis="0 0.043619 -0.999048" damping="0.1"/>
+                                  <geom pos="0.344912 -0.825875 0.290302" quat="1 0 0 0" type="mesh" contype="0" conaffinity="0" group="1" rgba="0.7 0.7 0.7 1" density="0" mesh="finger_tip_3"/>
+                                  <geom pos="0.344912 -0.825875 0.290302" quat="1 0 0 0" type="mesh" rgba="0.7 0.7 0.7 1" mesh="finger_tip_3"/>
+                                </body>
+                              </body>
+                            </body>
+                            <body gravcomp="1" name="finger_rear_7" pos="-0.647814 0.841641 0.001315">
+                              <inertial pos="0.771033 -0.120041 0.365283" quat="0.707107 0.707107 0 0" mass="0.00598112" diaginertia="1e-06 1e-06 1e-09"/>
+                              <joint name="Revolute 72" range="0 1.5708" actuatorfrcrange="-100 100" pos="0.77513 -0.0975367 0.360347" axis="0 -0.043619 -0.999048" damping="0.1"/>
+                              <geom pos="0.401464 -0.877341 0.268535" quat="1 0 0 0" type="mesh" contype="0" conaffinity="0" group="1" rgba="0.7 0.7 0.7 1" density="0" mesh="finger_rear_7"/>
+                              <geom pos="0.401464 -0.877341 0.268535" quat="1 0 0 0" type="mesh" rgba="0.7 0.7 0.7 1" mesh="finger_rear_7"/>
+                              <body gravcomp="1" name="finger_mid_4" pos="0.032469 -0.022062 0.000964">
+                                <inertial pos="0.738718 -0.127781 0.365617" mass="0.00535945" diaginertia="3.34e-07 3.34e-07 3.34e-07"/>
+                                <joint name="Revolute 76" range="0 1.5708" actuatorfrcrange="-100 100" pos="0.737017 -0.111466 0.36093" axis="0 -0.043619 -0.999048" damping="0.1"/>
+                                <geom pos="0.368995 -0.855279 0.267571" quat="1 0 0 0" type="mesh" contype="0" conaffinity="0" group="1" rgba="0.7 0.7 0.7 1" density="0" mesh="finger_mid_4"/>
+                                <geom pos="0.368995 -0.855279 0.267571" quat="1 0 0 0" type="mesh" rgba="0.7 0.7 0.7 1" mesh="finger_mid_4"/>
+                                <body gravcomp="1" name="finger_tip_4" pos="0.027474 -0.03127 0.001365">
+                                  <inertial pos="0.711128 -0.124482 0.365468" mass="0.00449619" diaginertia="3.34e-07 3.34e-07 3.34e-07"/>
+                                  <joint name="Revolute 81" range="0 1.5708" actuatorfrcrange="-100 100" pos="0.706591 -0.11127 0.368905" axis="0 -0.043619 -0.999048" damping="0.1"/>
+                                  <geom pos="0.341521 -0.824009 0.266206" quat="1 0 0 0" type="mesh" contype="0" conaffinity="0" group="1" rgba="0.7 0.7 0.7 1" density="0" mesh="finger_tip_4"/>
+                                  <geom pos="0.341521 -0.824009 0.266206" quat="1 0 0 0" type="mesh" rgba="0.7 0.7 0.7 1" mesh="finger_tip_4"/>
+                                </body>
+                              </body>
+                            </body>
+                            <body gravcomp="1" name="finger_rear_8" pos="-0.648314 0.837431 0.018414">
+                              <inertial pos="0.771533 -0.115548 0.378016" quat="0.707107 0.707107 0 0" mass="0.00598112" diaginertia="1e-06 1e-06 1e-09"/>
+                              <joint name="Revolute 73" range="0 1.5708" actuatorfrcrange="-100 100" pos="0.775578 -0.0934795 0.371127" axis="0 -0.130526 -0.991445" damping="0.1"/>
+                              <geom pos="0.401964 -0.873131 0.251436" quat="1 0 0 0" type="mesh" contype="0" conaffinity="0" group="1" rgba="0.7 0.7 0.7 1" density="0" mesh="finger_rear_8"/>
+                              <geom pos="0.401964 -0.873131 0.251436" quat="1 0 0 0" type="mesh" rgba="0.7 0.7 0.7 1" mesh="finger_rear_8"/>
+                              <body gravcomp="1" name="finger_mid_small_3" pos="0.032222 -0.019093 0.002514">
+                                <inertial pos="0.739498 -0.123625 0.379068" mass="0.00422993" diaginertia="1e-09 1e-09 1e-09"/>
+                                <joint name="Revolute 77" range="0 1.5708" actuatorfrcrange="-100 100" pos="0.741406 -0.108661 0.3731" axis="0 -0.130526 -0.991445" damping="0.1"/>
+                                <geom pos="0.369742 -0.854038 0.248922" quat="1 0 0 0" type="mesh" contype="0" conaffinity="0" group="1" rgba="0.7 0.7 0.7 1" density="0" mesh="finger_mid_small_3"/>
+                                <geom pos="0.369742 -0.854038 0.248922" quat="1 0 0 0" type="mesh" rgba="0.7 0.7 0.7 1" mesh="finger_mid_small_3"/>
+                                <body gravcomp="1" name="finger_tip_small_5" pos="0.022307 -0.02931 0.003859">
+                                  <inertial pos="0.717036 -0.117304 0.378223" mass="0.00362902" diaginertia="1e-09 1e-09 1e-09"/>
+                                  <joint name="Revolute 82" range="0 1.5708" actuatorfrcrange="-100 100" pos="0.717639 -0.10022 0.371989" axis="0 -0.130526 -0.991445" damping="0.1"/>
+                                  <geom pos="0.347435 -0.824728 0.245063" quat="1 0 0 0" type="mesh" contype="0" conaffinity="0" group="1" rgba="0.7 0.7 0.7 1" density="0" mesh="finger_tip_small_5"/>
+                                  <geom pos="0.347435 -0.824728 0.245063" quat="1 0 0 0" type="mesh" rgba="0.7 0.7 0.7 1" mesh="finger_tip_small_5"/>
+                                </body>
+                              </body>
+                            </body>
+                            <body gravcomp="1" name="thumb_knuckle_2" pos="0.120764 0.792561 0.394684">
+                              <inertial pos="0.00220342 -0.0117404 0.0150305" mass="0.0041633" diaginertia="1e-09 1e-09 1e-09"/>
+                              <joint name="Revolute 69" range="-0.174533 1.22173" actuatorfrcrange="-100 100" pos="1.47842e-05 0.00317143 -0.00319283" axis="-0.707107 -0.5 -0.5" damping="0.1"/>
+                              <geom pos="-0.367114 -0.828261 -0.124834" quat="1 0 0 0" type="mesh" contype="0" conaffinity="0" group="1" rgba="0.7 0.7 0.7 1" density="0" mesh="thumb_knuckle_2"/>
+                              <geom pos="-0.367114 -0.828261 -0.124834" quat="1 0 0 0" type="mesh" rgba="0.7 0.7 0.7 1" mesh="thumb_knuckle_2"/>
+                              <body gravcomp="1" name="finger_mid_small_4" pos="-0.315536 -0.482102 -0.6777">
+                                <inertial pos="0.317566 0.453558 0.709434" mass="0.00422993" diaginertia="1e-09 1e-09 1e-09"/>
+                                <joint name="Revolute 78" range="0 1.5708" actuatorfrcrange="-100 100" pos="0.318994 0.461027 0.695921" axis="0.707099 -0.503258 -0.496732" damping="0.1"/>
+                                <geom pos="-0.051578 -0.346159 0.552866" quat="1 0 0 0" type="mesh" contype="0" conaffinity="0" group="1" rgba="0.7 0.7 0.7 1" density="0" mesh="finger_mid_small_4"/>
+                                <geom pos="-0.051578 -0.346159 0.552866" quat="1 0 0 0" type="mesh" rgba="0.7 0.7 0.7 1" mesh="finger_mid_small_4"/>
+                                <body gravcomp="1" name="finger_tip_small_6" pos="0.011124 -0.000166 0.016151">
+                                  <inertial pos="0.306266 0.437299 0.709649" mass="0.00362902" diaginertia="1e-09 1e-09 1e-09"/>
+                                  <joint name="Revolute 83" range="0 1.5708" actuatorfrcrange="-100 100" pos="0.309664 0.445519 0.698203" axis="0.707099 -0.503258 -0.496732" damping="0.1"/>
+                                  <geom pos="-0.062702 -0.345993 0.536715" quat="1 0 0 0" type="mesh" contype="0" conaffinity="0" group="1" rgba="0.7 0.7 0.7 1" density="0" mesh="finger_tip_small_6"/>
+                                  <geom pos="-0.062702 -0.345993 0.536715" quat="1 0 0 0" type="mesh" rgba="0.7 0.7 0.7 1" mesh="finger_tip_small_6"/>
+                                </body>
+                              </body>
+                            </body>
+                          </body>
+                        </body>
+                      </body>
+                    </body>
+                  </body>
+                </body>
+                <body gravcomp="1" name="neck_joint_3dp_1" pos="0.76251 1.28803 0.4015">
+                  <inertial pos="0.128221 -0.823348 -0.089983" quat="0.5 0.5 -0.5 0.5" mass="0.031209" diaginertia="2e-05 1.9e-05 1.2e-05"/>
+                  <joint name="Revolute 24" range="-1.5708 1.5708" actuatorfrcrange="-100 100" pos="0.127496 -0.848678 -0.0991743" axis="0 1 0" damping="2.0"/>
+                  <geom pos="-0.058233 -2.21956 -0.22025" quat="1 0 0 0" type="mesh" contype="0" conaffinity="0" group="1" rgba="0.7 0.7 0.7 1" density="0" mesh="neck_joint_3dp_1"/>
+                  <geom pos="-0.058233 -2.21956 -0.22025" quat="1 0 0 0" type="mesh" rgba="0.7 0.7 0.7 1" mesh="neck_joint_3dp_1"/>
+                  <body gravcomp="1" name="face_cover_3_1" pos="0.339917 0.56482 0.040284">
+                    <inertial pos="-0.212908 -1.28395 -0.147047" quat="0.0220617 0.70037 0.0309964 0.712766" mass="0.25886" diaginertia="0.00140998 0.00110035 0.000604668"/>
+                    <joint name="Revolute 25" range="-1.5708 1.22173" actuatorfrcrange="-100 100" pos="-0.1879 -1.37014 -0.120927" axis="-1 0 0" damping="2.0"/>
+                    <geom pos="-0.39815 -2.78438 -0.260534" quat="1 0 0 0" type="mesh" contype="0" conaffinity="0" group="1" rgba="0.7 0.7 0.7 1" density="0" mesh="face_cover_3_1"/>
+                    <geom pos="-0.39815 -2.78438 -0.260534" quat="1 0 0 0" type="mesh" rgba="0.7 0.7 0.7 1" mesh="face_cover_3_1"/>
+                  </body>
+                </body>
+              </body>
+            </body>
+          </body>
+          <body gravcomp="1" name="wheels_1" pos="0.377 0.054 0.08675">
+            <inertial pos="-0.3871 -0.0633225 0" mass="0.601998" diaginertia="0.003101 0.001571 0.001571"/>
+            <joint name="Revolute 32" pos="-0.3871 -0.0633225 4.19117e-10" axis="1 0 0" damping="0.3"/>
+            <geom pos="-0.377 -0.054 -0.08675" type="mesh" group="1" rgba="0.7 0.7 0.7 1" density="0" mesh="wheels_1" contype="0" conaffinity="0"/>
+            <geom pos="-0.377 -0.054 -0.08675" type="mesh" rgba="0.7 0.7 0.7 1" mesh="wheels_1" contype="0" conaffinity="0"/>
+          </body>
+          <body gravcomp="1" name="wheels_2" pos="0 0.054 0.08675">
+            <inertial pos="0.3871 -0.0633225 0" mass="0.601998" diaginertia="0.003101 0.001571 0.001571"/>
+            <joint name="Revolute 33" pos="0.3871 -0.0633225 4.19117e-10" axis="-1 0 0" damping="0.3"/>
+            <geom pos="0 -0.054 -0.08675" type="mesh" group="1" rgba="0.7 0.7 0.7 1" density="0" mesh="wheels_2" contype="0" conaffinity="0"/>
+            <geom pos="0 -0.054 -0.08675" type="mesh" rgba="0.7 0.7 0.7 1" mesh="wheels_2" contype="0" conaffinity="0"/>
+          </body>
+          <body gravcomp="1" name="caster_plate_1" pos="0.3166 0.0855 0.28685">
+            <inertial pos="-0.3166 -0.0855 -0.28685" mass="1e-06" diaginertia="1e-09 1e-09 1e-09"/>
+            <joint name="Revolute 36" axis="0 1 0" damping="0.3"/>
+            <geom pos="-0.3166 -0.0855 -0.28685" quat="1 0 0 0" type="mesh" contype="0" conaffinity="0" group="1" rgba="0.7 0.7 0.7 1" density="0" mesh="caster_plate_1"/>
+            <geom pos="-0.3166 -0.0855 -0.28685" quat="1 0 0 0" type="mesh" rgba="0.7 0.7 0.7 1" mesh="caster_plate_1"/>
+            <body gravcomp="1" name="caster_wheel_1" pos="0.01365 -0.210306 -0.0761">
+              <inertial pos="-0.26985 0.0384032 0.0591" mass="0.0273733" diaginertia="1e-05 6e-06 6e-06"/>
+              <joint name="Revolute 37" pos="-0.26985 0.0384032 0.0591" axis="-1 0 0" damping="0.3"/>
+              <geom pos="-0.33025 0.124806 -0.21075" type="mesh" group="1" rgba="0.7 0.7 0.7 1" density="0" mesh="caster_wheel_1" contype="0" conaffinity="0"/>
+              <geom pos="-0.33025 0.124806 -0.21075" type="mesh" rgba="0.7 0.7 0.7 1" mesh="caster_wheel_1" contype="0" conaffinity="0"/>
+            </body>
+          </body>
+          <body gravcomp="1" name="caster_plate_2" pos="0.0604 0.0855 0.28685">
+            <inertial pos="-0.0604 -0.0855 -0.28685" mass="1e-06" diaginertia="1e-09 1e-09 1e-09"/>
+            <joint name="Revolute 38" axis="0 1 0" damping="0.3"/>
+            <geom pos="-0.0604 -0.0855 -0.28685" quat="1 0 0 0" type="mesh" contype="0" conaffinity="0" group="1" rgba="0.7 0.7 0.7 1" density="0" mesh="caster_plate_2"/>
+            <geom pos="-0.0604 -0.0855 -0.28685" quat="1 0 0 0" type="mesh" rgba="0.7 0.7 0.7 1" mesh="caster_plate_2"/>
+            <body gravcomp="1" name="caster_wheel_2" pos="0.52605 -0.212306 -0.3009">
+              <inertial pos="-0.26985 0.0394032 0.2839" mass="0.0273733" diaginertia="1e-05 6e-06 6e-06"/>
+              <joint name="Revolute 39" pos="-0.26985 0.0394032 0.2839" axis="1 0 0" damping="0.3"/>
+              <geom pos="-0.58645 0.126806 0.01405" type="mesh" group="1" rgba="0.7 0.7 0.7 1" density="0" mesh="caster_wheel_2" contype="0" conaffinity="0"/>
+              <geom pos="-0.58645 0.126806 0.01405" type="mesh" rgba="0.7 0.7 0.7 1" mesh="caster_wheel_2" contype="0" conaffinity="0"/>
+            </body>
+          </body>
+        </body>
+      </body>
+    </body>
+    <body name="pickup_object" pos="2.0 -1.0 0.06">
+    <freejoint name="pickup_object_free"/>
+    <inertial pos="0 0 0" mass="0.15" diaginertia="0.0001 0.0001 0.0001"/>
+    <geom name="pickup_object_geom" type="box" size="0.04 0.04 0.04" rgba="0.95 0.45 0.1 1" contype="8" conaffinity="5" friction="1.2 0.01 0.0002"/>
+  </body>
+  <body name="cup_object" pos="0.85 1.93 0.953">
+    <freejoint name="cup_object_free"/>
+    <inertial pos="0 0 0" mass="0.12" diaginertia="0.0001 0.0001 0.0001"/>
+    <geom name="cup_object_visual" type="mesh" mesh="kitchen_cup_object_visual" rgba="0.36 0.20 0.09 1" contype="0" conaffinity="0"/>
+    <geom name="cup_object_geom" type="cylinder" size="0.045 0.043" group="3" contype="8" conaffinity="5" friction="1.2 0.01 0.0002"/>
+  </body>
+</worldbody>
+<actuator>
+  <position name="act_Slider 2" joint="Slider 2" kp="60.0" kv="55.0" ctrlrange="0.000000 0.300000" forcerange="-100.0 100.0"/>
+  <velocity name="act_Revolute 3" joint="Revolute 3" kv="15.0" ctrlrange="-2 2" forcerange="-45.0 45.0"/>
+  <position name="act_Revolute 4" joint="Revolute 4" kp="90.0" kv="70.0" ctrlrange="-1.919862 0.000000" forcerange="-45.0 45.0"/>
+  <position name="act_Revolute 5" joint="Revolute 5" kp="60.0" kv="45.0" ctrlrange="-3.141593 0.785398" forcerange="-15.0 15.0"/>
+  <position name="act_Revolute 7" joint="Revolute 7" kp="60.0" kv="45.0" ctrlrange="0.000000 3.141593" forcerange="-15.0 15.0"/>
+  <position name="act_Revolute 9" joint="Revolute 9" kp="60.0" kv="45.0" ctrlrange="-1.570796 1.570796" forcerange="-15.0 15.0"/>
+  <position name="act_Revolute 11" joint="Revolute 11" kp="60.0" kv="45.0" ctrlrange="-1.745329 1.745329" forcerange="-15.0 15.0"/>
+  <position name="act_Revolute 26" joint="Revolute 26" kp="15.0" kv="12.0" ctrlrange="-1.570796 1.570796" forcerange="-4.0 4.0"/>
+  <position name="act_Revolute 43" joint="Revolute 43" kp="15.0" kv="12.0" ctrlrange="-0.261799 1.570796" forcerange="-4.0 4.0"/>
+  <position name="act_Revolute 49" joint="Revolute 49" kp="3.0" kv="2.0" ctrlrange="0.000000 1.570796" forcerange="-3.0 3.0"/>
+  <position name="act_Revolute 53" joint="Revolute 53" kp="3.0" kv="2.0" ctrlrange="0.000000 1.570796" forcerange="-3.0 3.0"/>
+  <position name="act_Revolute 58" joint="Revolute 58" kp="3.0" kv="2.0" ctrlrange="0.000000 1.570796" forcerange="-3.0 3.0"/>
+  <position name="act_Revolute 50" joint="Revolute 50" kp="3.0" kv="2.0" ctrlrange="0.000000 1.570796" forcerange="-3.0 3.0"/>
+  <position name="act_Revolute 54" joint="Revolute 54" kp="3.0" kv="2.0" ctrlrange="0.000000 1.570796" forcerange="-3.0 3.0"/>
+  <position name="act_Revolute 59" joint="Revolute 59" kp="3.0" kv="2.0" ctrlrange="0.000000 1.570796" forcerange="-3.0 3.0"/>
+  <position name="act_Revolute 51" joint="Revolute 51" kp="3.0" kv="2.0" ctrlrange="0.000000 1.570796" forcerange="-3.0 3.0"/>
+  <position name="act_Revolute 55" joint="Revolute 55" kp="3.0" kv="2.0" ctrlrange="0.000000 1.570796" forcerange="-3.0 3.0"/>
+  <position name="act_Revolute 60" joint="Revolute 60" kp="3.0" kv="2.0" ctrlrange="0.000000 1.570796" forcerange="-3.0 3.0"/>
+  <position name="act_Revolute 52" joint="Revolute 52" kp="3.0" kv="2.0" ctrlrange="0.000000 1.570796" forcerange="-3.0 3.0"/>
+  <position name="act_Revolute 56" joint="Revolute 56" kp="3.0" kv="2.0" ctrlrange="0.000000 1.570796" forcerange="-3.0 3.0"/>
+  <position name="act_Revolute 61" joint="Revolute 61" kp="3.0" kv="2.0" ctrlrange="0.000000 1.570796" forcerange="-3.0 3.0"/>
+  <position name="act_Revolute 48" joint="Revolute 48" kp="3.0" kv="2.0" ctrlrange="-0.174533 1.221730" forcerange="-3.0 3.0"/>
+  <position name="act_Revolute 57" joint="Revolute 57" kp="3.0" kv="2.0" ctrlrange="0.000000 1.570796" forcerange="-3.0 3.0"/>
+  <position name="act_Revolute 62" joint="Revolute 62" kp="3.0" kv="2.0" ctrlrange="0.000000 1.570796" forcerange="-3.0 3.0"/>
+  <position name="act_Revolute 6" joint="Revolute 6" kp="60.0" kv="45.0" ctrlrange="-0.785398 3.141593" forcerange="-15.0 15.0"/>
+  <position name="act_Revolute 8" joint="Revolute 8" kp="60.0" kv="45.0" ctrlrange="-3.141593 0.000000" forcerange="-15.0 15.0"/>
+  <position name="act_Revolute 10" joint="Revolute 10" kp="60.0" kv="45.0" ctrlrange="-1.570796 1.570796" forcerange="-15.0 15.0"/>
+  <position name="act_Revolute 12" joint="Revolute 12" kp="60.0" kv="45.0" ctrlrange="-1.745329 1.745329" forcerange="-15.0 15.0"/>
+  <position name="act_Revolute 27" joint="Revolute 27" kp="15.0" kv="12.0" ctrlrange="-1.570796 1.570796" forcerange="-4.0 4.0"/>
+  <position name="act_Revolute 64" joint="Revolute 64" kp="15.0" kv="12.0" ctrlrange="-0.261799 1.570796" forcerange="-4.0 4.0"/>
+  <position name="act_Revolute 70" joint="Revolute 70" kp="3.0" kv="2.0" ctrlrange="0.000000 1.570796" forcerange="-3.0 3.0"/>
+  <position name="act_Revolute 74" joint="Revolute 74" kp="3.0" kv="2.0" ctrlrange="0.000000 1.570796" forcerange="-3.0 3.0"/>
+  <position name="act_Revolute 79" joint="Revolute 79" kp="3.0" kv="2.0" ctrlrange="0.000000 1.570796" forcerange="-3.0 3.0"/>
+  <position name="act_Revolute 71" joint="Revolute 71" kp="3.0" kv="2.0" ctrlrange="0.000000 1.570796" forcerange="-3.0 3.0"/>
+  <position name="act_Revolute 75" joint="Revolute 75" kp="3.0" kv="2.0" ctrlrange="0.000000 1.570796" forcerange="-3.0 3.0"/>
+  <position name="act_Revolute 80" joint="Revolute 80" kp="3.0" kv="2.0" ctrlrange="0.000000 1.570796" forcerange="-3.0 3.0"/>
+  <position name="act_Revolute 72" joint="Revolute 72" kp="3.0" kv="2.0" ctrlrange="0.000000 1.570796" forcerange="-3.0 3.0"/>
+  <position name="act_Revolute 76" joint="Revolute 76" kp="3.0" kv="2.0" ctrlrange="0.000000 1.570796" forcerange="-3.0 3.0"/>
+  <position name="act_Revolute 81" joint="Revolute 81" kp="3.0" kv="2.0" ctrlrange="0.000000 1.570796" forcerange="-3.0 3.0"/>
+  <position name="act_Revolute 73" joint="Revolute 73" kp="3.0" kv="2.0" ctrlrange="0.000000 1.570796" forcerange="-3.0 3.0"/>
+  <position name="act_Revolute 77" joint="Revolute 77" kp="3.0" kv="2.0" ctrlrange="0.000000 1.570796" forcerange="-3.0 3.0"/>
+  <position name="act_Revolute 82" joint="Revolute 82" kp="3.0" kv="2.0" ctrlrange="0.000000 1.570796" forcerange="-3.0 3.0"/>
+  <position name="act_Revolute 69" joint="Revolute 69" kp="3.0" kv="2.0" ctrlrange="-0.174533 1.221730" forcerange="-3.0 3.0"/>
+  <position name="act_Revolute 78" joint="Revolute 78" kp="3.0" kv="2.0" ctrlrange="0.000000 1.570796" forcerange="-3.0 3.0"/>
+  <position name="act_Revolute 83" joint="Revolute 83" kp="3.0" kv="2.0" ctrlrange="0.000000 1.570796" forcerange="-3.0 3.0"/>
+  <position name="act_Revolute 24" joint="Revolute 24" kp="60.0" kv="45.0" ctrlrange="-1.570796 1.570796" forcerange="-15.0 15.0"/>
+  <position name="act_Revolute 25" joint="Revolute 25" kp="60.0" kv="45.0" ctrlrange="-1.570796 1.221730" forcerange="-15.0 15.0"/>
+  <velocity name="act_Revolute 32" joint="Revolute 32" kv="4.0" ctrlrange="-11.823 11.823" forcerange="-15.0 15.0"/>
+  <velocity name="act_Revolute 33" joint="Revolute 33" kv="4.0" ctrlrange="-11.823 11.823" forcerange="-15.0 15.0"/>
+  <velocity name="act_base_vx" joint="virtual_base_x" kv="60.0" ctrlrange="-1.0 1.0" forcerange="-150.0 150.0"/>
+  <velocity name="act_base_vy" joint="virtual_base_y" kv="60.0" ctrlrange="-1.0 1.0" forcerange="-150.0 150.0"/>
+  <velocity name="act_base_yaw" joint="virtual_base_yaw" kv="25.0" ctrlrange="-1.5 1.5" forcerange="-60.0 60.0"/>
+</actuator>
+<equality>
+  <weld name="grasp_weld" body1="pickup_object" body2="finger_tip_1" relpose="0.388770 -0.625644 0.211123 0.243467 0.285470 -0.516900 -0.769445" active="false"/>
+</equality>
+</mujoco>

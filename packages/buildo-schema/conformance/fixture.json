@@ -1,0 +1,44 @@
+{
+  "observation": {
+    "schemaVersion": "buildo-observation/1.0",
+    "sequenceId": "conformance-seq-1",
+    "timestamp": 1717000000.5,
+    "instruction": "pick up the cup and place it on the counter",
+    "cameraFrames": [
+      { "name": "head", "width": 64, "height": 48, "encoding": "rgb8", "dataBytes": [1, 2, 3, 4, 250, 251, 252] }
+    ],
+    "baseState": { "x": 1.45, "y": 1.93, "yaw": -1.5708, "vx": 0.0, "vy": 0.0, "yawRate": 0.0 },
+    "liftState": { "height": 0.3, "velocity": 0.0 },
+    "leftArmState": { "jointPositions": [0.0, 0.0, 0.0], "eePosition": [0.0, 0.3, 1.0], "eeOrientationQuat": [1.0, 0.0, 0.0, 0.0] },
+    "rightArmState": { "jointPositions": [-1.61, 0.45, -1.63], "eePosition": [0.85, 1.93, 0.95], "eeOrientationQuat": [0.92, 0.1, -0.3, 0.05] },
+    "leftHandState": { "fingerPositions": [0.0, 0.0, 0.0], "gripClosed": false },
+    "rightHandState": { "fingerPositions": [1.0, 1.0, 1.0], "gripClosed": true },
+    "leftTactile": null,
+    "rightTactile": [0.02, 0.18, 0.05]
+  },
+  "actionChunk": {
+    "schemaVersion": "buildo-action-chunk/1.0",
+    "sequenceId": "conformance-seq-1",
+    "modelVersion": "stub-scripted-v0",
+    "actionStartTime": 1717000000.6,
+    "actionDt": 0.1,
+    "actions": [
+      {
+        "base": { "vx": 0.0, "vy": 0.0, "yawRate": 0.0 },
+        "lift": { "height": 0.3 },
+        "leftArm": { "eePosition": [0.0, 0.3, 1.0], "eeOrientationQuat": [1.0, 0.0, 0.0, 0.0] },
+        "rightArm": { "eePosition": [0.85, 1.93, 0.95], "eeOrientationQuat": [0.92, 0.1, -0.3, 0.05] },
+        "leftHand": { "gripTarget": 0.0 },
+        "rightHand": { "gripTarget": 1.0 }
+      },
+      {
+        "base": { "vx": 0.0, "vy": 0.0, "yawRate": 0.0 },
+        "lift": { "height": 0.3 },
+        "leftArm": { "eePosition": [0.0, 0.3, 1.0], "eeOrientationQuat": [1.0, 0.0, 0.0, 0.0] },
+        "rightArm": { "eePosition": [0.83, 1.93, 0.97], "eeOrientationQuat": [0.92, 0.1, -0.3, 0.05] },
+        "leftHand": { "gripTarget": 0.0 },
+        "rightHand": { "gripTarget": 1.0 }
+      }
+    ]
+  }
+}
