@@ -17,9 +17,19 @@ headless Python training/eval against this same package.
 - `robots/openarm/` — the bimanual arm model vendored from
   [`enactic/openarm_mujoco`](https://github.com/enactic/openarm_mujoco).
   Untouched upstream files, own README with provenance/license and what
-  was trimmed. Not wired into the portal's simulator yet.
+  was trimmed.
+- `robots/buildo/` — `buildo_v0.xml`: a placeholder mobile base (planar
+  x/y/yaw) + lift column + head, with OpenArm's bimanual arms attached at
+  shoulder height via MuJoCo's `<model>`/`<attach>` composition (not a
+  fork -- `robots/openarm/` stays untouched). `scene.xml` adds a floor and
+  lights for standalone viewing/testing. Verified headless (`mujoco.MjModel
+  .from_xml_path` + `mj_step`, 22 dof / 20 actuators, no attach-conflict
+  warnings once cone/impratio were repeated per openarm_bimanual.xml's own
+  note that `<option>` doesn't carry across `<attach>`).
 
-Next: add Buildo's own mobile base/lift/head/hands as separate MJCF files
-under `robots/buildo/` that `<include>` `robots/openarm/openarm_bimanual.xml`
-rather than editing it, and wire the resulting action space to
-`BuildoActionChunk` from `packages/buildo-schema`.
+Not wired into the portal's simulator yet (`apps/portal` still loads the
+original humanoid from `mjcf/humanoid.xml`) -- that swap, and mapping this
+model's action space onto `BuildoActionChunk` from `packages/buildo-schema`,
+is the next step. Buildo's own dexterous hands aren't modeled yet either;
+`buildo_v0.xml` uses OpenArm's built-in parallel-jaw grippers as an interim
+end effector so the rest of the chain is testable now.

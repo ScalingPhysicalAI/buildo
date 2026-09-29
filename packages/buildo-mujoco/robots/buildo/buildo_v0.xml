@@ -1,0 +1,71 @@
+<!--
+Buildo v0: OpenArm's bimanual arms (vendored, unmodified) mounted on a
+placeholder mobile base + lift column + head, in the simplified planar
+shape the architecture doc recommends for the first cut -- x/y/yaw base
+motion and a vertical lift, real wheel kinematics once the mechanical
+design is frozen.
+
+All base/lift/head dimensions below are placeholders (a box for the
+chassis, a box for the lift column, a box for the head) pending the real
+mechanical design from the hardware team -- swap geoms/sizes, not the
+joint layout, when that lands.
+
+Buildo's own hands are not modeled yet: this uses OpenArm's built-in
+parallel-jaw grippers as the interim end effector so the arm + base +
+lift chain is fully testable end to end. Swapping in a dexterous hand
+model is a separate, deliberate follow-up (needs a hand model chosen --
+not yet decided) and should not block wiring this into BuildoActionChunk.
+-->
+<mujoco model="buildo_v0">
+  <compiler angle="radian" />
+
+  <!-- <option> does not carry across <attach> (see openarm_bimanual.xml's own
+       comment on this) -- repeating its cone/impratio settings here so the
+       vendored grippers still hold objects properly. -->
+  <option timestep="0.001" integrator="implicitfast" cone="elliptic" impratio="10" />
+
+  <asset>
+    <model name="bimanual" file="../openarm/openarm_bimanual.xml" />
+  </asset>
+
+  <default>
+    <default class="buildo_chassis">
+      <geom type="box" rgba="0.2 0.22 0.25 1" contype="1" conaffinity="1" group="2" />
+    </default>
+  </default>
+
+  <worldbody>
+    <body name="buildo_base" pos="0 0 0">
+      <!-- simplified planar base: x/y translate + yaw, no wheel kinematics yet -->
+      <joint name="base_x" type="slide" axis="1 0 0" limited="false" damping="50" />
+      <joint name="base_y" type="slide" axis="0 1 0" limited="false" damping="50" />
+      <joint name="base_yaw" type="hinge" axis="0 0 1" limited="false" damping="20" />
+
+      <geom name="base_chassis" class="buildo_chassis" size="0.3 0.3 0.1" pos="0 0 0.1" />
+
+      <body name="buildo_lift" pos="0 0 0.2">
+        <!-- vertical lift column; range is a placeholder guess, not a spec -->
+        <joint name="lift_z" type="slide" axis="0 0 1" range="0 0.4" damping="80" />
+
+        <geom name="lift_column" class="buildo_chassis" size="0.1 0.1 0.25" pos="0 0 0.25" />
+
+        <body name="buildo_head" pos="0 0 0.6">
+          <geom name="head_box" class="buildo_chassis" size="0.08 0.12 0.06" rgba="0.3 0.32 0.35 1" />
+          <site name="head_camera" pos="0.08 0 0" quat="0.5 0.5 -0.5 -0.5" size="0.005" />
+        </body>
+
+        <!-- OpenArm's bimanual arms, attached unmodified at shoulder height -->
+        <frame pos="0 0 0.5">
+          <attach model="bimanual" prefix="arms_" />
+        </frame>
+      </body>
+    </body>
+  </worldbody>
+
+  <actuator>
+    <position name="base_x_act" joint="base_x" kp="2000" kv="400" />
+    <position name="base_y_act" joint="base_y" kp="2000" kv="400" />
+    <position name="base_yaw_act" joint="base_yaw" kp="500" kv="100" />
+    <position name="lift_z_act" joint="lift_z" kp="4000" kv="400" ctrlrange="0 0.4" />
+  </actuator>
+</mujoco>
