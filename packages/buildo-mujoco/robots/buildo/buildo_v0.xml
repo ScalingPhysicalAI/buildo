@@ -29,8 +29,15 @@ not yet decided) and should not block wiring this into BuildoActionChunk.
   </asset>
 
   <default>
+    <!-- Non-colliding on purpose: at zero pose OpenArm's own arms already
+         sweep down through where a physically-sized base/lift column would
+         sit (confirmed -- real chassis dimensions produced ~57 self-contacts
+         between the gripper and the base box at rest). These placeholder
+         boxes are stand-ins for visualization only until the real mechanical
+         design gives an actual shoulder-mount geometry that the arms
+         don't intersect; make them solid again once that exists. -->
     <default class="buildo_chassis">
-      <geom type="box" rgba="0.2 0.22 0.25 1" contype="1" conaffinity="1" group="2" />
+      <geom type="box" rgba="0.2 0.22 0.25 1" contype="0" conaffinity="0" group="2" />
     </default>
   </default>
 
