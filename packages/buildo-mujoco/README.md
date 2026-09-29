@@ -14,7 +14,12 @@ headless Python training/eval against this same package.
 - `scripts/` — the two conversion scripts above. Both resolve their own
   paths relative to this directory, so this package can move without
   editing them.
+- `robots/openarm/` — the bimanual arm model vendored from
+  [`enactic/openarm_mujoco`](https://github.com/enactic/openarm_mujoco).
+  Untouched upstream files, own README with provenance/license and what
+  was trimmed. Not wired into the portal's simulator yet.
 
-Phase 2 adds `robots/openarm/` here (vendored from
-[`enactic/openarm_mujoco`](https://github.com/enactic/openarm_mujoco)) as a
-new, separate robot model — it does not touch the files above.
+Next: add Buildo's own mobile base/lift/head/hands as separate MJCF files
+under `robots/buildo/` that `<include>` `robots/openarm/openarm_bimanual.xml`
+rather than editing it, and wire the resulting action space to
+`BuildoActionChunk` from `packages/buildo-schema`.
