@@ -1,0 +1,17 @@
+[project]
+name = "policy-server"
+version = "0.1.0"
+description = "Phase 3: BuildoObservation in, BuildoActionChunk out, over plain HTTP -- no WebRTC yet (Phase 9). The policy inside is a deliberately non-ML scripted pick-and-place state machine, see policy_server/pick_and_place.py."
+requires-python = ">=3.10"
+dependencies = [
+    "buildo-schema",
+    "fastapi>=0.115",
+    "uvicorn>=0.32",
+]
+
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[tool.setuptools.packages.find]
+include = ["policy_server*"]

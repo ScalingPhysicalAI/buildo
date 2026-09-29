@@ -7,42 +7,30 @@ controller Phase 4 builds; see that doc's own closing note.
 Usage (from this directory or anywhere, paths are self-relative):
     python3 apply_action_chunk.py
 
-Requires: mujoco, numpy (not pinned anywhere yet -- same informal
-dependency style as urdf_to_mjcf.py in this same directory).
+Requires: mujoco, numpy, and the buildo-schema package (`pip install -e
+packages/buildo-schema/python` -- not pinned anywhere as a formal
+dependency yet, same informal style as urdf_to_mjcf.py in this directory).
+
+ActionEntry here is the real packages/buildo-schema type, not a local
+stand-in -- this is deliberate: it's what makes this the canonical, tested
+consumer of the Phase 0 schema that services/policy-server (Phase 3) and,
+eventually, apps/portal's browser controller (Phase 4) can all be checked
+against, rather than three independent guesses at the same shape.
 """
 
 from __future__ import annotations
 
 import pathlib
-from dataclasses import dataclass, field
+from dataclasses import dataclass
 
 import mujoco
 import numpy as np
+from buildo_schema import ActionEntry, ArmAction, BaseAction, HandAction, LiftAction
 
 ROOT = pathlib.Path(__file__).resolve().parent.parent
 MODEL_PATH = ROOT / "robots" / "buildo" / "buildo_v0.xml"
 
 GRIP_JOINT_MAX = 0.7854  # radians; both fingers' actuator ctrlrange magnitude
-
-
-@dataclass
-class ArmTarget:
-    ee_position: np.ndarray  # [x, y, z], mount-frame (buildo_lift body), meters
-    ee_orientation_quat: np.ndarray  # [w, x, y, z], mount-frame
-
-
-@dataclass
-class ActionChunkEntry:
-    """One entry of BuildoActionChunk.actions -- see SCHEMA.md."""
-
-    base_vx: float
-    base_vy: float
-    base_yaw_rate: float
-    lift_height: float
-    left_arm: ArmTarget
-    right_arm: ArmTarget
-    left_hand_grip_target: float  # [0, 1]
-    right_hand_grip_target: float  # [0, 1]
 
 
 @dataclass
@@ -145,7 +133,7 @@ def apply_action(
     model: mujoco.MjModel,
     data: mujoco.MjData,
     base_state: BaseIntegratorState,
-    action: ActionChunkEntry,
+    action: ActionEntry,
     action_dt: float,
 ) -> None:
     """Writes one BuildoActionChunk actions[i] entry into data.ctrl,
@@ -160,27 +148,27 @@ def apply_action(
     stale mount pose is exactly what made the first version of this function
     drift by however far the base moved during the chunk. See _self_test."""
 
-    base_state.x += action.base_vx * action_dt
-    base_state.y += action.base_vy * action_dt
-    base_state.yaw += action.base_yaw_rate * action_dt
+    base_state.x += action.base.vx * action_dt
+    base_state.y += action.base.vy * action_dt
+    base_state.yaw += action.base.yaw_rate * action_dt
     data.ctrl[model.actuator("base_x_act").id] = base_state.x
     data.ctrl[model.actuator("base_y_act").id] = base_state.y
     data.ctrl[model.actuator("base_yaw_act").id] = base_state.yaw
 
     lo, hi = model.actuator("lift_z_act").ctrlrange
-    data.ctrl[model.actuator("lift_z_act").id] = np.clip(action.lift_height, lo, hi)
+    data.ctrl[model.actuator("lift_z_act").id] = np.clip(action.lift.height, lo, hi)
 
     mujoco.mj_kinematics(model, data)
     mujoco.mj_comPos(model, data)
     mount_pos, mount_mat, mount_quat = _mount_pose(model, data)
 
     for side, joints, target, hand_target in (
-        ("left", LEFT_ARM_JOINTS, action.left_arm, action.left_hand_grip_target),
-        ("right", RIGHT_ARM_JOINTS, action.right_arm, action.right_hand_grip_target),
+        ("left", LEFT_ARM_JOINTS, action.left_arm, action.left_hand.grip_target),
+        ("right", RIGHT_ARM_JOINTS, action.right_arm, action.right_hand.grip_target),
     ):
-        world_target_pos = mount_pos + mount_mat @ target.ee_position
+        world_target_pos = mount_pos + mount_mat @ np.array(target.ee_position)
         world_target_quat = np.zeros(4)
-        mujoco.mju_mulQuat(world_target_quat, mount_quat, target.ee_orientation_quat)
+        mujoco.mju_mulQuat(world_target_quat, mount_quat, np.array(target.ee_orientation_quat))
 
         solved = solve_arm_ik(
             model,
@@ -242,15 +230,13 @@ def _self_test() -> None:
         data.site_xpos[right_site] + np.array([0.08, 0.05, 0.05]), current_quat(right_site)
     )
 
-    action = ActionChunkEntry(
-        base_vx=0.1,
-        base_vy=0.0,
-        base_yaw_rate=0.0,
-        lift_height=0.15,
-        left_arm=ArmTarget(ee_position=left_local_pos, ee_orientation_quat=left_local_quat),
-        right_arm=ArmTarget(ee_position=right_local_pos, ee_orientation_quat=right_local_quat),
-        left_hand_grip_target=1.0,
-        right_hand_grip_target=0.5,
+    action = ActionEntry(
+        base=BaseAction(vx=0.1, vy=0.0, yaw_rate=0.0),
+        lift=LiftAction(height=0.15),
+        left_arm=ArmAction(ee_position=tuple(left_local_pos), ee_orientation_quat=tuple(left_local_quat)),
+        right_arm=ArmAction(ee_position=tuple(right_local_pos), ee_orientation_quat=tuple(right_local_quat)),
+        left_hand=HandAction(grip_target=1.0),
+        right_hand=HandAction(grip_target=0.5),
     )
     base_state = BaseIntegratorState()
 
