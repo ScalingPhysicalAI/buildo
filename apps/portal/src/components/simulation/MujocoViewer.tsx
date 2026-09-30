@@ -2107,7 +2107,7 @@ export function MujocoViewer({ interactive = false, className }: MujocoViewerPro
           Workflow…
         </option>
         <option value="pickupCoffee" className="bg-panel text-off-white">
-          Pick up cup → coffee machine
+          Serve coffee
         </option>
       </select>
     </>
