@@ -6,14 +6,20 @@ fix it in the same PR that made it wrong — this file rots fast otherwise.
 
 ## Setup
 
+This is a Turborepo/pnpm-workspaces monorepo (`apps/`, `packages/`,
+`services/` — see the root README's "Layout" section). The app itself lives
+in `apps/portal`; run installs/dev/build from the repo root, but env files
+and Prisma commands are scoped to `apps/portal`.
+
 ```bash
 pnpm install
-cp .env.example .env.local
-pnpm exec prisma migrate deploy
+cd apps/portal && cp .env.example .env.local
+cd ../..
+pnpm exec prisma migrate deploy --filter @buildo/portal   # or: cd apps/portal && pnpm exec prisma migrate deploy
 pnpm dev
 ```
 
-You need two things in `.env.local` before this works:
+You need two things in `apps/portal/.env.local` before this works:
 
 - **`DATABASE_URL`** — a real Postgres connection string. The schema's
   datasource is hardcoded to `postgresql`; there's no SQLite fallback, so
@@ -78,12 +84,12 @@ feature branch  →  dev  →  master
   make every single change bureaucratic.
 
 If you're touching the browser MuJoCo simulator specifically
-(`src/components/simulation/`, `model/`): that code took real, expensive
-iteration to get right (grip physics, collision tuning, the pick-and-place
-choreography). Before merging anything that touches it, manually re-run the
-full workflow in `/dashboard/simulate` and confirm nothing regressed — there
-isn't automated test coverage for simulator behavior yet, so this is the
-only check that exists.
+(`apps/portal/src/components/simulation/`, `packages/buildo-mujoco/`): that
+code took real, expensive iteration to get right (grip physics, collision
+tuning, the pick-and-place choreography). Before merging anything that
+touches it, manually re-run the full workflow in `/dashboard/simulate` and
+confirm nothing regressed — there isn't automated test coverage for
+simulator behavior yet, so this is the only check that exists.
 
 ## Commit hygiene
 

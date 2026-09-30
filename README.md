@@ -1,15 +1,34 @@
-# Starforge Developer Portal
+# Buildo
 
-The developer platform for **Buildo**, Starforge Robotics' Physical AI robot.
+Monorepo for the Buildo developer platform (Starforge Robotics) — see
+`Buildo_MuJoCo_Developer_to_AppStore_Architecture_With_Simulation.pdf` at
+the repo root for the target architecture this is being built toward.
+
 Developers and researchers sign up, connect a wallet, try Buildo in a
 browser-based physics simulator, and buy skills — paid for in $ credit.
-
-Full-stack Next.js app (App Router) — one deployable unit for both the
-frontend and the API.
 
 **New here?** See [CONTRIBUTING.md](./CONTRIBUTING.md) for the local setup
 that actually works today, the branch workflow, and the mistakes this repo
 has already made once so you don't have to repeat them.
+
+## Layout
+
+```
+apps/
+  portal/            The developer portal (Next.js) -- auth, dashboard,
+                      browser MuJoCo simulator, skills marketplace.
+packages/
+  buildo-schema/      BuildoObservation/BuildoActionChunk wire schema --
+                      the one contract every other piece builds against.
+                      See packages/buildo-schema/README.md.
+  buildo-mujoco/      MuJoCo/robot model assets shared by the simulator and
+                      (eventually) headless training/eval. See
+                      packages/buildo-mujoco/README.md.
+services/             (empty for now) Policy server, WebRTC signaling --
+                      added as later phases land.
+```
+
+Each package/app also has its own `README.md` with more detail.
 
 ## What's live vs. simulated right now
 
@@ -29,7 +48,8 @@ has already made once so you don't have to repeat them.
 
 ## Stack
 
-- **Next.js 16** (App Router, TypeScript, Tailwind CSS v4)
+- **Next.js 16** (App Router, TypeScript, Tailwind CSS v4), in `apps/portal`
+- **Turborepo + pnpm workspaces** for cross-package build/lint/typecheck orchestration
 - **Prisma + Postgres** (hosted on Neon via Vercel; there is no SQLite fallback — the schema's datasource is hardcoded to `postgresql`)
 - **Auth**: bcrypt password hashing + `jose`-signed JWT session cookie (no third-party auth service)
 - **Wallet connect**: `wagmi` + `viem`, injected connector (MetaMask, Rabby, etc.)
@@ -42,9 +62,12 @@ has already made once so you don't have to repeat them.
 
 ```bash
 pnpm install
-cp .env.example .env.local   # fill in DATABASE_URL and AUTH_SECRET, see below
-pnpm exec prisma migrate deploy
-pnpm dev
+cd apps/portal && cp .env.example .env.local   # fill in DATABASE_URL and AUTH_SECRET, see below
+cd ../..
+pnpm exec prisma migrate deploy --filter @buildo/portal   # or: cd apps/portal && pnpm exec prisma migrate deploy
+pnpm dev          # runs apps/portal via Turborepo
+pnpm build        # builds all packages
+pnpm typecheck    # typechecks all packages
 ```
 
 Open http://localhost:3000. Sign up, verify the email (see below for how to
@@ -63,7 +86,8 @@ Open that link to see the actual email that was sent.
 
 ## Environment variables
 
-See `.env.example` for the full list. Two are required to run locally:
+Set in `apps/portal/.env.local` — see `apps/portal/.env.example` for the
+full list. Two are required to run locally:
 
 - `DATABASE_URL` — a real Postgres connection string. [Neon](https://neon.tech)
   has a free tier and takes under a minute to get one from; ask in the team
@@ -78,16 +102,28 @@ See `.env.example` for the full list. Two are required to run locally:
 ## Deployment
 
 This app deploys to **Vercel**, with Postgres on **Neon** (provisioned
-through Vercel's integration). `main`/`master` pushes trigger a production
-deploy automatically.
+through Vercel's integration). `master` pushes trigger a production deploy
+automatically.
 
-The one deploy failure this repo has already hit: Vercel's build only ever
-reads `pnpm-lock.yaml`. If a dependency is ever added with `npm install`
-instead of `pnpm install`, `package-lock.json` comes back, drifts out of
-sync with `pnpm-lock.yaml`, and the next Vercel build fails with
+Vercel project settings that matter for this monorepo:
+
+- **Root Directory** must be set to `apps/portal` (Project Settings →
+  General). If it's ever blank/`.`, the build fails with "No Next.js
+  version detected" because it reads the *workspace root* `package.json`
+  instead of the app's. If it's set to `apps/portal` on a branch/commit that
+  doesn't actually have that directory (i.e. anything before this merge),
+  the build instead fails with "The specified Root Directory 'apps/portal'
+  does not exist" — that's exactly the failure that prompted this merge.
+- **"Include files outside of the Root Directory in the Build Step"** must
+  stay enabled — `apps/portal` depends on the workspace root's
+  `pnpm-workspace.yaml`/`turbo.json` and on `packages/buildo-schema`.
+
+The other deploy failure this repo has already hit: Vercel's build only
+ever reads `pnpm-lock.yaml`. If a dependency is ever added with `npm
+install` instead of `pnpm install`, `package-lock.json` comes back, drifts
+out of sync with `pnpm-lock.yaml`, and the next Vercel build fails with
 `ERR_PNPM_OUTDATED_LOCKFILE` — confusing because it looks unrelated to
-whatever was actually changed. There's a repo-root `.gitignore` guard for
-this now; see CONTRIBUTING.md.
+whatever was actually changed. See CONTRIBUTING.md.
 
 ## Wiring up the real on-chain airdrop (future work)
 
@@ -96,11 +132,12 @@ change:
 
 - `TokenTransaction.txHash` and `.status` are already there, unused today —
   fill them in once a transaction is actually broadcast.
-- The reward-crediting logic lives in `src/app/api/wallet/connect/route.ts`.
-  Today it just increments `User.tokenBalance` in a DB transaction; the real
-  version would additionally call an ERC-20 `transfer` from a treasury
-  wallet to `User.walletAddress`, store the resulting `txHash`, and only
-  mark the `TokenTransaction` `COMPLETED` once it confirms.
+- The reward-crediting logic lives in
+  `apps/portal/src/app/api/wallet/connect/route.ts`. Today it just
+  increments `User.tokenBalance` in a DB transaction; the real version would
+  additionally call an ERC-20 `transfer` from a treasury wallet to
+  `User.walletAddress`, store the resulting `txHash`, and only mark the
+  `TokenTransaction` `COMPLETED` once it confirms.
 - Recommended path: deploy a simple ERC-20 on **Sepolia testnet** first
   (zero financial risk), get the flow working end-to-end, then move to
   mainnet with a funded treasury wallet. Keep `TREASURY_PRIVATE_KEY` out of
@@ -110,18 +147,25 @@ change:
 ## Project structure
 
 ```
-prisma/schema.prisma           User, TokenTransaction, GpuSession (unused), SkillOrder
-model/                         MuJoCo/URDF source assets + conversion scripts for the simulator
-src/lib/auth.ts                session cookies, password hashing
-src/lib/mailer.ts              welcome/verification emails
-src/lib/web3-config.ts         wagmi chains/connectors
-src/lib/constants.ts           skills catalog, reward amount
-src/components/simulation/     the MuJoCo/three.js browser simulator
-src/app/(marketing)/           landing, signup, login (public)
-src/app/dashboard/             overview, robots, simulate, train, skills (auth-gated)
-src/app/api/                   auth (signup/login/verify/reset), wallet/connect, skills/buy
-src/proxy.ts                   route protection for /dashboard/* (Next 16's middleware convention)
+apps/portal/prisma/schema.prisma      User, TokenTransaction, GpuSession (unused), SkillOrder
+apps/portal/src/lib/auth.ts           session cookies, password hashing
+apps/portal/src/lib/mailer.ts         welcome/verification emails
+apps/portal/src/lib/web3-config.ts    wagmi chains/connectors
+apps/portal/src/lib/constants.ts      skills catalog, reward amount
+apps/portal/src/components/simulation/  the MuJoCo/three.js browser simulator
+apps/portal/src/app/(marketing)/      landing, signup, login (public)
+apps/portal/src/app/dashboard/        overview, robots, simulate, train, skills (auth-gated)
+apps/portal/src/app/api/              auth (signup/login/verify/reset), wallet/connect, skills/buy
+apps/portal/src/proxy.ts              route protection for /dashboard/* (Next 16's middleware convention)
+packages/buildo-schema/               BuildoObservation/BuildoActionChunk wire schema (TS + Python)
+packages/buildo-mujoco/               MuJoCo model assets shared by the simulator
 ```
+
+## Branching
+
+`dev` is the integration branch — feature branches merge into `dev` and get
+tested there before `dev` merges into `master`. Don't merge straight into
+`master`.
 
 ## Contributing
 
