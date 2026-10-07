@@ -6,6 +6,7 @@ import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { Button } from "../../components/Button";
 import { Card } from "../../components/Card";
 import { Logo } from "../../components/Logo";
+import { ReferralBanner } from "../../components/ReferralBanner";
 import { SessionRow } from "../../components/SessionRow";
 import { StatusPill } from "../../components/StatusPill";
 import { useAuth } from "../../lib/auth-context";
@@ -54,6 +55,8 @@ export default function HomeScreen() {
           <Text style={styles.creditBadgeText}>{user?.role ?? "DEVELOPER"}</Text>
         </View>
       </Card>
+
+      <ReferralBanner />
 
       <Pressable onPress={() => router.push("/(app)/pair")}>
         <Card style={styles.deviceCard}>
