@@ -15,8 +15,8 @@ export function ReferralBanner() {
         <Gift size={20} color={colors.sandDark} />
       </View>
       <View style={styles.textWrap}>
-        <Text style={styles.title}>Refer & earn</Text>
-        <Text style={styles.subtitle}>Invite developers & researchers, get a bonus for every signup</Text>
+        <Text style={styles.title}>Refer Buildo to a friend</Text>
+        <Text style={styles.subtitle}>Get $500 on every purchase</Text>
       </View>
       <ArrowUpRight size={18} color={colors.sandDark} />
     </Pressable>
