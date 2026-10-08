@@ -1,6 +1,6 @@
 {
   "expo": {
-    "name": "Buildo Trainer",
+    "name": "Buildo Quest",
     "slug": "buildo-trainer",
     "scheme": "buildotrainer",
     "version": "1.0.0",
@@ -10,15 +10,6 @@
     "ios": {
       "supportsTablet": true,
       "bundleIdentifier": "com.starforgerobotics.buildotrainer"
-    },
-    "android": {
-      "package": "com.starforgerobotics.buildotrainer",
-      "adaptiveIcon": {
-        "backgroundColor": "#F5F1E8",
-        "foregroundImage": "./assets/android-icon-foreground.png",
-        "monochromeImage": "./assets/android-icon-monochrome.png"
-      },
-      "predictiveBackGestureEnabled": false
     },
     "web": {
       "favicon": "./assets/favicon.png"
@@ -31,12 +22,28 @@
         "expo-splash-screen",
         {
           "image": "./assets/splash-icon.png",
-          "imageWidth": 320,
+          "imageWidth": 420,
           "resizeMode": "contain",
           "backgroundColor": "#F5F1E8"
         }
+      ],
+      [
+        "react-native-ble-plx",
+        {
+          "bluetoothAlwaysPermission": "Allow Buildo Quest to find and connect to your capture glasses over Bluetooth."
+        }
       ]
     ],
+    "android": {
+      "package": "com.starforgerobotics.buildotrainer",
+      "adaptiveIcon": {
+        "backgroundColor": "#F5F1E8",
+        "foregroundImage": "./assets/android-icon-foreground.png",
+        "monochromeImage": "./assets/android-icon-monochrome.png"
+      },
+      "predictiveBackGestureEnabled": false,
+      "permissions": ["CHANGE_WIFI_STATE", "ACCESS_WIFI_STATE", "ACCESS_FINE_LOCATION"]
+    },
     "experiments": {
       "typedRoutes": true
     }

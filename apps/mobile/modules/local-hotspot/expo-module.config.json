@@ -1,0 +1,9 @@
+{
+  "platforms": ["apple", "android", "web"],
+  "apple": {
+    "modules": ["LocalHotspotModule"]
+  },
+  "android": {
+    "modules": ["expo.modules.localhotspot.LocalHotspotModule"]
+  }
+}

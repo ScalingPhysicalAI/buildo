@@ -41,3 +41,25 @@ export const walletConnectSchema = z.object({
 export const skillBuySchema = z.object({
   skillId: z.string().min(1),
 });
+
+export const skillCollectionCreateSchema = z.object({
+  skillSlug: z.string().min(1),
+  fileName: z.string().min(1).max(300).optional(),
+  durationSec: z.number().int().positive().max(60 * 60).optional(),
+});
+
+export const appCategorySchema = z.enum([
+  "HOME",
+  "GENERAL",
+  "PUBLIC",
+  "KITCHEN",
+  "CLEANING",
+  "INVENTORY",
+]);
+
+export const appListingCreateSchema = z.object({
+  name: z.string().trim().min(2, "Name must be at least 2 characters").max(60),
+  description: z.string().trim().max(500).optional(),
+  category: appCategorySchema,
+  skillCollectionIds: z.array(z.string().min(1)).min(1, "Pick at least one trained skill"),
+});

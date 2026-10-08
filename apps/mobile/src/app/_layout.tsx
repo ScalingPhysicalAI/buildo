@@ -16,6 +16,7 @@ import { SafeAreaProvider } from "react-native-safe-area-context";
 import { AuthProvider } from "../lib/auth-context";
 import { DeviceProvider } from "../lib/device-context";
 import { SessionsProvider } from "../lib/sessions-context";
+import { SkillsProvider } from "../lib/skills-context";
 import { colors } from "../theme";
 
 SplashScreen.preventAutoHideAsync().catch(() => {});
@@ -41,15 +42,18 @@ export default function RootLayout() {
       <AuthProvider>
         <DeviceProvider>
           <SessionsProvider>
-            <StatusBar style="dark" />
-            <Stack
-              screenOptions={{
-                headerShown: false,
-                contentStyle: { backgroundColor: colors.background },
-              }}
-            >
-              <Stack.Screen name="session/[id]" options={{ presentation: "modal" }} />
-            </Stack>
+            <SkillsProvider>
+              <StatusBar style="dark" />
+              <Stack
+                screenOptions={{
+                  headerShown: false,
+                  contentStyle: { backgroundColor: colors.background },
+                }}
+              >
+                <Stack.Screen name="session/[id]" options={{ presentation: "modal" }} />
+                <Stack.Screen name="skill/[slug]" options={{ presentation: "modal" }} />
+              </Stack>
+            </SkillsProvider>
           </SessionsProvider>
         </DeviceProvider>
       </AuthProvider>

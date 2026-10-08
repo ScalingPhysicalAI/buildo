@@ -3,15 +3,13 @@ import { Glasses, Hand, LogOut, Wifi, ChevronRight } from "lucide-react-native";
 import { Pressable, ScrollView, StyleSheet, Text, View } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
-import { Button } from "../../components/Button";
 import { Card } from "../../components/Card";
 import { Logo } from "../../components/Logo";
 import { ReferralBanner } from "../../components/ReferralBanner";
-import { SessionRow } from "../../components/SessionRow";
 import { StatusPill } from "../../components/StatusPill";
+import { TrainBanner } from "../../components/TrainBanner";
 import { useAuth } from "../../lib/auth-context";
 import { useDevices, type ConnectionStatus } from "../../lib/device-context";
-import { useSessions } from "../../lib/sessions-context";
 import { colors, fonts, radii, spacing } from "../../theme";
 
 function statusTone(status: ConnectionStatus) {
@@ -23,7 +21,6 @@ function statusTone(status: ConnectionStatus) {
 export default function HomeScreen() {
   const { user, logout } = useAuth();
   const devices = useDevices();
-  const { sessions } = useSessions();
   const insets = useSafeAreaInsets();
   const firstName = user?.name?.split(" ")[0] ?? "there";
 
@@ -43,7 +40,7 @@ export default function HomeScreen() {
 
       <Text style={styles.greeting}>Hi, {firstName}</Text>
       <Text style={styles.greetingSub}>
-        {allConnected ? "Everything's paired — ready to record." : "Pair your gear to start recording a skill."}
+        {allConnected ? "Everything's paired — ready to train." : "Pair your gear, then train a skill to earn $."}
       </Text>
 
       <Card style={styles.creditCard}>
@@ -57,6 +54,7 @@ export default function HomeScreen() {
       </Card>
 
       <ReferralBanner />
+      <TrainBanner />
 
       <Pressable onPress={() => router.push("/(app)/pair")}>
         <Card style={styles.deviceCard}>
@@ -82,28 +80,6 @@ export default function HomeScreen() {
           </View>
         </Card>
       </Pressable>
-
-      <Button
-        label={allConnected ? "Start new episode" : "Finish pairing first"}
-        onPress={() => router.push("/(app)/record")}
-        disabled={!allConnected}
-        style={{ marginTop: spacing.lg }}
-      />
-
-      <View style={[styles.deviceCardHeader, { marginTop: spacing.xl, marginBottom: spacing.sm }]}>
-        <Text style={styles.sectionTitle}>Recent recordings</Text>
-        {sessions.length > 3 ? (
-          <Pressable onPress={() => router.push("/(app)/record")}>
-            <Text style={styles.seeAll}>See all</Text>
-          </Pressable>
-        ) : null}
-      </View>
-
-      {sessions.length === 0 ? (
-        <Text style={styles.emptyText}>Nothing recorded yet — start an episode to see it here.</Text>
-      ) : (
-        sessions.slice(0, 3).map((s) => <SessionRow key={s.id} session={s} />)
-      )}
     </ScrollView>
   );
 }
@@ -195,16 +171,5 @@ const styles = StyleSheet.create({
     fontFamily: fonts.bodyMedium,
     fontSize: 14,
     color: colors.textPrimary,
-  },
-  seeAll: {
-    fontFamily: fonts.bodyMedium,
-    fontSize: 13,
-    color: colors.sandDark,
-  },
-  emptyText: {
-    fontFamily: fonts.body,
-    fontSize: 13,
-    color: colors.textMuted,
-    lineHeight: 19,
   },
 });

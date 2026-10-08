@@ -74,10 +74,13 @@ export default function SignupScreen() {
           <View style={styles.heroIcon}>
             <Sparkles size={32} color={colors.sandDark} strokeWidth={1.5} />
           </View>
-          <Text style={styles.title}>BUILDO TRAINER</Text>
+          <Text style={styles.title}>BUILDO QUEST</Text>
           <Text style={styles.subtitle}>
             Capture demonstrations for Buildo -- glasses, gloves, and your voice, in sync.
           </Text>
+          <View style={styles.bonusPill}>
+            <Text style={styles.bonusPillText}>$20 on instant signup</Text>
+          </View>
         </Animated.View>
 
         <Animated.View style={{ opacity: fade, transform: [{ translateY: slide }] }}>
@@ -175,6 +178,21 @@ const styles = StyleSheet.create({
     marginTop: spacing.xs,
     paddingHorizontal: spacing.md,
     lineHeight: 21,
+  },
+  bonusPill: {
+    backgroundColor: colors.sandSurface,
+    borderWidth: 1,
+    borderColor: colors.sandLight,
+    borderRadius: radii.pill,
+    paddingVertical: 8,
+    paddingHorizontal: spacing.md,
+    marginTop: spacing.md,
+  },
+  bonusPillText: {
+    fontFamily: fonts.bodySemiBold,
+    fontSize: 13,
+    color: colors.sandDark,
+    letterSpacing: 0.2,
   },
   card: {
     backgroundColor: colors.surfaceRaised,

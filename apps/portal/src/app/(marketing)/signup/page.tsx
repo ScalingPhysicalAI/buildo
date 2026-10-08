@@ -53,9 +53,11 @@ export default function SignupPage() {
           Join the developer portal
         </h1>
         <p className="mt-3 text-sm text-off-white/70">
-          Sign up to start training Buildo, testing it in simulation, and
-          earning 20$ credit.
+          Sign up to start training Buildo and testing it in simulation.
         </p>
+        <div className="mt-4 inline-flex items-center gap-2 rounded-full border border-sand/30 bg-sand/10 px-3 py-1.5">
+          <span className="text-technical text-xs text-sand">$20 on instant signup</span>
+        </div>
 
         <form
           onSubmit={onSubmit}

@@ -1,4 +1,4 @@
-import { Bluetooth, CircleDot, House } from "lucide-react-native";
+import { AppWindow, Bluetooth, GraduationCap, House } from "lucide-react-native";
 import { Redirect, Tabs } from "expo-router";
 import { ActivityIndicator, View } from "react-native";
 
@@ -45,9 +45,16 @@ export default function AppLayout() {
         options={{ title: "Devices", tabBarIcon: ({ color, size }) => <Bluetooth color={color} size={size} /> }}
       />
       <Tabs.Screen
-        name="record"
-        options={{ title: "Record", tabBarIcon: ({ color, size }) => <CircleDot color={color} size={size} /> }}
+        name="train"
+        options={{ title: "Train", tabBarIcon: ({ color, size }) => <GraduationCap color={color} size={size} /> }}
       />
+      <Tabs.Screen
+        name="build"
+        options={{ title: "Build", tabBarIcon: ({ color, size }) => <AppWindow color={color} size={size} /> }}
+      />
+      <Tabs.Screen name="glasses-debug" options={{ href: null }} />
+      <Tabs.Screen name="build/new" options={{ href: null }} />
+      <Tabs.Screen name="build/[id]" options={{ href: null }} />
     </Tabs>
   );
 }

@@ -42,9 +42,11 @@ model User {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-  transactions TokenTransaction[]
-  gpuSessions  GpuSession[]
-  skillOrders  SkillOrder[]
+  transactions      TokenTransaction[]
+  gpuSessions       GpuSession[]
+  skillOrders       SkillOrder[]
+  skillCollections  SkillCollectionSession[]
+  appListings       AppListing[]
 }
 
 enum TransactionType {
@@ -53,6 +55,9 @@ enum TransactionType {
   WALLET_CONNECT_BONUS
   GPU_RENTAL
   SKILL_PURCHASE
+  SKILL_COLLECTION_REWARD
+  APP_DEPLOY_FEE
+  APP_EARNINGS
   AIRDROP
 }
 
@@ -114,4 +119,148 @@ model SkillOrder {
   createdAt DateTime @default(now())
 
   @@index([userId])
+}
+
+// A predefined, record-for-pay skill -- the catalog shown in the mobile
+// app's Record tab. Reward is the $ credit paid out once a user's recorded
+// session for this skill is uploaded.
+model SkillDefinition {
+  id           String  @id @default(cuid())
+  slug         String  @unique
+  name         String
+  summary      String
+  instructions String // shown to the user before they hit record
+  category     String
+  reward       Int // $ credit paid on upload
+  active       Boolean @default(true)
+
+  createdAt DateTime @default(now())
+
+  collections SkillCollectionSession[]
+}
+
+enum CollectionStatus {
+  UPLOADED // recording uploaded, reward paid, not yet queued for training
+  TRAINING // 24h training timer running
+  TRAINED // training complete -- usable in an app listing
+  FAILED // training did not complete successfully
+}
+
+// One user's recorded data-collection session for a SkillDefinition. The
+// 24h "Train" timer is modeled as trainEndsAt rather than a background job
+// -- status is computed lazily (now >= trainEndsAt => TRAINED) by the API
+// reading it, so nothing else in the stack needs a scheduler yet.
+model SkillCollectionSession {
+  id     String @id @default(cuid())
+  userId String
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  skillId String
+  skill   SkillDefinition @relation(fields: [skillId], references: [id])
+
+  status CollectionStatus @default(UPLOADED)
+
+  // Recording storage is not wired to a blob provider yet -- fileName/
+  // durationSec are the client-reported metadata for what it has stored
+  // locally on-device. Swap in a real asset URL here once a storage
+  // provider (e.g. Vercel Blob) is provisioned.
+  fileName    String?
+  durationSec Int?
+
+  rewardPaid Boolean @default(false)
+
+  trainStartedAt DateTime?
+  trainEndsAt    DateTime?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  appListingSkills AppListingSkill[]
+
+  @@index([userId])
+  @@index([skillId])
+}
+
+enum AppCategory {
+  HOME
+  GENERAL
+  PUBLIC
+  KITCHEN
+  CLEANING
+  INVENTORY
+}
+
+enum AppDeployStatus {
+  DRAFT
+  TESTING
+  PASSED
+  FAILED
+  LIVE
+}
+
+// A developer-built app bundling one or more trained skills. Status moves
+// DRAFT -> (certify) -> PASSED/FAILED -> (pay the $DEPLOY_FEE) -> LIVE on
+// the app store. Certifying and publishing are separate steps/routes on
+// purpose: certification is free and re-runnable, the $ fee is only ever
+// charged once, at the moment an app actually goes live.
+model AppListing {
+  id          String @id @default(cuid())
+  userId      String
+  user        User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  name        String
+  description String?
+  category    AppCategory
+
+  // Not wired to a storage provider yet -- same stub note as
+  // SkillCollectionSession.fileName. Set once asset upload exists.
+  iconUrl  String?
+  videoUrl String?
+
+  status      AppDeployStatus @default(DRAFT)
+  // Automated-certification result -- see services note in the deploy
+  // route: deterministic checks today (named skills all TRAINED, etc.),
+  // same "real pipeline, simulated backend" shape as GpuSession.
+  testReport  Json?
+  publishedAt DateTime?
+
+  // Running total of $ credit this app has earned its creator from
+  // installs -- incremented alongside the matching APP_EARNINGS
+  // TokenTransaction each time someone installs it.
+  earnings Int @default(0)
+
+  skills   AppListingSkill[]
+  installs AppInstall[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([userId])
+}
+
+// One user's install of a published app. Unique per (app, user) so the
+// store's "downloaded by N users" count reflects distinct installers, not
+// repeat taps.
+model AppInstall {
+  id     String     @id @default(cuid())
+  appId  String
+  app    AppListing @relation(fields: [appId], references: [id], onDelete: Cascade)
+  userId String
+
+  createdAt DateTime @default(now())
+
+  @@unique([appId, userId])
+  @@index([appId])
+}
+
+model AppListingSkill {
+  id String @id @default(cuid())
+
+  appId String
+  app   AppListing @relation(fields: [appId], references: [id], onDelete: Cascade)
+
+  skillCollectionId String
+  skillCollection   SkillCollectionSession @relation(fields: [skillCollectionId], references: [id])
+
+  @@unique([appId, skillCollectionId])
 }

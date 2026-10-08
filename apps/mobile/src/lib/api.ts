@@ -48,7 +48,7 @@ export class ApiError extends Error {
   }
 }
 
-async function request<T>(path: string, options: RequestInit = {}): Promise<T> {
+export async function request<T>(path: string, options: RequestInit = {}): Promise<T> {
   const token = await getToken();
 
   const res = await fetch(`${SERVER_URL}${path}`, {

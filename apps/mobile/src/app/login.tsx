@@ -61,7 +61,7 @@ export default function LoginScreen() {
           <View style={styles.heroIcon}>
             <Sparkles size={32} color={colors.sandDark} strokeWidth={1.5} />
           </View>
-          <Text style={styles.title}>BUILDO TRAINER</Text>
+          <Text style={styles.title}>BUILDO QUEST</Text>
           <Text style={styles.subtitle}>
             Capture demonstrations for Buildo -- glasses, gloves, and your voice, in sync.
           </Text>
