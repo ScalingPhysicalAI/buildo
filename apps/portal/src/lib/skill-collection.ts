@@ -2,7 +2,10 @@ import type { SkillCollectionSession } from "@prisma/client";
 
 import { prisma } from "@/lib/prisma";
 
-export const TRAIN_DURATION_MS = 24 * 60 * 60 * 1000;
+// TEMP: shortened from the real 24h to 1 min so the Train -> Build flow can
+// be tested end to end without waiting a day. Restore to 24 * 60 * 60 * 1000
+// before this is real.
+export const TRAIN_DURATION_MS = 1 * 60 * 1000;
 
 /**
  * The 24h "Train" timer is modeled as `trainEndsAt` rather than a background

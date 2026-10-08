@@ -12,6 +12,7 @@ import { Alert, Animated, Easing, Pressable, StyleSheet, Text, View } from "reac
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 import { Button } from "../../components/Button";
+import { useDevices } from "../../lib/device-context";
 import { formatDuration } from "../../lib/format";
 import { formatTimeLeft, getDisplayStatus } from "../../lib/skill-status";
 import { useSkills } from "../../lib/skills-context";
@@ -30,6 +31,7 @@ type Phase = "instructions" | "recording" | "review";
 export default function SkillDetailScreen() {
   const { slug } = useLocalSearchParams<{ slug: string }>();
   const { catalog, recordUpload, startTraining } = useSkills();
+  const devices = useDevices();
   const insets = useSafeAreaInsets();
 
   const [phase, setPhase] = useState<Phase>("instructions");
@@ -65,6 +67,14 @@ export default function SkillDetailScreen() {
   const displayStatus = getDisplayStatus(entry.collection);
 
   function handleStartRecording() {
+    const gearConnected = devices.glasses === "connected" && devices.gloves === "connected";
+    if (!gearConnected) {
+      Alert.alert("Glasses and gloves are not connected", "Pair your capture glasses and haptic gloves before recording.", [
+        { text: "Cancel", style: "cancel" },
+        { text: "Connect", onPress: () => router.push("/(app)/pair") },
+      ]);
+      return;
+    }
     setElapsed(0);
     setIsPaused(false);
     setPhase("recording");

@@ -1,6 +1,6 @@
-import { router } from "expo-router";
+import { router, useFocusEffect } from "expo-router";
 import { Check, ChevronRight, Download, Plus } from "lucide-react-native";
-import { useState } from "react";
+import { useCallback, useState } from "react";
 import { Alert, Pressable, ScrollView, StyleSheet, Text, View } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
@@ -85,7 +85,13 @@ function StoreCard({ app }: { app: AppStoreListing }) {
 
 export default function BuildScreen() {
   const insets = useSafeAreaInsets();
-  const { catalog, apps, appStore } = useSkills();
+  const { catalog, apps, appStore, refreshCatalog, refreshApps, refreshAppStore } = useSkills();
+
+  useFocusEffect(
+    useCallback(() => {
+      Promise.allSettled([refreshCatalog(), refreshApps(), refreshAppStore()]);
+    }, [refreshCatalog, refreshApps, refreshAppStore])
+  );
   const [tab, setTab] = useState<"mine" | "store">("mine");
 
   const trainedCount = catalog.filter((s) => getDisplayStatus(s.collection) === "trained").length;

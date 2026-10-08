@@ -1,5 +1,6 @@
-import { router } from "expo-router";
+import { router, useFocusEffect } from "expo-router";
 import { ChevronRight, Plus } from "lucide-react-native";
+import { useCallback } from "react";
 import { Pressable, ScrollView, StyleSheet, Text, View } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
@@ -54,7 +55,16 @@ function SkillCard({ entry }: { entry: SkillCatalogEntry }) {
 
 export default function TrainScreen() {
   const insets = useSafeAreaInsets();
-  const { catalog, isLoading } = useSkills();
+  const { catalog, isLoading, refreshCatalog } = useSkills();
+
+  // A session sitting in TRAINING resolves to TRAINED lazily, server-side,
+  // the next time it's read -- re-syncing on focus means coming back to
+  // this tab after the timer ends is enough to see it flip, no polling.
+  useFocusEffect(
+    useCallback(() => {
+      refreshCatalog().catch(() => {});
+    }, [refreshCatalog])
+  );
 
   const paidSkills = catalog.filter((s) => !s.isCustom);
   const customSkills = catalog.filter((s) => s.isCustom);
