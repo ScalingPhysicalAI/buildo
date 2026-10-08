@@ -7,6 +7,8 @@ import { createSessionCookie, hashPassword, toSafeUser } from "@/lib/auth";
 import { signupSchema } from "@/lib/validations";
 import { sendVerificationEmail } from "@/lib/mailer";
 
+const SIGNUP_CREDIT = 20;
+
 export async function POST(request: Request) {
   const body = await request.json().catch(() => null);
   const parsed = signupSchema.safeParse(body);
@@ -37,6 +39,23 @@ export async function POST(request: Request) {
     }
     throw err;
   }
+
+  // Instant signup bonus -- credited immediately, separate from the
+  // EMAIL_VERIFY_BONUS credited later on email confirmation.
+  [user] = await prisma.$transaction([
+    prisma.user.update({
+      where: { id: user.id },
+      data: { tokenBalance: { increment: SIGNUP_CREDIT } },
+    }),
+    prisma.tokenTransaction.create({
+      data: {
+        userId: user.id,
+        type: "SIGNUP_BONUS",
+        amount: SIGNUP_CREDIT,
+        note: "Instant signup reward",
+      },
+    }),
+  ]);
 
   const token = await createSessionCookie(user.id);
 
