@@ -51,6 +51,7 @@ export default function RootLayout() {
                 }}
               >
                 <Stack.Screen name="session/[id]" options={{ presentation: "modal" }} />
+                <Stack.Screen name="skill/new" options={{ presentation: "modal" }} />
                 <Stack.Screen name="skill/[slug]" options={{ presentation: "modal" }} />
               </Stack>
             </SkillsProvider>

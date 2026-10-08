@@ -47,6 +47,7 @@ model User {
   skillOrders       SkillOrder[]
   skillCollections  SkillCollectionSession[]
   appListings       AppListing[]
+  customSkills      SkillDefinition[]
 }
 
 enum TransactionType {
@@ -131,12 +132,21 @@ model SkillDefinition {
   summary      String
   instructions String // shown to the user before they hit record
   category     String
-  reward       Int // $ credit paid on upload
+  reward       Int // $ credit paid on upload -- always 0 for a custom skill
   active       Boolean @default(true)
+
+  // A custom skill a developer typed in themselves (unpaid), visible only
+  // to its own creator -- as opposed to the predefined, paid catalog
+  // (isCustom: false, shown to everyone).
+  isCustom        Boolean @default(false)
+  createdByUserId String?
+  createdBy       User?   @relation(fields: [createdByUserId], references: [id])
 
   createdAt DateTime @default(now())
 
   collections SkillCollectionSession[]
+
+  @@index([createdByUserId])
 }
 
 enum CollectionStatus {

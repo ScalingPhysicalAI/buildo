@@ -8,6 +8,7 @@ import { createContext, useCallback, useContext, useEffect, useState, type React
 import { useAuth } from "./auth-context";
 import {
   createApp as apiCreateApp,
+  createCustomSkill as apiCreateCustomSkill,
   createSkillCollection as apiCreateSkillCollection,
   deployApp as apiDeployApp,
   fetchAppStore as apiFetchAppStore,
@@ -20,6 +21,7 @@ import {
   type AppListing,
   type AppStoreListing,
   type SkillCatalogEntry,
+  type SkillDefinition,
 } from "./skills-api";
 
 interface SkillsState {
@@ -32,6 +34,7 @@ interface SkillsState {
   refreshAppStore: () => Promise<void>;
   recordUpload: (skillSlug: string, fileName?: string, durationSec?: number) => Promise<void>;
   startTraining: (collectionId: string) => Promise<void>;
+  createCustomSkill: (name: string) => Promise<SkillDefinition>;
   createApp: (input: {
     name: string;
     description?: string;
@@ -95,6 +98,12 @@ export function SkillsProvider({ children }: { children: ReactNode }) {
     await refreshCatalog();
   }
 
+  async function createCustomSkill(name: string) {
+    const skill = await apiCreateCustomSkill(name);
+    await refreshCatalog();
+    return skill;
+  }
+
   async function createApp(input: {
     name: string;
     description?: string;
@@ -135,6 +144,7 @@ export function SkillsProvider({ children }: { children: ReactNode }) {
         refreshAppStore,
         recordUpload,
         startTraining,
+        createCustomSkill,
         createApp,
         deployApp,
         publishApp,

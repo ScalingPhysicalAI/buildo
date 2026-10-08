@@ -40,5 +40,11 @@ yarn-error.*
 /ios
 /android
 
+# local Expo modules (modules/*) have their own nested android/ project --
+# only its Gradle build output should be ignored, not the module source
+modules/*/android/build/
+modules/*/android/.gradle/
+modules/*/android/local.properties
+
 # hardware/internal spec docs shared out-of-band -- not meant to live in the repo
 *.pdf

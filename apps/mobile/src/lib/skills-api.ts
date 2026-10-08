@@ -16,6 +16,7 @@ export interface SkillDefinition {
   category: string;
   reward: number;
   active: boolean;
+  isCustom: boolean;
   createdAt: string;
 }
 
@@ -66,6 +67,14 @@ export async function startTraining(collectionId: string): Promise<SkillCollecti
     { method: "POST" }
   );
   return data.collection;
+}
+
+export async function createCustomSkill(name: string): Promise<SkillDefinition> {
+  const data = await request<{ skill: SkillDefinition }>("/api/skills/custom", {
+    method: "POST",
+    body: JSON.stringify({ name }),
+  });
+  return data.skill;
 }
 
 export type AppCategory = "HOME" | "GENERAL" | "PUBLIC" | "KITCHEN" | "CLEANING" | "INVENTORY";

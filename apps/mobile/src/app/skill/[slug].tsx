@@ -156,7 +156,7 @@ export default function SkillDetailScreen() {
       <Text style={styles.name}>{entry.name}</Text>
       <View style={styles.rewardRow}>
         <Text style={styles.category}>{entry.category}</Text>
-        <Text style={styles.reward}>${entry.reward} on upload</Text>
+        {entry.reward > 0 ? <Text style={styles.reward}>${entry.reward} on upload</Text> : null}
       </View>
       <Text style={styles.summary}>{entry.summary}</Text>
 
@@ -204,7 +204,9 @@ export default function SkillDetailScreen() {
             <View style={styles.statusCard}>
               <View style={styles.statusRow}>
                 <Check size={18} color={colors.success} />
-                <Text style={styles.statusText}>Uploaded · ${entry.reward} credited</Text>
+                <Text style={styles.statusText}>
+                  {entry.reward > 0 ? `Uploaded · $${entry.reward} credited` : "Uploaded"}
+                </Text>
               </View>
               <Button label="Train this skill" onPress={handleTrain} loading={busy} style={{ marginTop: spacing.md }} />
             </View>

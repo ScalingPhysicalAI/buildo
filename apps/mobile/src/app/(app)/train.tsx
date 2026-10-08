@@ -1,5 +1,5 @@
 import { router } from "expo-router";
-import { ChevronRight } from "lucide-react-native";
+import { ChevronRight, Plus } from "lucide-react-native";
 import { Pressable, ScrollView, StyleSheet, Text, View } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
@@ -11,7 +11,7 @@ import type { SkillCatalogEntry } from "../../lib/skills-api";
 import { colors, fonts, radii, spacing } from "../../theme";
 
 const STATUS_LABEL: Record<DisplayStatus, string> = {
-  available: "Record for $",
+  available: "Record",
   uploaded: "Ready to train",
   training: "Training",
   trained: "Trained",
@@ -31,7 +31,7 @@ function SkillCard({ entry }: { entry: SkillCatalogEntry }) {
   const label =
     status === "training"
       ? formatTimeLeft(entry.collection?.trainEndsAt ?? null)
-      : status === "available"
+      : status === "available" && entry.reward > 0
         ? `Record for $${entry.reward}`
         : STATUS_LABEL[status];
 
@@ -52,10 +52,12 @@ function SkillCard({ entry }: { entry: SkillCatalogEntry }) {
   );
 }
 
-export default function RecordScreen() {
+export default function TrainScreen() {
   const insets = useSafeAreaInsets();
   const { catalog, isLoading } = useSkills();
 
+  const paidSkills = catalog.filter((s) => !s.isCustom);
+  const customSkills = catalog.filter((s) => s.isCustom);
   const trainedCount = catalog.filter((s) => getDisplayStatus(s.collection) === "trained").length;
 
   return (
@@ -63,7 +65,7 @@ export default function RecordScreen() {
       style={{ backgroundColor: colors.background }}
       contentContainerStyle={[styles.scroll, { paddingTop: insets.top + spacing.md }]}
     >
-      <Text style={styles.title}>Record a skill</Text>
+      <Text style={styles.title}>Train a skill</Text>
       <Text style={styles.subtitle}>
         Pick a skill below, follow the instructions, and record yourself performing it to earn $ credit.
       </Text>
@@ -81,11 +83,28 @@ export default function RecordScreen() {
 
       {isLoading && catalog.length === 0 ? (
         <Text style={styles.emptyText}>Loading skills…</Text>
-      ) : catalog.length === 0 ? (
+      ) : paidSkills.length === 0 ? (
         <Text style={styles.emptyText}>No skills available right now — check back soon.</Text>
       ) : (
-        catalog.map((entry) => <SkillCard key={entry.id} entry={entry} />)
+        paidSkills.map((entry) => <SkillCard key={entry.id} entry={entry} />)
       )}
+
+      <Text style={styles.sectionTitle}>Your custom skills</Text>
+      <Text style={styles.sectionHint}>
+        Record anything else you want to teach Buildo. Custom skills don&apos;t pay a reward, but they train and
+        trained the same way, and can go into an app.
+      </Text>
+
+      {customSkills.map((entry) => (
+        <SkillCard key={entry.id} entry={entry} />
+      ))}
+
+      <Pressable onPress={() => router.push("/skill/new")} style={styles.addSkillRow}>
+        <View style={styles.addSkillIcon}>
+          <Plus size={18} color={colors.sandDark} />
+        </View>
+        <Text style={styles.addSkillText}>Add a custom skill</Text>
+      </Pressable>
     </ScrollView>
   );
 }
@@ -127,6 +146,20 @@ const styles = StyleSheet.create({
     color: colors.sandDark,
     flex: 1,
   },
+  sectionTitle: {
+    fontFamily: fonts.bodySemiBold,
+    fontSize: 15,
+    color: colors.textPrimary,
+    marginTop: spacing.md,
+  },
+  sectionHint: {
+    fontFamily: fonts.body,
+    fontSize: 12,
+    color: colors.textMuted,
+    marginTop: -spacing.sm,
+    marginBottom: spacing.xs,
+    lineHeight: 17,
+  },
   skillCard: {
     gap: spacing.sm,
   },
@@ -152,6 +185,29 @@ const styles = StyleSheet.create({
     fontSize: 13,
     color: colors.textMuted,
     lineHeight: 18,
+  },
+  addSkillRow: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: spacing.sm,
+    borderWidth: 1.5,
+    borderColor: colors.borderStrong,
+    borderStyle: "dashed",
+    borderRadius: radii.lg,
+    padding: spacing.md,
+  },
+  addSkillIcon: {
+    width: 32,
+    height: 32,
+    borderRadius: radii.pill,
+    backgroundColor: colors.sandSurface,
+    alignItems: "center",
+    justifyContent: "center",
+  },
+  addSkillText: {
+    fontFamily: fonts.bodyMedium,
+    fontSize: 14,
+    color: colors.textPrimary,
   },
   emptyText: {
     fontFamily: fonts.body,
