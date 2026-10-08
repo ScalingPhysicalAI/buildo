@@ -4,10 +4,11 @@ import { prisma } from "@/lib/prisma";
 import { getSessionUserId } from "@/lib/auth";
 import { resolveCollectionStatuses } from "@/lib/skill-collection";
 
-// The Record tab's skill picker: every active predefined skill, plus the
-// current user's own collection status for it (if they've ever recorded
-// one), so the mobile app can show AVAILABLE/UPLOADED/TRAINING/TRAINED
-// directly in the list without a second round trip per skill.
+// The Train tab's skill picker: every active predefined (paid) skill, plus
+// this user's own custom (unpaid) skills, plus their collection status for
+// each (if they've ever recorded one), so the mobile app can show
+// AVAILABLE/UPLOADED/TRAINING/TRAINED directly in the list without a second
+// round trip per skill.
 export async function GET(request: Request) {
   const userId = await getSessionUserId(request);
   if (!userId) {
@@ -15,7 +16,10 @@ export async function GET(request: Request) {
   }
 
   const [skills, collections] = await Promise.all([
-    prisma.skillDefinition.findMany({ where: { active: true }, orderBy: { createdAt: "asc" } }),
+    prisma.skillDefinition.findMany({
+      where: { OR: [{ active: true, isCustom: false }, { isCustom: true, createdByUserId: userId }] },
+      orderBy: { createdAt: "asc" },
+    }),
     prisma.skillCollectionSession.findMany({ where: { userId }, orderBy: { createdAt: "asc" } }),
   ]);
 

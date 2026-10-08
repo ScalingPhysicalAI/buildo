@@ -46,10 +46,12 @@ export async function POST(request: Request) {
     return NextResponse.json({ error: "Unknown skill" }, { status: 400 });
   }
 
+  // Custom (isCustom) skills always have reward 0 -- skip the credit and
+  // the ledger entry entirely rather than recording a $0 "reward".
   const [updatedUser, collection] = await prisma.$transaction([
     prisma.user.update({
       where: { id: userId },
-      data: { tokenBalance: { increment: skill.reward } },
+      data: skill.reward > 0 ? { tokenBalance: { increment: skill.reward } } : {},
     }),
     prisma.skillCollectionSession.create({
       data: {
@@ -58,20 +60,22 @@ export async function POST(request: Request) {
         status: "UPLOADED",
         fileName: parsed.data.fileName,
         durationSec: parsed.data.durationSec,
-        rewardPaid: true,
+        rewardPaid: skill.reward > 0,
       },
       include: { skill: true },
     }),
   ]);
 
-  await prisma.tokenTransaction.create({
-    data: {
-      userId,
-      type: "SKILL_COLLECTION_REWARD",
-      amount: skill.reward,
-      note: `Recorded: ${skill.name}`,
-    },
-  });
+  if (skill.reward > 0) {
+    await prisma.tokenTransaction.create({
+      data: {
+        userId,
+        type: "SKILL_COLLECTION_REWARD",
+        amount: skill.reward,
+        note: `Recorded: ${skill.name}`,
+      },
+    });
+  }
 
   return NextResponse.json({ user: toSafeUser(updatedUser), collection }, { status: 201 });
 }
