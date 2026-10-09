@@ -3,12 +3,12 @@ import { NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { getSessionUserId, toSafeUser } from "@/lib/auth";
 
-const DEPLOY_FEE = 50;
+const DEPLOY_FEE = 5;
 
-// The actual "go live on the app store" step. Only reachable once
-// certification has passed (POST /api/apps/:id/deploy) -- charges the one-
-// time $50 deploy fee and flips the app to LIVE. Re-publishing an already
-// LIVE app is a no-op rather than double-charging.
+// The actual "go live on the app store" step. Only reachable once the
+// automated test has passed (POST /api/apps/:id/deploy) -- charges the
+// one-time $5 publish fee and flips the app to LIVE. Re-publishing an
+// already LIVE app is a no-op rather than double-charging.
 export async function POST(request: Request, { params }: { params: Promise<{ id: string }> }) {
   const userId = await getSessionUserId(request);
   if (!userId) {
