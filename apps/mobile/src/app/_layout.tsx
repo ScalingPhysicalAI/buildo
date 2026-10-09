@@ -13,6 +13,7 @@ import { useEffect } from "react";
 import { StatusBar } from "expo-status-bar";
 import { SafeAreaProvider } from "react-native-safe-area-context";
 
+import { AlertHost } from "../components/AlertHost";
 import { AuthProvider } from "../lib/auth-context";
 import { DeviceProvider } from "../lib/device-context";
 import { SessionsProvider } from "../lib/sessions-context";
@@ -54,6 +55,7 @@ export default function RootLayout() {
                 <Stack.Screen name="skill/new" options={{ presentation: "modal" }} />
                 <Stack.Screen name="skill/[slug]" options={{ presentation: "modal" }} />
               </Stack>
+              <AlertHost />
             </SkillsProvider>
           </SessionsProvider>
         </DeviceProvider>

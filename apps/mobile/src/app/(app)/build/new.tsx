@@ -1,11 +1,12 @@
 import { router } from "expo-router";
 import { Check, X } from "lucide-react-native";
 import { useState } from "react";
-import { Alert, Pressable, ScrollView, StyleSheet, Text, View } from "react-native";
+import { Pressable, ScrollView, StyleSheet, Text, View } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 import { Button } from "../../../components/Button";
 import { TextField } from "../../../components/TextField";
+import { Alert } from "../../../lib/alert";
 import { getDisplayStatus } from "../../../lib/skill-status";
 import { useSkills } from "../../../lib/skills-context";
 import type { AppCategory } from "../../../lib/skills-api";

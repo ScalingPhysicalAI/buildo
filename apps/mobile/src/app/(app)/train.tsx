@@ -33,7 +33,7 @@ function SkillCard({ entry }: { entry: SkillCatalogEntry }) {
     status === "training"
       ? formatTimeLeft(entry.collection?.trainEndsAt ?? null)
       : status === "available" && entry.reward > 0
-        ? `Record for $${entry.reward}`
+        ? `$${entry.reward} per install`
         : STATUS_LABEL[status];
 
   return (

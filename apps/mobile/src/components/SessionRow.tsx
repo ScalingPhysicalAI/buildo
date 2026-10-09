@@ -1,7 +1,8 @@
 import { router } from "expo-router";
 import { Check, Trash, Upload, Video } from "lucide-react-native";
-import { ActivityIndicator, Alert, Pressable, StyleSheet, Text, View } from "react-native";
+import { ActivityIndicator, Pressable, StyleSheet, Text, View } from "react-native";
 
+import { Alert } from "../lib/alert";
 import { formatDuration, formatRelativeTime } from "../lib/format";
 import { useSessions, type Session } from "../lib/sessions-context";
 import { colors, fonts, radii, spacing } from "../theme";

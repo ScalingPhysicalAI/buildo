@@ -89,8 +89,11 @@ export function SkillsProvider({ children }: { children: ReactNode }) {
   }, [user, refreshCatalog, refreshApps, refreshAppStore]);
 
   async function recordUpload(skillSlug: string, fileName?: string, durationSec?: number) {
+    // Uploading doesn't move the user's balance anymore -- a skill's reward
+    // is only ever realized later, per install, once it's bundled into a
+    // published app someone else installs.
     await apiCreateSkillCollection(skillSlug, fileName, durationSec);
-    await Promise.all([refreshCatalog(), refreshUser()]);
+    await refreshCatalog();
   }
 
   async function startTraining(collectionId: string) {

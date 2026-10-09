@@ -1,9 +1,8 @@
-// Pairing/connection state for glasses, gloves, and the Buildo unit's wifi.
-// No real hardware exists yet (same situation as the rest of this repo --
-// see the browser simulator's own "no paired robot hardware" notes) so
-// "connecting" here is a timed simulation, not a real BLE/wifi handshake.
-// The UI/state shape is real and meant to stay -- only the two connect__
-// functions' bodies get replaced once real pairing exists.
+// Pairing/connection state for the capture glasses and haptic gloves -- the
+// only gear the app actually needs to record a skill. No real hardware
+// exists yet, so "connecting" here is a timed simulation, not a real BLE
+// handshake. The UI/state shape is real and meant to stay -- only the
+// connect__ functions' bodies get replaced once real pairing exists.
 
 import { createContext, useContext, useRef, useState, type ReactNode } from "react";
 
@@ -14,12 +13,9 @@ interface DeviceState {
   glasses_battery: number | null;
   gloves: ConnectionStatus;
   gloves_battery: number | null;
-  buildo: ConnectionStatus;
-  buildoNetwork: string | null;
   connectGlasses: () => void;
   connectGloves: () => void;
-  connectBuildo: (ssid: string) => void;
-  disconnect: (device: "glasses" | "gloves" | "buildo") => void;
+  disconnect: (device: "glasses" | "gloves") => void;
 }
 
 const DeviceContext = createContext<DeviceState | null>(null);
@@ -29,8 +25,6 @@ export function DeviceProvider({ children }: { children: ReactNode }) {
   const [glassesBattery, setGlassesBattery] = useState<number | null>(null);
   const [gloves, setGloves] = useState<ConnectionStatus>("disconnected");
   const [glovesBattery, setGlovesBattery] = useState<number | null>(null);
-  const [buildo, setBuildo] = useState<ConnectionStatus>("disconnected");
-  const [buildoNetwork, setBuildoNetwork] = useState<string | null>(null);
   const timers = useRef<ReturnType<typeof setTimeout>[]>([]);
 
   function after(ms: number, fn: () => void) {
@@ -54,13 +48,7 @@ export function DeviceProvider({ children }: { children: ReactNode }) {
     });
   }
 
-  function connectBuildo(ssid: string) {
-    setBuildo("connecting");
-    setBuildoNetwork(ssid);
-    after(2200, () => setBuildo("connected"));
-  }
-
-  function disconnect(device: "glasses" | "gloves" | "buildo") {
+  function disconnect(device: "glasses" | "gloves") {
     if (device === "glasses") {
       setGlasses("disconnected");
       setGlassesBattery(null);
@@ -68,10 +56,6 @@ export function DeviceProvider({ children }: { children: ReactNode }) {
     if (device === "gloves") {
       setGloves("disconnected");
       setGlovesBattery(null);
-    }
-    if (device === "buildo") {
-      setBuildo("disconnected");
-      setBuildoNetwork(null);
     }
   }
 
@@ -82,11 +66,8 @@ export function DeviceProvider({ children }: { children: ReactNode }) {
         glasses_battery: glassesBattery,
         gloves,
         gloves_battery: glovesBattery,
-        buildo,
-        buildoNetwork,
         connectGlasses,
         connectGloves,
-        connectBuildo,
         disconnect,
       }}
     >

@@ -1,17 +1,18 @@
 import { router, useLocalSearchParams } from "expo-router";
 import { Check, Download, DollarSign, X } from "lucide-react-native";
 import { useState } from "react";
-import { Alert, Pressable, ScrollView, StyleSheet, Text, View } from "react-native";
+import { Pressable, ScrollView, StyleSheet, Text, View } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 import { Button } from "../../../components/Button";
 import { Card } from "../../../components/Card";
 import { StatusPill } from "../../../components/StatusPill";
+import { Alert } from "../../../lib/alert";
 import { useSkills } from "../../../lib/skills-context";
 import type { AppDeployStatus } from "../../../lib/skills-api";
 import { colors, fonts, radii, spacing } from "../../../theme";
 
-const DEPLOY_FEE = 50;
+const DEPLOY_FEE = 5;
 
 const STATUS_TONE: Record<AppDeployStatus, "neutral" | "success" | "warning" | "error"> = {
   DRAFT: "neutral",
@@ -43,7 +44,7 @@ export default function AppDetailScreen() {
     try {
       await deployApp(app!.id);
     } catch (err) {
-      Alert.alert("Certification failed", err instanceof Error ? err.message : "Try again.");
+      Alert.alert("Automated test failed to run", err instanceof Error ? err.message : "Try again.");
     } finally {
       setBusy(false);
     }
@@ -52,7 +53,7 @@ export default function AppDetailScreen() {
   function handlePublish() {
     Alert.alert(
       "Publish this app?",
-      `You'll be charged a one-time $${DEPLOY_FEE} deploy fee and it'll go live on the Buildo app store.`,
+      `You'll be charged a one-time $${DEPLOY_FEE} publish fee and it'll go live on the Buildo app store.`,
       [
         { text: "Cancel", style: "cancel" },
         {
@@ -100,7 +101,7 @@ export default function AppDetailScreen() {
 
       {canCertify ? (
         <Button
-          label={app.status === "FAILED" ? "Re-run certification" : "Run certification"}
+          label={app.status === "FAILED" ? "Re-run automated test" : "Run automated test"}
           onPress={handleCertify}
           loading={busy}
           style={{ marginTop: spacing.xl }}
@@ -118,7 +119,7 @@ export default function AppDetailScreen() {
 
       {app.testReport ? (
         <Card style={styles.reportCard}>
-          <Text style={styles.sectionTitle}>Certification report</Text>
+          <Text style={styles.sectionTitle}>Automated test report</Text>
           {app.testReport.checks.map((check) => (
             <View key={check.id} style={styles.checkRow}>
               {check.passed ? (

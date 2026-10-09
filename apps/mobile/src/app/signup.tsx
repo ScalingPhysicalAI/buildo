@@ -75,18 +75,16 @@ export default function SignupScreen() {
             <Sparkles size={32} color={colors.sandDark} strokeWidth={1.5} />
           </View>
           <Text style={styles.title}>BUILDO QUEST</Text>
-          <Text style={styles.subtitle}>
-            Capture demonstrations for Buildo -- glasses, gloves, and your voice, in sync.
-          </Text>
+          <Text style={styles.subtitle}>Capture demonstrations for Buildo -- glasses and gloves.</Text>
           <View style={styles.bonusPill}>
-            <Text style={styles.bonusPillText}>$20 on instant signup</Text>
+            <Text style={styles.bonusPillText}>Get $20 instant on signup</Text>
           </View>
         </Animated.View>
 
         <Animated.View style={{ opacity: fade, transform: [{ translateY: slide }] }}>
           <View style={styles.card}>
             <Logo tag="mobile" size={18} />
-            <Text style={styles.cardHint}>Create your Starforge developer portal account</Text>
+            <Text style={styles.cardHint}>Create your Buildo Studio account</Text>
 
             <TextField
               label="Name"

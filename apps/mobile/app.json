@@ -42,10 +42,24 @@
         "monochromeImage": "./assets/android-icon-monochrome.png"
       },
       "predictiveBackGestureEnabled": false,
-      "permissions": ["CHANGE_WIFI_STATE", "ACCESS_WIFI_STATE", "ACCESS_FINE_LOCATION"]
+      "permissions": [
+        "CHANGE_WIFI_STATE",
+        "ACCESS_WIFI_STATE",
+        "ACCESS_FINE_LOCATION",
+        "android.permission.BLUETOOTH",
+        "android.permission.BLUETOOTH_ADMIN",
+        "android.permission.BLUETOOTH_CONNECT"
+      ]
     },
     "experiments": {
       "typedRoutes": true
-    }
+    },
+    "extra": {
+      "router": {},
+      "eas": {
+        "projectId": "0e4d0010-677b-4646-a209-25b344180baf"
+      }
+    },
+    "owner": "sarthak-code360"
   }
 }

@@ -8,10 +8,11 @@
 import { Redirect, router, useLocalSearchParams } from "expo-router";
 import { Check, Clock3, Glasses, Hand, Pause, Play, Square, Trash2, Upload, X } from "lucide-react-native";
 import { useEffect, useRef, useState } from "react";
-import { Alert, Animated, Easing, Pressable, StyleSheet, Text, View } from "react-native";
+import { Animated, Easing, Pressable, StyleSheet, Text, View } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 import { Button } from "../../components/Button";
+import { Alert } from "../../lib/alert";
 import { useDevices } from "../../lib/device-context";
 import { formatDuration } from "../../lib/format";
 import { formatTimeLeft, getDisplayStatus } from "../../lib/skill-status";
@@ -27,6 +28,11 @@ function closeOrGoHome() {
 }
 
 type Phase = "instructions" | "recording" | "review";
+
+// Paid skills must record at least this long before Stop is allowed -- the
+// backend enforces the same minimum on upload, so this is UX, not the only
+// gate. Custom (unpaid) skills have no minimum.
+const MIN_PAID_RECORDING_SECONDS = 120;
 
 export default function SkillDetailScreen() {
   const { slug } = useLocalSearchParams<{ slug: string }>();
@@ -65,6 +71,8 @@ export default function SkillDetailScreen() {
   if (!entry) return <Redirect href="/(app)/train" />;
 
   const displayStatus = getDisplayStatus(entry.collection);
+  const minRecordingSeconds = entry.reward > 0 ? MIN_PAID_RECORDING_SECONDS : 0;
+  const canStop = elapsed >= minRecordingSeconds;
 
   function handleStartRecording() {
     const gearConnected = devices.glasses === "connected" && devices.gloves === "connected";
@@ -85,6 +93,7 @@ export default function SkillDetailScreen() {
   }
 
   function handleStopRecording() {
+    if (!canStop) return;
     setIsPaused(false);
     setPhase("review");
   }
@@ -144,14 +153,20 @@ export default function SkillDetailScreen() {
                 <Pause size={22} color={colors.white} fill={colors.white} />
               )}
             </Pressable>
-            <Pressable onPress={handleStopRecording} style={styles.recordButtonWrap}>
+            <Pressable onPress={handleStopRecording} disabled={!canStop} style={styles.recordButtonWrap}>
               <Animated.View style={[styles.recordRing, { transform: [{ scale: ring }] }]} />
-              <View style={styles.stopButton}>
+              <View style={[styles.stopButton, !canStop && styles.stopButtonDisabled]}>
                 <Square size={26} color={colors.white} fill={colors.white} />
               </View>
             </Pressable>
           </View>
-          <Text style={styles.cameraHint}>{isPaused ? "Tap play to resume" : "Tap pause or stop"}</Text>
+          <Text style={styles.cameraHint}>
+            {!canStop
+              ? `Keep recording — ${minRecordingSeconds - elapsed}s more for the reward to count`
+              : isPaused
+                ? "Tap play to resume"
+                : "Tap pause or stop"}
+          </Text>
         </View>
       </View>
     );
@@ -166,7 +181,7 @@ export default function SkillDetailScreen() {
       <Text style={styles.name}>{entry.name}</Text>
       <View style={styles.rewardRow}>
         <Text style={styles.category}>{entry.category}</Text>
-        {entry.reward > 0 ? <Text style={styles.reward}>${entry.reward} on upload</Text> : null}
+        {entry.reward > 0 ? <Text style={styles.reward}>${entry.reward} per install, once in an app</Text> : null}
       </View>
       <Text style={styles.summary}>{entry.summary}</Text>
 
@@ -215,7 +230,7 @@ export default function SkillDetailScreen() {
               <View style={styles.statusRow}>
                 <Check size={18} color={colors.success} />
                 <Text style={styles.statusText}>
-                  {entry.reward > 0 ? `Uploaded · $${entry.reward} credited` : "Uploaded"}
+                  {entry.reward > 0 ? `Uploaded — earns $${entry.reward} per install once trained` : "Uploaded"}
                 </Text>
               </View>
               <Button label="Train this skill" onPress={handleTrain} loading={busy} style={{ marginTop: spacing.md }} />
@@ -465,6 +480,9 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     borderWidth: 4,
     borderColor: "rgba(255,255,255,0.3)",
+  },
+  stopButtonDisabled: {
+    opacity: 0.4,
   },
   cameraHint: {
     fontFamily: fonts.body,

@@ -62,15 +62,13 @@ export default function LoginScreen() {
             <Sparkles size={32} color={colors.sandDark} strokeWidth={1.5} />
           </View>
           <Text style={styles.title}>BUILDO QUEST</Text>
-          <Text style={styles.subtitle}>
-            Capture demonstrations for Buildo -- glasses, gloves, and your voice, in sync.
-          </Text>
+          <Text style={styles.subtitle}>Capture demonstrations for Buildo -- glasses and gloves.</Text>
         </Animated.View>
 
         <Animated.View style={{ opacity: fade, transform: [{ translateY: slide }] }}>
           <View style={styles.card}>
             <Logo tag="mobile" size={18} />
-            <Text style={styles.cardHint}>Sign in with your Starforge developer portal account</Text>
+            <Text style={styles.cardHint}>Sign in to your Buildo Studio account</Text>
 
             <TextField
               label="Email"

@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
 
 import { prisma } from "@/lib/prisma";
-import { getSessionUserId, toSafeUser } from "@/lib/auth";
+import { getSessionUserId } from "@/lib/auth";
 import { skillCollectionCreateSchema } from "@/lib/validations";
 import { resolveCollectionStatuses } from "@/lib/skill-collection";
 
@@ -20,10 +20,17 @@ export async function GET(request: Request) {
   return NextResponse.json({ collections: await resolveCollectionStatuses(collections) });
 }
 
+// A paid skill's recording must run at least this long before it can be
+// uploaded -- mirrors the client-side gate on the Stop button, enforced
+// again here since the client can't be trusted. Custom (unpaid) skills have
+// no minimum.
+const MIN_PAID_RECORDING_SEC = 120;
+
 // Called once the mobile app has finished uploading a recorded session for a
-// skill. Pays the skill's reward immediately (no review step -- same
-// "instant, not gated" policy as the signup bonus) and creates the
-// UPLOADED-status session the Train button acts on next.
+// skill. Does NOT pay anything at upload time -- a skill's reward is only
+// ever realized later, per install, once it's part of a published app
+// someone else installs (see POST /api/apps/:id/install). This just creates
+// the UPLOADED-status session the Train button acts on next.
 export async function POST(request: Request) {
   const userId = await getSessionUserId(request);
   if (!userId) {
@@ -46,36 +53,23 @@ export async function POST(request: Request) {
     return NextResponse.json({ error: "Unknown skill" }, { status: 400 });
   }
 
-  // Custom (isCustom) skills always have reward 0 -- skip the credit and
-  // the ledger entry entirely rather than recording a $0 "reward".
-  const [updatedUser, collection] = await prisma.$transaction([
-    prisma.user.update({
-      where: { id: userId },
-      data: skill.reward > 0 ? { tokenBalance: { increment: skill.reward } } : {},
-    }),
-    prisma.skillCollectionSession.create({
-      data: {
-        userId,
-        skillId: skill.id,
-        status: "UPLOADED",
-        fileName: parsed.data.fileName,
-        durationSec: parsed.data.durationSec,
-        rewardPaid: skill.reward > 0,
-      },
-      include: { skill: true },
-    }),
-  ]);
-
-  if (skill.reward > 0) {
-    await prisma.tokenTransaction.create({
-      data: {
-        userId,
-        type: "SKILL_COLLECTION_REWARD",
-        amount: skill.reward,
-        note: `Recorded: ${skill.name}`,
-      },
-    });
+  if (skill.reward > 0 && (parsed.data.durationSec ?? 0) < MIN_PAID_RECORDING_SEC) {
+    return NextResponse.json(
+      { error: `Recording must be at least ${MIN_PAID_RECORDING_SEC / 60} minutes long for a paid skill` },
+      { status: 400 }
+    );
   }
 
-  return NextResponse.json({ user: toSafeUser(updatedUser), collection }, { status: 201 });
+  const collection = await prisma.skillCollectionSession.create({
+    data: {
+      userId,
+      skillId: skill.id,
+      status: "UPLOADED",
+      fileName: parsed.data.fileName,
+      durationSec: parsed.data.durationSec,
+    },
+    include: { skill: true },
+  });
+
+  return NextResponse.json({ collection }, { status: 201 });
 }

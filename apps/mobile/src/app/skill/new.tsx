@@ -1,11 +1,12 @@
 import { router } from "expo-router";
 import { X } from "lucide-react-native";
 import { useState } from "react";
-import { Alert, Pressable, StyleSheet, Text, View } from "react-native";
+import { Pressable, StyleSheet, Text, View } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 import { Button } from "../../components/Button";
 import { TextField } from "../../components/TextField";
+import { Alert } from "../../lib/alert";
 import { useSkills } from "../../lib/skills-context";
 import { colors, fonts, radii, spacing } from "../../theme";
 

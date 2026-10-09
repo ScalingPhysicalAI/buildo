@@ -1,12 +1,13 @@
 import { router, useFocusEffect } from "expo-router";
 import { Check, ChevronRight, Download, Plus } from "lucide-react-native";
 import { useCallback, useState } from "react";
-import { Alert, Pressable, ScrollView, StyleSheet, Text, View } from "react-native";
+import { Pressable, ScrollView, StyleSheet, Text, View } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 import { Button } from "../../../components/Button";
 import { Card } from "../../../components/Card";
 import { StatusPill } from "../../../components/StatusPill";
+import { Alert } from "../../../lib/alert";
 import { getDisplayStatus } from "../../../lib/skill-status";
 import { useSkills } from "../../../lib/skills-context";
 import type { AppDeployStatus, AppListing, AppStoreListing } from "../../../lib/skills-api";
@@ -111,7 +112,7 @@ export default function BuildScreen() {
           <Text style={[styles.tabChipText, tab === "mine" && styles.tabChipTextActive]}>My apps</Text>
         </Pressable>
         <Pressable onPress={() => setTab("store")} style={[styles.tabChip, tab === "store" && styles.tabChipActive]}>
-          <Text style={[styles.tabChipText, tab === "store" && styles.tabChipTextActive]}>App store</Text>
+          <Text style={[styles.tabChipText, tab === "store" && styles.tabChipTextActive]}>Buildo app store</Text>
         </Pressable>
       </View>
 

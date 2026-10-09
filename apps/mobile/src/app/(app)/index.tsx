@@ -1,5 +1,5 @@
 import { router } from "expo-router";
-import { Glasses, Hand, LogOut, Wifi, ChevronRight } from "lucide-react-native";
+import { Glasses, Hand, LogOut, ChevronRight } from "lucide-react-native";
 import { Pressable, ScrollView, StyleSheet, Text, View } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
@@ -24,7 +24,7 @@ export default function HomeScreen() {
   const insets = useSafeAreaInsets();
   const firstName = user?.name?.split(" ")[0] ?? "there";
 
-  const allConnected = devices.glasses === "connected" && devices.gloves === "connected" && devices.buildo === "connected";
+  const allConnected = devices.glasses === "connected" && devices.gloves === "connected";
 
   return (
     <ScrollView
@@ -40,7 +40,7 @@ export default function HomeScreen() {
 
       <Text style={styles.greeting}>Hi, {firstName}</Text>
       <Text style={styles.greetingSub}>
-        {allConnected ? "Everything's paired — ready to train." : "Pair your gear, then train a skill to earn $."}
+        {allConnected ? "Everything's paired — ready to train." : "Pair your gear, then train a skill to earn $$."}
       </Text>
 
       <Card style={styles.creditCard}>
@@ -72,11 +72,6 @@ export default function HomeScreen() {
             <Hand size={18} color={colors.textPrimary} />
             <Text style={styles.deviceName}>Haptic gloves</Text>
             <StatusPill label={devices.gloves} tone={statusTone(devices.gloves)} />
-          </View>
-          <View style={styles.deviceRow}>
-            <Wifi size={18} color={colors.textPrimary} />
-            <Text style={styles.deviceName}>Buildo unit</Text>
-            <StatusPill label={devices.buildo} tone={statusTone(devices.buildo)} />
           </View>
         </Card>
       </Pressable>

@@ -1,5 +1,5 @@
-import { useEffect, useRef, useState } from "react";
-import { Check, Glasses, Hand, Wifi, Battery, X } from "lucide-react-native";
+import { useEffect, useRef } from "react";
+import { Glasses, Hand, Battery, X } from "lucide-react-native";
 import { Animated, Easing, Pressable, ScrollView, StyleSheet, Text, View } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
@@ -8,15 +8,6 @@ import { Card } from "../../components/Card";
 import { StatusPill } from "../../components/StatusPill";
 import { useDevices, type ConnectionStatus } from "../../lib/device-context";
 import { colors, fonts, radii, spacing } from "../../theme";
-
-// No real Buildo unit broadcasts wifi networks yet (same "no hardware"
-// situation noted throughout this repo) -- this is what the picker looks
-// like once one does.
-const MOCK_NETWORKS = [
-  { ssid: "Buildo-Unit-04A2", signal: 3 },
-  { ssid: "Buildo-Unit-91F0", signal: 2 },
-  { ssid: "StarforgeLab-5G", signal: 3 },
-];
 
 function PulsingIcon({ active, children }: { active: boolean; children: React.ReactNode }) {
   const pulse = useRef(new Animated.Value(1)).current;
@@ -98,14 +89,6 @@ function DeviceRow({
 export default function PairScreen() {
   const devices = useDevices();
   const insets = useSafeAreaInsets();
-  const [showNetworks, setShowNetworks] = useState(false);
-  const [joiningSsid, setJoiningSsid] = useState<string | null>(null);
-
-  function joinNetwork(ssid: string) {
-    setJoiningSsid(ssid);
-    devices.connectBuildo(ssid);
-    setShowNetworks(false);
-  }
 
   return (
     <ScrollView
@@ -113,7 +96,7 @@ export default function PairScreen() {
       contentContainerStyle={[styles.scroll, { paddingTop: insets.top + spacing.md }]}
     >
       <Text style={styles.title}>Pair your gear</Text>
-      <Text style={styles.subtitle}>Glasses and gloves connect over Bluetooth. Buildo joins your wifi network.</Text>
+      <Text style={styles.subtitle}>Glasses and gloves connect over Bluetooth.</Text>
 
       <DeviceRow
         icon={<Glasses size={22} color={devices.glasses === "connected" ? colors.success : colors.sandDark} />}
@@ -134,54 +117,6 @@ export default function PairScreen() {
         onConnect={devices.connectGloves}
         onDisconnect={() => devices.disconnect("gloves")}
       />
-
-      <Card style={styles.deviceCard}>
-        <View style={styles.deviceTop}>
-          <View style={[styles.iconWrap, devices.buildo === "connected" && styles.iconWrapConnected]}>
-            <PulsingIcon active={devices.buildo === "connecting"}>
-              <Wifi size={22} color={devices.buildo === "connected" ? colors.success : colors.sandDark} />
-            </PulsingIcon>
-          </View>
-          <View style={{ flex: 1 }}>
-            <Text style={styles.deviceName}>Buildo unit</Text>
-            <Text style={styles.deviceDetail}>{devices.buildoNetwork ?? "Not on your network yet"}</Text>
-          </View>
-          <StatusPill
-            label={devices.buildo}
-            tone={devices.buildo === "connected" ? "success" : devices.buildo === "connecting" ? "warning" : "neutral"}
-          />
-        </View>
-
-        {devices.buildo === "disconnected" && (
-          <Button
-            label="Find nearby Buildo"
-            variant="secondary"
-            onPress={() => setShowNetworks((v) => !v)}
-            style={{ marginTop: spacing.sm }}
-          />
-        )}
-        {devices.buildo === "connecting" && (
-          <Text style={styles.joiningText}>Joining {joiningSsid}…</Text>
-        )}
-        {devices.buildo === "connected" && (
-          <Pressable onPress={() => devices.disconnect("buildo")} style={styles.disconnectLink}>
-            <X size={13} color={colors.textMuted} />
-            <Text style={styles.disconnectText}>Disconnect</Text>
-          </Pressable>
-        )}
-
-        {showNetworks && (
-          <View style={styles.networkList}>
-            {MOCK_NETWORKS.map((n) => (
-              <Pressable key={n.ssid} style={styles.networkRow} onPress={() => joinNetwork(n.ssid)}>
-                <Wifi size={16} color={colors.textMuted} />
-                <Text style={styles.networkSsid}>{n.ssid}</Text>
-                <Check size={16} color={colors.sandDark} style={{ opacity: 0 }} />
-              </Pressable>
-            ))}
-          </View>
-        )}
-      </Card>
     </ScrollView>
   );
 }
@@ -257,30 +192,5 @@ const styles = StyleSheet.create({
     fontFamily: fonts.body,
     fontSize: 12,
     color: colors.textMuted,
-  },
-  joiningText: {
-    fontFamily: fonts.body,
-    fontSize: 13,
-    color: colors.sandDark,
-    marginTop: spacing.sm,
-    textAlign: "center",
-  },
-  networkList: {
-    marginTop: spacing.md,
-    borderTopWidth: 1,
-    borderTopColor: colors.border,
-    paddingTop: spacing.sm,
-  },
-  networkRow: {
-    flexDirection: "row",
-    alignItems: "center",
-    gap: spacing.sm,
-    paddingVertical: spacing.sm,
-  },
-  networkSsid: {
-    flex: 1,
-    fontFamily: fonts.bodyMedium,
-    fontSize: 14,
-    color: colors.textPrimary,
   },
 });
