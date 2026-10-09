@@ -4,13 +4,13 @@ import { useState } from "react";
 import { Pressable, ScrollView, StyleSheet, Text, View } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
-import { Button } from "../../../components/Button";
-import { Card } from "../../../components/Card";
-import { StatusPill } from "../../../components/StatusPill";
-import { Alert } from "../../../lib/alert";
-import { useSkills } from "../../../lib/skills-context";
-import type { AppDeployStatus } from "../../../lib/skills-api";
-import { colors, fonts, radii, spacing } from "../../../theme";
+import { Button } from "../../components/Button";
+import { Card } from "../../components/Card";
+import { StatusPill } from "../../components/StatusPill";
+import { Alert } from "../../lib/alert";
+import { useSkills } from "../../lib/skills-context";
+import type { AppDeployStatus } from "../../lib/skills-api";
+import { colors, fonts, radii, spacing } from "../../theme";
 
 const DEPLOY_FEE = 5;
 
@@ -22,7 +22,7 @@ const STATUS_TONE: Record<AppDeployStatus, "neutral" | "success" | "warning" | "
   LIVE: "success",
 };
 
-function closeOrGoHome() {
+function closeOrGoBuild() {
   if (router.canGoBack()) {
     router.back();
   } else {
@@ -81,7 +81,7 @@ export default function AppDetailScreen() {
       style={{ backgroundColor: colors.background }}
       contentContainerStyle={[styles.scroll, { paddingTop: insets.top + spacing.md }]}
     >
-      <Pressable onPress={closeOrGoHome} style={styles.closeBtn} hitSlop={12}>
+      <Pressable onPress={closeOrGoBuild} style={styles.closeBtn} hitSlop={12}>
         <X size={20} color={colors.textPrimary} />
       </Pressable>
 

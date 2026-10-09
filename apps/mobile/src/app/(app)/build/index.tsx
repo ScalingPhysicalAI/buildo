@@ -45,7 +45,7 @@ function AppCard({ app }: { app: AppListing }) {
   }
 
   return (
-    <Pressable onPress={() => router.push(`/(app)/build/${app.id}`)}>
+    <Pressable onPress={() => router.push(`/build/${app.id}`)}>
       <Card style={styles.appCard}>
         <View style={styles.appCardTop}>
           <View style={{ flex: 1 }}>
@@ -85,31 +85,34 @@ function StoreCard({ app }: { app: AppStoreListing }) {
   }
 
   return (
-    <Card style={styles.appCard}>
-      <View style={styles.appCardTop}>
-        <View style={{ flex: 1 }}>
-          <Text style={styles.appName}>{app.name}</Text>
-          <Text style={styles.appMeta}>
-            {app.category} · by {app.user.name} · {app.skills.length} skill{app.skills.length === 1 ? "" : "s"}
-          </Text>
-        </View>
-      </View>
-      {app.description ? <Text style={styles.appDescription}>{app.description}</Text> : null}
-      <View style={styles.storeCardFooter}>
-        <View style={styles.downloadsRow}>
-          <Download size={13} color={colors.textMuted} />
-          <Text style={styles.downloadsText}>{app.installCount} installs</Text>
-        </View>
-        {app.installedByMe ? (
-          <View style={styles.installedRow}>
-            <Check size={14} color={colors.success} />
-            <Text style={styles.installedText}>Installed</Text>
+    <Pressable onPress={() => router.push(`/store/${app.id}`)}>
+      <Card style={styles.appCard}>
+        <View style={styles.appCardTop}>
+          <View style={{ flex: 1 }}>
+            <Text style={styles.appName}>{app.name}</Text>
+            <Text style={styles.appMeta}>
+              {app.category} · by {app.user.name} · {app.skills.length} skill{app.skills.length === 1 ? "" : "s"}
+            </Text>
           </View>
-        ) : (
-          <Button label="Install" onPress={handleInstall} loading={busy} style={styles.installBtn} />
-        )}
-      </View>
-    </Card>
+          <ChevronRight size={18} color={colors.textMuted} />
+        </View>
+        {app.description ? <Text style={styles.appDescription}>{app.description}</Text> : null}
+        <View style={styles.storeCardFooter}>
+          <View style={styles.downloadsRow}>
+            <Download size={13} color={colors.textMuted} />
+            <Text style={styles.downloadsText}>{app.installCount} installs</Text>
+          </View>
+          {app.installedByMe ? (
+            <View style={styles.installedRow}>
+              <Check size={14} color={colors.success} />
+              <Text style={styles.installedText}>Installed</Text>
+            </View>
+          ) : (
+            <Button label="Install" onPress={handleInstall} loading={busy} style={styles.installBtn} />
+          )}
+        </View>
+      </Card>
+    </Pressable>
   );
 }
 
@@ -155,7 +158,7 @@ export default function BuildScreen() {
             <Button
               label="New app"
               icon={<Plus size={18} color={colors.white} />}
-              onPress={() => router.push("/(app)/build/new")}
+              onPress={() => router.push("/build/new")}
               disabled={trainedCount === 0}
               style={styles.newAppBtn}
             />

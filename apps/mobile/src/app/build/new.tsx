@@ -4,13 +4,13 @@ import { useState } from "react";
 import { Pressable, ScrollView, StyleSheet, Text, View } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
-import { Button } from "../../../components/Button";
-import { TextField } from "../../../components/TextField";
-import { Alert } from "../../../lib/alert";
-import { getDisplayStatus } from "../../../lib/skill-status";
-import { useSkills } from "../../../lib/skills-context";
-import type { AppCategory } from "../../../lib/skills-api";
-import { colors, fonts, radii, spacing } from "../../../theme";
+import { Button } from "../../components/Button";
+import { TextField } from "../../components/TextField";
+import { Alert } from "../../lib/alert";
+import { getDisplayStatus } from "../../lib/skill-status";
+import { useSkills } from "../../lib/skills-context";
+import type { AppCategory } from "../../lib/skills-api";
+import { colors, fonts, radii, spacing } from "../../theme";
 
 const CATEGORIES: { value: AppCategory; label: string }[] = [
   { value: "HOME", label: "Home use" },
@@ -21,7 +21,7 @@ const CATEGORIES: { value: AppCategory; label: string }[] = [
   { value: "INVENTORY", label: "Inventory" },
 ];
 
-function closeOrGoHome() {
+function closeOrGoBuild() {
   if (router.canGoBack()) {
     router.back();
   } else {
@@ -67,7 +67,7 @@ export default function NewAppScreen() {
         category,
         skillCollectionIds: Array.from(selected),
       });
-      router.replace(`/(app)/build/${app.id}`);
+      router.replace(`/build/${app.id}`);
     } catch (err) {
       Alert.alert("Couldn't create app", err instanceof Error ? err.message : "Try again.");
     } finally {
@@ -81,7 +81,7 @@ export default function NewAppScreen() {
       contentContainerStyle={[styles.scroll, { paddingTop: insets.top + spacing.md }]}
       keyboardShouldPersistTaps="handled"
     >
-      <Pressable onPress={closeOrGoHome} style={styles.closeBtn} hitSlop={12}>
+      <Pressable onPress={closeOrGoBuild} style={styles.closeBtn} hitSlop={12}>
         <X size={20} color={colors.textPrimary} />
       </Pressable>
 
