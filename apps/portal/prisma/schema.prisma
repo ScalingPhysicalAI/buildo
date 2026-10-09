@@ -10,8 +10,16 @@ generator client {
 }
 
 datasource db {
-  provider = "postgresql"
-  url      = env("DATABASE_URL")
+  provider  = "postgresql"
+  url       = env("DATABASE_URL")
+  // Migrations (prisma migrate deploy) need a direct, session-persistent
+  // connection to take the advisory lock they use to guard against two
+  // migrations running at once. DATABASE_URL points at Neon's pooled
+  // (PgBouncer) endpoint, which doesn't reliably hold that lock -- hence
+  // the P1002 "timed out acquiring advisory lock" failure. directUrl is
+  // used only for migrate/introspect commands; the app's runtime queries
+  // still go through the fast pooled DATABASE_URL above.
+  directUrl = env("DATABASE_URL_UNPOOLED")
 }
 
 enum Role {
