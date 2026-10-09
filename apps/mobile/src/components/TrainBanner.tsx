@@ -15,7 +15,7 @@ export function TrainBanner() {
       </View>
       <View style={styles.textWrap}>
         <Text style={styles.title}>Train skills</Text>
-        <Text style={styles.subtitle}>Earn $ when apps built with your skills are installed</Text>
+        <Text style={styles.subtitle}>Earn $$ when apps built with your skills are installed</Text>
       </View>
       <ArrowUpRight size={18} color={colors.sand} />
     </Pressable>

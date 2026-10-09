@@ -10,6 +10,7 @@ import {
   createApp as apiCreateApp,
   createCustomSkill as apiCreateCustomSkill,
   createSkillCollection as apiCreateSkillCollection,
+  deleteApp as apiDeleteApp,
   deployApp as apiDeployApp,
   fetchAppStore as apiFetchAppStore,
   fetchApps as apiFetchApps,
@@ -44,6 +45,7 @@ interface SkillsState {
   deployApp: (id: string) => Promise<AppListing>;
   publishApp: (id: string) => Promise<AppListing>;
   installApp: (id: string) => Promise<void>;
+  deleteApp: (id: string) => Promise<void>;
 }
 
 const SkillsContext = createContext<SkillsState | null>(null);
@@ -135,6 +137,11 @@ export function SkillsProvider({ children }: { children: ReactNode }) {
     await refreshAppStore();
   }
 
+  async function deleteApp(id: string) {
+    await apiDeleteApp(id);
+    await refreshApps();
+  }
+
   return (
     <SkillsContext.Provider
       value={{
@@ -152,6 +159,7 @@ export function SkillsProvider({ children }: { children: ReactNode }) {
         deployApp,
         publishApp,
         installApp,
+        deleteApp,
       }}
     >
       {children}

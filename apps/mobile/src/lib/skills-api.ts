@@ -146,6 +146,10 @@ export async function deployApp(id: string): Promise<AppListing> {
   return data.app;
 }
 
+export async function deleteApp(id: string): Promise<void> {
+  await request<{ ok: true }>(`/api/apps/${id}`, { method: "DELETE" });
+}
+
 export async function publishApp(id: string): Promise<{ user: SafeUser; app: AppListing }> {
   return request<{ user: SafeUser; app: AppListing }>(`/api/apps/${id}/publish`, { method: "POST" });
 }

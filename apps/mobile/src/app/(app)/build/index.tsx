@@ -1,7 +1,7 @@
 import { router, useFocusEffect } from "expo-router";
-import { Check, ChevronRight, Download, Plus } from "lucide-react-native";
+import { Check, ChevronRight, Download, Plus, Trash2 } from "lucide-react-native";
 import { useCallback, useState } from "react";
-import { Pressable, ScrollView, StyleSheet, Text, View } from "react-native";
+import { ActivityIndicator, Pressable, ScrollView, StyleSheet, Text, View } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 import { Button } from "../../../components/Button";
@@ -22,6 +22,28 @@ const STATUS_TONE: Record<AppDeployStatus, "neutral" | "success" | "warning" | "
 };
 
 function AppCard({ app }: { app: AppListing }) {
+  const { deleteApp } = useSkills();
+  const [deleting, setDeleting] = useState(false);
+
+  function confirmDelete() {
+    Alert.alert("Delete this app?", `"${app.name}" will be permanently deleted.`, [
+      { text: "Cancel", style: "cancel" },
+      {
+        text: "Delete",
+        style: "destructive",
+        onPress: async () => {
+          setDeleting(true);
+          try {
+            await deleteApp(app.id);
+          } catch (err) {
+            Alert.alert("Couldn't delete app", err instanceof Error ? err.message : "Try again.");
+            setDeleting(false);
+          }
+        },
+      },
+    ]);
+  }
+
   return (
     <Pressable onPress={() => router.push(`/(app)/build/${app.id}`)}>
       <Card style={styles.appCard}>
@@ -32,6 +54,13 @@ function AppCard({ app }: { app: AppListing }) {
               {app.category} · {app.skills.length} skill{app.skills.length === 1 ? "" : "s"}
             </Text>
           </View>
+          <Pressable onPress={confirmDelete} disabled={deleting} hitSlop={8} style={styles.deleteBtn}>
+            {deleting ? (
+              <ActivityIndicator size="small" color={colors.textMuted} />
+            ) : (
+              <Trash2 size={16} color={colors.textMuted} />
+            )}
+          </Pressable>
           <ChevronRight size={18} color={colors.textMuted} />
         </View>
         <StatusPill label={app.status} tone={STATUS_TONE[app.status]} />
@@ -243,6 +272,15 @@ const styles = StyleSheet.create({
   appCardTop: {
     flexDirection: "row",
     alignItems: "center",
+    gap: spacing.sm,
+  },
+  deleteBtn: {
+    width: 32,
+    height: 32,
+    borderRadius: radii.pill,
+    alignItems: "center",
+    justifyContent: "center",
+    backgroundColor: colors.backgroundAlt,
   },
   appName: {
     fontFamily: fonts.bodySemiBold,
