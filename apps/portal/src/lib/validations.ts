@@ -52,14 +52,7 @@ export const customSkillCreateSchema = z.object({
   name: z.string().trim().min(2, "Name must be at least 2 characters").max(60),
 });
 
-export const appCategorySchema = z.enum([
-  "HOME",
-  "GENERAL",
-  "PUBLIC",
-  "KITCHEN",
-  "CLEANING",
-  "INVENTORY",
-]);
+export const appCategorySchema = z.enum(["HOME", "SHOP", "OFFICE", "WAREHOUSE", "HOSPITAL"]);
 
 export const appListingCreateSchema = z.object({
   name: z.string().trim().min(2, "Name must be at least 2 characters").max(60),

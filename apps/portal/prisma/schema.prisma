@@ -38,6 +38,8 @@ model User {
 
   tokenBalance Int @default(0)
 
+  referralCode String? @unique
+
   emailVerified       Boolean   @default(false)
   emailVerifyToken    String?   @unique
   emailVerifyExpiry   DateTime?
@@ -201,11 +203,10 @@ model SkillCollectionSession {
 
 enum AppCategory {
   HOME
-  GENERAL
-  PUBLIC
-  KITCHEN
-  CLEANING
-  INVENTORY
+  SHOP
+  OFFICE
+  WAREHOUSE
+  HOSPITAL
 }
 
 enum AppDeployStatus {
@@ -241,6 +242,12 @@ model AppListing {
   // same "real pipeline, simulated backend" shape as GpuSession.
   testReport  Json?
   publishedAt DateTime?
+
+  // The 7-day "Train and Deploy" testing window is modeled the same way as
+  // SkillCollectionSession.trainEndsAt -- a TESTING app sitting past this
+  // timestamp is resolved to LIVE (and charged the deploy fee) the next
+  // time anything reads it, so no scheduler is needed.
+  testingEndsAt DateTime?
 
   // Running total of $ credit this app has earned its creator from
   // installs -- incremented alongside the matching APP_EARNINGS
