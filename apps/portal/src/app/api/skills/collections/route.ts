@@ -24,7 +24,9 @@ export async function GET(request: Request) {
 // uploaded -- mirrors the client-side gate on the Stop button, enforced
 // again here since the client can't be trusted. Custom (unpaid) skills have
 // no minimum.
-const MIN_PAID_RECORDING_SEC = 120;
+// TEMP: shortened from the real 2 minutes for testing. Restore to 120 before
+// this is real.
+const MIN_PAID_RECORDING_SEC = 10;
 
 // Called once the mobile app has finished uploading a recorded session for a
 // skill. Does NOT pay anything at upload time -- a skill's reward is only
@@ -55,7 +57,7 @@ export async function POST(request: Request) {
 
   if (skill.reward > 0 && (parsed.data.durationSec ?? 0) < MIN_PAID_RECORDING_SEC) {
     return NextResponse.json(
-      { error: `Recording must be at least ${MIN_PAID_RECORDING_SEC / 60} minutes long for a paid skill` },
+      { error: `Recording must be at least ${MIN_PAID_RECORDING_SEC} seconds long for a paid skill` },
       { status: 400 }
     );
   }
