@@ -58,6 +58,7 @@ model User {
   skillCollections  SkillCollectionSession[]
   appListings       AppListing[]
   customSkills      SkillDefinition[]
+  gadgetOrders      GadgetOrder[]
 }
 
 enum TransactionType {
@@ -69,6 +70,7 @@ enum TransactionType {
   SKILL_COLLECTION_REWARD
   APP_DEPLOY_FEE
   APP_EARNINGS
+  GADGET_PURCHASE
   AIRDROP
 }
 
@@ -288,4 +290,26 @@ model AppListingSkill {
   skillCollection   SkillCollectionSession @relation(fields: [skillCollectionId], references: [id])
 
   @@unique([appId, skillCollectionId])
+}
+
+// A "Use wallet" order for the Buildo Development Kit -- paid directly out
+// of the buyer's $ credit balance rather than a real checkout, same
+// simulated-but-real-ledger shape as GpuSession/SkillOrder. The balance is
+// allowed to go negative for this one purchase path (see MIN_WALLET_BALANCE
+// in the order route) rather than being blocked outright.
+model GadgetOrder {
+  id     String @id @default(cuid())
+  userId String
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  recipientName  String
+  recipientEmail String
+  phone          String?
+  shippingAddress String
+
+  price Int // $ credit charged, debited from tokenBalance
+
+  createdAt DateTime @default(now())
+
+  @@index([userId])
 }
