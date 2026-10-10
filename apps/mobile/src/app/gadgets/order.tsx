@@ -1,7 +1,17 @@
 import { router } from "expo-router";
 import { Check, Wallet, X } from "lucide-react-native";
 import { useState } from "react";
-import { Image, Pressable, ScrollView, StyleSheet, Text, View } from "react-native";
+import {
+  Image,
+  Pressable,
+  ScrollView,
+  StyleSheet,
+  Text,
+  View,
+  useWindowDimensions,
+  type NativeScrollEvent,
+  type NativeSyntheticEvent,
+} from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 import { Button } from "../../components/Button";
@@ -15,15 +25,15 @@ import { colors, fonts, radii, spacing } from "../../theme";
 const KIT_PRICE = 499;
 const MIN_WALLET_BALANCE = -500;
 
-const HERO_IMAGE = "https://cdn.shopify.com/s/files/1/0954/5685/4200/files/IMG-20260917-WA0065.jpg?v=1789675398";
+// Amazon-style top gallery -- swipe through the kit's product photos.
+const GALLERY_IMAGES = [
+  "https://cdn.shopify.com/s/files/1/0954/5685/4200/files/IMG-20260917-WA0065.jpg?v=1789675398",
+  "https://cdn.shopify.com/s/files/1/0954/5685/4200/files/IMG-20260917-WA0064.jpg?v=1789675966",
+];
 
 const INCLUDED = [
   { label: "Egocentric glasses", image: "https://starforgerobotics.com/assets/buildo-kit-glasses.png" },
   { label: "Teleoperation gloves", image: "https://starforgerobotics.com/assets/buildo-kit-gloves.png" },
-  {
-    label: "Buildo Development Kit",
-    image: "https://cdn.shopify.com/s/files/1/0954/5685/4200/files/IMG-20260917-WA0064.jpg?v=1789675966",
-  },
 ];
 
 const SPECS = [
@@ -43,6 +53,7 @@ function closeOrGoHome() {
 
 export default function GadgetOrderScreen() {
   const insets = useSafeAreaInsets();
+  const { width: windowWidth } = useWindowDimensions();
   const { user, refresh } = useAuth();
 
   const [name, setName] = useState(user?.name ?? "");
@@ -51,6 +62,14 @@ export default function GadgetOrderScreen() {
   const [address, setAddress] = useState("");
   const [busy, setBusy] = useState(false);
   const [placed, setPlaced] = useState(false);
+  const [activeImage, setActiveImage] = useState(0);
+
+  const galleryWidth = windowWidth - spacing.lg * 2;
+
+  function handleGalleryScroll(e: NativeSyntheticEvent<NativeScrollEvent>) {
+    const index = Math.round(e.nativeEvent.contentOffset.x / galleryWidth);
+    setActiveImage(index);
+  }
 
   const projectedBalance = (user?.tokenBalance ?? 0) - KIT_PRICE;
   const overLimit = projectedBalance < MIN_WALLET_BALANCE;
@@ -114,7 +133,23 @@ export default function GadgetOrderScreen() {
         <X size={20} color={colors.textPrimary} />
       </Pressable>
 
-      <Image source={{ uri: HERO_IMAGE }} style={styles.heroImage} resizeMode="cover" />
+      <ScrollView
+        horizontal
+        pagingEnabled
+        showsHorizontalScrollIndicator={false}
+        onScroll={handleGalleryScroll}
+        scrollEventThrottle={16}
+        style={{ width: galleryWidth }}
+      >
+        {GALLERY_IMAGES.map((uri) => (
+          <Image key={uri} source={{ uri }} style={[styles.heroImage, { width: galleryWidth }]} resizeMode="cover" />
+        ))}
+      </ScrollView>
+      <View style={styles.dotsRow}>
+        {GALLERY_IMAGES.map((uri, i) => (
+          <View key={uri} style={[styles.dot, i === activeImage && styles.dotActive]} />
+        ))}
+      </View>
 
       <View style={styles.titleRow}>
         <Text style={styles.title}>Buildo Development Kit</Text>
@@ -126,18 +161,14 @@ export default function GadgetOrderScreen() {
       </Text>
 
       <Text style={styles.sectionTitle}>What's included</Text>
-      <ScrollView
-        horizontal
-        showsHorizontalScrollIndicator={false}
-        contentContainerStyle={styles.includedScroll}
-      >
+      <Card style={styles.includedCard}>
         {INCLUDED.map((item) => (
-          <Card key={item.label} style={styles.includedCard}>
-            <Image source={{ uri: item.image }} style={styles.includedImage} resizeMode="cover" />
+          <View key={item.label} style={styles.includedRow}>
+            <Image source={{ uri: item.image }} style={styles.includedIcon} resizeMode="contain" />
             <Text style={styles.includedLabel}>{item.label}</Text>
-          </Card>
+          </View>
         ))}
-      </ScrollView>
+      </Card>
 
       <Text style={styles.sectionTitle}>Key specs</Text>
       <View style={styles.specGrid}>
@@ -187,6 +218,7 @@ export default function GadgetOrderScreen() {
 
       <Button
         label={`Pay $${KIT_PRICE} with wallet`}
+        variant="cream"
         onPress={handlePay}
         loading={busy}
         disabled={overLimit}
@@ -219,11 +251,26 @@ const styles = StyleSheet.create({
     marginBottom: spacing.md,
   },
   heroImage: {
-    width: "100%",
     aspectRatio: 4 / 3,
     borderRadius: radii.lg,
     backgroundColor: colors.backgroundAlt,
+  },
+  dotsRow: {
+    flexDirection: "row",
+    justifyContent: "center",
+    gap: 6,
+    marginTop: spacing.sm,
     marginBottom: spacing.md,
+  },
+  dot: {
+    width: 6,
+    height: 6,
+    borderRadius: 3,
+    backgroundColor: colors.border,
+  },
+  dotActive: {
+    backgroundColor: colors.sandDark,
+    width: 16,
   },
   titleRow: {
     flexDirection: "row",
@@ -257,26 +304,22 @@ const styles = StyleSheet.create({
     marginTop: spacing.lg,
     marginBottom: spacing.sm,
   },
-  includedScroll: {
-    gap: spacing.sm,
-    paddingRight: spacing.lg,
-  },
   includedCard: {
-    width: 150,
+    gap: spacing.sm,
+  },
+  includedRow: {
+    flexDirection: "row",
     alignItems: "center",
     gap: spacing.sm,
   },
-  includedImage: {
-    width: 110,
-    height: 110,
-    borderRadius: radii.md,
-    backgroundColor: colors.sandSurface,
+  includedIcon: {
+    width: 28,
+    height: 28,
   },
   includedLabel: {
     fontFamily: fonts.bodyMedium,
-    fontSize: 13,
+    fontSize: 14,
     color: colors.textPrimary,
-    textAlign: "center",
   },
   specGrid: {
     flexDirection: "row",

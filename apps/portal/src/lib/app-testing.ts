@@ -2,8 +2,10 @@ import type { AppListing } from "@prisma/client";
 
 import { prisma } from "@/lib/prisma";
 
-// Real 7-day testing window before an app goes live.
-export const APP_TESTING_DURATION_MS = 7 * 24 * 60 * 60 * 1000;
+// TEMP: shortened from the real 7 days so the Train and Deploy -> Live flow
+// can be tested end to end without waiting a week. Restore to
+// 7 * 24 * 60 * 60 * 1000 before this is real.
+export const APP_TESTING_DURATION_MS = 1 * 60 * 1000;
 
 // Charged up front when "Train and Deploy" starts the testing window (see
 // apps/[id]/deploy/route.ts) -- not charged again here.

@@ -52,7 +52,8 @@ type Phase = "instructions" | "recording" | "review";
 // Paid skills must record at least this long before Stop is allowed -- the
 // backend enforces the same minimum on upload, so this is UX, not the only
 // gate. Custom (unpaid) skills have no minimum.
-const MIN_PAID_RECORDING_SECONDS = 120;
+// TEMP: shortened from the real 2 minutes (120s) for testing.
+const MIN_PAID_RECORDING_SECONDS = 10;
 
 export default function SkillDetailScreen() {
   const { slug } = useLocalSearchParams<{ slug: string }>();
