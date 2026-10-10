@@ -1,53 +1,54 @@
 import { router, useFocusEffect } from "expo-router";
-import { ChevronRight, Plus } from "lucide-react-native";
+import { Briefcase, ChevronRight, Hospital, House, Plus, Store, Warehouse } from "lucide-react-native";
 import { useCallback } from "react";
 import { Pressable, ScrollView, StyleSheet, Text, View } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 import { Card } from "../../components/Card";
-import { StatusPill } from "../../components/StatusPill";
-import { formatTimeLeft, getDisplayStatus, type DisplayStatus } from "../../lib/skill-status";
 import { useSkills } from "../../lib/skills-context";
+import { USE_CASES, estimatedIncomeLabel, type UseCase } from "../../lib/use-cases";
 import type { SkillCatalogEntry } from "../../lib/skills-api";
 import { colors, fonts, radii, spacing } from "../../theme";
 
-const STATUS_LABEL: Record<DisplayStatus, string> = {
-  available: "Record",
-  uploaded: "Ready to train",
-  training: "Training",
-  trained: "Trained",
-  failed: "Failed",
+const USE_CASE_ICON: Record<UseCase["key"], typeof House> = {
+  HOME: House,
+  SHOP: Store,
+  OFFICE: Briefcase,
+  WAREHOUSE: Warehouse,
+  HOSPITAL: Hospital,
 };
 
-const STATUS_TONE: Record<DisplayStatus, "neutral" | "success" | "warning" | "error"> = {
-  available: "neutral",
-  uploaded: "warning",
-  training: "warning",
-  trained: "success",
-  failed: "error",
-};
+function useCaseProgress(useCase: UseCase, catalog: SkillCatalogEntry[]) {
+  const total = useCase.skillSlugs.length;
+  const done = useCase.skillSlugs.filter((slug) => {
+    const entry = catalog.find((s) => s.slug === slug);
+    return !!entry?.collection && entry.collection.status !== "FAILED";
+  }).length;
+  return { done, total };
+}
 
-function SkillCard({ entry }: { entry: SkillCatalogEntry }) {
-  const status = getDisplayStatus(entry.collection);
-  const label =
-    status === "training"
-      ? formatTimeLeft(entry.collection?.trainEndsAt ?? null)
-      : status === "available" && entry.reward > 0
-        ? `$${entry.reward} per install`
-        : STATUS_LABEL[status];
+function UseCaseCard({ useCase, catalog }: { useCase: UseCase; catalog: SkillCatalogEntry[] }) {
+  const { done, total } = useCaseProgress(useCase, catalog);
+  const Icon = USE_CASE_ICON[useCase.key];
+  const complete = done === total;
 
   return (
-    <Pressable onPress={() => router.push(`/skill/${entry.slug}`)}>
-      <Card style={styles.skillCard}>
-        <View style={styles.skillCardTop}>
-          <View style={{ flex: 1 }}>
-            <Text style={styles.skillName}>{entry.name}</Text>
-            <Text style={styles.skillCategory}>{entry.category}</Text>
-          </View>
-          <ChevronRight size={18} color={colors.textMuted} />
+    <Pressable onPress={() => router.push(`/use-case/${useCase.key}`)}>
+      <Card style={styles.useCaseCard}>
+        <View style={styles.useCaseIcon}>
+          <Icon size={22} color={colors.sandDark} />
         </View>
-        <Text style={styles.skillSummary}>{entry.summary}</Text>
-        <StatusPill label={label} tone={STATUS_TONE[status]} />
+        <View style={{ flex: 1 }}>
+          <Text style={styles.useCaseTitle}>{useCase.title}</Text>
+          <Text style={styles.useCaseDescription}>{useCase.description}</Text>
+          <View style={styles.useCaseMetaRow}>
+            <Text style={styles.useCaseIncome}>{estimatedIncomeLabel(useCase)}</Text>
+            <Text style={[styles.useCaseProgress, complete && styles.useCaseProgressDone]}>
+              {done}/{total} skills
+            </Text>
+          </View>
+        </View>
+        <ChevronRight size={18} color={colors.textMuted} />
       </Card>
     </Pressable>
   );
@@ -57,56 +58,43 @@ export default function TrainScreen() {
   const insets = useSafeAreaInsets();
   const { catalog, isLoading, refreshCatalog } = useSkills();
 
-  // A session sitting in TRAINING resolves to TRAINED lazily, server-side,
-  // the next time it's read -- re-syncing on focus means coming back to
-  // this tab after the timer ends is enough to see it flip, no polling.
   useFocusEffect(
     useCallback(() => {
       refreshCatalog().catch(() => {});
     }, [refreshCatalog])
   );
 
-  const paidSkills = catalog.filter((s) => !s.isCustom);
   const customSkills = catalog.filter((s) => s.isCustom);
-  const trainedCount = catalog.filter((s) => getDisplayStatus(s.collection) === "trained").length;
 
   return (
     <ScrollView
       style={{ backgroundColor: colors.background }}
       contentContainerStyle={[styles.scroll, { paddingTop: insets.top + spacing.md }]}
     >
-      <Text style={styles.title}>Train a skill</Text>
-      <Text style={styles.subtitle}>
-        Pick a skill below, follow the instructions, and record yourself performing it to earn $ credit.
-      </Text>
-
-      {trainedCount > 0 ? (
-        <Pressable onPress={() => router.push("/(app)/build")}>
-          <View style={styles.trainedBanner}>
-            <Text style={styles.trainedBannerText}>
-              {trainedCount} skill{trainedCount === 1 ? "" : "s"} trained — build an app with them
-            </Text>
-            <ChevronRight size={16} color={colors.sandDark} />
-          </View>
-        </Pressable>
-      ) : null}
+      <Text style={styles.title}>Pick the robot app</Text>
+      <Text style={styles.subtitle}>Pick the Buildo app you want to create, then train the skills it needs.</Text>
 
       {isLoading && catalog.length === 0 ? (
-        <Text style={styles.emptyText}>Loading skills…</Text>
-      ) : paidSkills.length === 0 ? (
-        <Text style={styles.emptyText}>No skills available right now — check back soon.</Text>
+        <Text style={styles.emptyText}>Loading…</Text>
       ) : (
-        paidSkills.map((entry) => <SkillCard key={entry.id} entry={entry} />)
+        USE_CASES.map((useCase) => (
+          <UseCaseCard key={useCase.key} useCase={useCase} catalog={catalog} />
+        ))
       )}
 
       <Text style={styles.sectionTitle}>Your custom skills</Text>
       <Text style={styles.sectionHint}>
-        Record anything else you want to teach Buildo. Custom skills don&apos;t pay a reward, but they train and
-        trained the same way, and can go into an app.
+        Record anything else you want to teach Buildo. Custom skills don&apos;t pay a reward, but they can go into
+        an app too.
       </Text>
 
       {customSkills.map((entry) => (
-        <SkillCard key={entry.id} entry={entry} />
+        <Pressable key={entry.id} onPress={() => router.push(`/skill/${entry.slug}`)}>
+          <Card style={styles.customSkillCard}>
+            <Text style={styles.customSkillName}>{entry.name}</Text>
+            <ChevronRight size={16} color={colors.textMuted} />
+          </Card>
+        </Pressable>
       ))}
 
       <Pressable onPress={() => router.push("/skill/new")} style={styles.addSkillRow}>
@@ -138,23 +126,50 @@ const styles = StyleSheet.create({
     marginBottom: spacing.sm,
     lineHeight: 20,
   },
-  trainedBanner: {
+  useCaseCard: {
     flexDirection: "row",
     alignItems: "center",
-    justifyContent: "space-between",
-    backgroundColor: colors.sandSurface,
-    borderRadius: radii.lg,
-    borderWidth: 1,
-    borderColor: colors.sandLight,
-    paddingVertical: spacing.sm,
-    paddingHorizontal: spacing.md,
-    marginBottom: spacing.sm,
+    gap: spacing.sm,
   },
-  trainedBannerText: {
-    fontFamily: fonts.bodyMedium,
-    fontSize: 13,
+  useCaseIcon: {
+    width: 44,
+    height: 44,
+    borderRadius: radii.pill,
+    backgroundColor: colors.sandSurface,
+    alignItems: "center",
+    justifyContent: "center",
+  },
+  useCaseTitle: {
+    fontFamily: fonts.bodySemiBold,
+    fontSize: 16,
+    color: colors.textPrimary,
+  },
+  useCaseDescription: {
+    fontFamily: fonts.body,
+    fontSize: 12,
+    color: colors.textMuted,
+    marginTop: 1,
+  },
+  useCaseMetaRow: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: spacing.sm,
+    marginTop: 6,
+  },
+  useCaseIncome: {
+    fontFamily: fonts.bodySemiBold,
+    fontSize: 12,
     color: colors.sandDark,
-    flex: 1,
+  },
+  useCaseProgress: {
+    fontFamily: fonts.technical,
+    fontSize: 10,
+    letterSpacing: 0.3,
+    textTransform: "uppercase",
+    color: colors.textMuted,
+  },
+  useCaseProgressDone: {
+    color: colors.success,
   },
   sectionTitle: {
     fontFamily: fonts.bodySemiBold,
@@ -170,31 +185,15 @@ const styles = StyleSheet.create({
     marginBottom: spacing.xs,
     lineHeight: 17,
   },
-  skillCard: {
-    gap: spacing.sm,
-  },
-  skillCardTop: {
+  customSkillCard: {
     flexDirection: "row",
     alignItems: "center",
+    justifyContent: "space-between",
   },
-  skillName: {
-    fontFamily: fonts.bodySemiBold,
-    fontSize: 16,
+  customSkillName: {
+    fontFamily: fonts.bodyMedium,
+    fontSize: 14,
     color: colors.textPrimary,
-  },
-  skillCategory: {
-    fontFamily: fonts.technical,
-    fontSize: 11,
-    letterSpacing: 0.4,
-    textTransform: "uppercase",
-    color: colors.textMuted,
-    marginTop: 2,
-  },
-  skillSummary: {
-    fontFamily: fonts.body,
-    fontSize: 13,
-    color: colors.textMuted,
-    lineHeight: 18,
   },
   addSkillRow: {
     flexDirection: "row",

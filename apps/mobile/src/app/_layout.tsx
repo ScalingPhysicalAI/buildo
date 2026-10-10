@@ -54,6 +54,7 @@ export default function RootLayout() {
                 <Stack.Screen name="session/[id]" options={{ presentation: "modal" }} />
                 <Stack.Screen name="skill/new" options={{ presentation: "modal" }} />
                 <Stack.Screen name="skill/[slug]" options={{ presentation: "modal" }} />
+                <Stack.Screen name="use-case/[key]" options={{ presentation: "modal" }} />
                 <Stack.Screen name="build/new" options={{ presentation: "modal" }} />
                 <Stack.Screen name="build/[id]" options={{ presentation: "modal" }} />
                 <Stack.Screen name="store/[id]" options={{ presentation: "modal" }} />

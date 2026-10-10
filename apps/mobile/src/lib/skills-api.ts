@@ -77,7 +77,7 @@ export async function createCustomSkill(name: string): Promise<SkillDefinition> 
   return data.skill;
 }
 
-export type AppCategory = "HOME" | "GENERAL" | "PUBLIC" | "KITCHEN" | "CLEANING" | "INVENTORY";
+export type AppCategory = "HOME" | "SHOP" | "OFFICE" | "WAREHOUSE" | "HOSPITAL";
 export type AppDeployStatus = "DRAFT" | "TESTING" | "PASSED" | "FAILED" | "LIVE";
 
 export interface AppTestReport {
@@ -103,6 +103,7 @@ export interface AppListing {
   status: AppDeployStatus;
   testReport: AppTestReport | null;
   publishedAt: string | null;
+  testingEndsAt: string | null;
   earnings: number;
   installCount: number;
   createdAt: string;

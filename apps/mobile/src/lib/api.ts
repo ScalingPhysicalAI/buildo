@@ -37,6 +37,7 @@ export interface SafeUser {
   walletAddress: string | null;
   tokenBalance: number;
   emailVerified: boolean;
+  referralCode: string | null;
 }
 
 export class ApiError extends Error {
@@ -92,4 +93,9 @@ export async function fetchMe(): Promise<SafeUser | null> {
 
 export async function logout(): Promise<void> {
   await clearToken();
+}
+
+export async function fetchReferralCode(): Promise<string> {
+  const data = await request<{ code: string }>("/api/referral");
+  return data.code;
 }

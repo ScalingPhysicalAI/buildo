@@ -1,5 +1,5 @@
 import { router, useLocalSearchParams } from "expo-router";
-import { Check, Download, DollarSign, X } from "lucide-react-native";
+import { Check, Clock3, Download, DollarSign, X } from "lucide-react-native";
 import { useState } from "react";
 import { Pressable, ScrollView, StyleSheet, Text, View } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
@@ -11,8 +11,6 @@ import { Alert } from "../../lib/alert";
 import { useSkills } from "../../lib/skills-context";
 import type { AppDeployStatus } from "../../lib/skills-api";
 import { colors, fonts, radii, spacing } from "../../theme";
-
-const DEPLOY_FEE = 5;
 
 const STATUS_TONE: Record<AppDeployStatus, "neutral" | "success" | "warning" | "error"> = {
   DRAFT: "neutral",
@@ -33,48 +31,24 @@ function closeOrGoBuild() {
 export default function AppDetailScreen() {
   const { id } = useLocalSearchParams<{ id: string }>();
   const insets = useSafeAreaInsets();
-  const { apps, deployApp, publishApp } = useSkills();
+  const { apps, deployApp } = useSkills();
   const [busy, setBusy] = useState(false);
 
   const app = apps.find((a) => a.id === id);
   if (!app) return null;
 
-  async function handleCertify() {
+  async function handleTrainAndDeploy() {
     setBusy(true);
     try {
       await deployApp(app!.id);
     } catch (err) {
-      Alert.alert("Automated test failed to run", err instanceof Error ? err.message : "Try again.");
+      Alert.alert("Couldn't start training and deployment", err instanceof Error ? err.message : "Please try again.");
     } finally {
       setBusy(false);
     }
   }
 
-  function handlePublish() {
-    Alert.alert(
-      "Publish this app?",
-      `You'll be charged a one-time $${DEPLOY_FEE} publish fee and it'll go live on the Buildo app store.`,
-      [
-        { text: "Cancel", style: "cancel" },
-        {
-          text: `Pay $${DEPLOY_FEE} and publish`,
-          onPress: async () => {
-            setBusy(true);
-            try {
-              await publishApp(app!.id);
-            } catch (err) {
-              Alert.alert("Publish failed", err instanceof Error ? err.message : "Try again.");
-            } finally {
-              setBusy(false);
-            }
-          },
-        },
-      ]
-    );
-  }
-
-  const canCertify = app.status === "DRAFT" || app.status === "FAILED";
-  const canPublish = app.status === "PASSED";
+  const canDeploy = app.status === "DRAFT" || app.status === "FAILED";
 
   return (
     <ScrollView
@@ -99,22 +73,26 @@ export default function AppDetailScreen() {
         </View>
       ))}
 
-      {canCertify ? (
+      {canDeploy ? (
         <Button
-          label={app.status === "FAILED" ? "Re-run automated test" : "Run automated test"}
-          onPress={handleCertify}
+          label={app.status === "FAILED" ? "Retry training and deployment" : "Train and Deploy"}
+          onPress={handleTrainAndDeploy}
           loading={busy}
           style={{ marginTop: spacing.xl }}
         />
       ) : null}
 
-      {canPublish ? (
-        <Button
-          label={`Pay $${DEPLOY_FEE} and publish`}
-          onPress={handlePublish}
-          loading={busy}
-          style={{ marginTop: spacing.xl }}
-        />
+      {app.status === "TESTING" ? (
+        <View style={styles.testingCard}>
+          <View style={styles.testingRow}>
+            <Clock3 size={18} color={colors.sandDark} />
+            <Text style={styles.testingTitle}>Testing in progress</Text>
+          </View>
+          <Text style={styles.testingNote}>
+            Testing typically takes up to seven days. You&apos;re welcome to check back at any time to view your
+            results and rewards.
+          </Text>
+        </View>
       ) : null}
 
       {app.testReport ? (
@@ -141,7 +119,10 @@ export default function AppDetailScreen() {
         <>
           <View style={styles.liveBanner}>
             <Check size={18} color={colors.success} />
-            <Text style={styles.liveBannerText}>Live on the Buildo app store</Text>
+            <Text style={styles.liveBannerText}>
+              Your app has been successfully deployed to the Buildo App Store. You will earn rewards each time a
+              user installs and uses your app.
+            </Text>
           </View>
           <View style={styles.statsRow}>
             <Card style={styles.statCard}>
@@ -224,6 +205,29 @@ const styles = StyleSheet.create({
     fontSize: 14,
     color: colors.textPrimary,
   },
+  testingCard: {
+    backgroundColor: colors.sandSurface,
+    borderRadius: radii.lg,
+    padding: spacing.md,
+    marginTop: spacing.xl,
+    gap: spacing.xs,
+  },
+  testingRow: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: spacing.sm,
+  },
+  testingTitle: {
+    fontFamily: fonts.bodySemiBold,
+    fontSize: 14,
+    color: colors.sandDark,
+  },
+  testingNote: {
+    fontFamily: fonts.body,
+    fontSize: 13,
+    color: colors.textMuted,
+    lineHeight: 19,
+  },
   reportCard: {
     marginTop: spacing.lg,
     gap: spacing.xs,
@@ -259,7 +263,7 @@ const styles = StyleSheet.create({
   },
   liveBanner: {
     flexDirection: "row",
-    alignItems: "center",
+    alignItems: "flex-start",
     gap: spacing.sm,
     backgroundColor: colors.successSurface,
     borderRadius: radii.lg,
@@ -267,9 +271,11 @@ const styles = StyleSheet.create({
     marginTop: spacing.lg,
   },
   liveBannerText: {
+    flex: 1,
     fontFamily: fonts.bodyMedium,
     fontSize: 14,
     color: colors.success,
+    lineHeight: 20,
   },
   statsRow: {
     flexDirection: "row",

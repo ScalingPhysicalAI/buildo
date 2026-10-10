@@ -6,18 +6,26 @@
 // timed stand-in for the capture itself, same pattern as the old
 // sessions-context recorder it replaces.
 import { Redirect, router, useLocalSearchParams } from "expo-router";
-import { Check, Clock3, Glasses, Hand, Pause, Play, Square, Trash2, Upload, X } from "lucide-react-native";
+import { Check, Glasses, Hand, Pause, Play, Square, Trash2, Upload, X } from "lucide-react-native";
 import { useEffect, useRef, useState } from "react";
-import { Animated, Easing, Pressable, StyleSheet, Text, View } from "react-native";
+import { Animated, Easing, Linking, Pressable, StyleSheet, Text, View } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 import { Button } from "../../components/Button";
 import { Alert } from "../../lib/alert";
 import { useDevices } from "../../lib/device-context";
 import { formatDuration } from "../../lib/format";
-import { formatTimeLeft, getDisplayStatus } from "../../lib/skill-status";
+import { getDisplayStatus } from "../../lib/skill-status";
 import { useSkills } from "../../lib/skills-context";
 import { colors, fonts, radii, spacing } from "../../theme";
+
+const CAPTURE_TIPS = [
+  "Make sure the gloves are visible in the camera.",
+  "While performing an upward task, move the camera of the specs up.",
+  "While performing a downward task, push it down.",
+];
+
+const DEV_KIT_URL = "https://starforgerobotics.com/buildo-development-kit/";
 
 function closeOrGoHome() {
   if (router.canGoBack()) {
@@ -36,7 +44,7 @@ const MIN_PAID_RECORDING_SECONDS = 120;
 
 export default function SkillDetailScreen() {
   const { slug } = useLocalSearchParams<{ slug: string }>();
-  const { catalog, recordUpload, startTraining } = useSkills();
+  const { catalog, recordUpload } = useSkills();
   const devices = useDevices();
   const insets = useSafeAreaInsets();
 
@@ -77,10 +85,15 @@ export default function SkillDetailScreen() {
   function handleStartRecording() {
     const gearConnected = devices.glasses === "connected" && devices.gloves === "connected";
     if (!gearConnected) {
-      Alert.alert("Glasses and gloves are not connected", "Pair your capture glasses and haptic gloves before recording.", [
-        { text: "Cancel", style: "cancel" },
-        { text: "Connect", onPress: () => router.push("/(app)/pair") },
-      ]);
+      Alert.alert(
+        "Pair your creator gadgets",
+        "You need your Buildo capture glasses and gloves paired before recording. Don't have them yet? Order a kit and start earning once it arrives.",
+        [
+          { text: "Cancel", style: "cancel" },
+          { text: "Order gadgets", onPress: () => Linking.openURL(DEV_KIT_URL) },
+          { text: "Pair now", onPress: () => router.push("/(app)/pair") },
+        ]
+      );
       return;
     }
     setElapsed(0);
@@ -114,18 +127,6 @@ export default function SkillDetailScreen() {
     }
   }
 
-  async function handleTrain() {
-    if (!entry!.collection) return;
-    setBusy(true);
-    try {
-      await startTraining(entry!.collection.id);
-    } catch (err) {
-      Alert.alert("Couldn't start training", err instanceof Error ? err.message : "Try again.");
-    } finally {
-      setBusy(false);
-    }
-  }
-
   if (phase === "recording") {
     return (
       <View style={styles.cameraContainer}>
@@ -144,6 +145,13 @@ export default function SkillDetailScreen() {
               </Text>
             </View>
           </View>
+
+          <View style={styles.previewBox}>
+            <Animated.View style={[styles.previewPulseDot, { transform: [{ scale: ring }] }]} />
+            <Glasses size={36} color="rgba(255,255,255,0.35)" strokeWidth={1.2} />
+            <Text style={styles.previewLabel}>{isPaused ? "Preview paused" : "Live preview from glasses"}</Text>
+          </View>
+
           <Text style={styles.cameraTimer}>{formatDuration(elapsed)}</Text>
           <View style={styles.recordControlsRow}>
             <Pressable onPress={handlePauseResume} style={styles.pauseButton}>
@@ -223,33 +231,30 @@ export default function SkillDetailScreen() {
             </Text>
           </View>
 
+          <Text style={styles.tipsLabel}>Capture tips</Text>
+          {CAPTURE_TIPS.map((tip) => (
+            <Text key={tip} style={styles.tipText}>
+              • {tip}
+            </Text>
+          ))}
+
           {displayStatus === "available" ? (
             <Button label="Start recording" onPress={handleStartRecording} style={{ marginTop: spacing.lg }} />
-          ) : displayStatus === "uploaded" ? (
-            <View style={styles.statusCard}>
-              <View style={styles.statusRow}>
-                <Check size={18} color={colors.success} />
-                <Text style={styles.statusText}>
-                  {entry.reward > 0 ? `Uploaded — earns $${entry.reward} per install once trained` : "Uploaded"}
-                </Text>
-              </View>
-              <Button label="Train this skill" onPress={handleTrain} loading={busy} style={{ marginTop: spacing.md }} />
-            </View>
-          ) : displayStatus === "training" ? (
-            <View style={styles.statusCard}>
-              <View style={styles.statusRow}>
-                <Clock3 size={18} color={colors.sandDark} />
-                <Text style={styles.statusTextTraining}>{formatTimeLeft(entry.collection?.trainEndsAt ?? null)}</Text>
-              </View>
-            </View>
-          ) : displayStatus === "trained" ? (
+          ) : displayStatus === "uploaded" || displayStatus === "trained" ? (
             <View style={styles.statusCardSuccess}>
               <Check size={18} color={colors.success} />
-              <Text style={styles.statusText}>Trained — ready to use in an app</Text>
+              <Text style={styles.statusText}>
+                {entry.reward > 0 ? `Uploaded — earns $${entry.reward} per install once in an app` : "Uploaded"}
+              </Text>
+            </View>
+          ) : displayStatus === "training" ? (
+            <View style={styles.statusCardSuccess}>
+              <Check size={18} color={colors.success} />
+              <Text style={styles.statusText}>Uploaded</Text>
             </View>
           ) : (
             <View style={styles.statusCard}>
-              <Text style={styles.statusText}>Training didn&apos;t complete. You can record again.</Text>
+              <Text style={styles.statusText}>That recording didn&apos;t go through. You can record again.</Text>
               <Button label="Record again" onPress={handleStartRecording} style={{ marginTop: spacing.md }} />
             </View>
           )}
@@ -333,6 +338,21 @@ const styles = StyleSheet.create({
     fontFamily: fonts.body,
     fontSize: 12,
     color: colors.textMuted,
+  },
+  tipsLabel: {
+    fontFamily: fonts.technical,
+    fontSize: 11,
+    letterSpacing: 0.4,
+    textTransform: "uppercase",
+    color: colors.textMuted,
+    marginTop: spacing.md,
+    marginBottom: spacing.xs,
+  },
+  tipText: {
+    fontFamily: fonts.body,
+    fontSize: 13,
+    color: colors.textMuted,
+    lineHeight: 19,
   },
   statusCard: {
     backgroundColor: colors.sandSurface,
@@ -438,6 +458,32 @@ const styles = StyleSheet.create({
   },
   liveBadgeTextPaused: {
     color: colors.textMuted,
+  },
+  previewBox: {
+    width: "82%",
+    aspectRatio: 4 / 3,
+    borderRadius: radii.lg,
+    borderWidth: 1,
+    borderColor: "rgba(255,255,255,0.15)",
+    backgroundColor: "rgba(255,255,255,0.04)",
+    alignItems: "center",
+    justifyContent: "center",
+    gap: spacing.sm,
+  },
+  previewPulseDot: {
+    position: "absolute",
+    top: spacing.sm,
+    right: spacing.sm,
+    width: 8,
+    height: 8,
+    borderRadius: 4,
+    backgroundColor: colors.recording,
+  },
+  previewLabel: {
+    fontFamily: fonts.technical,
+    fontSize: 11,
+    letterSpacing: 0.3,
+    color: "rgba(255,255,255,0.45)",
   },
   cameraTimer: {
     fontFamily: fonts.technical,

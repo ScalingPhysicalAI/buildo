@@ -1,30 +1,40 @@
-import { router } from "expo-router";
-import { Glasses, Hand, LogOut, ChevronRight } from "lucide-react-native";
+import { useCallback, useState } from "react";
 import { Pressable, ScrollView, StyleSheet, Text, View } from "react-native";
+import { LogOut } from "lucide-react-native";
+import { useFocusEffect } from "expo-router";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 import { Card } from "../../components/Card";
+import { GadgetsBanner } from "../../components/GadgetsBanner";
 import { Logo } from "../../components/Logo";
 import { ReferralBanner } from "../../components/ReferralBanner";
-import { StatusPill } from "../../components/StatusPill";
 import { TrainBanner } from "../../components/TrainBanner";
 import { useAuth } from "../../lib/auth-context";
-import { useDevices, type ConnectionStatus } from "../../lib/device-context";
 import { colors, fonts, radii, spacing } from "../../theme";
 
-function statusTone(status: ConnectionStatus) {
-  if (status === "connected") return "success" as const;
-  if (status === "connecting") return "warning" as const;
-  return "neutral" as const;
+const GREETINGS = [
+  "Welcome back! Let's make today count.",
+  "Great to see you — let's earn some $$.",
+  "Welcome back! One skill at a time.",
+  "Hey, you're on a roll — keep building.",
+  "Welcome back! Small steps, big rewards.",
+];
+
+function pickGreeting() {
+  return GREETINGS[Math.floor(Math.random() * GREETINGS.length)];
 }
 
 export default function HomeScreen() {
   const { user, logout } = useAuth();
-  const devices = useDevices();
   const insets = useSafeAreaInsets();
   const firstName = user?.name?.split(" ")[0] ?? "there";
+  const [greeting, setGreeting] = useState(pickGreeting);
 
-  const allConnected = devices.glasses === "connected" && devices.gloves === "connected";
+  useFocusEffect(
+    useCallback(() => {
+      setGreeting(pickGreeting());
+    }, [])
+  );
 
   return (
     <ScrollView
@@ -39,9 +49,7 @@ export default function HomeScreen() {
       </View>
 
       <Text style={styles.greeting}>Hi, {firstName}</Text>
-      <Text style={styles.greetingSub}>
-        {allConnected ? "Everything's paired — ready to train." : "Pair your gear, then train a skill to earn $$."}
-      </Text>
+      <Text style={styles.greetingSub}>{greeting}</Text>
 
       <Card style={styles.creditCard}>
         <View>
@@ -55,26 +63,7 @@ export default function HomeScreen() {
 
       <ReferralBanner />
       <TrainBanner />
-
-      <Pressable onPress={() => router.push("/(app)/pair")}>
-        <Card style={styles.deviceCard}>
-          <View style={styles.deviceCardHeader}>
-            <Text style={styles.sectionTitle}>Your gear</Text>
-            <ChevronRight size={18} color={colors.textMuted} />
-          </View>
-
-          <View style={styles.deviceRow}>
-            <Glasses size={18} color={colors.textPrimary} />
-            <Text style={styles.deviceName}>Capture glasses</Text>
-            <StatusPill label={devices.glasses} tone={statusTone(devices.glasses)} />
-          </View>
-          <View style={styles.deviceRow}>
-            <Hand size={18} color={colors.textPrimary} />
-            <Text style={styles.deviceName}>Haptic gloves</Text>
-            <StatusPill label={devices.gloves} tone={statusTone(devices.gloves)} />
-          </View>
-        </Card>
-      </Pressable>
+      <GadgetsBanner />
     </ScrollView>
   );
 }
@@ -142,29 +131,5 @@ const styles = StyleSheet.create({
     fontSize: 10,
     color: colors.sandDark,
     letterSpacing: 0.4,
-  },
-  deviceCard: {
-    gap: spacing.md,
-  },
-  deviceCardHeader: {
-    flexDirection: "row",
-    alignItems: "center",
-    justifyContent: "space-between",
-  },
-  sectionTitle: {
-    fontFamily: fonts.bodySemiBold,
-    fontSize: 15,
-    color: colors.textPrimary,
-  },
-  deviceRow: {
-    flexDirection: "row",
-    alignItems: "center",
-    gap: spacing.sm,
-  },
-  deviceName: {
-    flex: 1,
-    fontFamily: fonts.bodyMedium,
-    fontSize: 14,
-    color: colors.textPrimary,
   },
 });

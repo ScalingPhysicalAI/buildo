@@ -68,6 +68,7 @@ const styles = StyleSheet.create({
     fontFamily: fonts.bodySemiBold,
     fontSize: 16,
     letterSpacing: 0.2,
+    textAlign: "center",
   },
 });
 

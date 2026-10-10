@@ -4,7 +4,6 @@ import {
   Animated,
   KeyboardAvoidingView,
   Platform,
-  Pressable,
   ScrollView,
   StyleSheet,
   Text,
@@ -15,23 +14,17 @@ import { Link, router } from "expo-router";
 import { Button } from "../components/Button";
 import { Logo } from "../components/Logo";
 import { TextField } from "../components/TextField";
-import type { Role } from "../lib/api";
 import { useAuth } from "../lib/auth-context";
 import { colors, fonts, radii, spacing } from "../theme";
-
-const ROLES: { value: Role; label: string }[] = [
-  { value: "DEVELOPER", label: "Developer" },
-  { value: "RESEARCHER", label: "Researcher" },
-];
 
 export default function SignupScreen() {
   const { signup } = useAuth();
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [role, setRole] = useState<Role>("DEVELOPER");
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
+  const [signedUp, setSignedUp] = useState(false);
 
   const fade = useRef(new Animated.Value(0)).current;
   const slide = useRef(new Animated.Value(16)).current;
@@ -55,8 +48,8 @@ export default function SignupScreen() {
     }
     setLoading(true);
     try {
-      await signup(name.trim(), email, password, role);
-      router.replace("/(app)");
+      await signup(name.trim(), email, password, "DEVELOPER");
+      setSignedUp(true);
     } catch (e) {
       setError(e instanceof Error ? e.message : "Couldn't create your account");
     } finally {
@@ -74,69 +67,75 @@ export default function SignupScreen() {
           <View style={styles.heroIcon}>
             <Sparkles size={32} color={colors.sandDark} strokeWidth={1.5} />
           </View>
-          <Text style={styles.title}>BUILDO QUEST</Text>
-          <Text style={styles.subtitle}>Capture demonstrations for Buildo -- glasses and gloves.</Text>
+          <Text style={styles.title}>BUILDO REWARDS</Text>
+          <Text style={styles.subtitle}>Become a Buildo Creator to earn rewards</Text>
           <View style={styles.bonusPill}>
-            <Text style={styles.bonusPillText}>Get $20 instant on signup</Text>
+            <Text style={styles.bonusPillText}>Get $20 instant on Sign up</Text>
           </View>
         </Animated.View>
 
         <Animated.View style={{ opacity: fade, transform: [{ translateY: slide }] }}>
-          <View style={styles.card}>
-            <Logo tag="mobile" size={18} />
-            <Text style={styles.cardHint}>Create your Buildo Studio account</Text>
+          {signedUp ? (
+            <View style={styles.card}>
+              <Logo tag="mobile" size={18} />
+              <Text style={styles.cardHint}>You're in — what do you want to do first?</Text>
 
-            <TextField
-              label="Name"
-              autoComplete="name"
-              value={name}
-              onChangeText={setName}
-              placeholder="Ada Lovelace"
-            />
-            <TextField
-              label="Email"
-              autoCapitalize="none"
-              keyboardType="email-address"
-              autoComplete="email"
-              value={email}
-              onChangeText={setEmail}
-              placeholder="you@starforgerobotics.com"
-            />
-            <TextField
-              label="Password"
-              secureTextEntry
-              autoComplete="password-new"
-              value={password}
-              onChangeText={setPassword}
-              placeholder="At least 8 characters"
-            />
-
-            <Text style={styles.fieldLabel}>I am a</Text>
-            <View style={styles.roleRow}>
-              {ROLES.map((r) => (
-                <Pressable
-                  key={r.value}
-                  onPress={() => setRole(r.value)}
-                  style={[styles.roleOption, role === r.value && styles.roleOptionActive]}
-                >
-                  <Text style={[styles.roleOptionText, role === r.value && styles.roleOptionTextActive]}>
-                    {r.label}
-                  </Text>
-                </Pressable>
-              ))}
+              <Button
+                label="Start training a skill"
+                onPress={() => router.replace("/(app)/train")}
+                style={{ marginTop: spacing.sm }}
+              />
+              <Button
+                label="Explore the app store"
+                variant="secondary"
+                onPress={() => router.replace("/(app)/build")}
+                style={{ marginTop: spacing.sm }}
+              />
             </View>
+          ) : (
+            <View style={styles.card}>
+              <Logo tag="mobile" size={18} />
+              <Text style={styles.cardHint}>Create your Buildo Studio account</Text>
 
-            {error ? <Text style={styles.errorText}>{error}</Text> : null}
+              <TextField
+                label="Name"
+                autoComplete="name"
+                value={name}
+                onChangeText={setName}
+                placeholder="Ada Lovelace"
+              />
+              <TextField
+                label="Email"
+                autoCapitalize="none"
+                keyboardType="email-address"
+                autoComplete="email"
+                value={email}
+                onChangeText={setEmail}
+                placeholder="you@starforgerobotics.com"
+              />
+              <TextField
+                label="Password"
+                secureTextEntry
+                autoComplete="password-new"
+                value={password}
+                onChangeText={setPassword}
+                placeholder="At least 8 characters"
+              />
 
-            <Button label="Create account" onPress={handleSignup} loading={loading} style={{ marginTop: spacing.sm }} />
-          </View>
+              {error ? <Text style={styles.errorText}>{error}</Text> : null}
 
-          <View style={styles.footerRow}>
-            <Text style={styles.footerText}>Already have an account?</Text>
-            <Link href="/login" replace style={styles.footerLink}>
-              Sign in
-            </Link>
-          </View>
+              <Button label="Create account" onPress={handleSignup} loading={loading} style={{ marginTop: spacing.sm }} />
+            </View>
+          )}
+
+          {!signedUp && (
+            <View style={styles.footerRow}>
+              <Text style={styles.footerText}>Already have an account?</Text>
+              <Link href="/login" replace style={styles.footerLink}>
+                Sign in
+              </Link>
+            </View>
+          )}
         </Animated.View>
       </ScrollView>
     </KeyboardAvoidingView>
@@ -205,39 +204,6 @@ const styles = StyleSheet.create({
     fontSize: 13,
     color: colors.textMuted,
     marginBottom: spacing.md,
-  },
-  fieldLabel: {
-    fontFamily: fonts.technical,
-    fontSize: 11,
-    letterSpacing: 0.6,
-    textTransform: "uppercase",
-    color: colors.textMuted,
-    marginBottom: spacing.xs,
-  },
-  roleRow: {
-    flexDirection: "row",
-    gap: spacing.sm,
-    marginBottom: spacing.md,
-  },
-  roleOption: {
-    flex: 1,
-    paddingVertical: 12,
-    borderRadius: radii.md,
-    borderWidth: 1.5,
-    borderColor: colors.border,
-    alignItems: "center",
-  },
-  roleOptionActive: {
-    backgroundColor: colors.black,
-    borderColor: colors.black,
-  },
-  roleOptionText: {
-    fontFamily: fonts.bodyMedium,
-    fontSize: 14,
-    color: colors.textPrimary,
-  },
-  roleOptionTextActive: {
-    color: colors.white,
   },
   errorText: {
     fontFamily: fonts.bodyMedium,

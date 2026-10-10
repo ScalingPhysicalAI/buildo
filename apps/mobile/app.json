@@ -1,6 +1,6 @@
 {
   "expo": {
-    "name": "Buildo Quest",
+    "name": "Buildo Rewards",
     "slug": "buildo-trainer",
     "scheme": "buildotrainer",
     "version": "1.0.0",
@@ -30,7 +30,7 @@
       [
         "react-native-ble-plx",
         {
-          "bluetoothAlwaysPermission": "Allow Buildo Quest to find and connect to your capture glasses over Bluetooth."
+          "bluetoothAlwaysPermission": "Allow Buildo Rewards to find and connect to your capture glasses over Bluetooth."
         }
       ]
     ],

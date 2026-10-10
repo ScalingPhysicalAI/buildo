@@ -4,6 +4,7 @@ import { prisma } from "@/lib/prisma";
 import { getSessionUserId } from "@/lib/auth";
 import { appListingCreateSchema } from "@/lib/validations";
 import { resolveCollectionStatuses } from "@/lib/skill-collection";
+import { resolveAppStatuses } from "@/lib/app-testing";
 
 export async function GET(request: Request) {
   const userId = await getSessionUserId(request);
@@ -19,14 +20,17 @@ export async function GET(request: Request) {
     },
     orderBy: { createdAt: "desc" },
   });
+  const resolved = await resolveAppStatuses(apps);
 
   return NextResponse.json({
-    apps: apps.map(({ _count, ...app }) => ({ ...app, installCount: _count.installs })),
+    apps: resolved.map(({ _count, ...app }) => ({ ...app, installCount: _count.installs })),
   });
 }
 
 // Creates a draft app listing from a chosen set of the developer's own
-// TRAINED skill-collection sessions. Deploying (running the automated
+// uploaded skill-collection sessions. The TRAINING/TRAINED timer step is
+// skipped for now (see skill-collection.ts) -- any upload that hasn't
+// FAILED is usable in an app. Deploying (running the automated
 // certification + going live) is a separate step -- POST /api/apps/:id/deploy.
 export async function POST(request: Request) {
   const userId = await getSessionUserId(request);
@@ -51,10 +55,10 @@ export async function POST(request: Request) {
   if (resolved.length !== parsed.data.skillCollectionIds.length) {
     return NextResponse.json({ error: "One or more skills weren't found" }, { status: 400 });
   }
-  const notTrained = resolved.find((c) => c.status !== "TRAINED");
-  if (notTrained) {
+  const failed = resolved.find((c) => c.status === "FAILED");
+  if (failed) {
     return NextResponse.json(
-      { error: "Every skill in an app must finish training first" },
+      { error: "One of these skills failed and needs to be recorded again" },
       { status: 409 }
     );
   }

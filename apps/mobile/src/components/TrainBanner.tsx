@@ -14,8 +14,8 @@ export function TrainBanner() {
         <GraduationCap size={20} color={colors.black} />
       </View>
       <View style={styles.textWrap}>
-        <Text style={styles.title}>Train skills</Text>
-        <Text style={styles.subtitle}>Earn $$ when apps built with your skills are installed</Text>
+        <Text style={styles.title}>Train skills and earn $$</Text>
+        <Text style={styles.subtitle}>Make anywhere from $2000–$4000/month with the skills you'll train</Text>
       </View>
       <ArrowUpRight size={18} color={colors.sand} />
     </Pressable>
