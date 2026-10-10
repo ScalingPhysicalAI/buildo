@@ -6,6 +6,7 @@ import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 import { Button } from "../../components/Button";
 import { Card } from "../../components/Card";
+import { formatDaysLeft } from "../../lib/format";
 import { useSkills } from "../../lib/skills-context";
 import { estimatedIncomeLabel, getUseCase } from "../../lib/use-cases";
 import { colors, fonts, radii, spacing } from "../../theme";
@@ -20,13 +21,14 @@ function closeOrGoTrain() {
 
 export default function UseCaseScreen() {
   const { key } = useLocalSearchParams<{ key: string }>();
-  const { catalog, refreshCatalog } = useSkills();
+  const { catalog, apps, refreshCatalog, refreshApps } = useSkills();
   const insets = useSafeAreaInsets();
 
   useFocusEffect(
     useCallback(() => {
       refreshCatalog().catch(() => {});
-    }, [refreshCatalog])
+      refreshApps().catch(() => {});
+    }, [refreshCatalog, refreshApps])
   );
 
   const useCase = getUseCase(key);
@@ -39,10 +41,19 @@ export default function UseCaseScreen() {
   }).length;
   const allDone = done === total;
   const categoryKey = useCase.key;
+  const existingApp = apps.find((a) => a.category === categoryKey);
 
   function handleCreateApp() {
     if (!allDone) return;
     router.push(`/build/new?useCase=${categoryKey}`);
+  }
+
+  function existingAppStatusLabel(): string {
+    if (!existingApp) return "";
+    if (existingApp.status === "LIVE") return "Live on the Buildo app store";
+    if (existingApp.status === "TESTING") return `In deployment cycle — ${formatDaysLeft(existingApp.testingEndsAt)}`;
+    if (existingApp.status === "FAILED") return "Testing didn't pass — open it to retry";
+    return "Draft — open it to test and deploy";
   }
 
   return (
@@ -77,12 +88,24 @@ export default function UseCaseScreen() {
         );
       })}
 
-      <Button
-        label={allDone ? "Create app" : `Complete all skills to create your app (${done}/${total})`}
-        onPress={handleCreateApp}
-        disabled={!allDone}
-        style={{ marginTop: spacing.lg }}
-      />
+      {existingApp ? (
+        <View style={styles.existingAppCard}>
+          <Text style={styles.existingAppName}>{existingApp.name}</Text>
+          <Text style={styles.existingAppStatus}>{existingAppStatusLabel()}</Text>
+          <Button
+            label="View in Your Apps"
+            onPress={() => router.push(`/build/${existingApp.id}`)}
+            style={{ marginTop: spacing.md }}
+          />
+        </View>
+      ) : (
+        <Button
+          label={allDone ? "Create app" : `Complete all skills to create your app (${done}/${total})`}
+          onPress={handleCreateApp}
+          disabled={!allDone}
+          style={{ marginTop: spacing.lg }}
+        />
+      )}
     </ScrollView>
   );
 }
@@ -139,5 +162,22 @@ const styles = StyleSheet.create({
     fontFamily: fonts.bodyMedium,
     fontSize: 14,
     color: colors.textPrimary,
+  },
+  existingAppCard: {
+    backgroundColor: colors.sandSurface,
+    borderRadius: radii.lg,
+    padding: spacing.md,
+    marginTop: spacing.lg,
+  },
+  existingAppName: {
+    fontFamily: fonts.bodySemiBold,
+    fontSize: 16,
+    color: colors.black,
+  },
+  existingAppStatus: {
+    fontFamily: fonts.body,
+    fontSize: 13,
+    color: colors.sandDark,
+    marginTop: 2,
   },
 });

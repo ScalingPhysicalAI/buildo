@@ -1,9 +1,10 @@
-import { Sparkles } from "lucide-react-native";
+import { Eye, EyeOff, Sparkles } from "lucide-react-native";
 import { useEffect, useRef, useState } from "react";
 import {
   Animated,
   KeyboardAvoidingView,
   Platform,
+  Pressable,
   ScrollView,
   StyleSheet,
   Text,
@@ -22,12 +23,15 @@ export default function SignupScreen() {
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [passwordVisible, setPasswordVisible] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
   const [signedUp, setSignedUp] = useState(false);
 
   const fade = useRef(new Animated.Value(0)).current;
   const slide = useRef(new Animated.Value(16)).current;
+  const scrollRef = useRef<ScrollView>(null);
+  const scrollToEnd = () => scrollRef.current?.scrollToEnd({ animated: true });
 
   useEffect(() => {
     Animated.parallel([
@@ -60,9 +64,14 @@ export default function SignupScreen() {
   return (
     <KeyboardAvoidingView
       style={{ flex: 1, backgroundColor: colors.background }}
-      behavior={Platform.OS === "ios" ? "padding" : undefined}
+      behavior={Platform.OS === "ios" ? "padding" : "height"}
+      keyboardVerticalOffset={Platform.OS === "android" ? 24 : 0}
     >
-      <ScrollView contentContainerStyle={styles.scroll} keyboardShouldPersistTaps="handled">
+      <ScrollView
+        ref={scrollRef}
+        contentContainerStyle={styles.scroll}
+        keyboardShouldPersistTaps="handled"
+      >
         <Animated.View style={[styles.hero, { opacity: fade }]}>
           <View style={styles.heroIcon}>
             <Sparkles size={32} color={colors.sandDark} strokeWidth={1.5} />
@@ -102,6 +111,7 @@ export default function SignupScreen() {
                 autoComplete="name"
                 value={name}
                 onChangeText={setName}
+                onFocus={scrollToEnd}
                 placeholder="Ada Lovelace"
               />
               <TextField
@@ -111,15 +121,26 @@ export default function SignupScreen() {
                 autoComplete="email"
                 value={email}
                 onChangeText={setEmail}
+                onFocus={scrollToEnd}
                 placeholder="you@starforgerobotics.com"
               />
               <TextField
                 label="Password"
-                secureTextEntry
+                secureTextEntry={!passwordVisible}
                 autoComplete="password-new"
                 value={password}
                 onChangeText={setPassword}
+                onFocus={scrollToEnd}
                 placeholder="At least 8 characters"
+                rightElement={
+                  <Pressable onPress={() => setPasswordVisible((v) => !v)} hitSlop={8}>
+                    {passwordVisible ? (
+                      <EyeOff size={18} color={colors.textMuted} />
+                    ) : (
+                      <Eye size={18} color={colors.textMuted} />
+                    )}
+                  </Pressable>
+                }
               />
 
               {error ? <Text style={styles.errorText}>{error}</Text> : null}

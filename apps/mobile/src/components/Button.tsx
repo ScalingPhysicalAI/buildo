@@ -2,7 +2,7 @@ import { ActivityIndicator, Pressable, StyleSheet, Text, type StyleProp, type Vi
 
 import { colors, fonts, radii, spacing } from "../theme";
 
-type Variant = "primary" | "secondary" | "danger" | "ghost";
+type Variant = "primary" | "secondary" | "danger" | "ghost" | "cream";
 
 export function Button({
   label,
@@ -87,6 +87,11 @@ const variantStyles = StyleSheet.create({
   ghost: {
     backgroundColor: "transparent",
   },
+  cream: {
+    backgroundColor: colors.skin,
+    borderWidth: 1,
+    borderColor: colors.skinBorder,
+  },
 });
 
 const labelStyles = StyleSheet.create({
@@ -94,4 +99,5 @@ const labelStyles = StyleSheet.create({
   secondary: { color: colors.textPrimary },
   danger: { color: colors.white },
   ghost: { color: colors.sandDark },
+  cream: { color: colors.black },
 });

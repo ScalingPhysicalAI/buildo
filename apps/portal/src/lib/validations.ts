@@ -60,3 +60,10 @@ export const appListingCreateSchema = z.object({
   category: appCategorySchema,
   skillCollectionIds: z.array(z.string().min(1)).min(1, "Pick at least one trained skill"),
 });
+
+export const gadgetOrderSchema = z.object({
+  recipientName: z.string().trim().min(2, "Name must be at least 2 characters").max(80),
+  recipientEmail: z.string().trim().toLowerCase().email("Enter a valid email address"),
+  phone: z.string().trim().max(30).optional(),
+  shippingAddress: z.string().trim().min(10, "Enter a full shipping address").max(500),
+});

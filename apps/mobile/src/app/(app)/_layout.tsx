@@ -42,7 +42,7 @@ export default function AppLayout() {
       />
       <Tabs.Screen
         name="pair"
-        options={{ title: "Devices", tabBarIcon: ({ color, size }) => <Bluetooth color={color} size={size} /> }}
+        options={{ title: "Gadgets", tabBarIcon: ({ color, size }) => <Bluetooth color={color} size={size} /> }}
       />
       <Tabs.Screen
         name="train"
@@ -50,7 +50,7 @@ export default function AppLayout() {
       />
       <Tabs.Screen
         name="build"
-        options={{ title: "Build", tabBarIcon: ({ color, size }) => <AppWindow color={color} size={size} /> }}
+        options={{ title: "Apps", tabBarIcon: ({ color, size }) => <AppWindow color={color} size={size} /> }}
       />
       <Tabs.Screen name="glasses-debug" options={{ href: null }} />
     </Tabs>

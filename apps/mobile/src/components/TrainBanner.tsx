@@ -11,13 +11,13 @@ export function TrainBanner() {
       style={({ pressed }) => [styles.container, pressed && styles.pressed]}
     >
       <View style={styles.iconWrap}>
-        <GraduationCap size={20} color={colors.black} />
+        <GraduationCap size={20} color={colors.sandDark} />
       </View>
       <View style={styles.textWrap}>
         <Text style={styles.title}>Train skills and earn $$</Text>
         <Text style={styles.subtitle}>Make anywhere from $2000–$4000/month with the skills you'll train</Text>
       </View>
-      <ArrowUpRight size={18} color={colors.sand} />
+      <ArrowUpRight size={18} color={colors.sandDark} />
     </Pressable>
   );
 }
@@ -27,7 +27,9 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "center",
     gap: spacing.sm,
-    backgroundColor: colors.black,
+    backgroundColor: colors.skin,
+    borderWidth: 1,
+    borderColor: colors.skinBorder,
     borderRadius: radii.lg,
     paddingVertical: spacing.md,
     paddingHorizontal: spacing.md,
@@ -40,7 +42,7 @@ const styles = StyleSheet.create({
     width: 40,
     height: 40,
     borderRadius: radii.pill,
-    backgroundColor: colors.sand,
+    backgroundColor: colors.surface,
     alignItems: "center",
     justifyContent: "center",
   },
@@ -50,12 +52,12 @@ const styles = StyleSheet.create({
   title: {
     fontFamily: fonts.bodySemiBold,
     fontSize: 14,
-    color: colors.white,
+    color: colors.black,
   },
   subtitle: {
     fontFamily: fonts.body,
     fontSize: 12,
-    color: "rgba(255,255,255,0.7)",
+    color: colors.textMuted,
     marginTop: 2,
   },
 });

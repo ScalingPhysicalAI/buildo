@@ -7,6 +7,7 @@ import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { Card } from "../../../components/Card";
 import { StatusPill } from "../../../components/StatusPill";
 import { Alert } from "../../../lib/alert";
+import { formatDaysLeft } from "../../../lib/format";
 import { useSkills } from "../../../lib/skills-context";
 import type { AppDeployStatus, AppListing } from "../../../lib/skills-api";
 import { colors, fonts, radii, spacing } from "../../../theme";
@@ -61,7 +62,10 @@ function AppCard({ app }: { app: AppListing }) {
           </Pressable>
           <ChevronRight size={18} color={colors.textMuted} />
         </View>
-        <StatusPill label={app.status} tone={STATUS_TONE[app.status]} />
+        <View style={styles.statusRow}>
+          <StatusPill label={app.status === "TESTING" ? "In deployment cycle" : app.status} tone={STATUS_TONE[app.status]} />
+          {app.status === "TESTING" ? <Text style={styles.deployTimer}>{formatDaysLeft(app.testingEndsAt)}</Text> : null}
+        </View>
       </Card>
     </Pressable>
   );
@@ -139,6 +143,16 @@ const styles = StyleSheet.create({
     fontSize: 11,
     color: colors.textMuted,
     marginTop: 2,
+  },
+  statusRow: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: spacing.sm,
+  },
+  deployTimer: {
+    fontFamily: fonts.technical,
+    fontSize: 11,
+    color: colors.textMuted,
   },
   emptyText: {
     fontFamily: fonts.body,

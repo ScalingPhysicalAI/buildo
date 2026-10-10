@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Check, ChevronDown, ChevronUp, Copy, Gift, Share2 } from "lucide-react-native";
+import { Check, Copy, Gift, Share2 } from "lucide-react-native";
 import { Clipboard, Pressable, Share, StyleSheet, Text, View } from "react-native";
 
 import { colors, fonts, radii, spacing } from "../theme";
@@ -22,7 +22,6 @@ function generateDummyCode(): string {
 }
 
 export function ReferralBanner() {
-  const [expanded, setExpanded] = useState(false);
   const [code, setCode] = useState<string | null>(null);
   const [copied, setCopied] = useState(false);
 
@@ -47,10 +46,7 @@ export function ReferralBanner() {
 
   return (
     <View style={styles.container}>
-      <Pressable
-        onPress={() => setExpanded((v) => !v)}
-        style={({ pressed }) => [styles.header, pressed && styles.pressed]}
-      >
+      <View style={styles.header}>
         <View style={styles.iconWrap}>
           <Gift size={20} color={colors.sandDark} />
         </View>
@@ -58,60 +54,53 @@ export function ReferralBanner() {
           <Text style={styles.title}>Refer Buildo and get $500 reward</Text>
           <Text style={styles.subtitle}>Generate referral code</Text>
         </View>
-        {expanded ? (
-          <ChevronUp size={18} color={colors.sandDark} />
-        ) : (
-          <ChevronDown size={18} color={colors.sandDark} />
-        )}
-      </Pressable>
+      </View>
 
-      {expanded && (
-        <View style={styles.body}>
-          <Text style={styles.useCaseLabel}>Buildo robots can be used by</Text>
-          <View style={styles.useCaseList}>
-            {USE_CASES.map((item) => (
-              <View key={item} style={styles.useCaseRow}>
-                <View style={styles.dot} />
-                <Text style={styles.useCaseText}>{item}</Text>
-              </View>
-            ))}
-          </View>
-
-          <View style={styles.divider} />
-
-          {code ? (
-            <Pressable
-              onPress={handleCopy}
-              style={({ pressed }) => [styles.codeChip, pressed && styles.pressed]}
-            >
-              <View style={styles.codeTextWrap}>
-                <Text style={styles.codeLabel}>{copied ? "Copied" : "Your referral code · tap to copy"}</Text>
-                <Text style={styles.codeValue}>{code}</Text>
-              </View>
-              {copied ? (
-                <Check size={20} color={colors.success} />
-              ) : (
-                <Copy size={20} color={colors.sandDark} />
-              )}
-            </Pressable>
-          ) : (
-            <Pressable
-              onPress={ensureCode}
-              style={({ pressed }) => [styles.generateBtn, pressed && styles.pressed]}
-            >
-              <Text style={styles.generateBtnText}>Generate referral code</Text>
-            </Pressable>
-          )}
-
-          <Pressable
-            onPress={handleShare}
-            style={({ pressed }) => [styles.shareBtn, pressed && styles.pressed]}
-          >
-            <Share2 size={16} color={colors.white} />
-            <Text style={styles.shareBtnText}>Share referral link</Text>
-          </Pressable>
+      <View style={styles.body}>
+        <Text style={styles.useCaseLabel}>Buildo robots can be used by</Text>
+        <View style={styles.useCaseList}>
+          {USE_CASES.map((item) => (
+            <View key={item} style={styles.useCaseRow}>
+              <View style={styles.dot} />
+              <Text style={styles.useCaseText}>{item}</Text>
+            </View>
+          ))}
         </View>
-      )}
+
+        <View style={styles.divider} />
+
+        {code ? (
+          <Pressable
+            onPress={handleCopy}
+            style={({ pressed }) => [styles.codeChip, pressed && styles.pressed]}
+          >
+            <View style={styles.codeTextWrap}>
+              <Text style={styles.codeLabel}>{copied ? "Copied" : "Your referral code · tap to copy"}</Text>
+              <Text style={styles.codeValue}>{code}</Text>
+            </View>
+            {copied ? (
+              <Check size={20} color={colors.success} />
+            ) : (
+              <Copy size={20} color={colors.sandDark} />
+            )}
+          </Pressable>
+        ) : (
+          <Pressable
+            onPress={ensureCode}
+            style={({ pressed }) => [styles.generateBtn, pressed && styles.pressed]}
+          >
+            <Text style={styles.generateBtnText}>Generate referral code</Text>
+          </Pressable>
+        )}
+
+        <Pressable
+          onPress={handleShare}
+          style={({ pressed }) => [styles.shareBtn, pressed && styles.pressed]}
+        >
+          <Share2 size={16} color={colors.black} />
+          <Text style={styles.shareBtnText}>Share referral link</Text>
+        </Pressable>
+      </View>
     </View>
   );
 }
@@ -240,13 +229,15 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
     gap: spacing.xs,
-    backgroundColor: colors.black,
+    backgroundColor: colors.skin,
+    borderWidth: 1,
+    borderColor: colors.skinBorder,
     borderRadius: radii.pill,
     paddingVertical: 12,
   },
   shareBtnText: {
     fontFamily: fonts.bodySemiBold,
     fontSize: 14,
-    color: colors.white,
+    color: colors.black,
   },
 });

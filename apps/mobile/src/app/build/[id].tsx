@@ -37,15 +37,30 @@ export default function AppDetailScreen() {
   const app = apps.find((a) => a.id === id);
   if (!app) return null;
 
-  async function handleTrainAndDeploy() {
-    setBusy(true);
-    try {
-      await deployApp(app!.id);
-    } catch (err) {
-      Alert.alert("Couldn't start training and deployment", err instanceof Error ? err.message : "Please try again.");
-    } finally {
-      setBusy(false);
-    }
+  function handleTrainAndDeploy() {
+    Alert.alert(
+      "Test and deploy this app?",
+      "You'll be charged a one-time $5 fee to test and deploy it to the Buildo app store.",
+      [
+        { text: "Cancel", style: "cancel" },
+        {
+          text: "Pay $5 and deploy",
+          onPress: async () => {
+            setBusy(true);
+            try {
+              await deployApp(app!.id);
+            } catch (err) {
+              Alert.alert(
+                "Couldn't start training and deployment",
+                err instanceof Error ? err.message : "Please try again."
+              );
+            } finally {
+              setBusy(false);
+            }
+          },
+        },
+      ]
+    );
   }
 
   const canDeploy = app.status === "DRAFT" || app.status === "FAILED";
@@ -93,26 +108,6 @@ export default function AppDetailScreen() {
             results and rewards.
           </Text>
         </View>
-      ) : null}
-
-      {app.testReport ? (
-        <Card style={styles.reportCard}>
-          <Text style={styles.sectionTitle}>Automated test report</Text>
-          {app.testReport.checks.map((check) => (
-            <View key={check.id} style={styles.checkRow}>
-              {check.passed ? (
-                <Check size={16} color={colors.success} />
-              ) : (
-                <X size={16} color={colors.error} />
-              )}
-              <Text style={styles.checkLabel}>{check.label}</Text>
-            </View>
-          ))}
-          <View style={styles.metricRow}>
-            <Text style={styles.metricLabel}>Estimated task success rate</Text>
-            <Text style={styles.metricValue}>{app.testReport.metrics.taskSuccessRate}%</Text>
-          </View>
-        </Card>
       ) : null}
 
       {app.status === "LIVE" ? (
@@ -227,39 +222,6 @@ const styles = StyleSheet.create({
     fontSize: 13,
     color: colors.textMuted,
     lineHeight: 19,
-  },
-  reportCard: {
-    marginTop: spacing.lg,
-    gap: spacing.xs,
-  },
-  checkRow: {
-    flexDirection: "row",
-    alignItems: "center",
-    gap: spacing.sm,
-    paddingVertical: 4,
-  },
-  checkLabel: {
-    fontFamily: fonts.body,
-    fontSize: 13,
-    color: colors.textPrimary,
-  },
-  metricRow: {
-    flexDirection: "row",
-    justifyContent: "space-between",
-    marginTop: spacing.sm,
-    paddingTop: spacing.sm,
-    borderTopWidth: 1,
-    borderTopColor: colors.border,
-  },
-  metricLabel: {
-    fontFamily: fonts.body,
-    fontSize: 13,
-    color: colors.textMuted,
-  },
-  metricValue: {
-    fontFamily: fonts.bodySemiBold,
-    fontSize: 13,
-    color: colors.textPrimary,
   },
   liveBanner: {
     flexDirection: "row",

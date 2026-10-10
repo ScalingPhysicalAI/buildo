@@ -52,18 +52,13 @@ export default function HomeScreen() {
       <Text style={styles.greetingSub}>{greeting}</Text>
 
       <Card style={styles.creditCard}>
-        <View>
-          <Text style={styles.creditLabel}>Credit balance</Text>
-          <Text style={styles.creditValue}>{user?.tokenBalance ?? 0}$</Text>
-        </View>
-        <View style={styles.creditBadge}>
-          <Text style={styles.creditBadgeText}>{user?.role ?? "DEVELOPER"}</Text>
-        </View>
+        <Text style={styles.creditLabel}>Credit balance</Text>
+        <Text style={styles.creditValue}>{user?.tokenBalance ?? 0}$</Text>
       </Card>
 
-      <ReferralBanner />
       <TrainBanner />
       <GadgetsBanner />
+      <ReferralBanner />
     </ScrollView>
   );
 }
@@ -102,9 +97,6 @@ const styles = StyleSheet.create({
     marginBottom: spacing.lg,
   },
   creditCard: {
-    flexDirection: "row",
-    alignItems: "center",
-    justifyContent: "space-between",
     marginBottom: spacing.md,
   },
   creditLabel: {
@@ -119,17 +111,5 @@ const styles = StyleSheet.create({
     fontSize: 28,
     color: colors.black,
     marginTop: 2,
-  },
-  creditBadge: {
-    backgroundColor: colors.sandSurface,
-    paddingHorizontal: spacing.sm,
-    paddingVertical: 6,
-    borderRadius: radii.pill,
-  },
-  creditBadgeText: {
-    fontFamily: fonts.technical,
-    fontSize: 10,
-    color: colors.sandDark,
-    letterSpacing: 0.4,
   },
 });

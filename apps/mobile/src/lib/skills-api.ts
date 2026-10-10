@@ -142,9 +142,8 @@ export async function createApp(input: {
   return data.app;
 }
 
-export async function deployApp(id: string): Promise<AppListing> {
-  const data = await request<{ app: AppListing }>(`/api/apps/${id}/deploy`, { method: "POST" });
-  return data.app;
+export async function deployApp(id: string): Promise<{ app: AppListing; user?: SafeUser }> {
+  return request<{ app: AppListing; user?: SafeUser }>(`/api/apps/${id}/deploy`, { method: "POST" });
 }
 
 export async function deleteApp(id: string): Promise<void> {

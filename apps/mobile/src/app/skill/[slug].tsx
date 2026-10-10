@@ -6,9 +6,21 @@
 // timed stand-in for the capture itself, same pattern as the old
 // sessions-context recorder it replaces.
 import { Redirect, router, useLocalSearchParams } from "expo-router";
-import { Check, Glasses, Hand, Pause, Play, Square, Trash2, Upload, X } from "lucide-react-native";
+import {
+  ArrowDown,
+  ArrowUp,
+  Check,
+  Glasses,
+  Hand,
+  Pause,
+  Play,
+  Square,
+  Trash2,
+  Upload,
+  X,
+} from "lucide-react-native";
 import { useEffect, useRef, useState } from "react";
-import { Animated, Easing, Linking, Pressable, StyleSheet, Text, View } from "react-native";
+import { Animated, Easing, Pressable, StyleSheet, Text, View } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 import { Button } from "../../components/Button";
@@ -23,9 +35,9 @@ const CAPTURE_TIPS = [
   "Make sure the gloves are visible in the camera.",
   "While performing an upward task, move the camera of the specs up.",
   "While performing a downward task, push it down.",
+  "Speak the action you're performing out loud as you do it.",
+  "The specs will show a bigger alert if your hands aren't visible in the camera.",
 ];
-
-const DEV_KIT_URL = "https://starforgerobotics.com/buildo-development-kit/";
 
 function closeOrGoHome() {
   if (router.canGoBack()) {
@@ -52,6 +64,7 @@ export default function SkillDetailScreen() {
   const [elapsed, setElapsed] = useState(0);
   const [isPaused, setIsPaused] = useState(false);
   const [busy, setBusy] = useState(false);
+  const [cameraPosition, setCameraPosition] = useState<"up" | "down" | null>(null);
   const ring = useRef(new Animated.Value(1)).current;
 
   useEffect(() => {
@@ -85,20 +98,20 @@ export default function SkillDetailScreen() {
   function handleStartRecording() {
     const gearConnected = devices.glasses === "connected" && devices.gloves === "connected";
     if (!gearConnected) {
-      Alert.alert(
-        "Pair your creator gadgets",
-        "You need your Buildo capture glasses and gloves paired before recording. Don't have them yet? Order a kit and start earning once it arrives.",
-        [
-          { text: "Cancel", style: "cancel" },
-          { text: "Order gadgets", onPress: () => Linking.openURL(DEV_KIT_URL) },
-          { text: "Pair now", onPress: () => router.push("/(app)/pair") },
-        ]
-      );
+      Alert.alert("Glasses and gloves are not connected", "Pair your capture glasses and haptic gloves before recording.", [
+        { text: "Cancel", style: "cancel" },
+        { text: "Connect", onPress: () => router.push("/(app)/pair") },
+      ]);
       return;
     }
     setElapsed(0);
     setIsPaused(false);
+    setCameraPosition(null);
     setPhase("recording");
+  }
+
+  function handleCameraPosition(position: "up" | "down") {
+    setCameraPosition((current) => (current === position ? null : position));
   }
 
   function handlePauseResume() {
@@ -144,6 +157,29 @@ export default function SkillDetailScreen() {
                 {isPaused ? "Paused" : "Streaming"}
               </Text>
             </View>
+          </View>
+
+          <View style={styles.cameraPositionRow}>
+            <Pressable
+              onPress={() => handleCameraPosition("up")}
+              style={[styles.cameraPositionBtn, cameraPosition === "up" && styles.cameraPositionBtnActive]}
+            >
+              <ArrowUp size={16} color={cameraPosition === "up" ? colors.black : colors.white} />
+              <Text style={[styles.cameraPositionText, cameraPosition === "up" && styles.cameraPositionTextActive]}>
+                Camera up
+              </Text>
+            </Pressable>
+            <Pressable
+              onPress={() => handleCameraPosition("down")}
+              style={[styles.cameraPositionBtn, cameraPosition === "down" && styles.cameraPositionBtnActive]}
+            >
+              <ArrowDown size={16} color={cameraPosition === "down" ? colors.black : colors.white} />
+              <Text
+                style={[styles.cameraPositionText, cameraPosition === "down" && styles.cameraPositionTextActive]}
+              >
+                Camera down
+              </Text>
+            </Pressable>
           </View>
 
           <View style={styles.previewBox}>
@@ -314,7 +350,7 @@ const styles = StyleSheet.create({
   },
   instructionsLabel: {
     fontFamily: fonts.technical,
-    fontSize: 11,
+    fontSize: 12,
     letterSpacing: 0.4,
     textTransform: "uppercase",
     color: colors.textMuted,
@@ -323,9 +359,9 @@ const styles = StyleSheet.create({
   },
   instructions: {
     fontFamily: fonts.body,
-    fontSize: 14,
+    fontSize: 16,
     color: colors.textPrimary,
-    lineHeight: 21,
+    lineHeight: 23,
   },
   gearNote: {
     flexDirection: "row",
@@ -341,18 +377,18 @@ const styles = StyleSheet.create({
   },
   tipsLabel: {
     fontFamily: fonts.technical,
-    fontSize: 11,
+    fontSize: 12,
     letterSpacing: 0.4,
     textTransform: "uppercase",
-    color: colors.textMuted,
+    color: colors.sandDark,
     marginTop: spacing.md,
     marginBottom: spacing.xs,
   },
   tipText: {
-    fontFamily: fonts.body,
-    fontSize: 13,
-    color: colors.textMuted,
-    lineHeight: 19,
+    fontFamily: fonts.bodyMedium,
+    fontSize: 16,
+    color: colors.textPrimary,
+    lineHeight: 22,
   },
   statusCard: {
     backgroundColor: colors.sandSurface,
@@ -458,6 +494,30 @@ const styles = StyleSheet.create({
   },
   liveBadgeTextPaused: {
     color: colors.textMuted,
+  },
+  cameraPositionRow: {
+    flexDirection: "row",
+    gap: spacing.sm,
+  },
+  cameraPositionBtn: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 6,
+    backgroundColor: "rgba(255,255,255,0.12)",
+    borderRadius: radii.pill,
+    paddingVertical: 8,
+    paddingHorizontal: spacing.sm + 2,
+  },
+  cameraPositionBtnActive: {
+    backgroundColor: colors.skin,
+  },
+  cameraPositionText: {
+    fontFamily: fonts.bodyMedium,
+    fontSize: 12,
+    color: colors.white,
+  },
+  cameraPositionTextActive: {
+    color: colors.black,
   },
   previewBox: {
     width: "82%",

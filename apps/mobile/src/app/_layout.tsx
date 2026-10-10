@@ -58,6 +58,7 @@ export default function RootLayout() {
                 <Stack.Screen name="build/new" options={{ presentation: "modal" }} />
                 <Stack.Screen name="build/[id]" options={{ presentation: "modal" }} />
                 <Stack.Screen name="store/[id]" options={{ presentation: "modal" }} />
+                <Stack.Screen name="gadgets/order" options={{ presentation: "modal" }} />
               </Stack>
               <AlertHost />
             </SkillsProvider>

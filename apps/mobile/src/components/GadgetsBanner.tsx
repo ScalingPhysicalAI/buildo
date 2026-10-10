@@ -1,3 +1,4 @@
+import { router } from "expo-router";
 import { Linking, StyleSheet, Text, View } from "react-native";
 import { ShoppingBag } from "lucide-react-native";
 
@@ -13,19 +14,23 @@ export function GadgetsBanner() {
         <View style={styles.iconWrap}>
           <ShoppingBag size={20} color={colors.textPrimary} />
         </View>
-        <Text style={styles.title}>Don't have creator gadgets?</Text>
+        <View style={{ flex: 1 }}>
+          <Text style={styles.title}>Don't have creator gadgets?</Text>
+          <Text style={styles.note}>You will need creator gadgets to train Buildo skills and deploy apps.</Text>
+        </View>
       </View>
 
       <View style={styles.row}>
         <Button
           label="Order Now"
+          variant="cream"
           onPress={() => Linking.openURL(PURCHASE_URL)}
           style={styles.half}
         />
         <Button
-          label={"Buy Now &\nPay Later"}
+          label="Use wallet"
           variant="secondary"
-          onPress={() => Linking.openURL(PURCHASE_URL)}
+          onPress={() => router.push("/gadgets/order")}
           style={styles.half}
         />
       </View>
@@ -60,7 +65,13 @@ const styles = StyleSheet.create({
     fontFamily: fonts.bodySemiBold,
     fontSize: 15,
     color: colors.textPrimary,
-    flex: 1,
+  },
+  note: {
+    fontFamily: fonts.body,
+    fontSize: 12,
+    color: colors.textMuted,
+    marginTop: 2,
+    lineHeight: 16,
   },
   row: {
     flexDirection: "row",

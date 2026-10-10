@@ -1,5 +1,5 @@
 import { router, useFocusEffect } from "expo-router";
-import { Briefcase, ChevronRight, Hospital, House, Plus, Store, Warehouse } from "lucide-react-native";
+import { Briefcase, ChevronRight, Hospital, House, Store, Warehouse } from "lucide-react-native";
 import { useCallback } from "react";
 import { Pressable, ScrollView, StyleSheet, Text, View } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
@@ -64,8 +64,6 @@ export default function TrainScreen() {
     }, [refreshCatalog])
   );
 
-  const customSkills = catalog.filter((s) => s.isCustom);
-
   return (
     <ScrollView
       style={{ backgroundColor: colors.background }}
@@ -82,27 +80,6 @@ export default function TrainScreen() {
         ))
       )}
 
-      <Text style={styles.sectionTitle}>Your custom skills</Text>
-      <Text style={styles.sectionHint}>
-        Record anything else you want to teach Buildo. Custom skills don&apos;t pay a reward, but they can go into
-        an app too.
-      </Text>
-
-      {customSkills.map((entry) => (
-        <Pressable key={entry.id} onPress={() => router.push(`/skill/${entry.slug}`)}>
-          <Card style={styles.customSkillCard}>
-            <Text style={styles.customSkillName}>{entry.name}</Text>
-            <ChevronRight size={16} color={colors.textMuted} />
-          </Card>
-        </Pressable>
-      ))}
-
-      <Pressable onPress={() => router.push("/skill/new")} style={styles.addSkillRow}>
-        <View style={styles.addSkillIcon}>
-          <Plus size={18} color={colors.sandDark} />
-        </View>
-        <Text style={styles.addSkillText}>Add a custom skill</Text>
-      </Pressable>
     </ScrollView>
   );
 }
@@ -170,53 +147,6 @@ const styles = StyleSheet.create({
   },
   useCaseProgressDone: {
     color: colors.success,
-  },
-  sectionTitle: {
-    fontFamily: fonts.bodySemiBold,
-    fontSize: 15,
-    color: colors.textPrimary,
-    marginTop: spacing.md,
-  },
-  sectionHint: {
-    fontFamily: fonts.body,
-    fontSize: 12,
-    color: colors.textMuted,
-    marginTop: -spacing.sm,
-    marginBottom: spacing.xs,
-    lineHeight: 17,
-  },
-  customSkillCard: {
-    flexDirection: "row",
-    alignItems: "center",
-    justifyContent: "space-between",
-  },
-  customSkillName: {
-    fontFamily: fonts.bodyMedium,
-    fontSize: 14,
-    color: colors.textPrimary,
-  },
-  addSkillRow: {
-    flexDirection: "row",
-    alignItems: "center",
-    gap: spacing.sm,
-    borderWidth: 1.5,
-    borderColor: colors.borderStrong,
-    borderStyle: "dashed",
-    borderRadius: radii.lg,
-    padding: spacing.md,
-  },
-  addSkillIcon: {
-    width: 32,
-    height: 32,
-    borderRadius: radii.pill,
-    backgroundColor: colors.sandSurface,
-    alignItems: "center",
-    justifyContent: "center",
-  },
-  addSkillText: {
-    fontFamily: fonts.bodyMedium,
-    fontSize: 14,
-    color: colors.textPrimary,
   },
   emptyText: {
     fontFamily: fonts.body,

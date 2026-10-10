@@ -121,8 +121,8 @@ export function SkillsProvider({ children }: { children: ReactNode }) {
   }
 
   async function deployApp(id: string) {
-    const app = await apiDeployApp(id);
-    await refreshApps();
+    const { app } = await apiDeployApp(id);
+    await Promise.all([refreshApps(), refreshUser()]);
     return app;
   }
 

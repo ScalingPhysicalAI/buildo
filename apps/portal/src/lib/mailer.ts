@@ -74,6 +74,31 @@ function resetPasswordEmailHtml(name: string, resetUrl: string) {
     </tr>`);
 }
 
+function orderConfirmationEmailHtml(
+  name: string,
+  order: { price: number; shippingAddress: string; newBalance: number }
+) {
+  return emailShell(`
+    <tr>
+      <td style="padding:36px 32px 8px 32px;">
+        <h1 style="margin:0 0 16px 0;font-size:22px;line-height:1.3;color:#111111;">Order confirmed, ${name}.</h1>
+        <p style="margin:0 0 16px 0;font-size:15px;line-height:1.6;color:#3f3a33;">
+          Your Buildo Development Kit is on its way. <strong>$${order.price}</strong> was charged to your Starforge
+          wallet balance.
+        </p>
+        <p style="margin:0 0 4px 0;font-size:13px;line-height:1.6;color:#9a9284;text-transform:uppercase;letter-spacing:1px;">
+          Shipping to
+        </p>
+        <p style="margin:0 0 16px 0;font-size:15px;line-height:1.6;color:#3f3a33;">
+          ${order.shippingAddress}
+        </p>
+        <p style="margin:0 0 28px 0;font-size:15px;line-height:1.6;color:#3f3a33;">
+          Your updated wallet balance is <strong>$${order.newBalance}</strong>.
+        </p>
+      </td>
+    </tr>`);
+}
+
 function welcomeEmailHtml(name: string) {
   return emailShell(`
     <tr>
@@ -158,6 +183,19 @@ export async function sendPasswordResetEmail(to: string, name: string, token: st
     "Reset your Starforge password",
     resetPasswordEmailHtml(name, resetUrl),
     `Reset your password: ${resetUrl}\n\nThis link expires in 1 hour. If you didn't request this, you can ignore this email.`,
+  );
+}
+
+export async function sendOrderConfirmationEmail(
+  to: string,
+  name: string,
+  order: { price: number; shippingAddress: string; newBalance: number }
+) {
+  await send(
+    to,
+    "Your Buildo Development Kit order is confirmed",
+    orderConfirmationEmailHtml(name, order),
+    `Order confirmed, ${name}.\n\n$${order.price} was charged to your Starforge wallet balance.\n\nShipping to: ${order.shippingAddress}\n\nYour updated wallet balance is $${order.newBalance}.`
   );
 }
 

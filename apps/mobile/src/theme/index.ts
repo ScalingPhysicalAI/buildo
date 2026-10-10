@@ -16,6 +16,8 @@ export const colors = {
   sandDark: "#8A6F4A",
   sandLight: "#D4B98A",
   sandSurface: "#F1E7D5",
+  skin: "#E2B78F",
+  skinBorder: "#D99E65",
   border: "rgba(138, 111, 74, 0.16)",
   borderStrong: "rgba(138, 111, 74, 0.32)",
   success: "#16A34A",

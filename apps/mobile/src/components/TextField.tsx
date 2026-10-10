@@ -1,3 +1,4 @@
+import type { ReactNode } from "react";
 import { StyleSheet, Text, TextInput, View, type TextInputProps } from "react-native";
 
 import { colors, fonts, radii, spacing } from "../theme";
@@ -5,16 +6,20 @@ import { colors, fonts, radii, spacing } from "../theme";
 export function TextField({
   label,
   error,
+  rightElement,
   ...props
-}: TextInputProps & { label: string; error?: string | null }) {
+}: TextInputProps & { label: string; error?: string | null; rightElement?: ReactNode }) {
   return (
     <View style={styles.wrap}>
       <Text style={styles.label}>{label}</Text>
-      <TextInput
-        placeholderTextColor={colors.textMuted}
-        style={[styles.input, error ? styles.inputError : null]}
-        {...props}
-      />
+      <View style={styles.inputRow}>
+        <TextInput
+          placeholderTextColor={colors.textMuted}
+          style={[styles.input, rightElement ? styles.inputWithRightElement : null, error ? styles.inputError : null]}
+          {...props}
+        />
+        {rightElement ? <View style={styles.rightElement}>{rightElement}</View> : null}
+      </View>
       {error ? <Text style={styles.error}>{error}</Text> : null}
     </View>
   );
@@ -32,6 +37,9 @@ const styles = StyleSheet.create({
     color: colors.textMuted,
     marginBottom: spacing.xs,
   },
+  inputRow: {
+    position: "relative",
+  },
   input: {
     backgroundColor: colors.surface,
     borderWidth: 1.5,
@@ -42,6 +50,17 @@ const styles = StyleSheet.create({
     fontFamily: fonts.body,
     fontSize: 16,
     color: colors.textPrimary,
+  },
+  inputWithRightElement: {
+    paddingRight: spacing.xl + spacing.md,
+  },
+  rightElement: {
+    position: "absolute",
+    right: spacing.sm,
+    top: 0,
+    bottom: 0,
+    justifyContent: "center",
+    alignItems: "center",
   },
   inputError: {
     borderColor: colors.error,
