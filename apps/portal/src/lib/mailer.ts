@@ -2,6 +2,18 @@ import "server-only";
 
 const APP_URL = process.env.NEXT_PUBLIC_APP_URL ?? "http://localhost:3000";
 const FROM_ADDRESS = "Starforge Robotics <no-reply@starforgerobotics.com>";
+const STAFF_ORDERS_EMAIL = "contact@starforgerobotics.com";
+
+// User-supplied text (names, addresses) goes straight into an HTML email --
+// escape it so a stray "<" or "&" can't break the markup or inject content.
+function escapeHtml(value: string): string {
+  return value
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;")
+    .replace(/'/g, "&#39;");
+}
 
 // ---------------------------------------------------------------------------
 // HTML helpers
@@ -81,7 +93,7 @@ function orderConfirmationEmailHtml(
   return emailShell(`
     <tr>
       <td style="padding:36px 32px 8px 32px;">
-        <h1 style="margin:0 0 16px 0;font-size:22px;line-height:1.3;color:#111111;">Order confirmed, ${name}.</h1>
+        <h1 style="margin:0 0 16px 0;font-size:22px;line-height:1.3;color:#111111;">Order confirmed, ${escapeHtml(name)}.</h1>
         <p style="margin:0 0 16px 0;font-size:15px;line-height:1.6;color:#3f3a33;">
           Your Buildo Development Kit is on its way. <strong>$${order.price}</strong> was charged to your Starforge
           wallet balance.
@@ -90,11 +102,41 @@ function orderConfirmationEmailHtml(
           Shipping to
         </p>
         <p style="margin:0 0 16px 0;font-size:15px;line-height:1.6;color:#3f3a33;">
-          ${order.shippingAddress}
+          ${escapeHtml(order.shippingAddress)}
         </p>
         <p style="margin:0 0 28px 0;font-size:15px;line-height:1.6;color:#3f3a33;">
           Your updated wallet balance is <strong>$${order.newBalance}</strong>.
         </p>
+      </td>
+    </tr>`);
+}
+
+function orderAlertEmailHtml(order: {
+  recipientName: string;
+  recipientEmail: string;
+  phone: string;
+  shippingAddress: string;
+  price: number;
+  accountEmail: string;
+}) {
+  const row = (label: string, value: string) => `
+    <tr>
+      <td style="padding:4px 0;font-size:13px;color:#9a9284;width:140px;vertical-align:top;">${escapeHtml(label)}</td>
+      <td style="padding:4px 0;font-size:15px;color:#3f3a33;">${escapeHtml(value)}</td>
+    </tr>`;
+
+  return emailShell(`
+    <tr>
+      <td style="padding:36px 32px 8px 32px;">
+        <h1 style="margin:0 0 16px 0;font-size:22px;line-height:1.3;color:#111111;">New Buildo Development Kit order</h1>
+        <table role="presentation" cellpadding="0" cellspacing="0" style="width:100%;margin-bottom:12px;">
+          ${row("Buyer", order.recipientName)}
+          ${row("Buyer email", order.recipientEmail)}
+          ${row("Phone", order.phone)}
+          ${row("Ship to", order.shippingAddress)}
+          ${row("Charged", `$${order.price} (wallet, "Buy now & pay later")`)}
+          ${row("Account", order.accountEmail)}
+        </table>
       </td>
     </tr>`);
 }
@@ -196,6 +238,25 @@ export async function sendOrderConfirmationEmail(
     "Your Buildo Development Kit order is confirmed",
     orderConfirmationEmailHtml(name, order),
     `Order confirmed, ${name}.\n\n$${order.price} was charged to your Starforge wallet balance.\n\nShipping to: ${order.shippingAddress}\n\nYour updated wallet balance is $${order.newBalance}.`
+  );
+}
+
+// Internal notification to the Starforge team whenever a "Buy now & pay
+// later" order comes in -- separate from the buyer's own confirmation
+// email above.
+export async function sendOrderAlertEmail(order: {
+  recipientName: string;
+  recipientEmail: string;
+  phone: string;
+  shippingAddress: string;
+  price: number;
+  accountEmail: string;
+}) {
+  await send(
+    STAFF_ORDERS_EMAIL,
+    `New order: ${order.recipientName} — Buildo Development Kit`,
+    orderAlertEmailHtml(order),
+    `New Buildo Development Kit order\n\nBuyer: ${order.recipientName}\nBuyer email: ${order.recipientEmail}\nPhone: ${order.phone}\nShip to: ${order.shippingAddress}\nCharged: $${order.price} (wallet, "Buy now & pay later")\nAccount: ${order.accountEmail}`
   );
 }
 

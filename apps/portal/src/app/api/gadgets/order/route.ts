@@ -2,17 +2,33 @@ import { NextResponse } from "next/server";
 
 import { prisma } from "@/lib/prisma";
 import { getSessionUserId, toSafeUser } from "@/lib/auth";
-import { sendOrderConfirmationEmail } from "@/lib/mailer";
+import { sendOrderAlertEmail, sendOrderConfirmationEmail } from "@/lib/mailer";
 import { gadgetOrderSchema } from "@/lib/validations";
 
-// Real price of the Buildo Development Kit (starforgerobotics.com/buildo-development-kit/).
-export const GADGET_KIT_PRICE = 499;
+// Price of the Buildo Development Kit, in $ credit.
+export const GADGET_KIT_PRICE = 200;
 
 // "Use wallet" is a direct-debit purchase path, not a real checkout -- it
 // charges the kit price straight out of the buyer's $ credit balance and is
 // allowed to push that balance negative (financing the purchase against
 // future earnings), but only down to this floor.
 const MIN_WALLET_BALANCE = -500;
+
+// "Buy now & pay later" is a one-time scheme -- once a developer has an
+// order on file, the Home screen's gadgets banner stops offering it again.
+export async function GET(request: Request) {
+  const userId = await getSessionUserId(request);
+  if (!userId) {
+    return NextResponse.json({ error: "Not authenticated" }, { status: 401 });
+  }
+
+  const order = await prisma.gadgetOrder.findFirst({
+    where: { userId },
+    orderBy: { createdAt: "desc" },
+  });
+
+  return NextResponse.json({ hasOrder: !!order, order });
+}
 
 export async function POST(request: Request) {
   const userId = await getSessionUserId(request);
@@ -72,6 +88,15 @@ export async function POST(request: Request) {
       shippingAddress: order.shippingAddress,
       newBalance: updatedUser.tokenBalance,
     }).catch((err) => console.error("[gadgets/order] confirmation email failed:", err));
+
+    sendOrderAlertEmail({
+      recipientName: order.recipientName,
+      recipientEmail: order.recipientEmail,
+      phone: order.phone ?? "Not provided",
+      shippingAddress: order.shippingAddress,
+      price: order.price,
+      accountEmail: updatedUser.email,
+    }).catch((err) => console.error("[gadgets/order] staff alert email failed:", err));
 
     return NextResponse.json({ user: toSafeUser(updatedUser), order });
   } catch (err) {

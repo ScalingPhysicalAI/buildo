@@ -7,9 +7,8 @@ import { prisma } from "@/lib/prisma";
 // 7 * 24 * 60 * 60 * 1000 before this is real.
 export const APP_TESTING_DURATION_MS = 1 * 60 * 1000;
 
-// Charged up front when "Train and Deploy" starts the testing window (see
-// apps/[id]/deploy/route.ts) -- not charged again here.
-export const APP_DEPLOY_FEE = 5;
+// Publishing an app is free -- no deploy fee -- so a developer can publish
+// even with a negative $ balance.
 
 /**
  * The 7-day testing window is modeled as `testingEndsAt` rather than a

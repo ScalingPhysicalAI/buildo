@@ -64,6 +64,6 @@ export const appListingCreateSchema = z.object({
 export const gadgetOrderSchema = z.object({
   recipientName: z.string().trim().min(2, "Name must be at least 2 characters").max(80),
   recipientEmail: z.string().trim().toLowerCase().email("Enter a valid email address"),
-  phone: z.string().trim().max(30).optional(),
+  phone: z.string().trim().min(6, "Enter a valid phone number").max(30),
   shippingAddress: z.string().trim().min(10, "Enter a full shipping address").max(500),
 });
