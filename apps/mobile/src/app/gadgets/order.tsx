@@ -19,10 +19,11 @@ import { Card } from "../../components/Card";
 import { TextField } from "../../components/TextField";
 import { Alert } from "../../lib/alert";
 import { useAuth } from "../../lib/auth-context";
+import { useCurrency } from "../../lib/currency-context";
 import { placeGadgetOrder } from "../../lib/gadgets-api";
 import { colors, fonts, radii, spacing } from "../../theme";
 
-const KIT_PRICE = 499;
+const KIT_PRICE = 200;
 const MIN_WALLET_BALANCE = -500;
 
 // Amazon-style top gallery -- swipe through the kit's product photos.
@@ -54,12 +55,14 @@ function closeOrGoHome() {
 export default function GadgetOrderScreen() {
   const insets = useSafeAreaInsets();
   const { width: windowWidth } = useWindowDimensions();
+  const { formatUSD } = useCurrency();
   const { user, refresh } = useAuth();
 
   const [name, setName] = useState(user?.name ?? "");
   const [email, setEmail] = useState(user?.email ?? "");
   const [phone, setPhone] = useState("");
-  const [address, setAddress] = useState("");
+  const [addressLine, setAddressLine] = useState("");
+  const [pincodeLandmark, setPincodeLandmark] = useState("");
   const [busy, setBusy] = useState(false);
   const [placed, setPlaced] = useState(false);
   const [activeImage, setActiveImage] = useState(0);
@@ -75,14 +78,14 @@ export default function GadgetOrderScreen() {
   const overLimit = projectedBalance < MIN_WALLET_BALANCE;
 
   async function handlePay() {
-    if (!name.trim() || !email.trim() || !address.trim()) {
-      Alert.alert("Missing details", "Fill in your name, email, and shipping address.");
+    if (!name.trim() || !email.trim() || !phone.trim() || !addressLine.trim() || !pincodeLandmark.trim()) {
+      Alert.alert("Missing details", "Fill in your name, email, phone number, and shipping address.");
       return;
     }
     if (overLimit) {
       Alert.alert(
         "Wallet limit reached",
-        `This order would take your balance past the $${MIN_WALLET_BALANCE} limit.`
+        `This order would take your balance past the ${formatUSD(MIN_WALLET_BALANCE)} limit.`
       );
       return;
     }
@@ -91,8 +94,8 @@ export default function GadgetOrderScreen() {
       await placeGadgetOrder({
         recipientName: name.trim(),
         recipientEmail: email.trim(),
-        phone: phone.trim() || undefined,
-        shippingAddress: address.trim(),
+        phone: phone.trim(),
+        shippingAddress: `${addressLine.trim()}, ${pincodeLandmark.trim()}`,
       });
       await refresh();
       setPlaced(true);
@@ -153,7 +156,7 @@ export default function GadgetOrderScreen() {
 
       <View style={styles.titleRow}>
         <Text style={styles.title}>Buildo Development Kit</Text>
-        <Text style={styles.price}>${KIT_PRICE}</Text>
+        <Text style={styles.price}>{formatUSD(KIT_PRICE)}</Text>
       </View>
       <Text style={styles.description}>
         Egocentric glasses paired with teleoperation gloves — capture first-person video and hand motion to train
@@ -191,33 +194,39 @@ export default function GadgetOrderScreen() {
         placeholder="you@starforgerobotics.com"
       />
       <TextField
-        label="Phone (optional)"
+        label="Phone"
         keyboardType="phone-pad"
         value={phone}
         onChangeText={setPhone}
         placeholder="+1 555 555 5555"
       />
       <TextField
-        label="Shipping address"
+        label="Address"
         multiline
-        value={address}
-        onChangeText={setAddress}
-        placeholder="Street, city, state, ZIP, country"
+        value={addressLine}
+        onChangeText={setAddressLine}
+        placeholder="House/flat no., street, city, state"
+      />
+      <TextField
+        label="Pincode & landmark"
+        value={pincodeLandmark}
+        onChangeText={setPincodeLandmark}
+        placeholder="e.g. 560001, near City Mall"
       />
 
       <View style={styles.walletCard}>
         <View style={styles.walletRow}>
           <Wallet size={18} color={colors.sandDark} />
-          <Text style={styles.walletLabel}>Wallet balance</Text>
-          <Text style={styles.walletValue}>${user?.tokenBalance ?? 0}</Text>
+          <Text style={styles.walletLabel}>Creator's wallet balance</Text>
+          <Text style={styles.walletValue}>{formatUSD(user?.tokenBalance ?? 0)}</Text>
         </View>
         <Text style={styles.walletNote}>
-          This order charges ${KIT_PRICE} directly from your wallet. Your balance can go negative.
+          This order charges {formatUSD(KIT_PRICE)} directly from your wallet. Your balance can go negative.
         </Text>
       </View>
 
       <Button
-        label={`Pay $${KIT_PRICE} with wallet`}
+        label="Buy now & pay later"
         variant="cream"
         onPress={handlePay}
         loading={busy}

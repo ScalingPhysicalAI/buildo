@@ -6,9 +6,10 @@ import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 import { Button } from "../../components/Button";
 import { Card } from "../../components/Card";
+import { useCurrency } from "../../lib/currency-context";
 import { formatDaysLeft } from "../../lib/format";
 import { useSkills } from "../../lib/skills-context";
-import { estimatedIncomeLabel, getUseCase } from "../../lib/use-cases";
+import { estimatedIncome, getUseCase } from "../../lib/use-cases";
 import { colors, fonts, radii, spacing } from "../../theme";
 
 function closeOrGoTrain() {
@@ -22,6 +23,7 @@ function closeOrGoTrain() {
 export default function UseCaseScreen() {
   const { key } = useLocalSearchParams<{ key: string }>();
   const { catalog, apps, refreshCatalog, refreshApps } = useSkills();
+  const { formatUSD } = useCurrency();
   const insets = useSafeAreaInsets();
 
   useFocusEffect(
@@ -67,7 +69,8 @@ export default function UseCaseScreen() {
 
       <Text style={styles.title}>{useCase.title}</Text>
       <Text style={styles.summary}>
-        Train {total} skill{total === 1 ? "" : "s"} to earn an estimated {estimatedIncomeLabel(useCase)} running a{" "}
+        Train {total} skill{total === 1 ? "" : "s"} to earn an estimated {formatUSD(estimatedIncome(useCase))}/month
+        running a{" "}
         {useCase.title} Buildo. {done} of {total} complete.
       </Text>
 

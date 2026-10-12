@@ -1,5 +1,5 @@
 import { router, useLocalSearchParams } from "expo-router";
-import { Check, Clock3, Download, DollarSign, X } from "lucide-react-native";
+import { Check, Clock3, Download, Wallet, X } from "lucide-react-native";
 import { useState } from "react";
 import { Pressable, ScrollView, StyleSheet, Text, View } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
@@ -8,6 +8,7 @@ import { Button } from "../../components/Button";
 import { Card } from "../../components/Card";
 import { StatusPill } from "../../components/StatusPill";
 import { Alert } from "../../lib/alert";
+import { useCurrency } from "../../lib/currency-context";
 import { useSkills } from "../../lib/skills-context";
 import type { AppDeployStatus } from "../../lib/skills-api";
 import { colors, fonts, radii, spacing } from "../../theme";
@@ -31,6 +32,7 @@ function closeOrGoBuild() {
 export default function AppDetailScreen() {
   const { id } = useLocalSearchParams<{ id: string }>();
   const insets = useSafeAreaInsets();
+  const { formatUSD } = useCurrency();
   const { apps, deployApp } = useSkills();
   const [busy, setBusy] = useState(false);
 
@@ -40,11 +42,11 @@ export default function AppDetailScreen() {
   function handleTrainAndDeploy() {
     Alert.alert(
       "Test and deploy this app?",
-      "You'll be charged a one-time $5 fee to test and deploy it to the Buildo app store.",
+      "It will run an automated test, then enter a 7-day testing window before going live on the Buildo app store.",
       [
         { text: "Cancel", style: "cancel" },
         {
-          text: "Pay $5 and deploy",
+          text: "Test and deploy",
           onPress: async () => {
             setBusy(true);
             try {
@@ -126,8 +128,8 @@ export default function AppDetailScreen() {
               <Text style={styles.statLabel}>Downloads</Text>
             </Card>
             <Card style={styles.statCard}>
-              <DollarSign size={16} color={colors.sandDark} />
-              <Text style={styles.statValue}>${app.earnings}</Text>
+              <Wallet size={16} color={colors.sandDark} />
+              <Text style={styles.statValue}>{formatUSD(app.earnings)}</Text>
               <Text style={styles.statLabel}>Earnings</Text>
             </Card>
           </View>

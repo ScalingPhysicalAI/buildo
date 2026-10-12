@@ -5,8 +5,9 @@ import { Pressable, ScrollView, StyleSheet, Text, View } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 import { Card } from "../../components/Card";
+import { useCurrency } from "../../lib/currency-context";
 import { useSkills } from "../../lib/skills-context";
-import { USE_CASES, estimatedIncomeLabel, type UseCase } from "../../lib/use-cases";
+import { USE_CASES, estimatedIncome, type UseCase } from "../../lib/use-cases";
 import type { SkillCatalogEntry } from "../../lib/skills-api";
 import { colors, fonts, radii, spacing } from "../../theme";
 
@@ -28,6 +29,7 @@ function useCaseProgress(useCase: UseCase, catalog: SkillCatalogEntry[]) {
 }
 
 function UseCaseCard({ useCase, catalog }: { useCase: UseCase; catalog: SkillCatalogEntry[] }) {
+  const { formatUSD } = useCurrency();
   const { done, total } = useCaseProgress(useCase, catalog);
   const Icon = USE_CASE_ICON[useCase.key];
   const complete = done === total;
@@ -42,7 +44,7 @@ function UseCaseCard({ useCase, catalog }: { useCase: UseCase; catalog: SkillCat
           <Text style={styles.useCaseTitle}>{useCase.title}</Text>
           <Text style={styles.useCaseDescription}>{useCase.description}</Text>
           <View style={styles.useCaseMetaRow}>
-            <Text style={styles.useCaseIncome}>{estimatedIncomeLabel(useCase)}</Text>
+            <Text style={styles.useCaseIncome}>{formatUSD(estimatedIncome(useCase))}/month</Text>
             <Text style={[styles.useCaseProgress, complete && styles.useCaseProgressDone]}>
               {done}/{total} skills
             </Text>

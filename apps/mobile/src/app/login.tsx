@@ -70,7 +70,7 @@ export default function LoginScreen() {
           <View style={styles.heroIcon}>
             <Sparkles size={32} color={colors.sandDark} strokeWidth={1.5} />
           </View>
-          <Text style={styles.title}>BUILDO REWARDS</Text>
+          <Text style={styles.title}>BUILDO CREATORS</Text>
           <Text style={styles.subtitle}>Become a Buildo Creator to earn rewards</Text>
         </Animated.View>
 

@@ -26,3 +26,9 @@ export async function placeGadgetOrder(input: {
     body: JSON.stringify(input),
   });
 }
+
+// "Buy now & pay later" is a one-time scheme -- used to hide the Home
+// screen's gadgets banner once the user already has an order on file.
+export async function fetchGadgetOrderStatus(): Promise<{ hasOrder: boolean; order: GadgetOrder | null }> {
+  return request<{ hasOrder: boolean; order: GadgetOrder | null }>("/api/gadgets/order");
+}

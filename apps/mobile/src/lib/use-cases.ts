@@ -55,10 +55,6 @@ export function estimatedIncome(useCase: UseCase): number {
   return Math.min(useCase.skillSlugs.length * PER_SKILL_MONTHLY, MAX_MONTHLY_INCOME);
 }
 
-export function estimatedIncomeLabel(useCase: UseCase): string {
-  return `$${estimatedIncome(useCase).toLocaleString()}/month`;
-}
-
 export function getUseCase(key: string | undefined): UseCase | undefined {
   return USE_CASES.find((u) => u.key === key);
 }

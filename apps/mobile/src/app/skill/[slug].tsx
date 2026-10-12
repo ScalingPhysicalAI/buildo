@@ -226,7 +226,6 @@ export default function SkillDetailScreen() {
       <Text style={styles.name}>{entry.name}</Text>
       <View style={styles.rewardRow}>
         <Text style={styles.category}>{entry.category}</Text>
-        {entry.reward > 0 ? <Text style={styles.reward}>${entry.reward} per install, once in an app</Text> : null}
       </View>
       <Text style={styles.summary}>{entry.summary}</Text>
 
@@ -280,9 +279,7 @@ export default function SkillDetailScreen() {
           ) : displayStatus === "uploaded" || displayStatus === "trained" ? (
             <View style={styles.statusCardSuccess}>
               <Check size={18} color={colors.success} />
-              <Text style={styles.statusText}>
-                {entry.reward > 0 ? `Uploaded — earns $${entry.reward} per install once in an app` : "Uploaded"}
-              </Text>
+              <Text style={styles.statusText}>Uploaded</Text>
             </View>
           ) : displayStatus === "training" ? (
             <View style={styles.statusCardSuccess}>
@@ -336,11 +333,6 @@ const styles = StyleSheet.create({
     letterSpacing: 0.4,
     textTransform: "uppercase",
     color: colors.textMuted,
-  },
-  reward: {
-    fontFamily: fonts.bodySemiBold,
-    fontSize: 13,
-    color: colors.sandDark,
   },
   summary: {
     fontFamily: fonts.body,

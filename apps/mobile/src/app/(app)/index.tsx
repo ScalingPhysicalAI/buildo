@@ -10,6 +10,8 @@ import { Logo } from "../../components/Logo";
 import { ReferralBanner } from "../../components/ReferralBanner";
 import { TrainBanner } from "../../components/TrainBanner";
 import { useAuth } from "../../lib/auth-context";
+import { useCurrency } from "../../lib/currency-context";
+import { fetchGadgetOrderStatus } from "../../lib/gadgets-api";
 import { colors, fonts, radii, spacing } from "../../theme";
 
 const GREETINGS = [
@@ -26,13 +28,18 @@ function pickGreeting() {
 
 export default function HomeScreen() {
   const { user, logout } = useAuth();
+  const { formatUSD } = useCurrency();
   const insets = useSafeAreaInsets();
   const firstName = user?.name?.split(" ")[0] ?? "there";
   const [greeting, setGreeting] = useState(pickGreeting);
+  const [hasGadgetOrder, setHasGadgetOrder] = useState(false);
 
   useFocusEffect(
     useCallback(() => {
       setGreeting(pickGreeting());
+      fetchGadgetOrderStatus()
+        .then((res) => setHasGadgetOrder(res.hasOrder))
+        .catch(() => {});
     }, [])
   );
 
@@ -53,12 +60,12 @@ export default function HomeScreen() {
 
       <Card style={styles.creditCard}>
         <Text style={styles.creditLabel}>Credit balance</Text>
-        <Text style={styles.creditValue}>{user?.tokenBalance ?? 0}$</Text>
+        <Text style={styles.creditValue}>{formatUSD(user?.tokenBalance ?? 0)}</Text>
       </Card>
 
-      <TrainBanner />
-      <GadgetsBanner />
       <ReferralBanner />
+      <TrainBanner />
+      {hasGadgetOrder ? null : <GadgetsBanner />}
     </ScrollView>
   );
 }

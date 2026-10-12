@@ -1,4 +1,4 @@
-import { AppWindow, Bluetooth, GraduationCap, House } from "lucide-react-native";
+import { AppWindow, Glasses, GraduationCap, House } from "lucide-react-native";
 import { Redirect, Tabs } from "expo-router";
 import { ActivityIndicator, View } from "react-native";
 
@@ -42,11 +42,11 @@ export default function AppLayout() {
       />
       <Tabs.Screen
         name="pair"
-        options={{ title: "Gadgets", tabBarIcon: ({ color, size }) => <Bluetooth color={color} size={size} /> }}
+        options={{ title: "Gadgets", tabBarIcon: ({ color, size }) => <Glasses color={color} size={size} /> }}
       />
       <Tabs.Screen
         name="train"
-        options={{ title: "Train", tabBarIcon: ({ color, size }) => <GraduationCap color={color} size={size} /> }}
+        options={{ title: "Skills", tabBarIcon: ({ color, size }) => <GraduationCap color={color} size={size} /> }}
       />
       <Tabs.Screen
         name="build"

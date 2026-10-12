@@ -16,10 +16,12 @@ import { Button } from "../components/Button";
 import { Logo } from "../components/Logo";
 import { TextField } from "../components/TextField";
 import { useAuth } from "../lib/auth-context";
+import { useCurrency } from "../lib/currency-context";
 import { colors, fonts, radii, spacing } from "../theme";
 
 export default function SignupScreen() {
   const { signup } = useAuth();
+  const { formatUSD } = useCurrency();
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -76,10 +78,10 @@ export default function SignupScreen() {
           <View style={styles.heroIcon}>
             <Sparkles size={32} color={colors.sandDark} strokeWidth={1.5} />
           </View>
-          <Text style={styles.title}>BUILDO REWARDS</Text>
+          <Text style={styles.title}>BUILDO CREATORS</Text>
           <Text style={styles.subtitle}>Become a Buildo Creator to earn rewards</Text>
           <View style={styles.bonusPill}>
-            <Text style={styles.bonusPillText}>Get $20 instant on Sign up</Text>
+            <Text style={styles.bonusPillText}>Get {formatUSD(20)} instant on Sign up</Text>
           </View>
         </Animated.View>
 

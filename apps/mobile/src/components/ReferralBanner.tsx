@@ -2,14 +2,29 @@ import { useState } from "react";
 import { Check, Copy, Gift, Share2 } from "lucide-react-native";
 import { Clipboard, Pressable, Share, StyleSheet, Text, View } from "react-native";
 
+import { useCurrency } from "../lib/currency-context";
 import { colors, fonts, radii, spacing } from "../theme";
 
 const PURCHASE_URL = "https://starforgerobotics.com/buildo/";
 
-const USE_CASES = ["Busy professionals", "Shop owners", "Office owners", "Warehouses", "Hospitals"];
+// The creator (referrer) earns CREATOR_REWARD_USD; the person they refer
+// gets BUYER_DISCOUNT_USD off the robot's ROBOT_BASE_PRICE_USD -- two
+// different people, two different amounts, not the same number.
+const CREATOR_REWARD_USD = 1000;
+const BUYER_DISCOUNT_USD = 500;
+const ROBOT_BASE_PRICE_USD = 8000;
 
-function shareMessage(code: string) {
-  return `Hey I've become a Buildo Creator, you can use this referral code ${code} to get $500 discount on your Buildo purchase ${PURCHASE_URL}`;
+const USE_CASES = [
+  "Busy professionals",
+  "Shop owners",
+  "Office owners",
+  "Warehouses",
+  "Hospitals",
+  "Manufacturing companies",
+];
+
+function shareMessage(code: string, formatUSD: (amount: number) => string) {
+  return `Hey I've become a Buildo Creator, you can use this referral code ${code} to get a ${formatUSD(BUYER_DISCOUNT_USD)} discount on your ${formatUSD(ROBOT_BASE_PRICE_USD)} Buildo robot purchase ${PURCHASE_URL}`;
 }
 
 // TODO: dummy/local only for now -- not backed by a real per-user code from
@@ -22,6 +37,7 @@ function generateDummyCode(): string {
 }
 
 export function ReferralBanner() {
+  const { formatUSD } = useCurrency();
   const [code, setCode] = useState<string | null>(null);
   const [copied, setCopied] = useState(false);
 
@@ -41,7 +57,7 @@ export function ReferralBanner() {
 
   async function handleShare() {
     const activeCode = ensureCode();
-    await Share.share({ message: shareMessage(activeCode) });
+    await Share.share({ message: shareMessage(activeCode, formatUSD) });
   }
 
   return (
@@ -51,7 +67,7 @@ export function ReferralBanner() {
           <Gift size={20} color={colors.sandDark} />
         </View>
         <View style={styles.textWrap}>
-          <Text style={styles.title}>Refer Buildo and get $500 reward</Text>
+          <Text style={styles.title}>Refer Buildo to a friend and get {formatUSD(CREATOR_REWARD_USD)} reward</Text>
           <Text style={styles.subtitle}>Generate referral code</Text>
         </View>
       </View>

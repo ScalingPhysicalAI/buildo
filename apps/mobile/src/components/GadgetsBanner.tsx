@@ -1,11 +1,9 @@
 import { router } from "expo-router";
-import { Linking, StyleSheet, Text, View } from "react-native";
+import { StyleSheet, Text, View } from "react-native";
 import { ShoppingBag } from "lucide-react-native";
 
 import { Button } from "./Button";
 import { colors, fonts, radii, spacing } from "../theme";
-
-const PURCHASE_URL = "https://starforgerobotics.com/buildo-development-kit/";
 
 export function GadgetsBanner() {
   return (
@@ -20,20 +18,7 @@ export function GadgetsBanner() {
         </View>
       </View>
 
-      <View style={styles.row}>
-        <Button
-          label="Order Now"
-          variant="cream"
-          onPress={() => Linking.openURL(PURCHASE_URL)}
-          style={styles.half}
-        />
-        <Button
-          label="Use wallet"
-          variant="secondary"
-          onPress={() => router.push("/gadgets/order")}
-          style={styles.half}
-        />
-      </View>
+      <Button label="Buy now & pay later" variant="cream" onPress={() => router.push("/gadgets/order")} />
     </View>
   );
 }
@@ -72,13 +57,5 @@ const styles = StyleSheet.create({
     color: colors.textMuted,
     marginTop: 2,
     lineHeight: 16,
-  },
-  row: {
-    flexDirection: "row",
-    gap: spacing.sm,
-  },
-  half: {
-    flex: 1,
-    paddingHorizontal: spacing.sm,
   },
 });
