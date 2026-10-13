@@ -19,8 +19,8 @@ import { Card } from "../../components/Card";
 import { TextField } from "../../components/TextField";
 import { Alert } from "../../lib/alert";
 import { useAuth } from "../../lib/auth-context";
-import { useCurrency } from "../../lib/currency-context";
 import { placeGadgetOrder } from "../../lib/gadgets-api";
+import { formatUSD } from "../../lib/format";
 import { colors, fonts, radii, spacing } from "../../theme";
 
 const KIT_PRICE = 200;
@@ -55,7 +55,6 @@ function closeOrGoHome() {
 export default function GadgetOrderScreen() {
   const insets = useSafeAreaInsets();
   const { width: windowWidth } = useWindowDimensions();
-  const { formatUSD } = useCurrency();
   const { user, refresh } = useAuth();
 
   const [name, setName] = useState(user?.name ?? "");

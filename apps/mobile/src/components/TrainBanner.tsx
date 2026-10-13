@@ -2,11 +2,10 @@ import { router } from "expo-router";
 import { ArrowUpRight, GraduationCap } from "lucide-react-native";
 import { Pressable, StyleSheet, Text, View } from "react-native";
 
-import { useCurrency } from "../lib/currency-context";
+import { formatUSD } from "../lib/format";
 import { colors, fonts, radii, spacing } from "../theme";
 
 export function TrainBanner() {
-  const { formatUSD, symbol } = useCurrency();
   return (
     <Pressable
       onPress={() => router.push("/(app)/train")}
@@ -16,10 +15,7 @@ export function TrainBanner() {
         <GraduationCap size={20} color={colors.sandDark} />
       </View>
       <View style={styles.textWrap}>
-        <Text style={styles.title}>
-          Collect skills and earn {symbol}
-          {symbol} with robot apps you will build
-        </Text>
+        <Text style={styles.title}>Collect skills and earn $$ with robot apps you will build</Text>
         <Text style={styles.subtitle}>
           Make anywhere from {formatUSD(2000)}–{formatUSD(4000)} per month with the skills you'll train
         </Text>

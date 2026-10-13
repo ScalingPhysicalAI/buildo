@@ -10,7 +10,7 @@ import { Logo } from "../../components/Logo";
 import { ReferralBanner } from "../../components/ReferralBanner";
 import { TrainBanner } from "../../components/TrainBanner";
 import { useAuth } from "../../lib/auth-context";
-import { useCurrency } from "../../lib/currency-context";
+import { formatUSD } from "../../lib/format";
 import { fetchGadgetOrderStatus } from "../../lib/gadgets-api";
 import { colors, fonts, radii, spacing } from "../../theme";
 
@@ -28,7 +28,6 @@ function pickGreeting() {
 
 export default function HomeScreen() {
   const { user, logout } = useAuth();
-  const { formatUSD } = useCurrency();
   const insets = useSafeAreaInsets();
   const firstName = user?.name?.split(" ")[0] ?? "there";
   const [greeting, setGreeting] = useState(pickGreeting);

@@ -2,7 +2,7 @@ import { useState } from "react";
 import { Check, Copy, Gift, Share2 } from "lucide-react-native";
 import { Clipboard, Pressable, Share, StyleSheet, Text, View } from "react-native";
 
-import { useCurrency } from "../lib/currency-context";
+import { formatUSD } from "../lib/format";
 import { colors, fonts, radii, spacing } from "../theme";
 
 const PURCHASE_URL = "https://starforgerobotics.com/buildo/";
@@ -15,7 +15,7 @@ const BUYER_DISCOUNT_USD = 500;
 const ROBOT_BASE_PRICE_USD = 8000;
 
 const USE_CASES = [
-  "Busy professionals",
+  "Homes",
   "Shop owners",
   "Office owners",
   "Warehouses",
@@ -23,7 +23,7 @@ const USE_CASES = [
   "Manufacturing companies",
 ];
 
-function shareMessage(code: string, formatUSD: (amount: number) => string) {
+function shareMessage(code: string) {
   return `Hey I've become a Buildo Creator, you can use this referral code ${code} to get a ${formatUSD(BUYER_DISCOUNT_USD)} discount on your ${formatUSD(ROBOT_BASE_PRICE_USD)} Buildo robot purchase ${PURCHASE_URL}`;
 }
 
@@ -37,7 +37,6 @@ function generateDummyCode(): string {
 }
 
 export function ReferralBanner() {
-  const { formatUSD } = useCurrency();
   const [code, setCode] = useState<string | null>(null);
   const [copied, setCopied] = useState(false);
 
@@ -57,7 +56,7 @@ export function ReferralBanner() {
 
   async function handleShare() {
     const activeCode = ensureCode();
-    await Share.share({ message: shareMessage(activeCode, formatUSD) });
+    await Share.share({ message: shareMessage(activeCode) });
   }
 
   return (

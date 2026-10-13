@@ -6,8 +6,7 @@ import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 import { Button } from "../../components/Button";
 import { Card } from "../../components/Card";
-import { useCurrency } from "../../lib/currency-context";
-import { formatDaysLeft } from "../../lib/format";
+import { formatDaysLeft, formatUSD } from "../../lib/format";
 import { useSkills } from "../../lib/skills-context";
 import { estimatedIncome, getUseCase } from "../../lib/use-cases";
 import { colors, fonts, radii, spacing } from "../../theme";
@@ -23,7 +22,6 @@ function closeOrGoTrain() {
 export default function UseCaseScreen() {
   const { key } = useLocalSearchParams<{ key: string }>();
   const { catalog, apps, refreshCatalog, refreshApps } = useSkills();
-  const { formatUSD } = useCurrency();
   const insets = useSafeAreaInsets();
 
   useFocusEffect(

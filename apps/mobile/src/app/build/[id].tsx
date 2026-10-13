@@ -6,9 +6,10 @@ import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 import { Button } from "../../components/Button";
 import { Card } from "../../components/Card";
+import { GlobalReachMap } from "../../components/GlobalReachMap";
 import { StatusPill } from "../../components/StatusPill";
 import { Alert } from "../../lib/alert";
-import { useCurrency } from "../../lib/currency-context";
+import { formatUSD } from "../../lib/format";
 import { useSkills } from "../../lib/skills-context";
 import type { AppDeployStatus } from "../../lib/skills-api";
 import { colors, fonts, radii, spacing } from "../../theme";
@@ -32,7 +33,6 @@ function closeOrGoBuild() {
 export default function AppDetailScreen() {
   const { id } = useLocalSearchParams<{ id: string }>();
   const insets = useSafeAreaInsets();
-  const { formatUSD } = useCurrency();
   const { apps, deployApp } = useSkills();
   const [busy, setBusy] = useState(false);
 
@@ -100,16 +100,21 @@ export default function AppDetailScreen() {
       ) : null}
 
       {app.status === "TESTING" ? (
-        <View style={styles.testingCard}>
-          <View style={styles.testingRow}>
-            <Clock3 size={18} color={colors.sandDark} />
-            <Text style={styles.testingTitle}>Testing in progress</Text>
+        <>
+          <View style={styles.testingCard}>
+            <View style={styles.testingRow}>
+              <Clock3 size={18} color={colors.sandDark} />
+              <Text style={styles.testingTitle}>Testing in progress</Text>
+            </View>
+            <Text style={styles.testingNote}>
+              Testing typically takes up to seven days. You&apos;re welcome to check back at any time to view your
+              results and rewards.
+            </Text>
           </View>
-          <Text style={styles.testingNote}>
-            Testing typically takes up to seven days. You&apos;re welcome to check back at any time to view your
-            results and rewards.
-          </Text>
-        </View>
+          <View style={{ marginTop: spacing.lg }}>
+            <GlobalReachMap />
+          </View>
+        </>
       ) : null}
 
       {app.status === "LIVE" ? (

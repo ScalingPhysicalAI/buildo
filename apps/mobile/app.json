@@ -34,12 +34,6 @@
         }
       ],
       [
-        "expo-location",
-        {
-          "locationWhenInUsePermission": "Allow Buildo Creators to use your location to show prices in your local currency."
-        }
-      ],
-      [
         "expo-camera",
         {
           "cameraPermission": "Allow Buildo Creators to use your camera for a live preview while recording a skill.",

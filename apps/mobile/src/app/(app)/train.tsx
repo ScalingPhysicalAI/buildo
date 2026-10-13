@@ -5,7 +5,7 @@ import { Pressable, ScrollView, StyleSheet, Text, View } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 import { Card } from "../../components/Card";
-import { useCurrency } from "../../lib/currency-context";
+import { formatUSD } from "../../lib/format";
 import { useSkills } from "../../lib/skills-context";
 import { USE_CASES, estimatedIncome, type UseCase } from "../../lib/use-cases";
 import type { SkillCatalogEntry } from "../../lib/skills-api";
@@ -29,7 +29,6 @@ function useCaseProgress(useCase: UseCase, catalog: SkillCatalogEntry[]) {
 }
 
 function UseCaseCard({ useCase, catalog }: { useCase: UseCase; catalog: SkillCatalogEntry[] }) {
-  const { formatUSD } = useCurrency();
   const { done, total } = useCaseProgress(useCase, catalog);
   const Icon = USE_CASE_ICON[useCase.key];
   const complete = done === total;

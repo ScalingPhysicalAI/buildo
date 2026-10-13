@@ -1,3 +1,12 @@
+// $ only, everywhere -- no locale/currency conversion. Sign goes before the
+// $ (e.g. "-$500", not "$-500"), which matters for the gadget kit's
+// can-go-negative wallet balance.
+export function formatUSD(amountUsd: number): string {
+  const rounded = Math.round(amountUsd);
+  const sign = rounded < 0 ? "-" : "";
+  return `${sign}$${Math.abs(rounded).toLocaleString("en-US")}`;
+}
+
 export function formatDuration(totalSeconds: number): string {
   const m = Math.floor(totalSeconds / 60);
   const s = totalSeconds % 60;

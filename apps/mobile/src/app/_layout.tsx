@@ -15,7 +15,6 @@ import { SafeAreaProvider } from "react-native-safe-area-context";
 
 import { AlertHost } from "../components/AlertHost";
 import { AuthProvider } from "../lib/auth-context";
-import { CurrencyProvider } from "../lib/currency-context";
 import { DeviceProvider } from "../lib/device-context";
 import { SessionsProvider } from "../lib/sessions-context";
 import { SkillsProvider } from "../lib/skills-context";
@@ -42,31 +41,29 @@ export default function RootLayout() {
   return (
     <SafeAreaProvider>
       <AuthProvider>
-        <CurrencyProvider>
-          <DeviceProvider>
-            <SessionsProvider>
-              <SkillsProvider>
-                <StatusBar style="dark" />
-                <Stack
-                  screenOptions={{
-                    headerShown: false,
-                    contentStyle: { backgroundColor: colors.background },
-                  }}
-                >
-                  <Stack.Screen name="session/[id]" options={{ presentation: "modal" }} />
-                  <Stack.Screen name="skill/new" options={{ presentation: "modal" }} />
-                  <Stack.Screen name="skill/[slug]" options={{ presentation: "modal" }} />
-                  <Stack.Screen name="use-case/[key]" options={{ presentation: "modal" }} />
-                  <Stack.Screen name="build/new" options={{ presentation: "modal" }} />
-                  <Stack.Screen name="build/[id]" options={{ presentation: "modal" }} />
-                  <Stack.Screen name="store/[id]" options={{ presentation: "modal" }} />
-                  <Stack.Screen name="gadgets/order" options={{ presentation: "modal" }} />
-                </Stack>
-                <AlertHost />
-              </SkillsProvider>
-            </SessionsProvider>
-          </DeviceProvider>
-        </CurrencyProvider>
+        <DeviceProvider>
+          <SessionsProvider>
+            <SkillsProvider>
+              <StatusBar style="dark" />
+              <Stack
+                screenOptions={{
+                  headerShown: false,
+                  contentStyle: { backgroundColor: colors.background },
+                }}
+              >
+                <Stack.Screen name="session/[id]" options={{ presentation: "modal" }} />
+                <Stack.Screen name="skill/new" options={{ presentation: "modal" }} />
+                <Stack.Screen name="skill/[slug]" options={{ presentation: "modal" }} />
+                <Stack.Screen name="use-case/[key]" options={{ presentation: "modal" }} />
+                <Stack.Screen name="build/new" options={{ presentation: "modal" }} />
+                <Stack.Screen name="build/[id]" options={{ presentation: "modal" }} />
+                <Stack.Screen name="store/[id]" options={{ presentation: "modal" }} />
+                <Stack.Screen name="gadgets/order" options={{ presentation: "modal" }} />
+              </Stack>
+              <AlertHost />
+            </SkillsProvider>
+          </SessionsProvider>
+        </DeviceProvider>
       </AuthProvider>
     </SafeAreaProvider>
   );
