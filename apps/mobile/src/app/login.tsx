@@ -108,6 +108,10 @@ export default function LoginScreen() {
               }
             />
 
+            <Link href="/forgot-password" style={styles.forgotLink}>
+              Forgot password?
+            </Link>
+
             {error ? <Text style={styles.errorText}>{error}</Text> : null}
 
             <Button label="Sign in" onPress={handleLogin} loading={loading} style={{ marginTop: spacing.sm }} />
@@ -172,6 +176,14 @@ const styles = StyleSheet.create({
     fontSize: 13,
     color: colors.textMuted,
     marginBottom: spacing.md,
+  },
+  forgotLink: {
+    alignSelf: "flex-end",
+    fontFamily: fonts.bodyMedium,
+    fontSize: 13,
+    color: colors.sandDark,
+    marginTop: -spacing.xs,
+    marginBottom: spacing.xs,
   },
   errorText: {
     fontFamily: fonts.bodyMedium,

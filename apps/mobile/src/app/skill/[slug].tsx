@@ -5,10 +5,9 @@
 // the full shape (record -> review -> upload -> train -> trained) with a
 // timed stand-in for the capture itself, same pattern as the old
 // sessions-context recorder it replaces.
+import { CameraView, useCameraPermissions } from "expo-camera";
 import { Redirect, router, useLocalSearchParams } from "expo-router";
 import {
-  ArrowDown,
-  ArrowUp,
   Check,
   Glasses,
   Hand,
@@ -65,8 +64,14 @@ export default function SkillDetailScreen() {
   const [elapsed, setElapsed] = useState(0);
   const [isPaused, setIsPaused] = useState(false);
   const [busy, setBusy] = useState(false);
-  const [cameraPosition, setCameraPosition] = useState<"up" | "down" | null>(null);
+  const [permission, requestPermission] = useCameraPermissions();
   const ring = useRef(new Animated.Value(1)).current;
+
+  useEffect(() => {
+    if (phase === "recording" && !permission?.granted) {
+      requestPermission();
+    }
+  }, [phase, permission?.granted]);
 
   useEffect(() => {
     if (phase !== "recording" || isPaused) return;
@@ -107,12 +112,7 @@ export default function SkillDetailScreen() {
     }
     setElapsed(0);
     setIsPaused(false);
-    setCameraPosition(null);
     setPhase("recording");
-  }
-
-  function handleCameraPosition(position: "up" | "down") {
-    setCameraPosition((current) => (current === position ? null : position));
   }
 
   function handlePauseResume() {
@@ -160,33 +160,21 @@ export default function SkillDetailScreen() {
             </View>
           </View>
 
-          <View style={styles.cameraPositionRow}>
-            <Pressable
-              onPress={() => handleCameraPosition("up")}
-              style={[styles.cameraPositionBtn, cameraPosition === "up" && styles.cameraPositionBtnActive]}
-            >
-              <ArrowUp size={16} color={cameraPosition === "up" ? colors.black : colors.white} />
-              <Text style={[styles.cameraPositionText, cameraPosition === "up" && styles.cameraPositionTextActive]}>
-                Camera up
-              </Text>
-            </Pressable>
-            <Pressable
-              onPress={() => handleCameraPosition("down")}
-              style={[styles.cameraPositionBtn, cameraPosition === "down" && styles.cameraPositionBtnActive]}
-            >
-              <ArrowDown size={16} color={cameraPosition === "down" ? colors.black : colors.white} />
-              <Text
-                style={[styles.cameraPositionText, cameraPosition === "down" && styles.cameraPositionTextActive]}
-              >
-                Camera down
-              </Text>
-            </Pressable>
-          </View>
-
           <View style={styles.previewBox}>
+            {permission?.granted ? (
+              <CameraView style={StyleSheet.absoluteFill} facing="back" />
+            ) : (
+              <View style={styles.previewFallback}>
+                <Glasses size={36} color="rgba(255,255,255,0.35)" strokeWidth={1.2} />
+                <Text style={styles.previewLabel}>Camera permission needed for preview</Text>
+              </View>
+            )}
+            {isPaused ? (
+              <View style={styles.previewPausedOverlay}>
+                <Text style={styles.previewLabel}>Preview paused</Text>
+              </View>
+            ) : null}
             <Animated.View style={[styles.previewPulseDot, { transform: [{ scale: ring }] }]} />
-            <Glasses size={36} color="rgba(255,255,255,0.35)" strokeWidth={1.2} />
-            <Text style={styles.previewLabel}>{isPaused ? "Preview paused" : "Live preview from glasses"}</Text>
           </View>
 
           <Text style={styles.cameraTimer}>{formatDuration(elapsed)}</Text>
@@ -488,30 +476,6 @@ const styles = StyleSheet.create({
   liveBadgeTextPaused: {
     color: colors.textMuted,
   },
-  cameraPositionRow: {
-    flexDirection: "row",
-    gap: spacing.sm,
-  },
-  cameraPositionBtn: {
-    flexDirection: "row",
-    alignItems: "center",
-    gap: 6,
-    backgroundColor: "rgba(255,255,255,0.12)",
-    borderRadius: radii.pill,
-    paddingVertical: 8,
-    paddingHorizontal: spacing.sm + 2,
-  },
-  cameraPositionBtnActive: {
-    backgroundColor: colors.skin,
-  },
-  cameraPositionText: {
-    fontFamily: fonts.bodyMedium,
-    fontSize: 12,
-    color: colors.white,
-  },
-  cameraPositionTextActive: {
-    color: colors.black,
-  },
   previewBox: {
     width: "82%",
     aspectRatio: 4 / 3,
@@ -521,7 +485,18 @@ const styles = StyleSheet.create({
     backgroundColor: "rgba(255,255,255,0.04)",
     alignItems: "center",
     justifyContent: "center",
+    overflow: "hidden",
+  },
+  previewFallback: {
+    alignItems: "center",
+    justifyContent: "center",
     gap: spacing.sm,
+  },
+  previewPausedOverlay: {
+    ...StyleSheet.absoluteFill,
+    backgroundColor: "rgba(0,0,0,0.55)",
+    alignItems: "center",
+    justifyContent: "center",
   },
   previewPulseDot: {
     position: "absolute",

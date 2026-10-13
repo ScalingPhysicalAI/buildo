@@ -110,7 +110,7 @@ export default function PairScreen() {
 
       <DeviceRow
         icon={<Hand size={22} color={devices.gloves === "connected" ? colors.success : colors.sandDark} />}
-        name="Haptic gloves"
+        name="Creators Gloves"
         detail="Streams hand pose + tactile data"
         status={devices.gloves}
         battery={devices.gloves_battery}

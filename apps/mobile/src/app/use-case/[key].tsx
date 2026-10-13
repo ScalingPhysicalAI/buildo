@@ -103,7 +103,7 @@ export default function UseCaseScreen() {
         </View>
       ) : (
         <Button
-          label={allDone ? "Create app" : `Complete all skills to create your app (${done}/${total})`}
+          label={allDone ? "Create Buildo app" : `Complete all skills to create your app (${done}/${total})`}
           onPress={handleCreateApp}
           disabled={!allDone}
           style={{ marginTop: spacing.lg }}

@@ -92,7 +92,7 @@ export default function NewAppScreen() {
         </Card>
       ))}
 
-      <Button label="Create app" onPress={handleCreate} loading={busy} style={{ marginTop: spacing.xl }} />
+      <Button label="Create Buildo app" onPress={handleCreate} loading={busy} style={{ marginTop: spacing.xl }} />
     </ScrollView>
   );
 }

@@ -99,3 +99,14 @@ export async function fetchReferralCode(): Promise<string> {
   const data = await request<{ code: string }>("/api/referral");
   return data.code;
 }
+
+// Same endpoint the portal's own "forgot password" web page uses. The reset
+// link in the email opens that portal web page in a browser (not the app) --
+// there's no separate mobile reset flow to build, just this request.
+export async function forgotPassword(email: string): Promise<string> {
+  const data = await request<{ message: string }>("/api/auth/forgot-password", {
+    method: "POST",
+    body: JSON.stringify({ email }),
+  });
+  return data.message;
+}

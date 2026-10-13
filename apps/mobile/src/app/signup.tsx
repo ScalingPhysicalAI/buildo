@@ -28,7 +28,6 @@ export default function SignupScreen() {
   const [passwordVisible, setPasswordVisible] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
-  const [signedUp, setSignedUp] = useState(false);
 
   const fade = useRef(new Animated.Value(0)).current;
   const slide = useRef(new Animated.Value(16)).current;
@@ -55,7 +54,7 @@ export default function SignupScreen() {
     setLoading(true);
     try {
       await signup(name.trim(), email, password, "DEVELOPER");
-      setSignedUp(true);
+      router.replace("/(app)");
     } catch (e) {
       setError(e instanceof Error ? e.message : "Couldn't create your account");
     } finally {
@@ -86,79 +85,58 @@ export default function SignupScreen() {
         </Animated.View>
 
         <Animated.View style={{ opacity: fade, transform: [{ translateY: slide }] }}>
-          {signedUp ? (
-            <View style={styles.card}>
-              <Logo tag="mobile" size={18} />
-              <Text style={styles.cardHint}>You're in — what do you want to do first?</Text>
+          <View style={styles.card}>
+            <Logo tag="mobile" size={18} />
+            <Text style={styles.cardHint}>Create your Buildo Studio account</Text>
 
-              <Button
-                label="Start training a skill"
-                onPress={() => router.replace("/(app)/train")}
-                style={{ marginTop: spacing.sm }}
-              />
-              <Button
-                label="Explore the app store"
-                variant="secondary"
-                onPress={() => router.replace("/(app)/build")}
-                style={{ marginTop: spacing.sm }}
-              />
-            </View>
-          ) : (
-            <View style={styles.card}>
-              <Logo tag="mobile" size={18} />
-              <Text style={styles.cardHint}>Create your Buildo Studio account</Text>
+            <TextField
+              label="Name"
+              autoComplete="name"
+              value={name}
+              onChangeText={setName}
+              onFocus={scrollToEnd}
+              placeholder="Ada Lovelace"
+            />
+            <TextField
+              label="Email"
+              autoCapitalize="none"
+              keyboardType="email-address"
+              autoComplete="email"
+              value={email}
+              onChangeText={setEmail}
+              onFocus={scrollToEnd}
+              placeholder="you@starforgerobotics.com"
+            />
+            <TextField
+              label="Password"
+              secureTextEntry={!passwordVisible}
+              autoComplete="password-new"
+              value={password}
+              onChangeText={setPassword}
+              onFocus={scrollToEnd}
+              placeholder="At least 8 characters"
+              rightElement={
+                <Pressable onPress={() => setPasswordVisible((v) => !v)} hitSlop={8}>
+                  {passwordVisible ? (
+                    <EyeOff size={18} color={colors.textMuted} />
+                  ) : (
+                    <Eye size={18} color={colors.textMuted} />
+                  )}
+                </Pressable>
+              }
+            />
 
-              <TextField
-                label="Name"
-                autoComplete="name"
-                value={name}
-                onChangeText={setName}
-                onFocus={scrollToEnd}
-                placeholder="Ada Lovelace"
-              />
-              <TextField
-                label="Email"
-                autoCapitalize="none"
-                keyboardType="email-address"
-                autoComplete="email"
-                value={email}
-                onChangeText={setEmail}
-                onFocus={scrollToEnd}
-                placeholder="you@starforgerobotics.com"
-              />
-              <TextField
-                label="Password"
-                secureTextEntry={!passwordVisible}
-                autoComplete="password-new"
-                value={password}
-                onChangeText={setPassword}
-                onFocus={scrollToEnd}
-                placeholder="At least 8 characters"
-                rightElement={
-                  <Pressable onPress={() => setPasswordVisible((v) => !v)} hitSlop={8}>
-                    {passwordVisible ? (
-                      <EyeOff size={18} color={colors.textMuted} />
-                    ) : (
-                      <Eye size={18} color={colors.textMuted} />
-                    )}
-                  </Pressable>
-                }
-              />
+            {error ? <Text style={styles.errorText}>{error}</Text> : null}
 
-              {error ? <Text style={styles.errorText}>{error}</Text> : null}
+            <Button label="Create account" onPress={handleSignup} loading={loading} style={{ marginTop: spacing.sm }} />
+          </View>
 
-              <Button label="Create account" onPress={handleSignup} loading={loading} style={{ marginTop: spacing.sm }} />
-            </View>
-          )}
-
-          {!signedUp && (
-            <View style={styles.footerRow}>
-              <Text style={styles.footerText}>Already have an account?</Text>
-              <Link href="/login" replace style={styles.footerLink}>
-                Sign in
-              </Link>
-            </View>
-          )}
+          <View style={styles.footerRow}>
+            <Text style={styles.footerText}>Already have an account?</Text>
+            <Link href="/login" replace style={styles.footerLink}>
+              Sign in
+            </Link>
+          </View>
         </Animated.View>
       </ScrollView>
     </KeyboardAvoidingView>

@@ -5,6 +5,7 @@ import { ActivityIndicator, Pressable, ScrollView, StyleSheet, Text, View } from
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 import { Card } from "../../../components/Card";
+import { GlobalReachMap } from "../../../components/GlobalReachMap";
 import { StatusPill } from "../../../components/StatusPill";
 import { Alert } from "../../../lib/alert";
 import { formatDaysLeft } from "../../../lib/format";
@@ -88,6 +89,9 @@ export default function BuildScreen() {
     >
       <Text style={styles.title}>Your apps</Text>
       <Text style={styles.subtitle}>Apps you've created from your trained skills.</Text>
+
+      <GlobalReachMap />
+      <View style={{ height: spacing.lg }} />
 
       {apps.length === 0 ? (
         <Text style={styles.emptyText}>Apps you create from a use case in the Train tab will show up here.</Text>

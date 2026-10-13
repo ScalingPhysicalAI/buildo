@@ -41,12 +41,12 @@ export default function AppDetailScreen() {
 
   function handleTrainAndDeploy() {
     Alert.alert(
-      "Test and deploy this app?",
+      "Deploy this app to the Buildo app store?",
       "It will run an automated test, then enter a 7-day testing window before going live on the Buildo app store.",
       [
         { text: "Cancel", style: "cancel" },
         {
-          text: "Test and deploy",
+          text: "Deploy",
           onPress: async () => {
             setBusy(true);
             try {
@@ -92,7 +92,7 @@ export default function AppDetailScreen() {
 
       {canDeploy ? (
         <Button
-          label={app.status === "FAILED" ? "Retry training and deployment" : "Train and Deploy"}
+          label={app.status === "FAILED" ? "Retry deploy on Buildo app store" : "Deploy on Buildo app store"}
           onPress={handleTrainAndDeploy}
           loading={busy}
           style={{ marginTop: spacing.xl }}
