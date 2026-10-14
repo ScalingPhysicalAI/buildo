@@ -65,7 +65,7 @@ export default function WalletScreen() {
 
       <Card style={styles.balanceCard}>
         <Text style={styles.balanceLabel}>Available balance</Text>
-        <Text style={styles.balanceValue}>${(user?.tokenBalance ?? 0).toLocaleString()}</Text>
+        <Text style={styles.balanceValue}>${(user?.ownerWalletBalance ?? 0).toLocaleString()}</Text>
       </Card>
 
       <Text style={styles.sectionTitle}>Top up</Text>

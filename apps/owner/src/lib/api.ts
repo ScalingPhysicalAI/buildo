@@ -30,7 +30,13 @@ export interface SafeUser {
   email: string;
   role: string;
   walletAddress: string | null;
+  // The creator/developer $ balance (apps/mobile, portal). Not shown or used
+  // anywhere in this app -- see ownerWalletBalance below.
   tokenBalance: number;
+  // The robot owner's own wallet, completely separate from tokenBalance even
+  // though it's the same account/login. Starts at $0, only ever changes via
+  // this app's top-up.
+  ownerWalletBalance: number;
   emailVerified: boolean;
   referralCode: string | null;
 }

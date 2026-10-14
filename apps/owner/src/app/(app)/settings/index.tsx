@@ -41,7 +41,7 @@ export default function SettingsScreen() {
           </View>
           <View style={{ flex: 1 }}>
             <Text style={styles.rowLabel}>Wallet balance</Text>
-            <Text style={styles.rowSubtext}>${(user?.tokenBalance ?? 0).toLocaleString()} available · top up</Text>
+            <Text style={styles.rowSubtext}>${(user?.ownerWalletBalance ?? 0).toLocaleString()} available · top up</Text>
           </View>
           <ChevronRight size={18} color={colors.textMuted} />
         </Card>

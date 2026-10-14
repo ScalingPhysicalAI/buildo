@@ -41,21 +41,26 @@ export async function POST(request: Request) {
   }
 
   // Instant signup bonus -- credited immediately, separate from the
-  // EMAIL_VERIFY_BONUS credited later on email confirmation.
-  [user] = await prisma.$transaction([
-    prisma.user.update({
-      where: { id: user.id },
-      data: { tokenBalance: { increment: SIGNUP_CREDIT } },
-    }),
-    prisma.tokenTransaction.create({
-      data: {
-        userId: user.id,
-        type: "SIGNUP_BONUS",
-        amount: SIGNUP_CREDIT,
-        note: "Instant signup reward",
-      },
-    }),
-  ]);
+  // EMAIL_VERIFY_BONUS credited later on email confirmation. Creator-side
+  // only: it credits tokenBalance, which a robot-owner account (apps/owner)
+  // never reads, so OWNER signups skip it rather than silently stacking
+  // free $ into a wallet that's meant to start at exactly $0.
+  if (role !== "OWNER") {
+    [user] = await prisma.$transaction([
+      prisma.user.update({
+        where: { id: user.id },
+        data: { tokenBalance: { increment: SIGNUP_CREDIT } },
+      }),
+      prisma.tokenTransaction.create({
+        data: {
+          userId: user.id,
+          type: "SIGNUP_BONUS",
+          amount: SIGNUP_CREDIT,
+          note: "Instant signup reward",
+        },
+      }),
+    ]);
+  }
 
   const token = await createSessionCookie(user.id);
 
