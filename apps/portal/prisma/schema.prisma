@@ -39,6 +39,13 @@ model User {
 
   tokenBalance Int @default(0)
 
+  // Separate pool from tokenBalance above -- that one is the creator/
+  // developer $ balance (earnings, skill purchases, GPU rental, ...). This
+  // is the robot owner's wallet (apps/owner): same account/login can have
+  // both, but the money is never shared between them. Starts at 0 and only
+  // ever changes via an owner-app top-up.
+  ownerWalletBalance Int @default(0)
+
   referralCode String? @unique
 
   emailVerified       Boolean   @default(false)
@@ -82,6 +89,14 @@ enum TransactionStatus {
   FAILED
 }
 
+// Which balance a TokenTransaction moved -- User.tokenBalance (creator) or
+// User.ownerWalletBalance (robot owner). Defaults to CREATOR since every
+// transaction type except WALLET_TOPUP only ever touches that one.
+enum WalletKind {
+  CREATOR
+  OWNER
+}
+
 // Ledger of $ credit movements for a user. This is an off-chain,
 // database-backed balance for now. `txHash` / `status` are already modeled
 // so that a real on-chain transfer can be plugged in later (fill txHash once
@@ -94,6 +109,7 @@ model TokenTransaction {
   type   TransactionType
   amount Int // positive = credit, negative = debit
   status TransactionStatus @default(COMPLETED)
+  wallet WalletKind         @default(CREATOR)
   txHash String? // populated once real on-chain transfers are wired up
 
   note String?
