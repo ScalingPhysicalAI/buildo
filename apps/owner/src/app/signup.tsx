@@ -30,6 +30,8 @@ export default function SignupScreen() {
     try {
       await signup(name.trim(), email, password);
       router.replace("/(app)");
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "Couldn't create your account");
     } finally {
       setLoading(false);
     }

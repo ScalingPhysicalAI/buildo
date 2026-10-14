@@ -25,6 +25,8 @@ export default function LoginScreen() {
     try {
       await login(email, password);
       router.replace("/(app)");
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "Couldn't sign in");
     } finally {
       setLoading(false);
     }

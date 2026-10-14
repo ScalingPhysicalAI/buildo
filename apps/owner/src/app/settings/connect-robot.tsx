@@ -1,14 +1,19 @@
 import { router } from "expo-router";
 import { Check, SatelliteDish, Wifi, X } from "lucide-react-native";
-import { useEffect, useState } from "react";
-import { Pressable, StyleSheet, Text, View } from "react-native";
+import { useEffect, useRef, useState } from "react";
+import { Pressable, StyleSheet, Text, View, type ImageSourcePropType } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 import { Button } from "../../components/Button";
 import { Card } from "../../components/Card";
+import { RobotPulse } from "../../components/RobotPulse";
 import { TextField } from "../../components/TextField";
 import { useRobot, type ConnectionMethod } from "../../lib/robot-context";
 import { colors, fonts, radii, spacing } from "../../theme";
+
+const ROBOT_PAIRED = require("../../../assets/robot-angle-2.png") as ImageSourcePropType;
+
+const PAIRING_STEPS = ["Searching for your Buildo...", "Establishing secure link...", "Finalizing connection..."];
 
 function closeOrGoSettings() {
   if (router.canGoBack()) {
@@ -18,14 +23,17 @@ function closeOrGoSettings() {
   }
 }
 
+type Phase = "form" | "connecting" | "done";
+
 export default function ConnectRobotScreen() {
   const insets = useSafeAreaInsets();
   const { connectRobot } = useRobot();
   const [method, setMethod] = useState<ConnectionMethod>("wifi");
   const [network, setNetwork] = useState("");
   const [password, setPassword] = useState("");
-  const [connecting, setConnecting] = useState(false);
-  const [done, setDone] = useState(false);
+  const [phase, setPhase] = useState<Phase>("form");
+  const [stepIndex, setStepIndex] = useState(0);
+  const stepTimer = useRef<ReturnType<typeof setInterval> | null>(null);
 
   // See store/[id].tsx -- same guard against a dev reload or Expo Go replay
   // landing directly on this modal with no history beneath it.
@@ -35,31 +43,58 @@ export default function ConnectRobotScreen() {
     if (isLandingScreen) router.replace("/(app)");
   }, [isLandingScreen]);
 
+  useEffect(() => {
+    return () => {
+      if (stepTimer.current) clearInterval(stepTimer.current);
+    };
+  }, []);
+
   if (isLandingScreen) return null;
 
   async function handleConnect() {
-    setConnecting(true);
+    setPhase("connecting");
+    setStepIndex(0);
+    stepTimer.current = setInterval(() => {
+      setStepIndex((i) => Math.min(i + 1, PAIRING_STEPS.length - 1));
+    }, 480);
     try {
       await connectRobot(method);
-      setDone(true);
+      setPhase("done");
     } finally {
-      setConnecting(false);
+      if (stepTimer.current) clearInterval(stepTimer.current);
     }
   }
 
-  if (done) {
+  if (phase === "connecting") {
     return (
-      <View style={[styles.container, { paddingTop: insets.top + spacing.md }]}>
-        <View style={styles.successWrap}>
-          <View style={styles.successIcon}>
-            <Check size={32} color={colors.success} />
+      <View style={[styles.deviceScreen, { paddingTop: insets.top + spacing.md }]}>
+        <Text style={styles.eyebrow}>PAIRING</Text>
+        <RobotPulse active size={140} />
+        <Text style={styles.deviceTitle}>Connecting your Buildo</Text>
+        <Text style={styles.deviceSubtitle}>{PAIRING_STEPS[stepIndex]}</Text>
+      </View>
+    );
+  }
+
+  if (phase === "done") {
+    return (
+      <View style={[styles.deviceScreen, { paddingTop: insets.top + spacing.md }]}>
+        <View style={styles.successStage}>
+          <RobotPulse active size={140} source={ROBOT_PAIRED} />
+          <View style={styles.successBadge}>
+            <Check size={18} color={colors.black} strokeWidth={2.5} />
           </View>
-          <Text style={styles.successTitle}>Robot connected</Text>
-          <Text style={styles.successBody}>
-            Your Buildo is now connected via {method === "wifi" ? "Wi-Fi" : "its SIM"}.
-          </Text>
-          <Button label="Done" onPress={closeOrGoSettings} style={{ marginTop: spacing.xl, width: "100%" }} />
         </View>
+        <Text style={styles.deviceTitle}>Robot connected</Text>
+        <Text style={styles.deviceSubtitle}>
+          Your Buildo is now connected via {method === "wifi" ? "Wi-Fi" : "its SIM"}.
+        </Text>
+        <Button
+          label="Done"
+          variant="cream"
+          onPress={closeOrGoSettings}
+          style={{ marginTop: spacing.xl, width: "100%" }}
+        />
       </View>
     );
   }
@@ -115,12 +150,7 @@ export default function ConnectRobotScreen() {
         </Card>
       )}
 
-      <Button
-        label={connecting ? "Connecting..." : "Connect"}
-        onPress={handleConnect}
-        loading={connecting}
-        style={{ marginTop: spacing.lg }}
-      />
+      <Button label="Connect" onPress={handleConnect} style={{ marginTop: spacing.lg }} />
     </View>
   );
 }
@@ -195,31 +225,49 @@ const styles = StyleSheet.create({
     color: colors.textMuted,
     lineHeight: 19,
   },
-  successWrap: {
+  deviceScreen: {
     flex: 1,
+    backgroundColor: colors.deviceSurface,
     alignItems: "center",
     justifyContent: "center",
     paddingHorizontal: spacing.lg,
   },
-  successIcon: {
-    width: 72,
-    height: 72,
-    borderRadius: radii.pill,
-    backgroundColor: colors.successSurface,
+  eyebrow: {
+    position: "absolute",
+    top: spacing.xl,
+    fontFamily: fonts.technical,
+    fontSize: 11,
+    letterSpacing: 3,
+    color: "rgba(245,241,232,0.4)",
+  },
+  successStage: {
     alignItems: "center",
     justifyContent: "center",
-    marginBottom: spacing.md,
   },
-  successTitle: {
+  successBadge: {
+    position: "absolute",
+    bottom: 8,
+    right: "28%",
+    width: 32,
+    height: 32,
+    borderRadius: radii.pill,
+    backgroundColor: colors.sand,
+    borderWidth: 2,
+    borderColor: colors.deviceSurface,
+    alignItems: "center",
+    justifyContent: "center",
+  },
+  deviceTitle: {
     fontFamily: fonts.display,
     fontSize: 26,
-    color: colors.black,
+    color: colors.background,
+    marginTop: spacing.lg,
   },
-  successBody: {
+  deviceSubtitle: {
     fontFamily: fonts.body,
     fontSize: 14,
-    color: colors.textMuted,
-    textAlign: "center",
+    color: "rgba(245,241,232,0.6)",
     marginTop: spacing.xs,
+    textAlign: "center",
   },
 });

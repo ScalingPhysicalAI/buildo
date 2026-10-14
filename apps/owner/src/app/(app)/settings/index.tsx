@@ -11,7 +11,7 @@ import { colors, fonts, radii, spacing } from "../../../theme";
 export default function SettingsScreen() {
   const insets = useSafeAreaInsets();
   const { user, logout } = useAuth();
-  const { connected, walletBalance } = useRobot();
+  const { connected } = useRobot();
 
   return (
     <ScrollView
@@ -41,7 +41,7 @@ export default function SettingsScreen() {
           </View>
           <View style={{ flex: 1 }}>
             <Text style={styles.rowLabel}>Wallet balance</Text>
-            <Text style={styles.rowSubtext}>${walletBalance.toLocaleString()} available · top up</Text>
+            <Text style={styles.rowSubtext}>${(user?.tokenBalance ?? 0).toLocaleString()} available · top up</Text>
           </View>
           <ChevronRight size={18} color={colors.textMuted} />
         </Card>

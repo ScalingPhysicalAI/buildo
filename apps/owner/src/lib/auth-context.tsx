@@ -1,60 +1,77 @@
-// Dummy auth for now -- no backend account exists yet for robot owners (the
-// portal only has DEVELOPER/RESEARCHER accounts, both creator-side). This
-// just persists a local fake profile so the rest of the app has a `user` to
-// read, and the login/signup screens feel real to use. Swap in a real
-// owner-account API once one exists on the backend.
-import AsyncStorage from "@react-native-async-storage/async-storage";
+// Real account, same backend/database as apps/mobile -- robot owners sign
+// up with role "OWNER" (see lib/api.ts). Session is a bearer token in
+// AsyncStorage, restored on launch via /api/auth/me, same pattern as
+// apps/mobile's auth-context.
 import { createContext, useContext, useEffect, useState, type ReactNode } from "react";
 
-const USER_KEY = "buildo-owner.user";
-
-export interface DummyUser {
-  name: string;
-  email: string;
-}
+import {
+  fetchMe,
+  getToken,
+  login as apiLogin,
+  logout as apiLogout,
+  signup as apiSignup,
+  topUpWallet,
+  type SafeUser,
+} from "./api";
 
 interface AuthState {
-  user: DummyUser | null;
+  user: SafeUser | null;
   isLoading: boolean;
   login: (email: string, password: string) => Promise<void>;
   signup: (name: string, email: string, password: string) => Promise<void>;
   logout: () => Promise<void>;
+  refresh: () => Promise<void>;
+  topUp: (amountUsd: number) => Promise<void>;
 }
 
 const AuthContext = createContext<AuthState | null>(null);
 
 export function AuthProvider({ children }: { children: ReactNode }) {
-  const [user, setUser] = useState<DummyUser | null>(null);
+  const [user, setUser] = useState<SafeUser | null>(null);
   const [isLoading, setIsLoading] = useState(true);
 
+  async function refresh() {
+    const token = await getToken();
+    if (!token) {
+      setUser(null);
+      return;
+    }
+    try {
+      const me = await fetchMe();
+      setUser(me);
+    } catch {
+      setUser(null);
+    }
+  }
+
   useEffect(() => {
-    AsyncStorage.getItem(USER_KEY)
-      .then((raw) => setUser(raw ? JSON.parse(raw) : null))
-      .finally(() => setIsLoading(false));
+    refresh().finally(() => setIsLoading(false));
   }, []);
 
-  async function persist(next: DummyUser) {
-    await AsyncStorage.setItem(USER_KEY, JSON.stringify(next));
-    setUser(next);
+  async function login(email: string, password: string) {
+    const loggedInUser = await apiLogin(email, password);
+    setUser(loggedInUser);
   }
 
-  async function login(email: string, _password: string) {
-    await new Promise((r) => setTimeout(r, 500));
-    await persist({ name: email.split("@")[0] || "Robot Owner", email });
-  }
-
-  async function signup(name: string, email: string, _password: string) {
-    await new Promise((r) => setTimeout(r, 500));
-    await persist({ name, email });
+  async function signup(name: string, email: string, password: string) {
+    const newUser = await apiSignup(name, email, password);
+    setUser(newUser);
   }
 
   async function logout() {
-    await AsyncStorage.removeItem(USER_KEY);
+    await apiLogout();
     setUser(null);
   }
 
+  async function topUp(amountUsd: number) {
+    const updated = await topUpWallet(amountUsd);
+    setUser(updated);
+  }
+
   return (
-    <AuthContext.Provider value={{ user, isLoading, login, signup, logout }}>{children}</AuthContext.Provider>
+    <AuthContext.Provider value={{ user, isLoading, login, signup, logout, refresh, topUp }}>
+      {children}
+    </AuthContext.Provider>
   );
 }
 

@@ -8,6 +8,10 @@ export const colors = {
   surface: "#FFFFFF",
   surfaceRaised: "#FFFDF8",
   black: "#1A1712",
+  // Cool dark surface for device/hero screens (robot renders are near-black,
+  // so the warm brown-black `black` above makes them disappear into the
+  // card -- this leans blue/slate instead so the silhouette still reads).
+  deviceSurface: "#14171D",
   textPrimary: "#1A1712",
   textMuted: "#7A6F5E",
   textOnSand: "#1A1712",

@@ -1,9 +1,10 @@
 // Everything here is a local, dummy simulation -- there's no real robot
-// pairing, SIM/WiFi provisioning, payment processor, or voice pipeline wired
-// up yet. State is persisted to AsyncStorage so it survives app restarts and
-// feels real to use, but every "connect"/"top up"/"install" action below is
-// just a timed local-state change. Swap each one for a real API call once
-// the corresponding backend/hardware piece exists.
+// pairing, SIM/WiFi provisioning, or voice pipeline wired up yet. State is
+// persisted to AsyncStorage so it survives app restarts and feels real to
+// use, but every "connect"/"install" action below is just a timed local-state
+// change. Swap each one for a real API call once the corresponding
+// backend/hardware piece exists. The wallet balance is NOT here -- that's
+// real now, lives on the user's account (see auth-context / lib/api.ts).
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { createContext, useContext, useEffect, useState, type ReactNode } from "react";
 
@@ -23,11 +24,16 @@ export interface InstalledApp {
   installedAt: string;
 }
 
+export type SignalStrength = "Strong" | "Good" | "Weak";
+
 interface RobotState {
   connected: boolean;
   connectionMethod: ConnectionMethod | null;
   robotName: string;
-  walletBalance: number;
+  // Dummy telemetry -- no real robot reports these yet. Swap for live
+  // values once the device actually streams battery/signal state.
+  batteryLevel: number;
+  signalStrength: SignalStrength;
   voiceLog: VoiceLogEntry[];
   installedApps: InstalledApp[];
 }
@@ -36,7 +42,8 @@ const DEFAULT_STATE: RobotState = {
   connected: false,
   connectionMethod: null,
   robotName: "My Buildo",
-  walletBalance: 0,
+  batteryLevel: 0,
+  signalStrength: "Strong",
   voiceLog: [],
   installedApps: [],
 };
@@ -45,7 +52,6 @@ interface RobotContextValue extends RobotState {
   isLoading: boolean;
   connectRobot: (method: ConnectionMethod) => Promise<void>;
   disconnectRobot: () => Promise<void>;
-  topUp: (amount: number) => Promise<void>;
   sendVoiceCommand: (text: string) => Promise<void>;
   installApp: (id: string, name: string) => Promise<void>;
 }
@@ -69,16 +75,17 @@ export function RobotProvider({ children }: { children: ReactNode }) {
 
   async function connectRobot(method: ConnectionMethod) {
     await new Promise((r) => setTimeout(r, 1400));
-    await persist({ ...state, connected: true, connectionMethod: method });
+    await persist({
+      ...state,
+      connected: true,
+      connectionMethod: method,
+      batteryLevel: 86,
+      signalStrength: "Strong",
+    });
   }
 
   async function disconnectRobot() {
     await persist({ ...state, connected: false, connectionMethod: null });
-  }
-
-  async function topUp(amount: number) {
-    await new Promise((r) => setTimeout(r, 700));
-    await persist({ ...state, walletBalance: state.walletBalance + amount });
   }
 
   async function sendVoiceCommand(text: string) {
@@ -94,7 +101,7 @@ export function RobotProvider({ children }: { children: ReactNode }) {
 
   return (
     <RobotContext.Provider
-      value={{ ...state, isLoading, connectRobot, disconnectRobot, topUp, sendVoiceCommand, installApp }}
+      value={{ ...state, isLoading, connectRobot, disconnectRobot, sendVoiceCommand, installApp }}
     >
       {children}
     </RobotContext.Provider>

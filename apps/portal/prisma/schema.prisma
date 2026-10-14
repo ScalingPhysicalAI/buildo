@@ -25,6 +25,7 @@ datasource db {
 enum Role {
   DEVELOPER
   RESEARCHER
+  OWNER
 }
 
 model User {
@@ -72,6 +73,7 @@ enum TransactionType {
   APP_EARNINGS
   GADGET_PURCHASE
   AIRDROP
+  WALLET_TOPUP
 }
 
 enum TransactionStatus {

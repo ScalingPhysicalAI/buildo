@@ -7,7 +7,7 @@ import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { Button } from "../../components/Button";
 import { Card } from "../../components/Card";
 import { TextField } from "../../components/TextField";
-import { useRobot } from "../../lib/robot-context";
+import { useAuth } from "../../lib/auth-context";
 import { colors, fonts, radii, spacing } from "../../theme";
 
 const PRESET_AMOUNTS = [10, 25, 50, 100];
@@ -22,9 +22,10 @@ function closeOrGoSettings() {
 
 export default function WalletScreen() {
   const insets = useSafeAreaInsets();
-  const { walletBalance, topUp } = useRobot();
+  const { user, topUp } = useAuth();
   const [customAmount, setCustomAmount] = useState("");
   const [busy, setBusy] = useState(false);
+  const [error, setError] = useState<string | null>(null);
 
   // See store/[id].tsx -- same guard against a dev reload or Expo Go replay
   // landing directly on this modal with no history beneath it.
@@ -38,10 +39,13 @@ export default function WalletScreen() {
 
   async function handleTopUp(amount: number) {
     if (!amount || amount <= 0) return;
+    setError(null);
     setBusy(true);
     try {
       await topUp(amount);
       setCustomAmount("");
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "Couldn't top up right now");
     } finally {
       setBusy(false);
     }
@@ -61,7 +65,7 @@ export default function WalletScreen() {
 
       <Card style={styles.balanceCard}>
         <Text style={styles.balanceLabel}>Available balance</Text>
-        <Text style={styles.balanceValue}>${walletBalance.toLocaleString()}</Text>
+        <Text style={styles.balanceValue}>${(user?.tokenBalance ?? 0).toLocaleString()}</Text>
       </Card>
 
       <Text style={styles.sectionTitle}>Top up</Text>
@@ -72,6 +76,8 @@ export default function WalletScreen() {
           </Pressable>
         ))}
       </View>
+
+      {error ? <Text style={styles.errorText}>{error}</Text> : null}
 
       <TextField
         label="Custom amount"
@@ -161,5 +167,11 @@ const styles = StyleSheet.create({
     fontFamily: fonts.bodySemiBold,
     fontSize: 14,
     color: colors.sandDark,
+  },
+  errorText: {
+    fontFamily: fonts.bodyMedium,
+    fontSize: 13,
+    color: colors.error,
+    marginBottom: spacing.sm,
   },
 });

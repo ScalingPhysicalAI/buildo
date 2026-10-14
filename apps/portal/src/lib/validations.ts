@@ -7,7 +7,7 @@ export const signupSchema = z.object({
     .string()
     .min(8, "Password must be at least 8 characters")
     .max(200),
-  role: z.enum(["DEVELOPER", "RESEARCHER"]),
+  role: z.enum(["DEVELOPER", "RESEARCHER", "OWNER"]),
 });
 
 export type SignupInput = z.infer<typeof signupSchema>;
@@ -59,6 +59,13 @@ export const appListingCreateSchema = z.object({
   description: z.string().trim().max(500).optional(),
   category: appCategorySchema,
   skillCollectionIds: z.array(z.string().min(1)).min(1, "Pick at least one trained skill"),
+});
+
+// No real payment processor behind this -- same off-chain $ ledger as the
+// rest of the app (see TokenTransaction in schema.prisma). The cap just
+// bounds a single top-up request, not lifetime balance.
+export const walletTopupSchema = z.object({
+  amountUsd: z.number().int().positive().max(5000),
 });
 
 export const gadgetOrderSchema = z.object({
