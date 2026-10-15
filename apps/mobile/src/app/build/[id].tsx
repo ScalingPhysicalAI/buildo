@@ -130,7 +130,7 @@ export default function AppDetailScreen() {
             <Card style={styles.statCard}>
               <Download size={16} color={colors.sandDark} />
               <Text style={styles.statValue}>{app.installCount}</Text>
-              <Text style={styles.statLabel}>Downloads</Text>
+              <Text style={styles.statLabel}>Used</Text>
             </Card>
             <Card style={styles.statCard}>
               <Wallet size={16} color={colors.sandDark} />

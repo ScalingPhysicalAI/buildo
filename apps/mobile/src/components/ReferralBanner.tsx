@@ -12,7 +12,7 @@ const PURCHASE_URL = "https://starforgerobotics.com/buildo/";
 // person they referred keeps renting; it stops the moment that rental does.
 // The buyer gets BUYER_MONTHLY_DISCOUNT_USD off the robot's
 // ROBOT_BASE_MONTHLY_RENT_USD monthly rent, for as long as they keep it.
-const CREATOR_MONTHLY_REWARD_USD = 100;
+export const CREATOR_MONTHLY_REWARD_USD = 100;
 const BUYER_MONTHLY_DISCOUNT_USD = 100;
 const ROBOT_BASE_MONTHLY_RENT_USD = 600;
 
@@ -69,8 +69,8 @@ export function ReferralBanner() {
           <Gift size={20} color={colors.sandDark} />
         </View>
         <View style={styles.textWrap}>
-          <Text style={styles.title}>Refer Buildo to a friend and earn {formatUSD(CREATOR_MONTHLY_REWARD_USD)}/month</Text>
-          <Text style={styles.subtitle}>Paid monthly, for as long as they keep renting</Text>
+          <Text style={styles.title}>Refer Buildo to a friend and earn {formatUSD(CREATOR_MONTHLY_REWARD_USD)} every month</Text>
+          <Text style={styles.subtitle}>Generate referral code</Text>
         </View>
       </View>
 

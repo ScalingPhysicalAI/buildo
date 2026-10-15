@@ -1,7 +1,9 @@
+import * as ImagePicker from "expo-image-picker";
 import { router } from "expo-router";
-import { Check, Wallet, X } from "lucide-react-native";
+import { Check, ShieldCheck, Wallet, X } from "lucide-react-native";
 import { useState } from "react";
 import {
+  ActivityIndicator,
   Image,
   Pressable,
   ScrollView,
@@ -17,7 +19,9 @@ import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { Button } from "../../components/Button";
 import { Card } from "../../components/Card";
 import { TextField } from "../../components/TextField";
+import { CREATOR_MONTHLY_REWARD_USD } from "../../components/ReferralBanner";
 import { Alert } from "../../lib/alert";
+import { uploadKycId } from "../../lib/api";
 import { useAuth } from "../../lib/auth-context";
 import { placeGadgetOrder } from "../../lib/gadgets-api";
 import { formatUSD } from "../../lib/format";
@@ -65,8 +69,11 @@ export default function GadgetOrderScreen() {
   const [busy, setBusy] = useState(false);
   const [placed, setPlaced] = useState(false);
   const [activeImage, setActiveImage] = useState(0);
+  const [kycImage, setKycImage] = useState<{ uri: string; mimeType: string } | null>(null);
+  const [kycUploading, setKycUploading] = useState(false);
 
   const galleryWidth = windowWidth - spacing.lg * 2;
+  const verified = !!user?.kycIdImageUrl;
 
   function handleGalleryScroll(e: NativeSyntheticEvent<NativeScrollEvent>) {
     const index = Math.round(e.nativeEvent.contentOffset.x / galleryWidth);
@@ -76,18 +83,40 @@ export default function GadgetOrderScreen() {
   const projectedBalance = (user?.tokenBalance ?? 0) - KIT_PRICE;
   const overLimit = projectedBalance < MIN_WALLET_BALANCE;
 
-  async function handlePay() {
-    if (!name.trim() || !email.trim() || !phone.trim() || !addressLine.trim() || !pincodeLandmark.trim()) {
-      Alert.alert("Missing details", "Fill in your name, email, phone number, and shipping address.");
+  async function pickKycImage() {
+    const permission = await ImagePicker.requestMediaLibraryPermissionsAsync();
+    if (!permission.granted) {
+      Alert.alert("Permission needed", "Allow photo access to upload your government ID.");
       return;
     }
-    if (overLimit) {
-      Alert.alert(
-        "Wallet limit reached",
-        `This order would take your balance past the ${formatUSD(MIN_WALLET_BALANCE)} limit.`
-      );
-      return;
+    const result = await ImagePicker.launchImageLibraryAsync({
+      mediaTypes: ImagePicker.MediaTypeOptions.Images,
+      quality: 0.8,
+    });
+    if (result.canceled || !result.assets?.[0]) return;
+    const asset = result.assets[0];
+    const picked = { uri: asset.uri, mimeType: asset.mimeType ?? "image/jpeg" };
+    setKycImage(picked);
+    await handleKycUpload(picked);
+  }
+
+  // Takes the just-picked image as a param rather than reading kycImage from
+  // state, since pickKycImage calls this immediately after setKycImage --
+  // state wouldn't have flushed yet if this read it from the closure.
+  async function handleKycUpload(image: { uri: string; mimeType: string }) {
+    setKycUploading(true);
+    try {
+      await uploadKycId(image.uri, image.mimeType);
+      await refresh();
+    } catch (err) {
+      Alert.alert("Couldn't verify", err instanceof Error ? err.message : "Try again.");
+      setKycImage(null);
+    } finally {
+      setKycUploading(false);
     }
+  }
+
+  async function handlePlaceOrder() {
     setBusy(true);
     try {
       await placeGadgetOrder({
@@ -103,6 +132,32 @@ export default function GadgetOrderScreen() {
     } finally {
       setBusy(false);
     }
+  }
+
+  function handleBuyPress() {
+    if (!name.trim() || !email.trim() || !phone.trim() || !addressLine.trim() || !pincodeLandmark.trim()) {
+      Alert.alert("Missing details", "Fill in your name, email, phone number, and shipping address.");
+      return;
+    }
+    if (!verified) {
+      Alert.alert("Verify your identity", "Upload a government ID above before placing your order.");
+      return;
+    }
+    if (overLimit) {
+      Alert.alert(
+        "Wallet limit reached",
+        `This order would take your balance past the ${formatUSD(MIN_WALLET_BALANCE)} limit.`
+      );
+      return;
+    }
+    Alert.alert(
+      "Terms & Conditions",
+      `This order is billed directly from your Buildo wallet and may take your balance negative, repaid from future earnings.\n\nReferral reward: you earn ${formatUSD(CREATOR_MONTHLY_REWARD_USD)} after someone you referred makes a purchase, and only for as long as you keep uploading training data.\n\nBy continuing, you agree to these terms.`,
+      [
+        { text: "Cancel", style: "cancel" },
+        { text: "Agree & Pay", onPress: handlePlaceOrder },
+      ]
+    );
   }
 
   if (placed) {
@@ -213,6 +268,40 @@ export default function GadgetOrderScreen() {
         placeholder="e.g. 560001, near City Mall"
       />
 
+      <Text style={styles.sectionTitle}>Identity verification</Text>
+      {verified ? (
+        <View style={styles.kycVerifiedRow}>
+          <ShieldCheck size={18} color={colors.success} />
+          <Text style={styles.kycVerifiedText}>Identity verified</Text>
+        </View>
+      ) : (
+        <Card style={styles.kycCard}>
+          <Text style={styles.kycBody}>
+            Required before ordering on credit -- upload a photo of any government-issued ID (passport, driver's
+            license, national ID).
+          </Text>
+          {kycImage ? (
+            <View style={styles.kycPreviewRow}>
+              <Image source={{ uri: kycImage.uri }} style={styles.kycPreview} />
+              {kycUploading ? (
+                <View style={styles.kycUploadingRow}>
+                  <ActivityIndicator size="small" color={colors.sandDark} />
+                  <Text style={styles.kycChangeText}>Verifying...</Text>
+                </View>
+              ) : (
+                <Pressable onPress={pickKycImage} style={styles.kycChangeBtn}>
+                  <Text style={styles.kycChangeText}>Choose a different photo</Text>
+                </Pressable>
+              )}
+            </View>
+          ) : (
+            <Pressable onPress={pickKycImage} style={styles.kycPickBtn}>
+              <Text style={styles.kycPickText}>Choose photo</Text>
+            </Pressable>
+          )}
+        </Card>
+      )}
+
       <View style={styles.walletCard}>
         <View style={styles.walletRow}>
           <Wallet size={18} color={colors.sandDark} />
@@ -227,7 +316,7 @@ export default function GadgetOrderScreen() {
       <Button
         label="Buy now & pay later"
         variant="cream"
-        onPress={handlePay}
+        onPress={handleBuyPress}
         loading={busy}
         disabled={overLimit}
         style={{ marginTop: spacing.md }}
@@ -383,6 +472,65 @@ const styles = StyleSheet.create({
     color: colors.textMuted,
     marginTop: spacing.xs,
     lineHeight: 17,
+  },
+  kycCard: {
+    gap: spacing.sm,
+  },
+  kycBody: {
+    fontFamily: fonts.body,
+    fontSize: 13,
+    color: colors.textMuted,
+    lineHeight: 19,
+  },
+  kycPickBtn: {
+    backgroundColor: colors.surface,
+    borderWidth: 1.5,
+    borderColor: colors.sandDark,
+    borderRadius: radii.pill,
+    paddingVertical: 12,
+    alignItems: "center",
+  },
+  kycPickText: {
+    fontFamily: fonts.bodySemiBold,
+    fontSize: 14,
+    color: colors.sandDark,
+  },
+  kycPreviewRow: {
+    gap: spacing.sm,
+  },
+  kycPreview: {
+    width: "100%",
+    aspectRatio: 16 / 10,
+    borderRadius: radii.md,
+    backgroundColor: colors.backgroundAlt,
+  },
+  kycChangeBtn: {
+    alignSelf: "flex-start",
+  },
+  kycUploadingRow: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: spacing.xs,
+    alignSelf: "flex-start",
+  },
+  kycChangeText: {
+    fontFamily: fonts.bodyMedium,
+    fontSize: 13,
+    color: colors.sandDark,
+  },
+  kycVerifiedRow: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: spacing.xs,
+    backgroundColor: colors.successSurface,
+    borderRadius: radii.md,
+    paddingVertical: spacing.sm,
+    paddingHorizontal: spacing.md,
+  },
+  kycVerifiedText: {
+    fontFamily: fonts.bodyMedium,
+    fontSize: 13,
+    color: colors.textPrimary,
   },
   successWrap: {
     flex: 1,

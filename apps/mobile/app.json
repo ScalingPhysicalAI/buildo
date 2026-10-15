@@ -43,6 +43,12 @@
           "microphonePermission": false,
           "recordAudioAndroid": false
         }
+      ],
+      [
+        "expo-image-picker",
+        {
+          "photosPermission": "Allow Buildo Creators to access your photos so you can upload a government ID for identity verification."
+        }
       ]
     ],
     "android": {

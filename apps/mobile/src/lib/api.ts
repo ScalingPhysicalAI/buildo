@@ -38,6 +38,9 @@ export interface SafeUser {
   tokenBalance: number;
   emailVerified: boolean;
   referralCode: string | null;
+  // Set once a government ID photo has been uploaded for KYC -- required
+  // before ordering the Buildo Development Kit (gadgets/order.tsx).
+  kycIdImageUrl: string | null;
 }
 
 export class ApiError extends Error {
@@ -98,6 +101,37 @@ export async function logout(): Promise<void> {
 export async function fetchReferralCode(): Promise<string> {
   const data = await request<{ code: string }>("/api/referral");
   return data.code;
+}
+
+// Uses fetch directly (not the request<T> helper above) because this is a
+// multipart upload, not JSON -- fetch sets its own Content-Type boundary for
+// FormData, which request<T> would stomp on by always sending
+// application/json. Caller should follow up with useAuth().refresh() so the
+// user object reflects the new kycIdImageUrl.
+export async function uploadKycId(localUri: string, mimeType: string): Promise<void> {
+  const token = await getToken();
+  const extension = mimeType.split("/")[1] ?? "jpg";
+
+  const formData = new FormData();
+  // React Native's FormData accepts this {uri, name, type} shape for a file
+  // field -- it streams the file directly from disk, no need to read it
+  // into memory first.
+  formData.append("file", {
+    uri: localUri,
+    name: `id.${extension}`,
+    type: mimeType,
+  } as unknown as Blob);
+
+  const res = await fetch(`${SERVER_URL}/api/kyc/upload`, {
+    method: "POST",
+    headers: token ? { Authorization: `Bearer ${token}` } : undefined,
+    body: formData,
+  });
+
+  const body = await res.json().catch(() => null);
+  if (!res.ok) {
+    throw new ApiError(body?.error ?? `Request failed (${res.status})`, res.status);
+  }
 }
 
 // Same endpoint the portal's own "forgot password" web page uses. The reset
