@@ -13,6 +13,7 @@ export default function SignupScreen() {
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [referralCode, setReferralCode] = useState("");
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
 
@@ -28,7 +29,7 @@ export default function SignupScreen() {
     }
     setLoading(true);
     try {
-      await signup(name.trim(), email, password);
+      await signup(name.trim(), email, password, referralCode.trim() || undefined);
       router.replace("/(app)");
     } catch (err) {
       setError(err instanceof Error ? err.message : "Couldn't create your account");
@@ -69,6 +70,13 @@ export default function SignupScreen() {
             value={password}
             onChangeText={setPassword}
             placeholder="At least 8 characters"
+          />
+          <TextField
+            label="Referral code (optional)"
+            autoCapitalize="characters"
+            value={referralCode}
+            onChangeText={setReferralCode}
+            placeholder="e.g. BLD1A2B3C4D"
           />
 
           {error ? <Text style={styles.errorText}>{error}</Text> : null}

@@ -4,6 +4,7 @@ import { Pressable, ScrollView, StyleSheet, Text, View } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 import { Card } from "../../../components/Card";
+import { isRentActive } from "../../../lib/api";
 import { useAuth } from "../../../lib/auth-context";
 import { useRobot } from "../../../lib/robot-context";
 import { colors, fonts, radii, spacing } from "../../../theme";
@@ -40,8 +41,11 @@ export default function SettingsScreen() {
             <Wallet size={18} color={colors.sandDark} />
           </View>
           <View style={{ flex: 1 }}>
-            <Text style={styles.rowLabel}>Wallet balance</Text>
-            <Text style={styles.rowSubtext}>${(user?.ownerWalletBalance ?? 0).toLocaleString()} available · top up</Text>
+            <Text style={styles.rowLabel}>Wallet & rental</Text>
+            <Text style={styles.rowSubtext}>
+              ${(user?.ownerWalletBalance ?? 0).toLocaleString()} available
+              {user?.monthlyRentUsd ? ` · rent ${isRentActive(user) ? "paid" : "due"}` : " · top up"}
+            </Text>
           </View>
           <ChevronRight size={18} color={colors.textMuted} />
         </Card>

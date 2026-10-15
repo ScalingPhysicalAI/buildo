@@ -5,12 +5,15 @@
 import { createContext, useContext, useEffect, useState, type ReactNode } from "react";
 
 import {
+  chooseRentPlan as apiChooseRentPlan,
   fetchMe,
   getToken,
   login as apiLogin,
   logout as apiLogout,
+  payRent as apiPayRent,
   signup as apiSignup,
   topUpWallet,
+  type RentTermMonths,
   type SafeUser,
 } from "./api";
 
@@ -18,10 +21,12 @@ interface AuthState {
   user: SafeUser | null;
   isLoading: boolean;
   login: (email: string, password: string) => Promise<void>;
-  signup: (name: string, email: string, password: string) => Promise<void>;
+  signup: (name: string, email: string, password: string, referralCode?: string) => Promise<void>;
   logout: () => Promise<void>;
   refresh: () => Promise<void>;
   topUp: (amountUsd: number) => Promise<void>;
+  chooseRentPlan: (termMonths: RentTermMonths) => Promise<void>;
+  payRent: () => Promise<void>;
 }
 
 const AuthContext = createContext<AuthState | null>(null);
@@ -53,8 +58,8 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     setUser(loggedInUser);
   }
 
-  async function signup(name: string, email: string, password: string) {
-    const newUser = await apiSignup(name, email, password);
+  async function signup(name: string, email: string, password: string, referralCode?: string) {
+    const newUser = await apiSignup(name, email, password, referralCode);
     setUser(newUser);
   }
 
@@ -68,8 +73,20 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     setUser(updated);
   }
 
+  async function chooseRentPlan(termMonths: RentTermMonths) {
+    const updated = await apiChooseRentPlan(termMonths);
+    setUser(updated);
+  }
+
+  async function payRent() {
+    const updated = await apiPayRent();
+    setUser(updated);
+  }
+
   return (
-    <AuthContext.Provider value={{ user, isLoading, login, signup, logout, refresh, topUp }}>
+    <AuthContext.Provider
+      value={{ user, isLoading, login, signup, logout, refresh, topUp, chooseRentPlan, payRent }}
+    >
       {children}
     </AuthContext.Provider>
   );

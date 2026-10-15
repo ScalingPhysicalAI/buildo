@@ -1,12 +1,13 @@
 import { router } from "expo-router";
-import { Bot, ChevronRight, Download } from "lucide-react-native";
+import { Bot, ChevronRight, Download, Lock } from "lucide-react-native";
 import { useCallback, useEffect, useState } from "react";
 import { ActivityIndicator, Pressable, ScrollView, StyleSheet, Text, View } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 import { Card } from "../../../components/Card";
 import { Button } from "../../../components/Button";
-import { fetchAppStore, type StoreApp } from "../../../lib/api";
+import { fetchAppStore, isRentActive, type StoreApp } from "../../../lib/api";
+import { useAuth } from "../../../lib/auth-context";
 import { colors, fonts, radii, spacing } from "../../../theme";
 
 const CATEGORY_LABEL: Record<StoreApp["category"], string> = {
@@ -19,6 +20,7 @@ const CATEGORY_LABEL: Record<StoreApp["category"], string> = {
 
 export default function StoreScreen() {
   const insets = useSafeAreaInsets();
+  const { user } = useAuth();
   const [apps, setApps] = useState<StoreApp[] | null>(null);
   const [error, setError] = useState<string | null>(null);
 
@@ -32,6 +34,28 @@ export default function StoreScreen() {
   useEffect(() => {
     load();
   }, [load]);
+
+  // Rent is compulsory -- the store (browsing, subscribing, and anything
+  // already installed) is locked the moment it lapses. See isRentActive()
+  // in lib/api.ts and the rent section of settings/wallet.tsx.
+  if (!isRentActive(user)) {
+    return (
+      <View
+        style={[styles.scroll, styles.lockedContainer, { paddingTop: insets.top + spacing.md }]}
+      >
+        <View style={styles.lockedIcon}>
+          <Lock size={28} color={colors.sandDark} />
+        </View>
+        <Text style={styles.title}>Store locked</Text>
+        <Text style={styles.lockedText}>
+          {user?.monthlyRentUsd
+            ? "Your robot rent isn't paid for this month. Pay it to unlock the store and resume any installed skills."
+            : "Start your robot rental to unlock the store and install skills on your Buildo."}
+        </Text>
+        <Button label="Go to wallet" onPress={() => router.push("/settings/wallet")} style={{ marginTop: spacing.lg }} />
+      </View>
+    );
+  }
 
   return (
     <ScrollView
@@ -99,6 +123,30 @@ const styles = StyleSheet.create({
   centerBox: {
     paddingVertical: spacing.xxl,
     alignItems: "center",
+  },
+  lockedContainer: {
+    flex: 1,
+    alignItems: "center",
+    justifyContent: "center",
+    textAlign: "center",
+  },
+  lockedIcon: {
+    width: 64,
+    height: 64,
+    borderRadius: radii.lg,
+    backgroundColor: colors.sandSurface,
+    alignItems: "center",
+    justifyContent: "center",
+    marginBottom: spacing.md,
+  },
+  lockedText: {
+    fontFamily: fonts.body,
+    fontSize: 14,
+    color: colors.textMuted,
+    textAlign: "center",
+    marginTop: spacing.sm,
+    lineHeight: 20,
+    paddingHorizontal: spacing.md,
   },
   errorText: {
     fontFamily: fonts.body,

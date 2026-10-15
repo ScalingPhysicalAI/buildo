@@ -1,12 +1,13 @@
 import { router, useLocalSearchParams } from "expo-router";
-import { Bot, Check, Download, X } from "lucide-react-native";
+import { Bot, Check, Download, Lock, X } from "lucide-react-native";
 import { useEffect, useState } from "react";
 import { ActivityIndicator, Pressable, ScrollView, StyleSheet, Text, View } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 import { Button } from "../../components/Button";
 import { Card } from "../../components/Card";
-import { fetchAppStore, type StoreApp } from "../../lib/api";
+import { fetchAppStore, isRentActive, type StoreApp } from "../../lib/api";
+import { useAuth } from "../../lib/auth-context";
 import { useRobot } from "../../lib/robot-context";
 import { colors, fonts, radii, spacing } from "../../theme";
 
@@ -29,7 +30,9 @@ function closeOrGoStore() {
 export default function AppDetailScreen() {
   const { id } = useLocalSearchParams<{ id: string }>();
   const insets = useSafeAreaInsets();
+  const { user } = useAuth();
   const { installedApps, installApp } = useRobot();
+  const rentActive = isRentActive(user);
   // undefined = still loading, null = loaded but no app with this id exists
   // -- these must be distinct states, otherwise a bad/stale id spins forever
   // instead of showing a "not found" message.
@@ -58,7 +61,7 @@ export default function AppDetailScreen() {
   const isInstalled = installedApps.some((a) => a.id === id);
 
   async function handleInstall() {
-    if (!app) return;
+    if (!app || !rentActive) return;
     setInstalling(true);
     try {
       await new Promise((r) => setTimeout(r, 900));
@@ -98,11 +101,31 @@ export default function AppDetailScreen() {
 
           {app.description ? <Text style={styles.description}>{app.description}</Text> : null}
 
-          {isInstalled ? (
+          {isInstalled && rentActive ? (
             <Card style={styles.installedCard}>
               <Check size={18} color={colors.success} />
               <Text style={styles.installedText}>Installed to your robot</Text>
             </Card>
+          ) : isInstalled && !rentActive ? (
+            <Card style={styles.lockedCard}>
+              <Lock size={18} color={colors.error} />
+              <View style={{ flex: 1 }}>
+                <Text style={styles.lockedCardTitle}>Disabled until rent is paid</Text>
+                <Text style={styles.lockedCardBody}>This skill won't run on your robot until this month's rent is paid.</Text>
+              </View>
+            </Card>
+          ) : !rentActive ? (
+            <>
+              <Card style={styles.lockedCard}>
+                <Lock size={18} color={colors.error} />
+                <Text style={styles.lockedCardBody}>Pay your rent first, then you can install this skill.</Text>
+              </Card>
+              <Button
+                label="Go to wallet"
+                onPress={() => router.push("/settings/wallet")}
+                style={{ marginTop: spacing.md }}
+              />
+            </>
           ) : (
             <Button
               label="Install to my robot"
@@ -194,5 +217,23 @@ const styles = StyleSheet.create({
     fontFamily: fonts.bodyMedium,
     fontSize: 14,
     color: colors.textPrimary,
+  },
+  lockedCard: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: spacing.sm,
+    marginTop: spacing.xl,
+  },
+  lockedCardTitle: {
+    fontFamily: fonts.bodySemiBold,
+    fontSize: 14,
+    color: colors.textPrimary,
+  },
+  lockedCardBody: {
+    fontFamily: fonts.body,
+    fontSize: 12,
+    color: colors.textMuted,
+    marginTop: 2,
+    flexShrink: 1,
   },
 });

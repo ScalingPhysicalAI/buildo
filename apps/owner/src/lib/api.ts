@@ -39,7 +39,29 @@ export interface SafeUser {
   ownerWalletBalance: number;
   emailVerified: boolean;
   referralCode: string | null;
+  // Set once at signup if a valid referral code was entered -- never
+  // changes after. Drives the rent discount (see rentTermMonths below).
+  referredById: string | null;
+  // The active rental plan, set via chooseRentPlan(). monthlyRentUsd is
+  // locked in at the moment the plan was confirmed, from referredById's
+  // discount rule at that time -- not recomputed later.
+  rentTermMonths: number | null;
+  monthlyRentUsd: number | null;
+  rentStartedAt: string | null;
+  // The real gate for store/skill access -- see isRentActive() below.
+  // Compared against the current time, not flipped by any background job.
+  rentPaidUntil: string | null;
 }
+
+// True once a plan exists and this month (or more) is paid for. The store
+// and any installed skills are only usable while this is true -- compulsory,
+// per the rent model (apps/portal's /api/robot-rental[/pay] are the only
+// things that can make this true).
+export function isRentActive(user: SafeUser | null): boolean {
+  return !!user?.rentPaidUntil && new Date(user.rentPaidUntil).getTime() > Date.now();
+}
+
+export type RentTermMonths = 3 | 6 | 12;
 
 export class ApiError extends Error {
   constructor(
@@ -78,10 +100,15 @@ export async function login(email: string, password: string): Promise<SafeUser> 
   return data.user;
 }
 
-export async function signup(name: string, email: string, password: string): Promise<SafeUser> {
+export async function signup(
+  name: string,
+  email: string,
+  password: string,
+  referralCode?: string
+): Promise<SafeUser> {
   const data = await request<{ user: SafeUser; token: string }>("/api/auth/signup", {
     method: "POST",
-    body: JSON.stringify({ name, email, password, role: "OWNER" }),
+    body: JSON.stringify({ name, email, password, role: "OWNER", referralCode: referralCode || undefined }),
   });
   await setToken(data.token);
   return data.user;
@@ -101,6 +128,24 @@ export async function topUpWallet(amountUsd: number): Promise<SafeUser> {
     method: "POST",
     body: JSON.stringify({ amountUsd }),
   });
+  return data.user;
+}
+
+// Starts the rental: locks in the monthly rate (referral discount applied
+// if referredById was set at signup) and debits the first month from
+// ownerWalletBalance. Throws (via ApiError) if the balance can't cover it.
+export async function chooseRentPlan(termMonths: RentTermMonths): Promise<SafeUser> {
+  const data = await request<{ user: SafeUser }>("/api/robot-rental", {
+    method: "POST",
+    body: JSON.stringify({ termMonths }),
+  });
+  return data.user;
+}
+
+// Renews the existing plan for one more month at its already-locked rate --
+// doesn't change term or price (chooseRentPlan is for that).
+export async function payRent(): Promise<SafeUser> {
+  const data = await request<{ user: SafeUser }>("/api/robot-rental/pay", { method: "POST" });
   return data.user;
 }
 
