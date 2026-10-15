@@ -11,28 +11,99 @@ type Mujoco = any;
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 type MjModel = any;
 
-const MODEL_URL = "/mujoco/scene/humanoid.xml";
+const SCENE_BASE_URL = "/mujoco/scene";
+const ROBOT_FILE = "humanoid.xml";
 const WORKING_DIR = "/working";
 
-export async function loadHumanoidModel(mujoco: Mujoco): Promise<MjModel> {
-  const xmlText = await (await fetch(MODEL_URL)).text();
-  const meshNames = Array.from(new Set([...xmlText.matchAll(/file="meshes\/([^"]+)"/g)].map((m) => m[1])));
+async function fetchOk(url: string): Promise<Response> {
+  const res = await fetch(url);
+  if (!res.ok) throw new Error(`Failed to fetch ${url}: ${res.status}`);
+  return res;
+}
+
+function dirname(path: string): string {
+  const slash = path.lastIndexOf("/");
+  return slash < 0 ? "" : path.slice(0, slash);
+}
+
+function mkdirp(mujoco: Mujoco, dir: string) {
+  let path = "";
+  for (const part of dir.split("/").filter(Boolean)) {
+    path += `/${part}`;
+    if (!mujoco.FS.analyzePath(path).exists) mujoco.FS.mkdir(path);
+  }
+}
+
+/** Moves the whole robot by (x, y) by translating the body that carries virtual_base_x. Call before creating MjData. */
+export function applySpawn(mujoco: Mujoco, model: MjModel, spawn: { x: number; y: number }) {
+  const jid = mujoco.mj_name2id(model, mujoco.mjtObj.mjOBJ_JOINT.value, "virtual_base_x");
+  if (jid < 0) return;
+  const body = model.jnt_bodyid[jid];
+  model.body_pos[body * 3] += spawn.x;
+  model.body_pos[body * 3 + 1] += spawn.y;
+}
+
+export interface EnvironmentSource {
+  /** Path of the environment's MJCF fragment, relative to /mujoco/scene/. */
+  sceneFile: string;
+  /** In-memory files (uploaded environments), keyed by the same relative path. Anything not
+   * here is fetched from /mujoco/scene/. */
+  files?: ReadonlyMap<string, Uint8Array | string>;
+}
+
+// The robot's own files are fetched once per page and reused, since uploaded-environment
+// validation compiles the robot several times.
+const robotFileCache = new Map<string, Promise<Uint8Array>>();
+
+async function readSceneFile(path: string, files?: ReadonlyMap<string, Uint8Array | string>): Promise<Uint8Array> {
+  const inMemory = files?.get(path);
+  if (inMemory !== undefined) return typeof inMemory === "string" ? new TextEncoder().encode(inMemory) : inMemory;
+  const isRobotFile = path === ROBOT_FILE || path.startsWith("meshes/");
+  const cached = isRobotFile ? robotFileCache.get(path) : undefined;
+  if (cached) return cached;
+  const pending = fetchOk(`${SCENE_BASE_URL}/${path}`).then(async (res) => new Uint8Array(await res.arrayBuffer()));
+  if (isRobotFile) {
+    robotFileCache.set(path, pending);
+    pending.catch(() => robotFileCache.delete(path));
+  }
+  return pending;
+}
+
+/** Loads the robot plus one environment fragment (see lib/mujoco/environments.ts) into a single
+ * compiled model. Both files are written into MEMFS under the same relative paths they have
+ * under /mujoco/scene/, so every asset path in them resolves against the robot file's directory,
+ * which is how MuJoCo resolves assets in <include>d files. Throws MuJoCo's own compile error
+ * (an Error whose message names the offending element) if the scene doesn't compile. */
+export async function loadHumanoidModel(mujoco: Mujoco, environment: EnvironmentSource): Promise<MjModel> {
+  const sources = [ROBOT_FILE, environment.sceneFile];
+  const decoder = new TextDecoder();
+  const texts = await Promise.all(sources.map(async (file) => decoder.decode(await readSceneFile(file, environment.files))));
+  const assetPaths = Array.from(
+    new Set(texts.flatMap((xml) => [...xml.matchAll(/<(?:mesh|texture|hfield)\b[^>]*\bfile="([^"]+)"/g)].map((m) => m[1])))
+  );
 
   if (!mujoco.FS.analyzePath(WORKING_DIR).exists) {
     mujoco.FS.mkdir(WORKING_DIR);
     mujoco.FS.mount(mujoco.MEMFS, { root: "." }, WORKING_DIR);
   }
-  mujoco.FS.mkdir(`${WORKING_DIR}/meshes`);
 
   await Promise.all(
-    meshNames.map(async (name) => {
-      const buf = await (await fetch(`/mujoco/scene/meshes/${name}`)).arrayBuffer();
-      mujoco.FS.writeFile(`${WORKING_DIR}/meshes/${name}`, new Uint8Array(buf));
+    assetPaths.map(async (path) => {
+      const bytes = await readSceneFile(path, environment.files);
+      mkdirp(mujoco, `${WORKING_DIR}/${dirname(path)}`);
+      mujoco.FS.writeFile(`${WORKING_DIR}/${path}`, bytes);
     })
   );
 
-  mujoco.FS.writeFile(`${WORKING_DIR}/humanoid.xml`, xmlText);
-  return mujoco.MjModel.mj_loadXML(`${WORKING_DIR}/humanoid.xml`);
+  sources.forEach((file, i) => {
+    mkdirp(mujoco, `${WORKING_DIR}/${dirname(file)}`);
+    mujoco.FS.writeFile(`${WORKING_DIR}/${file}`, texts[i]);
+  });
+  mujoco.FS.writeFile(
+    `${WORKING_DIR}/scene.xml`,
+    `<mujoco model="buildo_scene">\n  <include file="${ROBOT_FILE}"/>\n  <include file="${environment.sceneFile}"/>\n</mujoco>\n`
+  );
+  return mujoco.MjModel.mj_loadXML(`${WORKING_DIR}/scene.xml`);
 }
 
 /** Access a swizzled (MuJoCo Z-up -> three.js Y-up) vector at `index` into `target`. */
