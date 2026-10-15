@@ -55,6 +55,23 @@ model User {
 
   referralCode String? @unique
 
+  // Set at signup if the new owner entered someone else's referral code --
+  // never changes after that. Drives the rent discount below: referred
+  // owners get ROBOT_RENT_DISCOUNT_USD/month off (see /api/robot-rental).
+  referredById String?
+  referredBy   User?   @relation("Referrals", fields: [referredById], references: [id])
+  referredUsers User[] @relation("Referrals")
+
+  // The owner's active robot rental plan (apps/owner). Term + referral
+  // status fix monthlyRentUsd at the moment a plan is (re)confirmed -- see
+  // RENT_PRICING in /api/robot-rental. Rent is paid one month at a time;
+  // rentPaidUntil is the real gate (computed, not a cron-flipped flag) for
+  // whether the store and installed skills are usable right now.
+  rentTermMonths Int?
+  monthlyRentUsd Int?
+  rentStartedAt  DateTime?
+  rentPaidUntil  DateTime?
+
   emailVerified       Boolean   @default(false)
   emailVerifyToken    String?   @unique
   emailVerifyExpiry   DateTime?
@@ -88,6 +105,7 @@ enum TransactionType {
   GADGET_PURCHASE
   AIRDROP
   WALLET_TOPUP
+  ROBOT_RENT
 }
 
 enum TransactionStatus {
