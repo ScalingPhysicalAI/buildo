@@ -17,7 +17,7 @@ export function TrainBanner() {
       <View style={styles.textWrap}>
         <Text style={styles.title}>Collect skills and earn $$ with robot apps you will build</Text>
         <Text style={styles.subtitle}>
-          Make anywhere from {formatUSD(2000)}–{formatUSD(4000)} per month with the skills you'll train
+          Make anywhere between {formatUSD(200)}–{formatUSD(400)} per month per app
         </Text>
       </View>
       <ArrowUpRight size={18} color={colors.sandDark} />

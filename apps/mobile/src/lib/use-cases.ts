@@ -10,6 +10,10 @@ export interface UseCase {
   title: string;
   description: string;
   skillSlugs: string[];
+  // Estimated $/month this app earns its creator. Warehouse and hospital
+  // apps run near-constantly in those settings, so they sit at the top of
+  // the $200-$400 range; the rest sit near the bottom.
+  monthlyIncome: number;
 }
 
 export const USE_CASES: UseCase[] = [
@@ -18,41 +22,40 @@ export const USE_CASES: UseCase[] = [
     title: "Home",
     description: "Train Buildo to work in your home",
     skillSlugs: ["wash-dish", "pour-coffee", "load-washing-machine", "fold-towel", "wipe-counter"],
+    monthlyIncome: 200,
   },
   {
     key: "SHOP",
     title: "Shops",
     description: "Train Buildo to assist in retail shops",
     skillSlugs: ["greet-and-handoff", "sort-pantry-items", "scan-and-bag-item", "restock-shelf"],
+    monthlyIncome: 200,
   },
   {
     key: "OFFICE",
     title: "Offices",
     description: "Train Buildo to help around the office",
     skillSlugs: ["water-plant", "deliver-mail-to-desk", "tidy-meeting-room", "restock-supply-cabinet"],
+    monthlyIncome: 250,
   },
   {
     key: "WAREHOUSE",
     title: "Warehouses",
     description: "Train Buildo for warehouse logistics",
     skillSlugs: ["scan-and-palletize-box", "pick-item-for-order", "label-and-seal-package", "load-truck-dock"],
+    monthlyIncome: 400,
   },
   {
     key: "HOSPITAL",
     title: "Hospitals",
     description: "Train Buildo to support hospital staff",
     skillSlugs: ["deliver-meal-tray", "restock-supply-cart", "sanitize-surface", "fetch-and-deliver-item"],
+    monthlyIncome: 400,
   },
 ];
 
-// Estimated $/month scales with how many skills the use case has -- more
-// skills, more things Buildo can do, more it can earn -- capped at $4,000/mo
-// (the number given for Home, which sits at the cap with 5 skills).
-const PER_SKILL_MONTHLY = 800;
-const MAX_MONTHLY_INCOME = 4000;
-
 export function estimatedIncome(useCase: UseCase): number {
-  return Math.min(useCase.skillSlugs.length * PER_SKILL_MONTHLY, MAX_MONTHLY_INCOME);
+  return useCase.monthlyIncome;
 }
 
 export function getUseCase(key: string | undefined): UseCase | undefined {

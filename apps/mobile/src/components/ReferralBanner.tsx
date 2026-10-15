@@ -7,12 +7,14 @@ import { colors, fonts, radii, spacing } from "../theme";
 
 const PURCHASE_URL = "https://starforgerobotics.com/buildo/";
 
-// The creator (referrer) earns CREATOR_REWARD_USD; the person they refer
-// gets BUYER_DISCOUNT_USD off the robot's ROBOT_BASE_PRICE_USD -- two
-// different people, two different amounts, not the same number.
-const CREATOR_REWARD_USD = 1000;
-const BUYER_DISCOUNT_USD = 500;
-const ROBOT_BASE_PRICE_USD = 8000;
+// Robots are rented monthly, not sold outright. The creator (referrer) earns
+// CREATOR_MONTHLY_REWARD_USD every month -- but only for as long as the
+// person they referred keeps renting; it stops the moment that rental does.
+// The buyer gets BUYER_MONTHLY_DISCOUNT_USD off the robot's
+// ROBOT_BASE_MONTHLY_RENT_USD monthly rent, for as long as they keep it.
+const CREATOR_MONTHLY_REWARD_USD = 100;
+const BUYER_MONTHLY_DISCOUNT_USD = 100;
+const ROBOT_BASE_MONTHLY_RENT_USD = 600;
 
 const USE_CASES = [
   "Homes",
@@ -24,7 +26,8 @@ const USE_CASES = [
 ];
 
 function shareMessage(code: string) {
-  return `Hey I've become a Buildo Creator, you can use this referral code ${code} to get a ${formatUSD(BUYER_DISCOUNT_USD)} discount on your ${formatUSD(ROBOT_BASE_PRICE_USD)} Buildo robot purchase ${PURCHASE_URL}`;
+  const discountedRent = ROBOT_BASE_MONTHLY_RENT_USD - BUYER_MONTHLY_DISCOUNT_USD;
+  return `Hey I've become a Buildo Creator, use my referral code ${code} to get ${formatUSD(BUYER_MONTHLY_DISCOUNT_USD)} off your Buildo robot rental -- just ${formatUSD(discountedRent)}/month instead of ${formatUSD(ROBOT_BASE_MONTHLY_RENT_USD)} ${PURCHASE_URL}`;
 }
 
 // TODO: dummy/local only for now -- not backed by a real per-user code from
@@ -66,8 +69,8 @@ export function ReferralBanner() {
           <Gift size={20} color={colors.sandDark} />
         </View>
         <View style={styles.textWrap}>
-          <Text style={styles.title}>Refer Buildo to a friend and get {formatUSD(CREATOR_REWARD_USD)} reward</Text>
-          <Text style={styles.subtitle}>Generate referral code</Text>
+          <Text style={styles.title}>Refer Buildo to a friend and earn {formatUSD(CREATOR_MONTHLY_REWARD_USD)}/month</Text>
+          <Text style={styles.subtitle}>Paid monthly, for as long as they keep renting</Text>
         </View>
       </View>
 
