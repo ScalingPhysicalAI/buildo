@@ -93,7 +93,10 @@ export default function StoreScreen() {
                   <Text style={styles.installCount}>{app.installCount} installs</Text>
                 </View>
               </View>
-              <ChevronRight size={18} color={colors.textMuted} />
+              <View style={styles.priceCol}>
+                <Text style={styles.priceText}>${app.monthlyPriceUsd}/mo</Text>
+                <ChevronRight size={18} color={colors.textMuted} />
+              </View>
             </Card>
           </Pressable>
         ))
@@ -195,5 +198,14 @@ const styles = StyleSheet.create({
     fontFamily: fonts.technical,
     fontSize: 10,
     color: colors.textMuted,
+  },
+  priceCol: {
+    alignItems: "flex-end",
+    gap: 4,
+  },
+  priceText: {
+    fontFamily: fonts.bodySemiBold,
+    fontSize: 13,
+    color: colors.sandDark,
   },
 });

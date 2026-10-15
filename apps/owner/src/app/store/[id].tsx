@@ -6,7 +6,7 @@ import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 import { Button } from "../../components/Button";
 import { Card } from "../../components/Card";
-import { fetchAppStore, isRentActive, type StoreApp } from "../../lib/api";
+import { fetchAppStore, isRentActive, isSkillSubscriptionActive, subscribeToSkill, type StoreApp } from "../../lib/api";
 import { useAuth } from "../../lib/auth-context";
 import { useRobot } from "../../lib/robot-context";
 import { colors, fonts, radii, spacing } from "../../theme";
@@ -30,7 +30,7 @@ function closeOrGoStore() {
 export default function AppDetailScreen() {
   const { id } = useLocalSearchParams<{ id: string }>();
   const insets = useSafeAreaInsets();
-  const { user } = useAuth();
+  const { user, refresh } = useAuth();
   const { installedApps, installApp } = useRobot();
   const rentActive = isRentActive(user);
   // undefined = still loading, null = loaded but no app with this id exists
@@ -39,6 +39,8 @@ export default function AppDetailScreen() {
   const [app, setApp] = useState<StoreApp | null | undefined>(undefined);
   const [error, setError] = useState<string | null>(null);
   const [installing, setInstalling] = useState(false);
+  const [subscribing, setSubscribing] = useState(false);
+  const [subscribeError, setSubscribeError] = useState<string | null>(null);
 
   // A dev reload (or Expo Go replaying its last-opened URL) can land directly
   // on this modal with no navigation history beneath it. It was never meant
@@ -59,15 +61,31 @@ export default function AppDetailScreen() {
   if (isLandingScreen) return null;
 
   const isInstalled = installedApps.some((a) => a.id === id);
+  const isSubscribed = isSkillSubscriptionActive(app);
 
   async function handleInstall() {
-    if (!app || !rentActive) return;
+    if (!app || !rentActive || !isSubscribed) return;
     setInstalling(true);
     try {
       await new Promise((r) => setTimeout(r, 900));
       await installApp(app.id, app.name);
     } finally {
       setInstalling(false);
+    }
+  }
+
+  async function handleSubscribe() {
+    if (!app || !rentActive) return;
+    setSubscribeError(null);
+    setSubscribing(true);
+    try {
+      const result = await subscribeToSkill(app.id, 1);
+      setApp((prev) => (prev ? { ...prev, mySubscribedUntil: result.subscribedUntil } : prev));
+      await refresh();
+    } catch (err) {
+      setSubscribeError(err instanceof Error ? err.message : "Couldn't subscribe right now");
+    } finally {
+      setSubscribing(false);
     }
   }
 
@@ -99,26 +117,22 @@ export default function AppDetailScreen() {
             <Text style={styles.installCount}>{app.installCount} installs</Text>
           </View>
 
+          <Text style={styles.priceTag}>${app.monthlyPriceUsd}/mo subscription</Text>
+
           {app.description ? <Text style={styles.description}>{app.description}</Text> : null}
 
-          {isInstalled && rentActive ? (
-            <Card style={styles.installedCard}>
-              <Check size={18} color={colors.success} />
-              <Text style={styles.installedText}>Installed to your robot</Text>
-            </Card>
-          ) : isInstalled && !rentActive ? (
-            <Card style={styles.lockedCard}>
-              <Lock size={18} color={colors.error} />
-              <View style={{ flex: 1 }}>
-                <Text style={styles.lockedCardTitle}>Disabled until rent is paid</Text>
-                <Text style={styles.lockedCardBody}>This skill won't run on your robot until this month's rent is paid.</Text>
-              </View>
-            </Card>
-          ) : !rentActive ? (
+          {!rentActive ? (
             <>
               <Card style={styles.lockedCard}>
                 <Lock size={18} color={colors.error} />
-                <Text style={styles.lockedCardBody}>Pay your rent first, then you can install this skill.</Text>
+                <View style={{ flex: 1 }}>
+                  <Text style={styles.lockedCardTitle}>Pay your rent first</Text>
+                  <Text style={styles.lockedCardBody}>
+                    {isInstalled
+                      ? "This skill is disabled until this month's robot rent is paid."
+                      : "Pay your rent first, then you can subscribe and apply this skill."}
+                  </Text>
+                </View>
               </Card>
               <Button
                 label="Go to wallet"
@@ -126,9 +140,35 @@ export default function AppDetailScreen() {
                 style={{ marginTop: spacing.md }}
               />
             </>
+          ) : !isSubscribed ? (
+            <>
+              {isInstalled ? (
+                <Card style={styles.lockedCard}>
+                  <Lock size={18} color={colors.error} />
+                  <View style={{ flex: 1 }}>
+                    <Text style={styles.lockedCardTitle}>Subscription expired</Text>
+                    <Text style={styles.lockedCardBody}>
+                      Renew to keep running this skill on your robot.
+                    </Text>
+                  </View>
+                </Card>
+              ) : null}
+              {subscribeError ? <Text style={styles.subscribeErrorText}>{subscribeError}</Text> : null}
+              <Button
+                label={isInstalled ? `Renew subscription -- $${app.monthlyPriceUsd}/mo` : `Subscribe -- $${app.monthlyPriceUsd}/mo`}
+                onPress={handleSubscribe}
+                loading={subscribing}
+                style={{ marginTop: spacing.md }}
+              />
+            </>
+          ) : isInstalled ? (
+            <Card style={styles.installedCard}>
+              <Check size={18} color={colors.success} />
+              <Text style={styles.installedText}>Installed to your robot</Text>
+            </Card>
           ) : (
             <Button
-              label="Install to my robot"
+              label="Apply to my robot"
               onPress={handleInstall}
               loading={installing}
               style={{ marginTop: spacing.xl }}
@@ -200,12 +240,18 @@ const styles = StyleSheet.create({
     fontSize: 11,
     color: colors.textMuted,
   },
+  priceTag: {
+    fontFamily: fonts.bodySemiBold,
+    fontSize: 15,
+    color: colors.sandDark,
+    marginTop: spacing.md,
+  },
   description: {
     fontFamily: fonts.body,
     fontSize: 14,
     color: colors.textMuted,
     lineHeight: 21,
-    marginTop: spacing.md,
+    marginTop: spacing.sm,
   },
   installedCard: {
     flexDirection: "row",
@@ -235,5 +281,11 @@ const styles = StyleSheet.create({
     color: colors.textMuted,
     marginTop: 2,
     flexShrink: 1,
+  },
+  subscribeErrorText: {
+    fontFamily: fonts.bodyMedium,
+    fontSize: 13,
+    color: colors.error,
+    marginTop: spacing.md,
   },
 });

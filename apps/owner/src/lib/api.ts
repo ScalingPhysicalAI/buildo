@@ -131,9 +131,11 @@ export async function topUpWallet(amountUsd: number): Promise<SafeUser> {
   return data.user;
 }
 
-// Starts the rental: locks in the monthly rate (referral discount applied
-// if referredById was set at signup) and debits the first month from
-// ownerWalletBalance. Throws (via ApiError) if the balance can't cover it.
+// Starts (or switches) the rental plan: locks in the monthly rate (referral
+// discount applied if referredById was set at signup) and debits the FULL
+// term upfront -- monthlyRentUsd * termMonths, e.g. 3mo @ $600/mo = $1800 --
+// in exchange for termMonths * 30 days of rentPaidUntil. Throws (via
+// ApiError) if the balance can't cover it.
 export async function chooseRentPlan(termMonths: RentTermMonths): Promise<SafeUser> {
   const data = await request<{ user: SafeUser }>("/api/robot-rental", {
     method: "POST",
@@ -142,8 +144,9 @@ export async function chooseRentPlan(termMonths: RentTermMonths): Promise<SafeUs
   return data.user;
 }
 
-// Renews the existing plan for one more month at its already-locked rate --
-// doesn't change term or price (chooseRentPlan is for that).
+// Renews the existing plan for one more full term at its already-locked
+// rate -- same upfront, whole-term charge as chooseRentPlan, just without
+// changing term or price.
 export async function payRent(): Promise<SafeUser> {
   const data = await request<{ user: SafeUser }>("/api/robot-rental/pay", { method: "POST" });
   return data.user;
@@ -160,13 +163,38 @@ export interface StoreApp {
   installCount: number;
   creatorName: string;
   publishedAt: string | null;
+  monthlyPriceUsd: number;
+  // The caller's own subscription expiry for this app, if any -- see
+  // isSkillSubscriptionActive() below. null when logged out or never
+  // subscribed.
+  mySubscribedUntil: string | null;
 }
 
+// True once this skill has a paid, not-yet-expired subscription. Gates
+// whether an installed skill can actually run on the robot (see
+// store/[id].tsx) the same way isRentActive() gates the whole store.
+export function isSkillSubscriptionActive(app: Pick<StoreApp, "mySubscribedUntil"> | null | undefined): boolean {
+  return !!app?.mySubscribedUntil && new Date(app.mySubscribedUntil).getTime() > Date.now();
+}
+
+// Public endpoint, but sends the bearer token when logged in (via
+// request<T>) so the response can include mySubscribedUntil per app.
 export async function fetchAppStore(): Promise<StoreApp[]> {
-  const res = await fetch(`${SERVER_URL}/api/public/app-store`);
-  const data = await res.json().catch(() => null);
-  if (!res.ok) {
-    throw new ApiError(data?.error ?? "Couldn't load the app store", res.status);
-  }
+  const data = await request<{ apps: StoreApp[] }>("/api/public/app-store");
   return data.apps;
+}
+
+// Pays for `months` of access to this skill (default 1), debited from
+// ownerWalletBalance at the app's current monthlyPriceUsd. The backend
+// rejects this with a 403 if robot rent isn't currently paid. Extends from
+// the existing subscription if it hasn't expired yet, same renewal rule as
+// robot rent.
+export async function subscribeToSkill(
+  appId: string,
+  months = 1
+): Promise<{ user: SafeUser; subscribedUntil: string; monthlyPriceUsd: number }> {
+  return request(`/api/apps/${appId}/subscribe`, {
+    method: "POST",
+    body: JSON.stringify({ months }),
+  });
 }

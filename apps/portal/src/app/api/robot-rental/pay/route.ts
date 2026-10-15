@@ -5,11 +5,13 @@ import { getSessionUserId, toSafeUser } from "@/lib/auth";
 
 const MONTH_MS = 30 * 24 * 60 * 60 * 1000;
 
-// Renews the caller's already-chosen plan for one more month, at the rate
-// locked in when the plan was (re)started (see POST /api/robot-rental) --
-// this endpoint never changes term or rate. Extends from the current
-// rentPaidUntil if it's still in the future (paying early doesn't waste
-// remaining time), or from now if rent has lapsed.
+// Renews the caller's already-chosen plan for one more full term, at the
+// rate locked in when the plan was (re)started (see POST /api/robot-rental)
+// -- this endpoint never changes term or rate. Charges monthlyRentUsd *
+// rentTermMonths upfront again, same as the initial payment, and extends
+// rentPaidUntil by that many months. Extends from the current rentPaidUntil
+// if it's still in the future (paying early doesn't waste remaining time),
+// or from now if rent has lapsed.
 export async function POST(request: Request) {
   const userId = await getSessionUserId(request);
   if (!userId) {
@@ -18,17 +20,19 @@ export async function POST(request: Request) {
 
   const user = await prisma.user.findUnique({
     where: { id: userId },
-    select: { monthlyRentUsd: true, ownerWalletBalance: true, rentPaidUntil: true },
+    select: { monthlyRentUsd: true, rentTermMonths: true, ownerWalletBalance: true, rentPaidUntil: true },
   });
   if (!user) {
     return NextResponse.json({ error: "Not authenticated" }, { status: 401 });
   }
-  if (!user.monthlyRentUsd) {
+  if (!user.monthlyRentUsd || !user.rentTermMonths) {
     return NextResponse.json({ error: "Choose a rental plan first" }, { status: 400 });
   }
-  if (user.ownerWalletBalance < user.monthlyRentUsd) {
+
+  const totalCost = user.monthlyRentUsd * user.rentTermMonths;
+  if (user.ownerWalletBalance < totalCost) {
     return NextResponse.json(
-      { error: `Top up at least $${user.monthlyRentUsd} to pay this month's rent` },
+      { error: `Top up at least $${totalCost} to renew your ${user.rentTermMonths}-month term` },
       { status: 400 }
     );
   }
@@ -40,17 +44,17 @@ export async function POST(request: Request) {
     prisma.user.update({
       where: { id: userId },
       data: {
-        rentPaidUntil: new Date(base.getTime() + MONTH_MS),
-        ownerWalletBalance: { decrement: user.monthlyRentUsd },
+        rentPaidUntil: new Date(base.getTime() + user.rentTermMonths * MONTH_MS),
+        ownerWalletBalance: { decrement: totalCost },
       },
     }),
     prisma.tokenTransaction.create({
       data: {
         userId,
         type: "ROBOT_RENT",
-        amount: -user.monthlyRentUsd,
+        amount: -totalCost,
         wallet: "OWNER",
-        note: "Robot rental -- monthly rent",
+        note: `Robot rental renewed -- ${user.rentTermMonths} month term, paid in full`,
       },
     }),
   ]);

@@ -76,6 +76,10 @@ export const rentPlanSchema = z.object({
   termMonths: z.union([z.literal(3), z.literal(6), z.literal(12)]),
 });
 
+export const skillSubscribeSchema = z.object({
+  months: z.number().int().min(1).max(12).default(1),
+});
+
 export const gadgetOrderSchema = z.object({
   recipientName: z.string().trim().min(2, "Name must be at least 2 characters").max(80),
   recipientEmail: z.string().trim().toLowerCase().email("Enter a valid email address"),

@@ -57,12 +57,17 @@ export default function WalletScreen() {
   const isReferred = !!user?.referredById;
   const hasPlan = !!user?.rentTermMonths && !!user?.monthlyRentUsd;
   const selectedPrice = isReferred ? RENT_PRICING[selectedTerm].referred : RENT_PRICING[selectedTerm].direct;
+  // Rent is a prepaid term, not a monthly charge -- the full term is billed
+  // upfront (e.g. 3mo @ $600/mo = $1800 for 90 days), matching
+  // apps/portal's /api/robot-rental[/pay].
+  const selectedTotalCost = selectedPrice * selectedTerm;
   const isSwitchingTerm = hasPlan && selectedTerm !== user?.rentTermMonths;
 
   const rentPaidUntil = user?.rentPaidUntil ? new Date(user.rentPaidUntil) : null;
   const daysRemaining = rentPaidUntil ? Math.ceil((rentPaidUntil.getTime() - Date.now()) / 86_400_000) : 0;
   const rentActive = isRentActive(user);
-  const barFraction = Math.max(0, Math.min(1, daysRemaining / RENT_PERIOD_DAYS));
+  const totalDaysForTerm = (user?.rentTermMonths ?? selectedTerm) * RENT_PERIOD_DAYS;
+  const barFraction = Math.max(0, Math.min(1, daysRemaining / totalDaysForTerm));
 
   function confirm(title: string, message: string, onConfirm: () => void) {
     Alert.alert(title, message, [
@@ -74,12 +79,11 @@ export default function WalletScreen() {
   function handleRentAction() {
     setRentError(null);
     const action = !hasPlan ? "start" : isSwitchingTerm ? "switch" : "pay";
-    const title =
-      action === "start" ? "Start rental?" : action === "switch" ? "Switch plan?" : "Pay this month's rent?";
+    const title = action === "start" ? "Start rental?" : action === "switch" ? "Switch plan?" : "Renew rental?";
     const message =
       action === "pay"
-        ? `$${selectedPrice} will be deducted from your wallet balance.`
-        : `$${selectedPrice}/mo will be deducted from your wallet balance now for the ${selectedTerm}-month term.`;
+        ? `$${selectedTotalCost} will be deducted from your wallet balance for another ${selectedTerm * RENT_PERIOD_DAYS} days.`
+        : `$${selectedTotalCost} will be deducted from your wallet balance now -- $${selectedPrice}/mo for the ${selectedTerm}-month term (${selectedTerm * RENT_PERIOD_DAYS} days).`;
 
     confirm(title, message, async () => {
       setRentBusy(true);
@@ -114,10 +118,10 @@ export default function WalletScreen() {
   }
 
   const rentButtonLabel = !hasPlan
-    ? `Start rental -- $${selectedPrice}/mo`
+    ? `Start rental -- $${selectedTotalCost} total`
     : isSwitchingTerm
-      ? `Switch to ${selectedTerm}-month plan -- $${selectedPrice}/mo`
-      : `Pay rent -- $${selectedPrice}`;
+      ? `Switch to ${selectedTerm}-month plan -- $${selectedTotalCost} total`
+      : `Renew ${selectedTerm}-month rental -- $${selectedTotalCost}`;
 
   return (
     <ScrollView
@@ -179,17 +183,23 @@ export default function WalletScreen() {
       )}
 
       <View style={styles.termRow}>
-        {TERMS.map((months) => (
-          <Pressable
-            key={months}
-            onPress={() => setSelectedTerm(months)}
-            style={[styles.termChip, selectedTerm === months && styles.termChipActive]}
-          >
-            <Text style={[styles.termChipText, selectedTerm === months && styles.termChipTextActive]}>
-              {months}mo · ${isReferred ? RENT_PRICING[months].referred : RENT_PRICING[months].direct}
-            </Text>
-          </Pressable>
-        ))}
+        {TERMS.map((months) => {
+          const rate = isReferred ? RENT_PRICING[months].referred : RENT_PRICING[months].direct;
+          return (
+            <Pressable
+              key={months}
+              onPress={() => setSelectedTerm(months)}
+              style={[styles.termChip, selectedTerm === months && styles.termChipActive]}
+            >
+              <Text style={[styles.termChipText, selectedTerm === months && styles.termChipTextActive]}>
+                {months}mo · ${rate}/mo
+              </Text>
+              <Text style={[styles.termChipSubtext, selectedTerm === months && styles.termChipTextActive]}>
+                ${rate * months} total
+              </Text>
+            </Pressable>
+          );
+        })}
       </View>
 
       {rentError ? <Text style={styles.errorText}>{rentError}</Text> : null}
@@ -372,6 +382,12 @@ const styles = StyleSheet.create({
     fontFamily: fonts.bodyMedium,
     fontSize: 12,
     color: colors.textMuted,
+  },
+  termChipSubtext: {
+    fontFamily: fonts.technical,
+    fontSize: 10,
+    color: colors.textMuted,
+    marginTop: 2,
   },
   termChipTextActive: {
     color: colors.black,
