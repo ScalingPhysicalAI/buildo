@@ -8,8 +8,8 @@ import { rentPlanSchema } from "@/lib/validations";
 // at signup -- see /api/auth/signup). Longer terms step the rate down by
 // $60/mo regardless of referral status; the referral discount is a flat
 // $100/mo off at every term. Kept in sync by hand with the display copy of
-// this table in apps/owner/src/app/settings/rent-plan.tsx -- no shared
-// package between the two yet.
+// this table in apps/owner/src/app/settings/wallet.tsx -- no shared package
+// between the two yet.
 const RENT_PRICING: Record<3 | 6 | 12, { direct: number; referred: number }> = {
   3: { direct: 600, referred: 500 },
   6: { direct: 540, referred: 440 },
@@ -18,11 +18,12 @@ const RENT_PRICING: Record<3 | 6 | 12, { direct: number; referred: number }> = {
 
 const MONTH_MS = 30 * 24 * 60 * 60 * 1000;
 
-// Starts or changes the caller's robot rental plan: locks in a monthly rate
-// from their referral status + the chosen term, debits the first month from
-// ownerWalletBalance immediately, and marks rent paid for the next 30 days.
-// Changing plans (picking a new term later) always re-prices from now --
-// it does not carry over any remaining paid time from the old plan.
+// Starts or changes the caller's robot rental plan: this is a prepaid term,
+// not a monthly subscription -- the whole term's rent (monthlyRentUsd *
+// termMonths) is charged upfront, all at once, and rentPaidUntil moves
+// forward by that same number of months. Changing plans (picking a new term
+// later) always re-prices and re-pays from now -- it does not carry over
+// any remaining paid time from the old plan.
 export async function POST(request: Request) {
   const userId = await getSessionUserId(request);
   if (!userId) {
@@ -48,9 +49,10 @@ export async function POST(request: Request) {
 
   const { termMonths } = parsed.data;
   const monthlyRentUsd = user.referredById ? RENT_PRICING[termMonths].referred : RENT_PRICING[termMonths].direct;
-  if (user.ownerWalletBalance < monthlyRentUsd) {
+  const totalCost = monthlyRentUsd * termMonths;
+  if (user.ownerWalletBalance < totalCost) {
     return NextResponse.json(
-      { error: `Top up at least $${monthlyRentUsd} to cover the first month's rent` },
+      { error: `Top up at least $${totalCost} to cover the full ${termMonths}-month term` },
       { status: 400 }
     );
   }
@@ -64,17 +66,17 @@ export async function POST(request: Request) {
         rentTermMonths: termMonths,
         monthlyRentUsd,
         rentStartedAt: user.rentStartedAt ?? now,
-        rentPaidUntil: new Date(now.getTime() + MONTH_MS),
-        ownerWalletBalance: { decrement: monthlyRentUsd },
+        rentPaidUntil: new Date(now.getTime() + termMonths * MONTH_MS),
+        ownerWalletBalance: { decrement: totalCost },
       },
     }),
     prisma.tokenTransaction.create({
       data: {
         userId,
         type: "ROBOT_RENT",
-        amount: -monthlyRentUsd,
+        amount: -totalCost,
         wallet: "OWNER",
-        note: `Robot rental started -- ${termMonths} month term, first month`,
+        note: `Robot rental started -- ${termMonths} month term, paid in full`,
       },
     }),
   ]);

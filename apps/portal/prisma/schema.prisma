@@ -91,6 +91,7 @@ model User {
   appListings       AppListing[]
   customSkills      SkillDefinition[]
   gadgetOrders      GadgetOrder[]
+  skillSubscriptions SkillSubscription[]
 }
 
 enum TransactionType {
@@ -106,6 +107,7 @@ enum TransactionType {
   AIRDROP
   WALLET_TOPUP
   ROBOT_RENT
+  SKILL_SUBSCRIPTION
 }
 
 enum TransactionStatus {
@@ -299,13 +301,44 @@ model AppListing {
   // TokenTransaction each time someone installs it.
   earnings Int @default(0)
 
-  skills   AppListingSkill[]
-  installs AppInstall[]
+  // Robot-owner subscription price (apps/owner's Store -- separate from the
+  // free creator-side install/earnings-by-skill-reward model above). No
+  // per-app pricing UI exists yet for creators, so every app defaults to the
+  // same flat rate.
+  monthlySubscriptionPriceUsd Int @default(20)
+
+  skills        AppListingSkill[]
+  installs      AppInstall[]
+  subscriptions SkillSubscription[]
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
   @@index([userId])
+}
+
+// A robot owner's paid subscription to a skill (apps/owner Store), separate
+// from the free AppInstall above. monthlyPriceUsd is locked in at the
+// moment of each payment, from the app's current price at that time -- a
+// later price change on the app only affects the next renewal. Gates
+// whether the owner can apply this skill to their robot (see
+// isSkillSubscriptionActive in apps/owner/src/lib/api.ts) the same way
+// User.rentPaidUntil gates the whole store.
+model SkillSubscription {
+  id     String     @id @default(cuid())
+  userId String
+  user   User       @relation(fields: [userId], references: [id], onDelete: Cascade)
+  appId  String
+  app    AppListing @relation(fields: [appId], references: [id], onDelete: Cascade)
+
+  monthlyPriceUsd Int
+  subscribedUntil DateTime
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@unique([userId, appId])
+  @@index([appId])
 }
 
 // One user's install of a published app. Unique per (app, user) so the
