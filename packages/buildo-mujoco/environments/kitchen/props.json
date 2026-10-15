@@ -1,0 +1,20 @@
+{
+  "_comment": "Movable props in the kitchen (built by urdf_to_mjcf.py). Entries without a pos stay where they sat in the original kitchen model.",
+  "props": [
+    { "prop": "kitchen_plate" },
+    { "prop": "kitchen_pancakes" },
+    { "prop": "kitchen_toast_1" },
+    { "prop": "kitchen_toast_2" },
+    { "prop": "kitchen_fork", "pos": [0.14, 1.9], "z": 0.91 },
+    { "prop": "kitchen_knife", "pos": [0.48, 1.9], "z": 0.91 },
+    { "prop": "kitchen_saucer" },
+    { "prop": "kitchen_books" },
+    { "prop": "kitchen_fruit_bowl" },
+    { "prop": "kitchen_juicer" },
+    { "prop": "kitchen_canister_ceramic" },
+    { "prop": "kitchen_canister_xl" },
+    { "prop": "kitchen_canister_l" },
+    { "prop": "kitchen_canister_m" },
+    { "prop": "kitchen_canister_s" }
+  ]
+}
