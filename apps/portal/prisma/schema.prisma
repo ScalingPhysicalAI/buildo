@@ -46,6 +46,13 @@ model User {
   // ever changes via an owner-app top-up.
   ownerWalletBalance Int @default(0)
 
+  // KYC: a photo of any government ID, required before ordering the Buildo
+  // Development Kit (financed against the creator's own future earnings --
+  // see MIN_WALLET_BALANCE in the gadget order route -- so identity
+  // verification matters here). Stored in Vercel Blob; this is just the URL.
+  kycIdImageUrl  String?
+  kycSubmittedAt DateTime?
+
   referralCode String? @unique
 
   emailVerified       Boolean   @default(false)
