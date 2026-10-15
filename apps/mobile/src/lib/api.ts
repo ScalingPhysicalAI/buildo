@@ -112,15 +112,19 @@ export async function uploadKycId(localUri: string, mimeType: string): Promise<v
   const token = await getToken();
   const extension = mimeType.split("/")[1] ?? "jpg";
 
+  // RN's New Architecture networking stack rejects the old
+  // FormData.append("file", { uri, name, type }) shortcut ("unsupported
+  // FormDataPart implementation") -- fetch()-ing the local file into a real
+  // Blob first and appending that instead is the reliable path now.
+  const fileResponse = await fetch(localUri);
+  const rawBlob = await fileResponse.blob();
+  // Re-wrap with the mimeType the picker already told us -- a local file://
+  // fetch doesn't reliably sniff the right content type on its own, and the
+  // server's ALLOWED_TYPES check needs an exact match.
+  const fileBlob = new Blob([rawBlob], { type: mimeType });
+
   const formData = new FormData();
-  // React Native's FormData accepts this {uri, name, type} shape for a file
-  // field -- it streams the file directly from disk, no need to read it
-  // into memory first.
-  formData.append("file", {
-    uri: localUri,
-    name: `id.${extension}`,
-    type: mimeType,
-  } as unknown as Blob);
+  formData.append("file", fileBlob, `id.${extension}`);
 
   const res = await fetch(`${SERVER_URL}/api/kyc/upload`, {
     method: "POST",

@@ -48,6 +48,19 @@ const SPECS = [
   { label: "Connectivity", value: "USB-C + wireless" },
 ];
 
+const TERMS = [
+  "This order is billed directly from your Buildo wallet balance. Your balance may go negative, within the stated limit, and will be repaid from your future app and skill earnings.",
+  "Orders are typically shipped within 5-7 business days of confirmation. Delivery estimates are not guaranteed and may vary by location.",
+  "Inspect your kit upon delivery. Report any shipping damage or missing items within 48 hours of receipt.",
+  "The Buildo Development Kit is non-returnable once unboxed, except in the case of a manufacturing defect reported within 14 days of delivery.",
+  "If your wallet balance remains past the limit, Starforge Robotics may pause further gadget orders, skill purchases, and app deployments until it's settled.",
+  `Referral reward: you earn ${formatUSD(CREATOR_MONTHLY_REWARD_USD)} after someone you referred makes a purchase, and only for as long as you keep uploading training data.`,
+  "Your submitted government ID is used solely to verify your identity for this order and is not shared with third parties.",
+  "The shipping address and contact details you provide are used only to fulfill this order.",
+  "Starforge Robotics may update these terms from time to time; continued use of the app after a change constitutes acceptance of the updated terms.",
+  "These terms are governed by the laws of the jurisdiction in which Starforge Robotics is registered.",
+];
+
 function closeOrGoHome() {
   if (router.canGoBack()) {
     router.back();
@@ -71,6 +84,8 @@ export default function GadgetOrderScreen() {
   const [activeImage, setActiveImage] = useState(0);
   const [kycImage, setKycImage] = useState<{ uri: string; mimeType: string } | null>(null);
   const [kycUploading, setKycUploading] = useState(false);
+  const [showTerms, setShowTerms] = useState(false);
+  const [agreedToTerms, setAgreedToTerms] = useState(false);
 
   const galleryWidth = windowWidth - spacing.lg * 2;
   const verified = !!user?.kycIdImageUrl;
@@ -90,7 +105,7 @@ export default function GadgetOrderScreen() {
       return;
     }
     const result = await ImagePicker.launchImageLibraryAsync({
-      mediaTypes: ImagePicker.MediaTypeOptions.Images,
+      mediaTypes: ["images"],
       quality: 0.8,
     });
     if (result.canceled || !result.assets?.[0]) return;
@@ -150,13 +165,50 @@ export default function GadgetOrderScreen() {
       );
       return;
     }
-    Alert.alert(
-      "Terms & Conditions",
-      `This order is billed directly from your Buildo wallet and may take your balance negative, repaid from future earnings.\n\nReferral reward: you earn ${formatUSD(CREATOR_MONTHLY_REWARD_USD)} after someone you referred makes a purchase, and only for as long as you keep uploading training data.\n\nBy continuing, you agree to these terms.`,
-      [
-        { text: "Cancel", style: "cancel" },
-        { text: "Agree & Pay", onPress: handlePlaceOrder },
-      ]
+    setAgreedToTerms(false);
+    setShowTerms(true);
+  }
+
+  async function handleAgreeAndPay() {
+    setShowTerms(false);
+    await handlePlaceOrder();
+  }
+
+  if (showTerms) {
+    return (
+      <View style={[styles.container, { paddingTop: insets.top + spacing.md }]}>
+        <Pressable onPress={() => setShowTerms(false)} style={styles.closeBtn} hitSlop={12}>
+          <X size={20} color={colors.textPrimary} />
+        </Pressable>
+
+        <Text style={styles.termsTitle}>Terms & Conditions</Text>
+        <Text style={styles.description}>Please read and accept before we place your order.</Text>
+
+        <ScrollView style={styles.termsBox} contentContainerStyle={styles.termsBoxContent}>
+          {TERMS.map((term, i) => (
+            <Text key={i} style={styles.termItem}>
+              <Text style={styles.termNumber}>{i + 1}. </Text>
+              {term}
+            </Text>
+          ))}
+        </ScrollView>
+
+        <Pressable onPress={() => setAgreedToTerms((v) => !v)} style={styles.agreeRow}>
+          <View style={[styles.checkbox, agreedToTerms && styles.checkboxChecked]}>
+            {agreedToTerms ? <Check size={14} color={colors.white} /> : null}
+          </View>
+          <Text style={styles.agreeText}>I have read and agree to the Terms & Conditions</Text>
+        </Pressable>
+
+        <Button
+          label="Proceed"
+          variant="cream"
+          onPress={handleAgreeAndPay}
+          loading={busy}
+          disabled={!agreedToTerms}
+          style={{ marginTop: spacing.md }}
+        />
+      </View>
     );
   }
 
@@ -528,6 +580,59 @@ const styles = StyleSheet.create({
     paddingHorizontal: spacing.md,
   },
   kycVerifiedText: {
+    fontFamily: fonts.bodyMedium,
+    fontSize: 13,
+    color: colors.textPrimary,
+  },
+  termsTitle: {
+    fontFamily: fonts.display,
+    fontSize: 26,
+    color: colors.black,
+  },
+  termsBox: {
+    flex: 1,
+    borderWidth: 1,
+    borderColor: colors.border,
+    borderRadius: radii.lg,
+    backgroundColor: colors.surface,
+    marginTop: spacing.lg,
+    marginBottom: spacing.md,
+  },
+  termsBoxContent: {
+    padding: spacing.md,
+    gap: spacing.sm,
+  },
+  termItem: {
+    fontFamily: fonts.body,
+    fontSize: 13,
+    color: colors.textMuted,
+    lineHeight: 19,
+  },
+  termNumber: {
+    fontFamily: fonts.bodySemiBold,
+    color: colors.textPrimary,
+  },
+  agreeRow: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: spacing.sm,
+  },
+  checkbox: {
+    width: 22,
+    height: 22,
+    borderRadius: 6,
+    borderWidth: 1.5,
+    borderColor: colors.sandDark,
+    alignItems: "center",
+    justifyContent: "center",
+    backgroundColor: colors.surface,
+  },
+  checkboxChecked: {
+    backgroundColor: colors.sandDark,
+    borderColor: colors.sandDark,
+  },
+  agreeText: {
+    flex: 1,
     fontFamily: fonts.bodyMedium,
     fontSize: 13,
     color: colors.textPrimary,
