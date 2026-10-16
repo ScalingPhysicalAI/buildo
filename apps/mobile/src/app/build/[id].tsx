@@ -36,6 +36,7 @@ export default function AppDetailScreen() {
   const { apps, deployApp } = useSkills();
   const [busy, setBusy] = useState(false);
   const [history, setHistory] = useState<AppHistory | null>(null);
+  const [historyWindow, setHistoryWindow] = useState<30 | 90>(30);
 
   const app = apps.find((a) => a.id === id);
 
@@ -153,20 +154,31 @@ export default function AppDetailScreen() {
 
           {history ? (
             <Card style={styles.trendCard}>
-              <View style={styles.trendTotalsRow}>
-                <View>
-                  <Text style={styles.trendTotalValue}>{formatUSD(history.last30.revenue)}</Text>
-                  <Text style={styles.trendTotalLabel}>
-                    Last 30 days · {history.last30.payments} payment{history.last30.payments === 1 ? "" : "s"}
-                  </Text>
-                </View>
-                <View>
-                  <Text style={styles.trendTotalValue}>{formatUSD(history.last90.revenue)}</Text>
-                  <Text style={styles.trendTotalLabel}>
-                    Last 90 days · {history.last90.payments} payment{history.last90.payments === 1 ? "" : "s"}
-                  </Text>
-                </View>
+              <View style={styles.windowRow}>
+                {([30, 90] as const).map((w) => (
+                  <Pressable
+                    key={w}
+                    onPress={() => setHistoryWindow(w)}
+                    style={[styles.windowChip, historyWindow === w && styles.windowChipActive]}
+                  >
+                    <Text style={[styles.windowChipText, historyWindow === w && styles.windowChipTextActive]}>
+                      {w} days
+                    </Text>
+                  </Pressable>
+                ))}
               </View>
+
+              {(() => {
+                const totals = historyWindow === 30 ? history.last30 : history.last90;
+                return (
+                  <View style={styles.trendTotals}>
+                    <Text style={styles.trendTotalValue}>{formatUSD(totals.revenue)}</Text>
+                    <Text style={styles.trendTotalLabel}>
+                      {totals.payments} payment{totals.payments === 1 ? "" : "s"} in the last {historyWindow} days
+                    </Text>
+                  </View>
+                );
+              })()}
 
               <View style={styles.sparkline}>
                 {(() => {
@@ -319,19 +331,43 @@ const styles = StyleSheet.create({
   trendCard: {
     marginTop: spacing.sm,
   },
-  trendTotalsRow: {
+  windowRow: {
     flexDirection: "row",
-    justifyContent: "space-between",
+    gap: spacing.sm,
+    marginBottom: spacing.md,
+  },
+  windowChip: {
+    flex: 1,
+    alignItems: "center",
+    paddingVertical: 8,
+    borderRadius: radii.pill,
+    backgroundColor: colors.background,
+    borderWidth: 1,
+    borderColor: colors.border,
+  },
+  windowChipActive: {
+    backgroundColor: colors.skin,
+    borderColor: colors.skinBorder,
+  },
+  windowChipText: {
+    fontFamily: fonts.bodyMedium,
+    fontSize: 13,
+    color: colors.textMuted,
+  },
+  windowChipTextActive: {
+    color: colors.black,
+  },
+  trendTotals: {
     marginBottom: spacing.md,
   },
   trendTotalValue: {
     fontFamily: fonts.display,
-    fontSize: 20,
+    fontSize: 24,
     color: colors.black,
   },
   trendTotalLabel: {
     fontFamily: fonts.technical,
-    fontSize: 10,
+    fontSize: 11,
     letterSpacing: 0.3,
     color: colors.textMuted,
     marginTop: 2,
