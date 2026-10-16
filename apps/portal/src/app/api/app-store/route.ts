@@ -22,7 +22,13 @@ export async function GET(request: Request) {
     include: {
       user: { select: { id: true, name: true } },
       skills: { include: { skillCollection: { include: { skill: true } } } },
-      _count: { select: { installs: true } },
+      _count: {
+        select: {
+          installs: true,
+          // Live count, same rule as /api/apps -- see that route's comment.
+          subscriptions: { where: { subscribedUntil: { gt: new Date() } } },
+        },
+      },
       installs: { where: { userId }, select: { id: true } },
     },
   });
@@ -32,6 +38,7 @@ export async function GET(request: Request) {
     apps: resolved.map(({ installs, _count, earnings: _earnings, ...app }) => ({
       ...app,
       installCount: _count.installs,
+      subscriberCount: _count.subscriptions,
       installedByMe: installs.length > 0,
     })),
   });

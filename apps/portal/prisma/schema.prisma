@@ -92,6 +92,7 @@ model User {
   customSkills      SkillDefinition[]
   gadgetOrders      GadgetOrder[]
   skillSubscriptions SkillSubscription[]
+  skillSubscriptionPayments SkillSubscriptionPayment[]
 }
 
 enum TransactionType {
@@ -307,9 +308,10 @@ model AppListing {
   // same flat rate.
   monthlySubscriptionPriceUsd Int @default(20)
 
-  skills        AppListingSkill[]
-  installs      AppInstall[]
-  subscriptions SkillSubscription[]
+  skills              AppListingSkill[]
+  installs            AppInstall[]
+  subscriptions       SkillSubscription[]
+  subscriptionPayments SkillSubscriptionPayment[]
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -339,6 +341,26 @@ model SkillSubscription {
 
   @@unique([userId, appId])
   @@index([appId])
+}
+
+// Append-only payment log behind SkillSubscription -- one row per
+// subscribe/renew call (POST /api/apps/[id]/subscribe), never updated or
+// deleted. SkillSubscription itself only holds current state (one row per
+// owner+app), so this is the only place a creator's earnings/subscriber
+// trend over time (GET /api/apps/[id]/history) can be computed from.
+model SkillSubscriptionPayment {
+  id     String     @id @default(cuid())
+  userId String
+  user   User       @relation(fields: [userId], references: [id], onDelete: Cascade)
+  appId  String
+  app    AppListing @relation(fields: [appId], references: [id], onDelete: Cascade)
+
+  amountUsd Int
+  months    Int
+
+  createdAt DateTime @default(now())
+
+  @@index([appId, createdAt])
 }
 
 // One user's install of a published app. Unique per (app, user) so the

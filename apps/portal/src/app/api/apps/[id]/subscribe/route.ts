@@ -102,6 +102,12 @@ export async function POST(request: Request, { params }: { params: Promise<{ id:
       where: { id: appId },
       data: { earnings: { increment: totalCost } },
     }),
+    // Append-only log behind the earnings/subscriber trend on the creator's
+    // build detail page (GET /api/apps/[id]/history) -- SkillSubscription
+    // only holds current state, so this is the only per-payment record.
+    prisma.skillSubscriptionPayment.create({
+      data: { userId, appId, amountUsd: totalCost, months },
+    }),
   ]);
 
   return NextResponse.json({
