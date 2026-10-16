@@ -106,6 +106,12 @@ export interface AppListing {
   testingEndsAt: string | null;
   earnings: number;
   installCount: number;
+  // Live count of robot owners with a currently-paid subscription to this
+  // app (apps/owner) -- computed from SkillSubscription.subscribedUntil >
+  // now, not a cumulative counter. Drops back down the moment a
+  // subscription lapses and isn't renewed, with no cron needed (resolved
+  // on every read, same pattern as the 7-day testing window above).
+  subscriberCount: number;
   createdAt: string;
   skills: AppListingSkill[];
 }
@@ -127,6 +133,18 @@ export async function fetchAppStore(): Promise<AppStoreListing[]> {
 
 export async function installApp(id: string): Promise<{ installCount: number }> {
   return request<{ installCount: number }>(`/api/apps/${id}/install`, { method: "POST" });
+}
+
+export interface AppHistory {
+  last30: { revenue: number; payments: number };
+  last90: { revenue: number; payments: number };
+  // Last 14 days, oldest first -- one bar in the build detail page's
+  // sparkline per entry.
+  daily: { date: string; revenue: number }[];
+}
+
+export async function fetchAppHistory(id: string): Promise<AppHistory> {
+  return request<AppHistory>(`/api/apps/${id}/history`);
 }
 
 export async function createApp(input: {

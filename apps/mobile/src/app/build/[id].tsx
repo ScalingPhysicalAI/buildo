@@ -1,6 +1,6 @@
 import { router, useLocalSearchParams } from "expo-router";
 import { Check, Clock3, Download, Wallet, X } from "lucide-react-native";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Pressable, ScrollView, StyleSheet, Text, View } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
@@ -11,7 +11,7 @@ import { StatusPill } from "../../components/StatusPill";
 import { Alert } from "../../lib/alert";
 import { formatUSD } from "../../lib/format";
 import { useSkills } from "../../lib/skills-context";
-import type { AppDeployStatus } from "../../lib/skills-api";
+import { fetchAppHistory, type AppDeployStatus, type AppHistory } from "../../lib/skills-api";
 import { colors, fonts, radii, spacing } from "../../theme";
 
 const STATUS_TONE: Record<AppDeployStatus, "neutral" | "success" | "warning" | "error"> = {
@@ -35,8 +35,20 @@ export default function AppDetailScreen() {
   const insets = useSafeAreaInsets();
   const { apps, deployApp } = useSkills();
   const [busy, setBusy] = useState(false);
+  const [history, setHistory] = useState<AppHistory | null>(null);
 
   const app = apps.find((a) => a.id === id);
+
+  useEffect(() => {
+    if (!app || app.status !== "LIVE") return;
+    fetchAppHistory(app.id)
+      .then(setHistory)
+      .catch(() => {
+        // Non-critical -- the live subscriber/earnings stats above still
+        // work without this, so fail quietly rather than blocking the page.
+      });
+  }, [app?.id, app?.status]);
+
   if (!app) return null;
 
   function handleTrainAndDeploy() {
@@ -123,14 +135,14 @@ export default function AppDetailScreen() {
             <Check size={18} color={colors.success} />
             <Text style={styles.liveBannerText}>
               Your app has been successfully deployed to the Buildo App Store. You will earn rewards each time a
-              user installs and uses your app.
+              robot owner subscribes to your app.
             </Text>
           </View>
           <View style={styles.statsRow}>
             <Card style={styles.statCard}>
               <Download size={16} color={colors.sandDark} />
-              <Text style={styles.statValue}>{app.installCount}</Text>
-              <Text style={styles.statLabel}>Used</Text>
+              <Text style={styles.statValue}>{app.subscriberCount}</Text>
+              <Text style={styles.statLabel}>Subscribed</Text>
             </Card>
             <Card style={styles.statCard}>
               <Wallet size={16} color={colors.sandDark} />
@@ -138,6 +150,42 @@ export default function AppDetailScreen() {
               <Text style={styles.statLabel}>Earnings</Text>
             </Card>
           </View>
+
+          {history ? (
+            <Card style={styles.trendCard}>
+              <View style={styles.trendTotalsRow}>
+                <View>
+                  <Text style={styles.trendTotalValue}>{formatUSD(history.last30.revenue)}</Text>
+                  <Text style={styles.trendTotalLabel}>
+                    Last 30 days · {history.last30.payments} payment{history.last30.payments === 1 ? "" : "s"}
+                  </Text>
+                </View>
+                <View>
+                  <Text style={styles.trendTotalValue}>{formatUSD(history.last90.revenue)}</Text>
+                  <Text style={styles.trendTotalLabel}>
+                    Last 90 days · {history.last90.payments} payment{history.last90.payments === 1 ? "" : "s"}
+                  </Text>
+                </View>
+              </View>
+
+              <View style={styles.sparkline}>
+                {(() => {
+                  const max = Math.max(...history.daily.map((d) => d.revenue), 1);
+                  return history.daily.map((d) => (
+                    <View key={d.date} style={styles.sparkBarTrack}>
+                      <View
+                        style={[
+                          styles.sparkBarFill,
+                          { height: `${Math.max((d.revenue / max) * 100, d.revenue > 0 ? 6 : 2)}%` },
+                        ]}
+                      />
+                    </View>
+                  ));
+                })()}
+              </View>
+              <Text style={styles.trendCaption}>Daily revenue, last 14 days</Text>
+            </Card>
+          ) : null}
         </>
       ) : null}
     </ScrollView>
@@ -267,5 +315,50 @@ const styles = StyleSheet.create({
     letterSpacing: 0.4,
     textTransform: "uppercase",
     color: colors.textMuted,
+  },
+  trendCard: {
+    marginTop: spacing.sm,
+  },
+  trendTotalsRow: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    marginBottom: spacing.md,
+  },
+  trendTotalValue: {
+    fontFamily: fonts.display,
+    fontSize: 20,
+    color: colors.black,
+  },
+  trendTotalLabel: {
+    fontFamily: fonts.technical,
+    fontSize: 10,
+    letterSpacing: 0.3,
+    color: colors.textMuted,
+    marginTop: 2,
+  },
+  sparkline: {
+    flexDirection: "row",
+    alignItems: "flex-end",
+    gap: 4,
+    height: 56,
+  },
+  sparkBarTrack: {
+    flex: 1,
+    height: "100%",
+    justifyContent: "flex-end",
+  },
+  sparkBarFill: {
+    width: "100%",
+    minHeight: 2,
+    borderRadius: 3,
+    backgroundColor: colors.sand,
+  },
+  trendCaption: {
+    fontFamily: fonts.technical,
+    fontSize: 10,
+    letterSpacing: 0.3,
+    color: colors.textMuted,
+    textAlign: "center",
+    marginTop: spacing.xs,
   },
 });
