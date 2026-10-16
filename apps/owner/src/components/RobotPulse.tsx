@@ -1,9 +1,11 @@
 import { useEffect, useRef } from "react";
 import { Animated, Easing, Image, StyleSheet, View, type ImageSourcePropType } from "react-native";
 
-const ROBOT_FRONT = require("../../assets/robot-front.png") as ImageSourcePropType;
-// Source renders are 407x592 -- keep real device proportions at any size.
-const ROBOT_ASPECT = 407 / 592;
+const ROBOT_FRONT = require("../../assets/robot-colored.png") as ImageSourcePropType;
+// Source render (cropped from robot_colored_render.jpeg, background removed,
+// framed to upper body only -- including the full reach of the forward
+// hand) is 513x680 -- keep real device proportions at any size.
+const ROBOT_ASPECT = 513 / 680;
 
 // Shared "device" visual -- the real Buildo render with a soft ambient glow
 // and outward scan rings, used anywhere we show the robot as a live,
