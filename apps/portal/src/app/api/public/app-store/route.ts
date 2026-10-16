@@ -24,7 +24,13 @@ export async function GET(request: Request) {
     where: { status: { in: ["TESTING", "LIVE"] } },
     include: {
       user: { select: { name: true } },
-      _count: { select: { installs: true } },
+      _count: {
+        select: {
+          installs: true,
+          // Live count, same rule as /api/apps -- see that route's comment.
+          subscriptions: { where: { subscribedUntil: { gt: new Date() } } },
+        },
+      },
     },
     orderBy: { publishedAt: "desc" },
   });
@@ -48,6 +54,7 @@ export async function GET(request: Request) {
       category: app.category,
       iconUrl: app.iconUrl,
       installCount: app._count.installs,
+      subscriberCount: app._count.subscriptions,
       creatorName: app.user.name,
       publishedAt: app.publishedAt,
       monthlyPriceUsd: app.monthlySubscriptionPriceUsd,
