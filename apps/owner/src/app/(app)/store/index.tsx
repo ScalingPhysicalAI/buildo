@@ -1,12 +1,19 @@
 import { router } from "expo-router";
-import { Bot, ChevronRight, Download, Lock } from "lucide-react-native";
+import { AlertTriangle, Bot, ChevronRight, Download, Lock } from "lucide-react-native";
 import { useCallback, useEffect, useState } from "react";
 import { ActivityIndicator, Pressable, ScrollView, StyleSheet, Text, View } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 import { Card } from "../../../components/Card";
 import { Button } from "../../../components/Button";
-import { fetchAppStore, isRentActive, type StoreApp } from "../../../lib/api";
+import {
+  daysUntil,
+  EXPIRY_WARNING_DAYS,
+  fetchAppStore,
+  isRentActive,
+  isSkillSubscriptionActive,
+  type StoreApp,
+} from "../../../lib/api";
 import { useAuth } from "../../../lib/auth-context";
 import { colors, fonts, radii, spacing } from "../../../theme";
 
@@ -65,6 +72,25 @@ export default function StoreScreen() {
       <Text style={styles.title}>App store</Text>
       <Text style={styles.subtitle}>Apps built by Buildo creators -- install them straight to your robot.</Text>
 
+      {(() => {
+        const expiringSoon = (apps ?? []).filter((a) => {
+          if (!isSkillSubscriptionActive(a)) return false;
+          const left = daysUntil(a.mySubscribedUntil);
+          return left !== null && left <= EXPIRY_WARNING_DAYS;
+        });
+        if (expiringSoon.length === 0) return null;
+        return (
+          <Card style={styles.warningCard}>
+            <AlertTriangle size={18} color={colors.error} />
+            <Text style={styles.warningText}>
+              {expiringSoon.length === 1
+                ? `"${expiringSoon[0].name}" renews soon -- open it to renew early.`
+                : `${expiringSoon.length} subscribed skills renew soon -- open each to renew early.`}
+            </Text>
+          </Card>
+        );
+      })()}
+
       {error ? (
         <View style={styles.centerBox}>
           <Text style={styles.errorText}>{error}</Text>
@@ -90,7 +116,7 @@ export default function StoreScreen() {
                 </Text>
                 <View style={styles.installRow}>
                   <Download size={12} color={colors.textMuted} />
-                  <Text style={styles.installCount}>{app.installCount} installs</Text>
+                  <Text style={styles.installCount}>{app.subscriberCount} subscribed</Text>
                 </View>
               </View>
               <View style={styles.priceCol}>
@@ -150,6 +176,21 @@ const styles = StyleSheet.create({
     marginTop: spacing.sm,
     lineHeight: 20,
     paddingHorizontal: spacing.md,
+  },
+  warningCard: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: spacing.sm,
+    borderColor: colors.error,
+    borderWidth: 1,
+    marginBottom: spacing.lg,
+  },
+  warningText: {
+    flex: 1,
+    fontFamily: fonts.bodyMedium,
+    fontSize: 13,
+    color: colors.textPrimary,
+    lineHeight: 18,
   },
   errorText: {
     fontFamily: fonts.body,

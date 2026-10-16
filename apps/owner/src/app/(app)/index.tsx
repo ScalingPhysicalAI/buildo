@@ -1,8 +1,11 @@
-import { LogOut } from "lucide-react-native";
+import { router } from "expo-router";
+import { AlertTriangle, LogOut } from "lucide-react-native";
 import { Pressable, ScrollView, StyleSheet, Text, View } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
+import { Card } from "../../components/Card";
 import { RobotHeroCard } from "../../components/RobotHeroCard";
+import { daysUntil, EXPIRY_WARNING_DAYS, isRentActive } from "../../lib/api";
 import { useAuth } from "../../lib/auth-context";
 import { useRobot } from "../../lib/robot-context";
 import { colors, fonts, radii, spacing } from "../../theme";
@@ -12,6 +15,11 @@ export default function HomeScreen() {
   const { user, logout } = useAuth();
   const { robotName } = useRobot();
   const firstName = user?.name?.split(" ")[0] ?? "there";
+
+  const hasPlan = !!user?.monthlyRentUsd;
+  const rentActive = isRentActive(user);
+  const rentDaysLeft = daysUntil(user?.rentPaidUntil);
+  const showRentWarning = hasPlan && (!rentActive || (rentDaysLeft !== null && rentDaysLeft <= EXPIRY_WARNING_DAYS));
 
   return (
     <ScrollView
@@ -27,6 +35,19 @@ export default function HomeScreen() {
           <LogOut size={18} color={colors.textMuted} />
         </Pressable>
       </View>
+
+      {showRentWarning ? (
+        <Pressable onPress={() => router.push("/settings/wallet")}>
+          <Card style={styles.warningCard}>
+            <AlertTriangle size={18} color={colors.error} />
+            <Text style={styles.warningText}>
+              {!rentActive
+                ? "Robot rent is overdue -- pay now to restore your store and skills."
+                : `Robot rent renews in ${rentDaysLeft} day${rentDaysLeft === 1 ? "" : "s"} -- tap to renew early.`}
+            </Text>
+          </Card>
+        </Pressable>
+      ) : null}
 
       <RobotHeroCard />
     </ScrollView>
@@ -65,5 +86,19 @@ const styles = StyleSheet.create({
     backgroundColor: colors.surface,
     borderWidth: 1,
     borderColor: colors.border,
+  },
+  warningCard: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: spacing.sm,
+    borderColor: colors.error,
+    borderWidth: 1,
+  },
+  warningText: {
+    flex: 1,
+    fontFamily: fonts.bodyMedium,
+    fontSize: 13,
+    color: colors.textPrimary,
+    lineHeight: 18,
   },
 });

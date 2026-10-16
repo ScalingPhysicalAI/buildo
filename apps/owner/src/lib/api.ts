@@ -61,6 +61,18 @@ export function isRentActive(user: SafeUser | null): boolean {
   return !!user?.rentPaidUntil && new Date(user.rentPaidUntil).getTime() > Date.now();
 }
 
+// Shared threshold for "renews soon" banners (Home, Store) -- both rent and
+// skill subscriptions warn inside this window rather than only after they've
+// already lapsed.
+export const EXPIRY_WARNING_DAYS = 5;
+
+// Whole days until `dateStr`, rounded up (so "expires in a few hours" still
+// reads as 1 day, not 0). null if there's no date to compare.
+export function daysUntil(dateStr: string | null | undefined): number | null {
+  if (!dateStr) return null;
+  return Math.ceil((new Date(dateStr).getTime() - Date.now()) / 86_400_000);
+}
+
 export type RentTermMonths = 3 | 6 | 12;
 
 export class ApiError extends Error {
@@ -161,6 +173,12 @@ export interface StoreApp {
   category: AppCategory;
   iconUrl: string | null;
   installCount: number;
+  // Live count of currently-paid subscribers across all robot owners
+  // (SkillSubscription.subscribedUntil > now) -- what the Store shows as
+  // "Subscribed". Not cumulative: it drops the moment a subscription lapses
+  // and isn't renewed, same number the app's creator sees on their own
+  // build detail page in apps/mobile.
+  subscriberCount: number;
   creatorName: string;
   publishedAt: string | null;
   monthlyPriceUsd: number;

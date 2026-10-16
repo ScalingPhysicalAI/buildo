@@ -11,7 +11,7 @@ import { TextField } from "../../components/TextField";
 import { useRobot, type ConnectionMethod } from "../../lib/robot-context";
 import { colors, fonts, radii, spacing } from "../../theme";
 
-const ROBOT_PAIRED = require("../../../assets/robot-angle-2.png") as ImageSourcePropType;
+const ROBOT_PAIRED = require("../../../assets/robot-colored.png") as ImageSourcePropType;
 
 const PAIRING_STEPS = ["Searching for your Buildo...", "Establishing secure link...", "Finalizing connection..."];
 

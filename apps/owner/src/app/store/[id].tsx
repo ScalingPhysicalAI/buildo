@@ -1,7 +1,7 @@
 import { router, useLocalSearchParams } from "expo-router";
 import { Bot, Check, Download, Lock, X } from "lucide-react-native";
 import { useEffect, useState } from "react";
-import { ActivityIndicator, Pressable, ScrollView, StyleSheet, Text, View } from "react-native";
+import { ActivityIndicator, Alert, Pressable, ScrollView, StyleSheet, Text, View } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 import { Button } from "../../components/Button";
@@ -18,6 +18,11 @@ const CATEGORY_LABEL: Record<StoreApp["category"], string> = {
   WAREHOUSE: "Warehouses",
   HOSPITAL: "Hospitals",
 };
+
+// No bulk discount for longer terms (unlike robot rent) -- just
+// monthlyPriceUsd * months, charged upfront, same as a single month.
+const SKILL_TERMS = [1, 3, 6, 12] as const;
+type SkillTermMonths = (typeof SKILL_TERMS)[number];
 
 function closeOrGoStore() {
   if (router.canGoBack()) {
@@ -41,6 +46,7 @@ export default function AppDetailScreen() {
   const [installing, setInstalling] = useState(false);
   const [subscribing, setSubscribing] = useState(false);
   const [subscribeError, setSubscribeError] = useState<string | null>(null);
+  const [subscribeMonths, setSubscribeMonths] = useState<SkillTermMonths>(1);
 
   // A dev reload (or Expo Go replaying its last-opened URL) can land directly
   // on this modal with no navigation history beneath it. It was never meant
@@ -74,19 +80,33 @@ export default function AppDetailScreen() {
     }
   }
 
-  async function handleSubscribe() {
+  function handleSubscribe() {
     if (!app || !rentActive) return;
+    const months = subscribeMonths;
+    const totalCost = app.monthlyPriceUsd * months;
     setSubscribeError(null);
-    setSubscribing(true);
-    try {
-      const result = await subscribeToSkill(app.id, 1);
-      setApp((prev) => (prev ? { ...prev, mySubscribedUntil: result.subscribedUntil } : prev));
-      await refresh();
-    } catch (err) {
-      setSubscribeError(err instanceof Error ? err.message : "Couldn't subscribe right now");
-    } finally {
-      setSubscribing(false);
-    }
+    Alert.alert(
+      isInstalled ? "Renew subscription?" : "Subscribe?",
+      `$${totalCost} will be deducted from your wallet balance for ${months} month${months === 1 ? "" : "s"}.`,
+      [
+        { text: "Cancel", style: "cancel" },
+        {
+          text: "Confirm",
+          onPress: async () => {
+            setSubscribing(true);
+            try {
+              const result = await subscribeToSkill(app.id, months);
+              setApp((prev) => (prev ? { ...prev, mySubscribedUntil: result.subscribedUntil } : prev));
+              await refresh();
+            } catch (err) {
+              setSubscribeError(err instanceof Error ? err.message : "Couldn't subscribe right now");
+            } finally {
+              setSubscribing(false);
+            }
+          },
+        },
+      ]
+    );
   }
 
   return (
@@ -114,7 +134,7 @@ export default function AppDetailScreen() {
           </Text>
           <View style={styles.installRow}>
             <Download size={13} color={colors.textMuted} />
-            <Text style={styles.installCount}>{app.installCount} installs</Text>
+            <Text style={styles.installCount}>{app.subscriberCount} subscribed</Text>
           </View>
 
           <Text style={styles.priceTag}>${app.monthlyPriceUsd}/mo subscription</Text>
@@ -153,9 +173,23 @@ export default function AppDetailScreen() {
                   </View>
                 </Card>
               ) : null}
+              <View style={styles.termRow}>
+                {SKILL_TERMS.map((months) => (
+                  <Pressable
+                    key={months}
+                    onPress={() => setSubscribeMonths(months)}
+                    style={[styles.termChip, subscribeMonths === months && styles.termChipActive]}
+                  >
+                    <Text style={[styles.termChipText, subscribeMonths === months && styles.termChipTextActive]}>
+                      {months}mo
+                    </Text>
+                  </Pressable>
+                ))}
+              </View>
+
               {subscribeError ? <Text style={styles.subscribeErrorText}>{subscribeError}</Text> : null}
               <Button
-                label={isInstalled ? `Renew subscription -- $${app.monthlyPriceUsd}/mo` : `Subscribe -- $${app.monthlyPriceUsd}/mo`}
+                label={`${isInstalled ? "Renew" : "Subscribe"} -- $${app.monthlyPriceUsd * subscribeMonths} total`}
                 onPress={handleSubscribe}
                 loading={subscribing}
                 style={{ marginTop: spacing.md }}
@@ -287,5 +321,31 @@ const styles = StyleSheet.create({
     fontSize: 13,
     color: colors.error,
     marginTop: spacing.md,
+  },
+  termRow: {
+    flexDirection: "row",
+    gap: spacing.sm,
+    marginTop: spacing.lg,
+  },
+  termChip: {
+    flex: 1,
+    alignItems: "center",
+    paddingVertical: 10,
+    borderRadius: radii.pill,
+    backgroundColor: colors.surface,
+    borderWidth: 1,
+    borderColor: colors.border,
+  },
+  termChipActive: {
+    backgroundColor: colors.skin,
+    borderColor: colors.skinBorder,
+  },
+  termChipText: {
+    fontFamily: fonts.bodyMedium,
+    fontSize: 13,
+    color: colors.textMuted,
+  },
+  termChipTextActive: {
+    color: colors.black,
   },
 });
