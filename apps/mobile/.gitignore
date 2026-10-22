@@ -48,3 +48,8 @@ modules/*/android/local.properties
 
 # hardware/internal spec docs shared out-of-band -- not meant to live in the repo
 *.pdf
+/EPISODES.md
+/PROTOCOL_GLASSES.md
+/PROTOCOL_GLOVE.md
+/ble_client.py
+/laptop_client.py

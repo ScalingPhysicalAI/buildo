@@ -49,7 +49,17 @@
         {
           "photosPermission": "Allow Buildo Creators to access your photos so you can upload a government ID for identity verification."
         }
-      ]
+      ],
+      "react-native-wifi-reborn",
+      [
+        "expo-build-properties",
+        {
+          "android": {
+            "usesCleartextTraffic": true
+          }
+        }
+      ],
+      "expo-video"
     ],
     "android": {
       "package": "com.starforgerobotics.buildotrainer",
@@ -63,6 +73,7 @@
         "CHANGE_WIFI_STATE",
         "ACCESS_WIFI_STATE",
         "ACCESS_FINE_LOCATION",
+        "android.permission.NEARBY_WIFI_DEVICES",
         "android.permission.BLUETOOTH",
         "android.permission.BLUETOOTH_ADMIN",
         "android.permission.BLUETOOTH_CONNECT",

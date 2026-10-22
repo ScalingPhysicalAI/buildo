@@ -1,0 +1,70 @@
+diff --git a/android/src/main/java/com/asterinet/react/tcpsocket/TcpSocketModule.java b/android/src/main/java/com/asterinet/react/tcpsocket/TcpSocketModule.java
+index 121edb47dbecb4ca2a044722b2ad5a71d50c1fa7..1a5f5a63aa562318622ff5da12d7d848f5199c1a 100644
+--- a/android/src/main/java/com/asterinet/react/tcpsocket/TcpSocketModule.java
++++ b/android/src/main/java/com/asterinet/react/tcpsocket/TcpSocketModule.java
+@@ -128,9 +128,22 @@ public class TcpSocketModule extends ReactContextBaseJavaModule {
+     @SuppressWarnings("unused")
+     @ReactMethod
+     public void write(final int cId, @NonNull final String base64String, final int msgId) {
+-        TcpSocketClient socketClient = getTcpClient(cId);
+-        byte[] data = Base64.decode(base64String, Base64.NO_WRAP);
+-        socketClient.write(msgId, data);
++        // Patched (buildo): same "socket already gone" race as end()/close()
++        // above, but unlike those two this one must not fail silently --
++        // JS has no other way to learn that a write it thinks succeeded
++        // (write() returns void, no Promise) was actually dropped, which
++        // otherwise looks exactly like "the board never acked" with zero
++        // diagnostic trail. Routing it through the normal onError(cId, ...)
++        // path fires this same socket's own JS "error" event instead, same
++        // as any other socket error.
++        try {
++            TcpSocketClient socketClient = getTcpClient(cId);
++            byte[] data = Base64.decode(base64String, Base64.NO_WRAP);
++            socketClient.write(msgId, data);
++        } catch (IllegalArgumentException e) {
++            android.util.Log.w("TcpSocketModule", "write(" + cId + "): socket already gone", e);
++            tcpEvtListener.onError(cId, e);
++        }
+     }
+ 
+     @SuppressLint("StaticFieldLeak")
+@@ -140,8 +153,19 @@ public class TcpSocketModule extends ReactContextBaseJavaModule {
+         executorService.execute(new Runnable() {
+             @Override
+             public void run() {
+-                TcpSocketClient socketClient = getTcpClient(cId);
+-                socketClient.destroy();
++                // Patched (buildo): this runs on a bare ExecutorService thread
++                // with no Promise/JS boundary to carry a rejection back --
++                // an uncaught exception here crashes the whole app, not just
++                // this call. A socket id that's already gone (e.g. the peer
++                // reconnected and some other path already tore it down) is a
++                // normal race for a long-lived server, not a bug worth
++                // crashing over, so it's logged and ignored instead.
++                try {
++                    TcpSocketClient socketClient = getTcpClient(cId);
++                    socketClient.destroy();
++                } catch (IllegalArgumentException e) {
++                    android.util.Log.w("TcpSocketModule", "end(" + cId + "): socket already gone, ignoring", e);
++                }
+             }
+         });
+     }
+@@ -158,9 +182,14 @@ public class TcpSocketModule extends ReactContextBaseJavaModule {
+         executorService.execute(new Runnable() {
+             @Override
+             public void run() {
+-                TcpSocketServer socketServer = getTcpServer(cId);
+-                socketServer.close();
+-                socketMap.remove(cId);
++                // Patched (buildo): same reasoning as end() above.
++                try {
++                    TcpSocketServer socketServer = getTcpServer(cId);
++                    socketServer.close();
++                    socketMap.remove(cId);
++                } catch (IllegalArgumentException e) {
++                    android.util.Log.w("TcpSocketModule", "close(" + cId + "): socket already gone, ignoring", e);
++                }
+             }
+         });
+     }
