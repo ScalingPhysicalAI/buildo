@@ -53,6 +53,7 @@ export default function AppLayout() {
         options={{ title: "Apps", tabBarIcon: ({ color, size }) => <AppWindow color={color} size={size} /> }}
       />
       <Tabs.Screen name="glasses-debug" options={{ href: null }} />
+      <Tabs.Screen name="glasses-stream" options={{ href: null }} />
     </Tabs>
   );
 }
