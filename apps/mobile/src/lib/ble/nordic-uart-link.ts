@@ -1,10 +1,5 @@
-// Shared BLE transport for every Buildo capture board (glasses master,
-// glove). Both boards expose the same Nordic UART Service and the same
-// wire convention -- one JSON object + "\n" per message, in both
-// directions, chunked across notify/write packets with no extra framing.
-// See PROTOCOL_GLASSES.md "BLE: setup and Wi-Fi state" and
-// PROTOCOL_GLOVE.md §2. These UUIDs are the real ones from both specs, not
-// placeholders.
+// Shared BLE transport for every Buildo capture board -- one JSON object +
+// "\n" per message, in both directions, over the Nordic UART Service.
 import { PermissionsAndroid, Platform } from "react-native";
 import { BleError, BleManager, type Device, type Subscription } from "react-native-ble-plx";
 
@@ -67,10 +62,7 @@ export class DeviceNotFoundError extends Error {
   }
 }
 
-// Same recognition rule ble_client.py uses for "is this one of the Niclas":
-// name starts with "Glasses-" (covers both Glasses-L and Glasses-R). Shared
-// here so both the Debug screen's device list and the Gadgets screen's own
-// scan dropdown sort/flag candidates the exact same way.
+// Name starts with "Glasses-" -- covers both Glasses-L and Glasses-R.
 export function isLikelyGlasses(device: Device): boolean {
   const name = device.name ?? device.localName ?? "";
   return name.startsWith("Glasses-");
@@ -88,10 +80,8 @@ export async function requestBlePermissions(): Promise<boolean> {
   return Object.values(results).every((result) => result === PermissionsAndroid.RESULTS.GRANTED);
 }
 
-// One board's BLE connection: scan by exact advertised name, connect,
-// subscribe to TX, and expose a simple send()/onMessage() pair over the
-// JSON-lines protocol. No per-board command knowledge lives here -- that's
-// glasses-link.ts / a future glove-link.ts, built on top of this.
+// One board's BLE connection: scan, connect, and a simple send()/onMessage()
+// pair over the JSON-lines protocol. No per-board command knowledge here.
 export class NordicUartLink {
   private manager: BleManager;
   private device: Device | null = null;
@@ -105,14 +95,8 @@ export class NordicUartLink {
     this.manager = manager ?? new BleManager();
   }
 
-  // Unfiltered scan -- lists every nearby BLE device, the same way a
-  // generic scanner (nRF Connect, etc.) does. Prefer this over
-  // connectByName() when the board doesn't show up there: many boards only
-  // expose their GATT service UUID *after* a connection, not inside the
-  // advertisement packet itself, which makes them invisible to a
-  // service-filtered scan like connectByName()'s even though they're right
-  // there. Calls `onDevice` for every advertisement seen (including repeats
-  // -- dedup by `id` is the caller's job); call stopScan() to end it.
+  // Unfiltered scan, lists every nearby device. Calls `onDevice` per
+  // advertisement (dedup by `id` is the caller's job); stopScan() ends it.
   async startScan(onDevice: (device: Device) => void): Promise<void> {
     const granted = await requestBlePermissions();
     if (!granted) throw new BlePermissionDeniedError();
@@ -126,21 +110,13 @@ export class NordicUartLink {
     this.manager.stopDeviceScan();
   }
 
-  // Connects to an already-discovered Device (e.g. one picked by hand from
-  // startScan()'s results) and subscribes to its TX characteristic. Throws
-  // if the device doesn't actually expose the Nordic UART Service -- a
-  // real possibility once you're picking from an unfiltered list instead of
-  // one pre-matched by name.
+  // Connects to an already-discovered Device and subscribes to its TX
+  // characteristic. Throws if it doesn't expose the Nordic UART Service.
   async connectToDevice(device: Device): Promise<void> {
     let connected = await device.connect();
     await connected.discoverAllServicesAndCharacteristics();
 
-    // 247 is Nordic's own recommended MTU for an nRF-based board (this is a
-    // Nordic UART Service), giving ~244 usable bytes/packet instead of the
-    // BLE default 23. Android-only -- iOS negotiates its own and this is a
-    // no-op there, which is fine: send() below chunks to whatever
-    // device.mtu actually ends up being either way, same as the reference
-    // Python client (ble_client.py) does.
+    // 247 is Nordic's recommended MTU, Android-only -- iOS negotiates its own.
     try {
       connected = await connected.requestMTU(247);
     } catch {
@@ -150,12 +126,7 @@ export class NordicUartLink {
     this.device = connected;
     this.intentionalDisconnect = false;
 
-    // Fires for ANY disconnect -- range loss, the board power-cycling, the
-    // board switching Wi-Fi on/off (which doesn't touch an already-connected
-    // phone per PROTOCOL_GLASSES.md, but a real drop is still possible) --
-    // not just ones we asked for. disconnect() below sets the flag first so
-    // an intentional one doesn't also look like a connection we need to
-    // recover from.
+    // Fires for ANY disconnect -- intentionalDisconnect distinguishes ours.
     connected.onDisconnected(() => {
       this.device = null;
       this.notifySub?.remove();
@@ -197,13 +168,7 @@ export class NordicUartLink {
       };
       const timer = setTimeout(() => finish(() => reject(new DeviceNotFoundError(name))), timeoutMs);
 
-      // Unfiltered, matched by name in code -- NOT filtered by service UUID.
-      // This board doesn't advertise its GATT service UUID in the
-      // advertisement packet (see startScan()'s own comment above), which
-      // made a service-UUID-filtered scan simply never find it. Confirmed
-      // directly: the Advanced section's manual "scan nearby, tap the
-      // device" flow already does an unfiltered scan and connects reliably
-      // every time, while this filtered one was the one actually failing.
+      // Unfiltered scan, matched by name in code, not by service UUID.
       this.manager.startDeviceScan(null, null, (error, device) => {
         if (error) {
           finish(() => reject(error));
@@ -244,13 +209,8 @@ export class NordicUartLink {
     return () => this.disconnectListeners.delete(listener);
   }
 
-  // Chunks to the negotiated MTU, matching the reference Python client
-  // (ble_client.py: `size = max(20, (c.mtu_size or 23) - 3)`). The default
-  // BLE MTU is only 23 bytes -- a single unchunked write of a `wifi`
-  // command (ssid+key) is already bigger than that, so without this a
-  // write can silently truncate or fail depending on the BLE stack. Splits
-  // at the raw byte level (never mid-UTF8-character), same as the receive
-  // side already reassembles chunks before decoding.
+  // Chunks to the negotiated MTU (default 23 is too small for a `wifi`
+  // command) at the raw byte level, never mid-UTF8-character.
   async send(payload: Record<string, unknown>): Promise<void> {
     if (!this.device) throw new Error("NordicUartLink: not connected");
     const bytes = new TextEncoder().encode(`${JSON.stringify(payload)}\n`);

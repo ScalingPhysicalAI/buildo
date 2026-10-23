@@ -1,34 +1,16 @@
-// Pairing/connection state for the capture glasses and haptic gloves.
-//
-// Glasses are real now: backed by one app-wide GlassesSession (same class
-// the Debug screen uses, unmodified), created once here and shared via
-// context so both the Gadgets/pair screen and a skill's recording screen
-// talk to the exact same live connection -- BLE connected on the Gadgets
-// tab stays connected when you navigate to Skills, exactly like the Debug
-// screen's own flow. `glasses`/`glasses_battery` are real, mapped from the
-// session's own state/status; `connectGlasses`/`disconnect("glasses")` are
-// thin wrappers around the session's existing connect/disconnect methods.
-// `glassesSession` is also exposed directly so a recording screen can call
-// startRecording()/stopRecording() and listen to hello/status/peer/frame
-// the same way the Debug screen does.
-//
-// Gloves have no real hardware/implementation yet -- unchanged, still a
-// timed simulation.
-
+// Pairing/connection state for the capture glasses and haptic gloves. The
+// one app-wide GlassesSession lives here, shared via context so every
+// screen talks to the exact same live connection. Gloves have no real
+// hardware yet -- still a timed simulation.
 import { createContext, useContext, useEffect, useRef, useState, type ReactNode } from "react";
 
 import { GlassesSession, type SessionState } from "./glasses/glasses-session";
 
 export type ConnectionStatus = "disconnected" | "connecting" | "connected";
 
-// Collapses GlassesSession's more detailed state machine down to the
-// simple 3-value status the rest of the app already understands. Deliberate
-// choice: "starting_wifi" / "recording" / "stopping" all map to "connected"
-// here, not just "ble_ready" -- from this screen's point of view the glasses
-// are still "connected to the app" throughout the whole Wi-Fi handoff, even
-// though the radio hops between BLE and Wi-Fi underneath. That's exactly
-// what keeps a skill's recording screen from showing a spurious "glasses
-// disconnected" the instant a recording starts.
+// Collapses GlassesSession's state machine to the 3-value status the rest
+// of the app understands -- "starting_wifi"/"recording"/"stopping" all
+// still read as "connected", not just "ble_ready".
 function toConnectionStatus(state: SessionState): ConnectionStatus {
   switch (state) {
     case "connecting_ble":
@@ -48,9 +30,6 @@ function toConnectionStatus(state: SessionState): ConnectionStatus {
 interface DeviceState {
   glasses: ConnectionStatus;
   glasses_battery: number | null;
-  // Set when the last connect attempt failed, cleared on the next attempt
-  // or once connected -- lets the Gadgets screen show *why* it's still
-  // disconnected instead of just silently sitting there.
   glasses_error: string | null;
   gloves: ConnectionStatus;
   gloves_battery: number | null;
@@ -63,8 +42,6 @@ interface DeviceState {
 const DeviceContext = createContext<DeviceState | null>(null);
 
 export function DeviceProvider({ children }: { children: ReactNode }) {
-  // Lazy useState initializer, not a ref mutated during render -- this is
-  // the one the Rules of Hooks actually sanctions for "create exactly once."
   const [glassesSession] = useState(() => new GlassesSession());
 
   const [glasses, setGlasses] = useState<ConnectionStatus>("disconnected");
@@ -72,11 +49,7 @@ export function DeviceProvider({ children }: { children: ReactNode }) {
   const [glassesError, setGlassesError] = useState<string | null>(null);
 
   useEffect(() => {
-    // Starts the TCP listeners only -- no auto BLE connect, same as the
-    // Debug screen (see glasses-session.ts's own constructor comment for
-    // why that's deliberate). The app-wide session persists for the whole
-    // app lifetime; this effect's cleanup only runs if DeviceProvider
-    // itself unmounts, which in practice means the app is closing.
+    // Starts the TCP listeners only -- no auto BLE connect.
     const session = glassesSession;
     session.start();
 

@@ -7,7 +7,7 @@ import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { Card } from "../../components/Card";
 import { GadgetsBanner } from "../../components/GadgetsBanner";
 import { Logo } from "../../components/Logo";
-import { ReferralBanner } from "../../components/ReferralBanner";
+// import { ReferralBanner } from "../../components/ReferralBanner";
 import { TrainBanner } from "../../components/TrainBanner";
 import { useAuth } from "../../lib/auth-context";
 import { formatUSD } from "../../lib/format";
@@ -62,7 +62,7 @@ export default function HomeScreen() {
         <Text style={styles.creditValue}>{formatUSD(user?.tokenBalance ?? 0)}</Text>
       </Card>
 
-      <ReferralBanner />
+      {/* <ReferralBanner /> */}
       <TrainBanner />
       {hasGadgetOrder ? null : <GadgetsBanner />}
     </ScrollView>

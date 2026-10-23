@@ -1,10 +1,5 @@
-// Developer screen for the real glasses connection, built around the actual
-// product flow (not a pile of manual steps): BLE is the default, always-on
-// connection; starting a recording brings Wi-Fi up (phone hotspot, fixed
-// credentials) just for the episode; stopping a recording drops the hotspot
-// and the board falls back to BLE on its own. See glasses-session.ts for the
-// state machine this screen drives. Built against PROTOCOL_GLASSES.md /
-// EPISODES.md. Reached from the Gadgets tab's "Debug" card (pair.tsx).
+// Developer screen for the real glasses connection -- BLE stays on always;
+// recording brings Wi-Fi up for the episode and drops it on stop.
 import { useCallback, useEffect, useRef, useState } from "react";
 import { Pressable, ScrollView, StyleSheet, Text, TextInput, View } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
@@ -25,32 +20,14 @@ import { colors, fonts, radii, spacing } from "../../theme";
 
 const SCAN_DURATION_MS = 15000;
 
-// Live video is GlassesVideoPanel (src/components/GlassesVideoPanel.tsx) --
-// extracted out of this screen so the real app's Skills recording screen can
-// use the exact same, already-verified rendering path instead of a second
-// copy. No behavior change here, just moved.
-
 export default function GlassesDebugScreen() {
   const insets = useSafeAreaInsets();
-  // Shares the one app-wide GlassesSession from DeviceProvider instead of
-  // constructing a private one here. This screen used to call `new
-  // GlassesSession()` and start its own TCP command/data servers on top of
-  // the ones DeviceProvider already has listening on 5010/5005 -- both binds
-  // silently succeed (createServer uses reuseAddress), so there was no error
-  // anywhere, but whichever listener the OS actually handed an incoming
-  // connection to was arbitrary. That's exactly why recordings kept timing
-  // out waiting for "hello" even when the board's own logs confirmed it
-  // connected and sent one: the connection could land on this screen's
-  // then-orphaned server instead of the one DeviceProvider's session (which
-  // Gadgets/Skills actually watch) was listening on. One shared instance
-  // means one TCP server per port, period.
+  // Shares the one app-wide GlassesSession from DeviceProvider -- don't
+  // construct a second one here, it'll double-bind the TCP servers.
   const devices = useDevices();
   const session = devices.glassesSession;
 
-  // Lazy initializers, not a value set inside the listener effect below --
-  // the session may already be past "idle" (e.g. BLE connected from the
-  // Gadgets tab before Debug was ever opened), and setting state synchronously
-  // inside an effect body trips react-hooks/set-state-in-effect.
+  // Lazy initializers: the session may already be past "idle".
   const [sessionState, setSessionState] = useState<SessionState>(() => session.state);
   const [episodeName, setEpisodeName] = useState("ep_0001");
   const [hello, setHello] = useState<HelloMessage | null>(null);
@@ -60,10 +37,8 @@ export default function GlassesDebugScreen() {
   const [frameCount, setFrameCount] = useState(0);
   const [commandBusy, setCommandBusy] = useState<string | null>(null);
   const [recordingError, setRecordingError] = useState<string | null>(null);
-  // Tracks the user's own intent (pressed Start, hasn't pressed/finished
-  // Stop yet) independently of the session's internal state machine -- the
-  // Stop button must be pressable immediately on Start, not only once
-  // hotspot/BLE/acks all line up and the state reaches "recording".
+  // User intent, separate from session state -- Stop must be pressable
+  // immediately on Start, not only once the state reaches "recording".
   const [userWantsRecording, setUserWantsRecording] = useState(false);
   const [log, setLog] = useState<string[]>([]);
 
@@ -80,18 +55,11 @@ export default function GlassesDebugScreen() {
   }, []);
 
   useEffect(() => {
-    // Only attaches this screen's own listeners -- `session.start()` and
-    // `session.destroy()` are DeviceProvider's job now, since this is the
-    // one shared, app-wide instance (see the comment above `session` for
-    // why this screen stopped owning its own). Unmounting Debug must not
-    // tear down the connection Gadgets/Skills are also watching.
+    // Only this screen's own listeners -- start()/destroy() belong to
+    // DeviceProvider, since this is the one shared, app-wide session.
     const unsubState = session.on("state", ({ state }) => {
       setSessionState((prev) => {
-        // Clears stale hello/status/video/frame-count data whenever
-        // leaving "recording" for any reason -- including the link
-        // dying unexpectedly, not just a deliberate Stop press -- so
-        // the screen can't keep showing frozen numbers from a
-        // connection that's actually already gone.
+        // Clear stale data when leaving "recording" for any reason.
         if (prev === "recording" && state !== "recording") {
           setHello(null);
           setStatus(null);
@@ -100,9 +68,6 @@ export default function GlassesDebugScreen() {
         }
         return state;
       });
-      // session.gatewayIp is a plain getter, not its own event -- reading
-      // it here (synced with every state transition) instead of from the
-      // ref directly during render, which the rules of hooks disallow.
       setGatewayIp(session.gatewayIp);
     });
     const unsubLog = session.on("log", ({ line }) => pushLog(line));
@@ -127,9 +92,6 @@ export default function GlassesDebugScreen() {
   async function onStartRecording() {
     setRecordingError(null);
     setCommandBusy("start");
-    // Set the instant the button is pressed, not once the session machine
-    // confirms "recording" -- Stop should be pressable right away, not only
-    // after hotspot/BLE/ack timing all lines up first.
     setUserWantsRecording(true);
     try {
       await session.startRecording(episodeName);
