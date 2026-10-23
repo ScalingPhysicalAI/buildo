@@ -228,12 +228,17 @@ model SkillCollectionSession {
 
   status CollectionStatus @default(UPLOADED)
 
-  // Recording storage is not wired to a blob provider yet -- fileName/
-  // durationSec are the client-reported metadata for what it has stored
-  // locally on-device. Swap in a real asset URL here once a storage
-  // provider (e.g. Vercel Blob) is provisioned.
+  // fileName/durationSec are client-reported metadata set when the
+  // collection row is created (before the upload itself starts). videoUrl
+  // is set after the fact, once the phone's zip (glasses JPEG frames + the
+  // frame-metadata NDJSON + episode.json) has actually landed in Vercel
+  // Blob -- see POST /api/skills/collections/upload-url. A row can
+  // legitimately exist with videoUrl still null (upload in progress or
+  // abandoned); the UI should treat that the same as "not uploaded yet".
   fileName    String?
   durationSec Int?
+  videoUrl    String?
+  sizeBytes   Int?
 
   rewardPaid Boolean @default(false)
 
