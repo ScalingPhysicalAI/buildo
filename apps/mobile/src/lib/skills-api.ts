@@ -2,7 +2,7 @@
 // skill-for-pay catalog, the 24h training timer, and the app builder. Same
 // bearer-token request() helper as api.ts.
 
-import { request } from "./api";
+import { request, SERVER_URL } from "./api";
 import type { SafeUser } from "./api";
 
 export type CollectionStatus = "UPLOADED" | "TRAINING" | "TRAINED" | "FAILED";
@@ -27,6 +27,8 @@ export interface SkillCollectionSession {
   status: CollectionStatus;
   fileName: string | null;
   durationSec: number | null;
+  videoUrl: string | null;
+  sizeBytes: number | null;
   rewardPaid: boolean;
   trainStartedAt: string | null;
   trainEndsAt: string | null;
@@ -52,14 +54,20 @@ export async function fetchSkillCollections(): Promise<SkillCollectionSession[]>
 export async function createSkillCollection(
   skillSlug: string,
   fileName?: string,
-  durationSec?: number
+  durationSec?: number,
+  sizeBytes?: number
 ): Promise<SkillCollectionSession> {
   const data = await request<{ collection: SkillCollectionSession }>("/api/skills/collections", {
     method: "POST",
-    body: JSON.stringify({ skillSlug, fileName, durationSec }),
+    body: JSON.stringify({ skillSlug, fileName, durationSec, sizeBytes }),
   });
   return data.collection;
 }
+
+// The route @vercel/blob/client's upload() calls itself to mint a
+// short-lived, path-scoped token and, later, to tell the server an upload
+// finished -- this app never sends the file bytes through its own backend.
+export const EPISODE_UPLOAD_URL = `${SERVER_URL}/api/skills/collections/upload-url`;
 
 export async function startTraining(collectionId: string): Promise<SkillCollectionSession> {
   const data = await request<{ collection: SkillCollectionSession }>(

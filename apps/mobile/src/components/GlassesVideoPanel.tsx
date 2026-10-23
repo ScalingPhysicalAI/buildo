@@ -3,7 +3,7 @@
 import { useEffect, useRef, useState } from "react";
 import { Image, StyleSheet, Text, View, type StyleProp, type ViewStyle } from "react-native";
 
-import { RtspJpegClient } from "../lib/glasses/rtsp-client";
+import { RtspJpegClient, type RtpJpegFrame } from "../lib/glasses/rtsp-client";
 import { colors, fonts, radii, spacing } from "../theme";
 
 // Keeps the last decoded frame visible until the next one finishes decoding
@@ -34,6 +34,7 @@ export function GlassesVideoPanel({
   localPort,
   localAddress,
   onLog,
+  onFrame,
   style,
   hideLabel = false,
 }: {
@@ -42,6 +43,10 @@ export function GlassesVideoPanel({
   localPort: number;
   localAddress: string | null;
   onLog: (line: string) => void;
+  // Fires alongside the panel's own display update, same frame -- lets a
+  // caller (the Skill recording screen) save every frame to disk without
+  // opening a second RTSP connection of its own.
+  onFrame?: (frame: RtpJpegFrame) => void;
   style?: StyleProp<ViewStyle>;
   hideLabel?: boolean;
 }) {
@@ -72,6 +77,7 @@ export function GlassesVideoPanel({
         setState("streaming");
         setFrameCount((c) => c + 1);
         setFrameUri(`data:image/jpeg;base64,${frame.jpeg.toString("base64")}`);
+        onFrame?.(frame);
       },
       (line) => onLog(`${label}: ${line}`)
     );
@@ -87,7 +93,7 @@ export function GlassesVideoPanel({
       client.stop().catch(() => undefined);
       clientRef.current = null;
     };
-  }, [url, label, localPort, localAddress, onLog]);
+  }, [url, label, localPort, localAddress, onLog, onFrame]);
 
   if (!url) return null;
 

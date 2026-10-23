@@ -7,6 +7,7 @@ import {
   ActivityIndicator,
   Animated,
   Easing,
+  Image,
   Pressable,
   ScrollView,
   StyleSheet,
@@ -22,8 +23,11 @@ import { GlassesVideoPanel } from "../../components/GlassesVideoPanel";
 import { Alert } from "../../lib/alert";
 import { useDevices } from "../../lib/device-context";
 import { formatDuration } from "../../lib/format";
+import { deleteLocalFile, EpisodeRecorder } from "../../lib/glasses/episode-storage";
+import { uploadEpisodeZip } from "../../lib/glasses/episode-upload";
 import type { SessionState } from "../../lib/glasses/glasses-session";
-import type { HelloMessage, PeerMessage, StatusMessage } from "../../lib/glasses/protocol";
+import type { FrameMessage, HelloMessage, PeerMessage, StatusMessage } from "../../lib/glasses/protocol";
+import type { RtpJpegFrame } from "../../lib/glasses/rtsp-client";
 import { getDisplayStatus } from "../../lib/skill-status";
 import { useSkills } from "../../lib/skills-context";
 import { colors, fonts, radii, spacing } from "../../theme";
@@ -72,6 +76,9 @@ export default function SkillDetailScreen() {
   const [busy, setBusy] = useState(false);
   const [ring] = useState(() => new Animated.Value(1));
   const episodeRef = useRef<string | null>(null);
+  const recorderRef = useRef<EpisodeRecorder | null>(null);
+  const [previewUris, setPreviewUris] = useState<string[]>([]);
+  const [previewIndex, setPreviewIndex] = useState(0);
 
   const [sessionState, setSessionState] = useState<SessionState>(devices.glassesSession.state);
   const [hello, setHello] = useState<HelloMessage | null>(null);
@@ -83,6 +90,17 @@ export default function SkillDetailScreen() {
     setLogs((prev) => [`${new Date().toLocaleTimeString()}  ${line}`, ...prev].slice(0, 40));
   }, []);
 
+  // Stable identity (recorderRef, not state) -- GlassesVideoPanel's own
+  // RTSP-connect effect re-runs whenever onFrame's identity changes, so a
+  // fresh closure here on every render would restart the video connection
+  // on every frame.
+  const onLeftFrame = useCallback((frame: RtpJpegFrame) => {
+    recorderRef.current?.saveVideoFrame("left", frame.jpeg);
+  }, []);
+  const onRightFrame = useCallback((frame: RtpJpegFrame) => {
+    recorderRef.current?.saveVideoFrame("right", frame.jpeg);
+  }, []);
+
   useEffect(() => {
     if (phase !== "recording") return;
     const session = devices.glassesSession;
@@ -91,14 +109,25 @@ export default function SkillDetailScreen() {
     const unsubHello = session.link.on("hello", setHello);
     const unsubStatus = session.link.on("status", setStatus);
     const unsubPeer = session.link.on("peer", (p: PeerMessage) => setPeerRtsp(p.rtsp));
+    const unsubFrame = session.link.on("frame", (f: FrameMessage) => recorderRef.current?.appendDataFrame(f));
     return () => {
       unsubState();
       unsubLog();
       unsubHello();
       unsubStatus();
       unsubPeer();
+      unsubFrame();
     };
   }, [phase, devices.glassesSession, pushLog]);
+
+  // Flipbook preview of the saved frames, above Delete/Upload -- cycles at
+  // a fixed rate since the saved frames don't carry their own playback
+  // timing (every-2nd-frame, RTSP video timestamps aren't preserved here).
+  useEffect(() => {
+    if (previewUris.length === 0) return;
+    const interval = setInterval(() => setPreviewIndex((i) => (i + 1) % previewUris.length), 180);
+    return () => clearInterval(interval);
+  }, [previewUris]);
 
   const isLive = sessionState === "recording";
 
@@ -141,11 +170,19 @@ export default function SkillDetailScreen() {
     }
     const episodeName = `ep_${entry!.slug}_${Date.now()}`;
     episodeRef.current = episodeName;
+    recorderRef.current = new EpisodeRecorder({
+      episodeName,
+      environment: entry!.category.toLowerCase(),
+      skillSlug: entry!.slug,
+      skillName: entry!.name,
+    });
     setElapsed(0);
     setHello(null);
     setStatus(null);
     setPeerRtsp(null);
     setLogs([]);
+    setPreviewUris([]);
+    setPreviewIndex(0);
     setPhase("recording");
     try {
       await devices.glassesSession.startRecording(episodeName);
@@ -161,20 +198,40 @@ export default function SkillDetailScreen() {
     if (episodeName) {
       devices.glassesSession.stopRecording(episodeName).catch(() => undefined);
     }
+    recorderRef.current?.finish();
+    setPreviewUris(recorderRef.current?.previewFrameUris("left") ?? []);
     setPhase("review");
   }
 
   function handleDiscard() {
+    recorderRef.current?.delete();
+    recorderRef.current = null;
     setPhase("instructions");
   }
 
   async function handleUpload() {
+    const recorder = recorderRef.current;
+    if (!recorder) {
+      Alert.alert("Nothing to upload", "This recording's local data is gone -- record again.");
+      return;
+    }
     setBusy(true);
     try {
-      await recordUpload(entry!.slug, undefined, elapsed);
+      const { file: zipFile, sizeBytes } = recorder.buildZip();
+      // Row created first so the upload has an id to attach to --
+      // videoUrl stays null on it until the blob upload actually lands
+      // (see onUploadCompleted in the upload-url route).
+      const collection = await recordUpload(entry!.slug, `${episodeRef.current}.zip`, elapsed, sizeBytes);
+      await uploadEpisodeZip(zipFile, collection.id, entry!.category, entry!.slug);
+      deleteLocalFile(zipFile);
+      recorder.delete();
+      recorderRef.current = null;
       setPhase("instructions");
     } catch (err) {
-      Alert.alert("Upload failed", err instanceof Error ? err.message : "Try again.");
+      Alert.alert(
+        "Upload failed",
+        err instanceof Error ? err.message : "Try again -- the recording is still saved on your phone."
+      );
     } finally {
       setBusy(false);
     }
@@ -206,10 +263,26 @@ export default function SkillDetailScreen() {
           {leftRtsp || peerRtsp ? (
             <View style={styles.videoBox}>
               <View style={styles.videoSlot}>
-                <GlassesVideoPanel label="Left (master)" url={leftRtsp} localPort={15000} localAddress={devices.glassesSession.gatewayIp} onLog={pushLog} hideLabel />
+                <GlassesVideoPanel
+                  label="Left (master)"
+                  url={leftRtsp}
+                  localPort={15000}
+                  localAddress={devices.glassesSession.gatewayIp}
+                  onLog={pushLog}
+                  onFrame={onLeftFrame}
+                  hideLabel
+                />
               </View>
               <View style={styles.videoSlot}>
-                <GlassesVideoPanel label="Right (slave)" url={peerRtsp} localPort={15010} localAddress={devices.glassesSession.gatewayIp} onLog={pushLog} hideLabel />
+                <GlassesVideoPanel
+                  label="Right (slave)"
+                  url={peerRtsp}
+                  localPort={15010}
+                  localAddress={devices.glassesSession.gatewayIp}
+                  onLog={pushLog}
+                  onFrame={onRightFrame}
+                  hideLabel
+                />
               </View>
             </View>
           ) : (
@@ -308,6 +381,17 @@ export default function SkillDetailScreen() {
           </View>
           <Text style={styles.reviewTitle}>Recording ready</Text>
           <Text style={styles.reviewMeta}>{formatDuration(elapsed)} recorded</Text>
+
+          {previewUris.length > 0 ? (
+            <View style={styles.previewBox}>
+              <Image source={{ uri: previewUris[previewIndex] }} style={StyleSheet.absoluteFill} resizeMode="contain" />
+            </View>
+          ) : (
+            <View style={[styles.previewBox, styles.previewBoxEmpty]}>
+              <Text style={styles.reviewMeta}>No frames were saved for this recording.</Text>
+            </View>
+          )}
+
           <View style={styles.reviewActions}>
             <Button
               label="Delete"
@@ -519,6 +603,18 @@ const styles = StyleSheet.create({
     color: colors.textMuted,
     marginTop: 2,
     marginBottom: spacing.md,
+  },
+  previewBox: {
+    width: "100%",
+    aspectRatio: 1,
+    borderRadius: radii.md,
+    overflow: "hidden",
+    backgroundColor: colors.black,
+    marginBottom: spacing.md,
+  },
+  previewBoxEmpty: {
+    alignItems: "center",
+    justifyContent: "center",
   },
   reviewActions: {
     flexDirection: "row",

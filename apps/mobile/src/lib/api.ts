@@ -13,7 +13,7 @@ const TOKEN_KEY = "buildo.token";
 // (there was one; removed on request, this app should just point at
 // production). If local-server testing is needed again later, that's a
 // dev-time env swap here, not a user-facing setting.
-const SERVER_URL = "https://portal.starforgerobotics.com";
+export const SERVER_URL = "https://portal.starforgerobotics.com";
 
 export async function getToken(): Promise<string | null> {
   return AsyncStorage.getItem(TOKEN_KEY);
