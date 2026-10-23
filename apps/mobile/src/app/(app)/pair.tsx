@@ -1,13 +1,16 @@
-import { useEffect, useRef, useState } from "react";
-import { router } from "expo-router";
-import { Bluetooth, Bug, ChevronDown, ChevronRight, Glasses, Hand, Battery, X } from "lucide-react-native";
-import { Animated, Easing, Pressable, ScrollView, StyleSheet, Text, View } from "react-native";
+import { useCallback, useEffect, useRef, useState } from "react";
+import { useFocusEffect } from "expo-router";
+// import { router } from "expo-router"; // only used by the hidden Debug entry below
+import { Bluetooth, ChevronDown, ChevronRight, Glasses, Hand, Battery, X } from "lucide-react-native";
+import { Animated, Easing, Linking, Platform, Pressable, ScrollView, StyleSheet, Text, View } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 import { Button } from "../../components/Button";
 import { Card } from "../../components/Card";
 import { StatusPill } from "../../components/StatusPill";
+import { Alert } from "../../lib/alert";
 import { isLikelyGlasses, type Device } from "../../lib/ble/nordic-uart-link";
+import { BleState, enableBluetooth, getBleState, isLocationEnabled, openBluetoothSettings, openLocationSettings } from "../../lib/ble/radio-status";
 import { useDevices, type ConnectionStatus } from "../../lib/device-context";
 import { colors, fonts, radii, spacing } from "../../theme";
 
@@ -100,19 +103,55 @@ export default function PairScreen() {
   const devices = useDevices();
   const insets = useSafeAreaInsets();
 
-  // Real BLE scan, not mocked: same session.link.startBleScan()/
-  // connectBleToDeviceManually() the Debug screen's own "Advanced" device
-  // list uses -- that scan+pick flow is the one already confirmed to find
-  // the board reliably even when the quick "Connect" button above (which
-  // scans for the exact name "Glasses-L" and times out after 10s) doesn't,
-  // so this gives a real fallback right here instead of needing to go into
-  // Debug.
   const [scanOpen, setScanOpen] = useState(false);
   const [scanning, setScanning] = useState(false);
   const scanTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const [scannedDevices, setScannedDevices] = useState<Map<string, Device>>(new Map());
   const [bleConnecting, setBleConnecting] = useState<string | null>(null);
   const [bleScanError, setBleScanError] = useState<string | null>(null);
+
+  useFocusEffect(
+    useCallback(() => {
+      let cancelled = false;
+
+      async function checkRadios() {
+        const bleState = await getBleState();
+        if (cancelled) return;
+        if (bleState !== BleState.PoweredOn) {
+          Alert.alert("Turn on Bluetooth", "Buildo needs Bluetooth to connect to your glasses and gloves.", [
+            { text: "Not now", style: "cancel" },
+            {
+              text: Platform.OS === "android" ? "Turn on" : "Open Settings",
+              onPress: () => {
+                if (Platform.OS === "android") {
+                  enableBluetooth().catch(openBluetoothSettings);
+                } else {
+                  Linking.openSettings().catch(() => undefined);
+                }
+              },
+            },
+          ]);
+          return; // one prompt at a time -- location gets its turn next focus
+        }
+
+        const locationOn = await isLocationEnabled();
+        if (cancelled || locationOn) return;
+        Alert.alert(
+          "Turn on Location",
+          "Android requires Location services to be on for Bluetooth scanning, even though Buildo doesn't use your location.",
+          [
+            { text: "Not now", style: "cancel" },
+            { text: "Open Settings", onPress: openLocationSettings },
+          ]
+        );
+      }
+
+      checkRadios();
+      return () => {
+        cancelled = true;
+      };
+    }, [])
+  );
 
   function stopScanTimer() {
     if (scanTimerRef.current) clearTimeout(scanTimerRef.current);
@@ -160,9 +199,6 @@ export default function PairScreen() {
   }
 
   useEffect(() => {
-    // Only tears down THIS screen's own scan if it's still running when you
-    // navigate away -- never touches the shared session/BLE connection
-    // itself, same rule as every other screen sharing it.
     return () => {
       stopScanTimer();
       devices.glassesSession.link.stopBleScan();
@@ -207,8 +243,8 @@ export default function PairScreen() {
         onDisconnect={() => devices.disconnect("gloves")}
       />
 
-      <Pressable onPress={() => setScanOpen((v) => !v)}>
-        <Card style={styles.debugCard}>
+      <Card style={styles.scanBanner}>
+        <Pressable onPress={() => setScanOpen((v) => !v)} style={styles.scanBannerHeader}>
           <View style={styles.debugIconWrap}>
             <Bluetooth size={20} color={colors.sandDark} />
           </View>
@@ -219,42 +255,43 @@ export default function PairScreen() {
             </Text>
           </View>
           {scanOpen ? <ChevronDown size={18} color={colors.textMuted} /> : <ChevronRight size={18} color={colors.textMuted} />}
-        </Card>
-      </Pressable>
+        </Pressable>
 
-      {scanOpen ? (
-        <Card style={styles.scanPanel}>
-          {!scanning ? (
-            <Button label="Scan nearby (15s)" variant="secondary" onPress={onStartScan} />
-          ) : (
-            <Button label="Stop scan" variant="secondary" onPress={onStopScan} />
-          )}
-          {bleScanError ? <Text style={styles.connectErrorText}>{bleScanError}</Text> : null}
-          {namedScannedDevices.map((device) => (
-            <Pressable
-              key={device.id}
-              onPress={() => onConnectScannedDevice(device)}
-              disabled={bleConnecting !== null}
-              style={styles.scanDeviceRow}
-            >
-              <View style={{ flex: 1 }}>
-                <Text style={styles.deviceName}>
-                  {device.name ?? device.localName}
-                  {isLikelyGlasses(device) ? " ✓" : ""}
-                </Text>
-                <Text style={styles.deviceDetail}>
-                  {device.id} · {device.rssi ?? "?"} dBm
-                </Text>
-              </View>
-              <Text style={styles.scanConnectLabel}>{bleConnecting === device.id ? "Connecting…" : "Connect"}</Text>
-            </Pressable>
-          ))}
-          {scanning && namedScannedDevices.length === 0 ? (
-            <Text style={styles.debugDetail}>Scanning… named devices will appear here as they&apos;re found.</Text>
-          ) : null}
-        </Card>
-      ) : null}
+        {scanOpen ? (
+          <View style={styles.scanPanel}>
+            {!scanning ? (
+              <Button label="Scan nearby (15s)" variant="secondary" onPress={onStartScan} />
+            ) : (
+              <Button label="Stop scan" variant="secondary" onPress={onStopScan} />
+            )}
+            {bleScanError ? <Text style={styles.connectErrorText}>{bleScanError}</Text> : null}
+            {namedScannedDevices.map((device) => (
+              <Pressable
+                key={device.id}
+                onPress={() => onConnectScannedDevice(device)}
+                disabled={bleConnecting !== null}
+                style={styles.scanDeviceRow}
+              >
+                <View style={{ flex: 1 }}>
+                  <Text style={styles.deviceName}>
+                    {device.name ?? device.localName}
+                    {isLikelyGlasses(device) ? " ✓" : ""}
+                  </Text>
+                  <Text style={styles.deviceDetail}>
+                    {device.id} · {device.rssi ?? "?"} dBm
+                  </Text>
+                </View>
+                <Text style={styles.scanConnectLabel}>{bleConnecting === device.id ? "Connecting…" : "Connect"}</Text>
+              </Pressable>
+            ))}
+            {scanning && namedScannedDevices.length === 0 ? (
+              <Text style={styles.debugDetail}>Scanning… named devices will appear here as they&apos;re found.</Text>
+            ) : null}
+          </View>
+        ) : null}
+      </Card>
 
+      {/* Debug entry hidden for deployment -- not deleted, just unreachable from the UI.
       <Pressable onPress={() => router.push("/glasses-debug")}>
         <Card style={styles.debugCard}>
           <View style={styles.debugIconWrap}>
@@ -269,6 +306,7 @@ export default function PairScreen() {
           <ChevronRight size={18} color={colors.textMuted} />
         </Card>
       </Pressable>
+      */}
     </ScrollView>
   );
 }
@@ -357,6 +395,14 @@ const styles = StyleSheet.create({
     alignItems: "center",
     gap: spacing.sm,
     marginTop: spacing.sm,
+  },
+  scanBanner: {
+    marginTop: spacing.sm,
+  },
+  scanBannerHeader: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: spacing.sm,
   },
   debugIconWrap: {
     width: 40,

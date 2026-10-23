@@ -15,6 +15,10 @@ class LocalHotspotModule extends NativeModule<{}> {
   isSupported(): boolean {
     return false;
   }
+
+  isLocationEnabled(): boolean {
+    return true;
+  }
 }
 
 export default registerWebModule(LocalHotspotModule, "LocalHotspotModule");

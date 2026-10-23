@@ -6,6 +6,7 @@ declare class LocalHotspotModule extends NativeModule<{}> {
   startHotspot(): Promise<LocalHotspotReservation>;
   stopHotspot(): Promise<void>;
   isSupported(): boolean;
+  isLocationEnabled(): boolean;
 }
 
 export default requireNativeModule<LocalHotspotModule>("LocalHotspot");

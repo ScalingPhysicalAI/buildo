@@ -38,6 +38,10 @@ class LocalHotspotModule : Module() {
     }
 
     Function("isSupported") { true }
+
+    Function("isLocationEnabled") {
+      isLocationServicesEnabled(appContext.reactContext?.applicationContext)
+    }
   }
 
   private fun startHotspot(promise: expo.modules.kotlin.Promise) {
