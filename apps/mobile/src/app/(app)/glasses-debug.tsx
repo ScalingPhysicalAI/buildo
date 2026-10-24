@@ -9,13 +9,18 @@ import { Row, Section, STATE_LABEL } from "../../components/DebugPanels";
 import { GlassesVideoPanel } from "../../components/GlassesVideoPanel";
 import { isLikelyGlasses, type Device } from "../../lib/ble/nordic-uart-link";
 import { useDevices } from "../../lib/device-context";
+import { deleteLocalFile, EpisodeRecorder } from "../../lib/glasses/episode-storage";
+import { uploadEpisodeZip } from "../../lib/glasses/episode-upload";
 import type { SessionState } from "../../lib/glasses/glasses-session";
 import type {
   EpisodeEventMessage,
+  FrameMessage,
   HelloMessage,
   PeerMessage,
   StatusMessage,
 } from "../../lib/glasses/protocol";
+import type { RtpJpegFrame } from "../../lib/glasses/rtsp-client";
+import { useSkills } from "../../lib/skills-context";
 import { colors, fonts, radii, spacing } from "../../theme";
 
 const SCAN_DURATION_MS = 15000;
@@ -26,6 +31,8 @@ export default function GlassesDebugScreen() {
   // construct a second one here, it'll double-bind the TCP servers.
   const devices = useDevices();
   const session = devices.glassesSession;
+  const { recordUpload } = useSkills();
+  const recorderRef = useRef<EpisodeRecorder | null>(null);
 
   // Lazy initializers: the session may already be past "idle".
   const [sessionState, setSessionState] = useState<SessionState>(() => session.state);
@@ -50,8 +57,24 @@ export default function GlassesDebugScreen() {
   const [bleError, setBleError] = useState<string | null>(null);
   const [hotspotInfo, setHotspotInfo] = useState<string | null>(null);
 
+  const [environmentInput, setEnvironmentInput] = useState("");
+  const [skillSlugInput, setSkillSlugInput] = useState("");
+  const [uploadBusy, setUploadBusy] = useState(false);
+  const [uploadError, setUploadError] = useState<string | null>(null);
+  const [hasRecording, setHasRecording] = useState(false);
+
   const pushLog = useCallback((line: string) => {
     setLog((prev) => [`${new Date().toLocaleTimeString()}  ${line}`, ...prev].slice(0, 80));
+  }, []);
+
+  // Stable identity -- GlassesVideoPanel's own RTSP-connect effect re-runs
+  // whenever onFrame's identity changes, same reason the Skill recording
+  // screen's own onFrame callbacks are useCallback'd.
+  const onLeftFrame = useCallback((frame: RtpJpegFrame) => {
+    recorderRef.current?.saveVideoFrame("left", frame.jpeg);
+  }, []);
+  const onRightFrame = useCallback((frame: RtpJpegFrame) => {
+    recorderRef.current?.saveVideoFrame("right", frame.jpeg);
   }, []);
 
   useEffect(() => {
@@ -73,7 +96,10 @@ export default function GlassesDebugScreen() {
     const unsubLog = session.on("log", ({ line }) => pushLog(line));
     const unsubHello = session.link.on("hello", setHello);
     const unsubStatus = session.link.on("status", setStatus);
-    const unsubFrame = session.link.on("frame", () => setFrameCount((c) => c + 1));
+    const unsubFrame = session.link.on("frame", (f: FrameMessage) => {
+      setFrameCount((c) => c + 1);
+      recorderRef.current?.appendDataFrame(f);
+    });
     const unsubPeer = session.link.on("peer", (p: PeerMessage) => setPeerRtsp(p.rtsp));
     const unsubEpisode = session.link.on("episodeEvent", (e: EpisodeEventMessage) => pushLog(`episode: ${e.event}`));
 
@@ -91,8 +117,16 @@ export default function GlassesDebugScreen() {
 
   async function onStartRecording() {
     setRecordingError(null);
+    setUploadError(null);
     setCommandBusy("start");
     setUserWantsRecording(true);
+    recorderRef.current = new EpisodeRecorder({
+      episodeName,
+      environment: environmentInput || "debug",
+      skillSlug: skillSlugInput || "debug",
+      skillName: skillSlugInput || "debug",
+    });
+    setHasRecording(false);
     try {
       await session.startRecording(episodeName);
     } catch (err) {
@@ -108,12 +142,39 @@ export default function GlassesDebugScreen() {
     try {
       await session.stopRecording(episodeName);
     } finally {
+      recorderRef.current?.finish();
+      setHasRecording(true);
       setCommandBusy(null);
       setUserWantsRecording(false);
       setHello(null);
       setStatus(null);
       setPeerRtsp(null);
       setFrameCount(0);
+    }
+  }
+
+  async function onUpload() {
+    const recorder = recorderRef.current;
+    if (!recorder) return;
+    if (!skillSlugInput.trim() || !environmentInput.trim()) {
+      setUploadError("Fill in both Environment and Skill slug before uploading -- they must match a real skill in the catalog.");
+      return;
+    }
+    setUploadError(null);
+    setUploadBusy(true);
+    try {
+      const { file: zipFile, sizeBytes } = recorder.buildZip();
+      const collection = await recordUpload(skillSlugInput.trim(), `${episodeName}.zip`, undefined, sizeBytes);
+      await uploadEpisodeZip(zipFile, collection.id, environmentInput.trim(), skillSlugInput.trim());
+      deleteLocalFile(zipFile);
+      recorder.delete();
+      recorderRef.current = null;
+      setHasRecording(false);
+      pushLog(`upload: done (${collection.id})`);
+    } catch (err) {
+      setUploadError(err instanceof Error ? err.message : "Upload failed -- the recording is still saved on your phone.");
+    } finally {
+      setUploadBusy(false);
     }
   }
 
@@ -270,6 +331,37 @@ export default function GlassesDebugScreen() {
           </Text>
         ) : null}
         {recordingError ? <Text style={styles.errorText}>{recordingError}</Text> : null}
+
+        <Text style={[styles.sectionHint, { marginTop: spacing.md }]}>
+          Must match a real skill in the catalog (its slug) and an existing environment -- same upload path the
+          Skill recording screen uses.
+        </Text>
+        <TextInput
+          style={styles.input}
+          placeholder="Environment (e.g. hospital)"
+          placeholderTextColor={colors.textMuted}
+          value={environmentInput}
+          onChangeText={setEnvironmentInput}
+          autoCapitalize="none"
+          editable={!userWantsRecording}
+        />
+        <TextInput
+          style={styles.input}
+          placeholder="Skill slug (e.g. pick-and-place)"
+          placeholderTextColor={colors.textMuted}
+          value={skillSlugInput}
+          onChangeText={setSkillSlugInput}
+          autoCapitalize="none"
+          editable={!userWantsRecording}
+        />
+        <Button
+          label={uploadBusy ? "Uploading…" : "Upload recording"}
+          loading={uploadBusy}
+          disabled={!hasRecording || userWantsRecording}
+          onPress={onUpload}
+          style={{ marginTop: spacing.sm }}
+        />
+        {uploadError ? <Text style={styles.errorText}>{uploadError}</Text> : null}
       </Section>
 
       {leftRtsp || peerRtsp ? (
@@ -279,8 +371,22 @@ export default function GlassesDebugScreen() {
               handoff) shouldn't yank the video view out from under you
               while the underlying stream might still be fine. */}
           <View style={styles.videoBox}>
-            <GlassesVideoPanel label="Left (master)" url={leftRtsp} localPort={15000} localAddress={gatewayIp} onLog={pushLog} />
-            <GlassesVideoPanel label="Right (slave)" url={peerRtsp} localPort={15010} localAddress={gatewayIp} onLog={pushLog} />
+            <GlassesVideoPanel
+              label="Left (master)"
+              url={leftRtsp}
+              localPort={15000}
+              localAddress={gatewayIp}
+              onLog={pushLog}
+              onFrame={onLeftFrame}
+            />
+            <GlassesVideoPanel
+              label="Right (slave)"
+              url={peerRtsp}
+              localPort={15010}
+              localAddress={gatewayIp}
+              onLog={pushLog}
+              onFrame={onRightFrame}
+            />
           </View>
         </Section>
       ) : null}
