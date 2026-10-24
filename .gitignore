@@ -58,3 +58,6 @@ next-env.d.ts
 .claude-screenshot.mjs
 
 GLASSES_BLE_WIFI_HANDOFF.md
+
+# admin-only script, not meant to ship
+apps/portal/scripts/adjust-wallet-balance.ts
