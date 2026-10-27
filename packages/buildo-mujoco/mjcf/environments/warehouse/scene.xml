@@ -1,0 +1,1281 @@
+<mujoco model="warehouse">
+<asset>
+  <mesh name="warehouse_industrial_storage_cart_0" file="environments/warehouse/meshes/warehouse_industrial_storage_cart_0.stl"/>
+  <mesh name="warehouse_hand_truck_0" file="environments/warehouse/meshes/warehouse_hand_truck_0.stl"/>
+  <mesh name="warehouse_portable_generator_0" file="environments/warehouse/meshes/warehouse_portable_generator_0.stl"/>
+  <mesh name="warehouse_portable_generator_1" file="environments/warehouse/meshes/warehouse_portable_generator_1.stl"/>
+  <mesh name="warehouse_tool_cart_0" file="environments/warehouse/meshes/warehouse_tool_cart_0.stl"/>
+  <mesh name="warehouse_ladder_sectioned_01_0" file="environments/warehouse/meshes/warehouse_ladder_sectioned_01_0.stl"/>
+  <mesh name="warehouse_worn_metal_rack_0" file="environments/warehouse/meshes/warehouse_worn_metal_rack_0.stl"/>
+  <mesh name="warehouse_wetfloorsign_01_0" file="environments/warehouse/meshes/warehouse_wetfloorsign_01_0.stl"/>
+  <mesh name="prop_cardboard_box_ph_cardboard_box_01_0" file="props/cardboard_box_ph/prop_cardboard_box_ph_cardboard_box_01_0.stl"/>
+  <mesh name="prop_plastic_crate_plastic_crate_02_0" file="props/plastic_crate/prop_plastic_crate_plastic_crate_02_0.stl"/>
+</asset>
+<worldbody>
+  <geom name="warehouse_floor_visual" type="box" pos="0 0 -0.01" size="8.12 6.12 0.01" rgba="0.3 0.3 0.29 1" contype="0" conaffinity="0"/>
+  <geom name="warehouse_floor" type="box" pos="0 0 -0.05" size="8.12 6.12 0.05" group="3" contype="4" conaffinity="4"/>
+  <geom name="warehouse_wall_south" type="box" pos="0 -6.06 3" size="8.12 0.06 3" rgba="0.5 0.52 0.55 1" contype="1" conaffinity="1"/>
+  <geom name="warehouse_wall_north" type="box" pos="0 6.06 3" size="8.12 0.06 3" rgba="0.5 0.52 0.55 1" contype="1" conaffinity="1"/>
+  <geom name="warehouse_wall_west" type="box" pos="-8.06 0 3" size="0.06 6 3" rgba="0.5 0.52 0.55 1" contype="1" conaffinity="1"/>
+  <geom name="warehouse_wall_east" type="box" pos="8.06 0 3" size="0.06 6 3" rgba="0.5 0.52 0.55 1" contype="1" conaffinity="1"/>
+  <geom name="warehouse_baseboard_south" type="box" pos="0 -5.9925 0.05" size="8 0.0075 0.05" rgba="0.75 0.55 0.04 1" contype="0" conaffinity="0"/>
+  <geom name="warehouse_baseboard_north" type="box" pos="0 5.9925 0.05" size="8 0.0075 0.05" rgba="0.75 0.55 0.04 1" contype="0" conaffinity="0"/>
+  <geom name="warehouse_baseboard_west" type="box" pos="-7.9925 0 0.05" size="0.0075 6 0.05" rgba="0.75 0.55 0.04 1" contype="0" conaffinity="0"/>
+  <geom name="warehouse_baseboard_east" type="box" pos="7.9925 0 0.05" size="0.0075 6 0.05" rgba="0.75 0.55 0.04 1" contype="0" conaffinity="0"/>
+  <geom name="warehouse_aisle_line_row_b" type="box" pos="-2.55 2.13 0.002" size="5.05 0.05 0.002" quat="1 0 0 0" rgba="0.75 0.55 0.04 1" contype="0" conaffinity="0"/>
+  <geom name="warehouse_aisle_line_row_a" type="box" pos="-2.55 4.68 0.002" size="5.05 0.05 0.002" quat="1 0 0 0" rgba="0.75 0.55 0.04 1" contype="0" conaffinity="0"/>
+  <geom name="warehouse_walkway_line" type="box" pos="-2.55 0.72 0.002" size="5.05 0.05 0.002" quat="1 0 0 0" rgba="0.75 0.55 0.04 1" contype="0" conaffinity="0"/>
+  <geom name="warehouse_staging_zone" type="box" pos="-1.5 -4.25 0.001" size="3.7 1.65 0.001" quat="1 0 0 0" rgba="0.24 0.24 0.23 1" contype="0" conaffinity="0"/>
+  <geom name="warehouse_staging_edge_north" type="box" pos="-1.5 -2.6 0.002" size="3.75 0.05 0.002" quat="1 0 0 0" rgba="0.75 0.55 0.04 1" contype="0" conaffinity="0"/>
+  <geom name="warehouse_staging_edge_west" type="box" pos="-5.2 -4.27 0.002" size="0.05 1.67 0.002" quat="1 0 0 0" rgba="0.75 0.55 0.04 1" contype="0" conaffinity="0"/>
+  <geom name="warehouse_staging_edge_east" type="box" pos="2.2 -4.27 0.002" size="0.05 1.67 0.002" quat="1 0 0 0" rgba="0.75 0.55 0.04 1" contype="0" conaffinity="0"/>
+  <geom name="warehouse_00_industrial_storage_cart_v0" type="mesh" mesh="warehouse_industrial_storage_cart_0" pos="5.6 -5 0" quat="1 0 0 0" rgba="0.076 0.0762 0.0624 1" contype="0" conaffinity="0"/>
+  <geom name="warehouse_00_industrial_storage_cart_collider" type="box" pos="5.6 -5 0.6887" size="0.8017 0.5514 0.6887" quat="1 0 0 0" group="3" contype="1" conaffinity="1"/>
+  <geom name="warehouse_01_hand_truck_v0" type="mesh" mesh="warehouse_hand_truck_0" pos="3.6 -5.3 0" quat="0.9848 0 0 0.1736" rgba="0.1069 0.0539 0.0443 1" contype="0" conaffinity="0"/>
+  <geom name="warehouse_01_hand_truck_collider" type="box" pos="3.6 -5.3 0.7013" size="0.2966 0.3463 0.7013" quat="0.9848 0 0 0.1736" group="3" contype="1" conaffinity="1"/>
+  <geom name="warehouse_02_portable_generator_v0" type="mesh" mesh="warehouse_portable_generator_0" pos="7.4 -3.6 0" quat="0.7071 0 0 -0.7071" rgba="0.0818 0.0664 0.0465 1" contype="0" conaffinity="0"/>
+  <geom name="warehouse_02_portable_generator_v1" type="mesh" mesh="warehouse_portable_generator_1" pos="7.4 -3.6 0" quat="0.7071 0 0 -0.7071" rgba="0.0031 0.003 0.0029 1" contype="0" conaffinity="0"/>
+  <geom name="warehouse_02_portable_generator_collider" type="box" pos="7.4 -3.6 0.2885" size="0.4092 0.282 0.2885" quat="0.7071 0 0 -0.7071" group="3" contype="1" conaffinity="1"/>
+  <geom name="warehouse_03_tool_cart_v0" type="mesh" mesh="warehouse_tool_cart_0" pos="7.4 0.6 0" quat="0.7071 0 0 -0.7071" rgba="0.1075 0.1126 0.0941 1" contype="0" conaffinity="0"/>
+  <geom name="warehouse_03_tool_cart_collider" type="box" pos="7.4 0.6 0.4823" size="0.6367 0.3768 0.4823" quat="0.7071 0 0 -0.7071" group="3" contype="1" conaffinity="1"/>
+  <geom name="warehouse_04_ladder_sectioned_01_v0" type="mesh" mesh="warehouse_ladder_sectioned_01_0" pos="7.85 2.3 0" quat="0.7071 0 0 -0.7071" rgba="0.1603 0.1348 0.1291 1" contype="0" conaffinity="0"/>
+  <geom name="warehouse_04_ladder_sectioned_01_collider" type="box" pos="7.85 2.3 1.0673" size="0.3308 0.0888 1.0673" quat="0.7071 0 0 -0.7071" group="3" contype="1" conaffinity="1"/>
+  <geom name="warehouse_05_worn_metal_rack_v0" type="mesh" mesh="warehouse_worn_metal_rack_0" pos="7.68 3.7 0" quat="0.7071 0 0 -0.7071" rgba="0.0994 0.0802 0.0644 1" contype="0" conaffinity="0"/>
+  <geom name="warehouse_05_worn_metal_rack_collider" type="box" pos="7.68 3.7 0.95" size="0.4577 0.3 0.95" quat="0.7071 0 0 -0.7071" group="3" contype="1" conaffinity="1"/>
+  <geom name="warehouse_06_wetfloorsign_01_v0" type="mesh" mesh="warehouse_wetfloorsign_01_0" pos="3.4 -1.4 0" quat="0.9659 0 0 0.2588" rgba="0.6172 0.521 0.0296 1" contype="0" conaffinity="0"/>
+  <geom name="warehouse_06_wetfloorsign_01_collider" type="box" pos="3.4 -1.4 0.3148" size="0.15 0.1793 0.3148" quat="0.9659 0 0 0.2588" group="3" contype="1" conaffinity="1"/>
+  <body name="prop_pallet_rack_frame_0" pos="-7.6 5.33 0.0005" quat="1 0 0 0">
+    <geom name="prop_pallet_rack_frame_0_v0" type="box" size="0.075 0.075 0.005" pos="0 -0.495 0.005" quat="1 0 0 0" rgba="0.02 0.08 0.35 1" contype="0" conaffinity="0"/>
+    <geom name="prop_pallet_rack_frame_0_v1" type="box" size="0.075 0.075 0.005" pos="0 0.495 0.005" quat="1 0 0 0" rgba="0.02 0.08 0.35 1" contype="0" conaffinity="0"/>
+    <geom name="prop_pallet_rack_frame_0_v2" type="box" size="0.012 0.457 0.012" pos="0 0 0.15" quat="1 0 0 0" rgba="0.02 0.08 0.35 1" contype="0" conaffinity="0"/>
+    <geom name="prop_pallet_rack_frame_0_v3" type="box" size="0.012 0.457 0.012" pos="0 0 4.15" quat="1 0 0 0" rgba="0.02 0.08 0.35 1" contype="0" conaffinity="0"/>
+    <geom name="prop_pallet_rack_frame_0_v4" type="box" size="0.012 0.607 0.012" pos="0 0 0.55" quat="0.9361 0.3518 0 0" rgba="0.02 0.08 0.35 1" contype="0" conaffinity="0"/>
+    <geom name="prop_pallet_rack_frame_0_v5" type="box" size="0.012 0.607 0.012" pos="0 0 2.15" quat="0.9361 0.3518 0 0" rgba="0.02 0.08 0.35 1" contype="0" conaffinity="0"/>
+    <geom name="prop_pallet_rack_frame_0_v6" type="box" size="0.012 0.607 0.012" pos="0 0 3.75" quat="0.9361 0.3518 0 0" rgba="0.02 0.08 0.35 1" contype="0" conaffinity="0"/>
+    <geom name="prop_pallet_rack_frame_0_v7" type="box" size="0.012 0.607 0.012" pos="0 0 1.35" quat="0.9361 -0.3518 0 0" rgba="0.02 0.08 0.35 1" contype="0" conaffinity="0"/>
+    <geom name="prop_pallet_rack_frame_0_v8" type="box" size="0.012 0.607 0.012" pos="0 0 2.95" quat="0.9361 -0.3518 0 0" rgba="0.02 0.08 0.35 1" contype="0" conaffinity="0"/>
+    <geom name="prop_pallet_rack_frame_0_c0" type="box" size="0.038 0.038 2.135" pos="0 -0.495 2.135" quat="1 0 0 0" rgba="0.02 0.08 0.35 1" contype="1" conaffinity="1" friction="0.7 0.005 0.0001"/>
+    <geom name="prop_pallet_rack_frame_0_c1" type="box" size="0.038 0.038 2.135" pos="0 0.495 2.135" quat="1 0 0 0" rgba="0.02 0.08 0.35 1" contype="1" conaffinity="1" friction="0.7 0.005 0.0001"/>
+  </body>
+  <body name="prop_pallet_rack_frame_1" pos="-5.08 5.33 0.0005" quat="1 0 0 0">
+    <geom name="prop_pallet_rack_frame_1_v0" type="box" size="0.075 0.075 0.005" pos="0 -0.495 0.005" quat="1 0 0 0" rgba="0.02 0.08 0.35 1" contype="0" conaffinity="0"/>
+    <geom name="prop_pallet_rack_frame_1_v1" type="box" size="0.075 0.075 0.005" pos="0 0.495 0.005" quat="1 0 0 0" rgba="0.02 0.08 0.35 1" contype="0" conaffinity="0"/>
+    <geom name="prop_pallet_rack_frame_1_v2" type="box" size="0.012 0.457 0.012" pos="0 0 0.15" quat="1 0 0 0" rgba="0.02 0.08 0.35 1" contype="0" conaffinity="0"/>
+    <geom name="prop_pallet_rack_frame_1_v3" type="box" size="0.012 0.457 0.012" pos="0 0 4.15" quat="1 0 0 0" rgba="0.02 0.08 0.35 1" contype="0" conaffinity="0"/>
+    <geom name="prop_pallet_rack_frame_1_v4" type="box" size="0.012 0.607 0.012" pos="0 0 0.55" quat="0.9361 0.3518 0 0" rgba="0.02 0.08 0.35 1" contype="0" conaffinity="0"/>
+    <geom name="prop_pallet_rack_frame_1_v5" type="box" size="0.012 0.607 0.012" pos="0 0 2.15" quat="0.9361 0.3518 0 0" rgba="0.02 0.08 0.35 1" contype="0" conaffinity="0"/>
+    <geom name="prop_pallet_rack_frame_1_v6" type="box" size="0.012 0.607 0.012" pos="0 0 3.75" quat="0.9361 0.3518 0 0" rgba="0.02 0.08 0.35 1" contype="0" conaffinity="0"/>
+    <geom name="prop_pallet_rack_frame_1_v7" type="box" size="0.012 0.607 0.012" pos="0 0 1.35" quat="0.9361 -0.3518 0 0" rgba="0.02 0.08 0.35 1" contype="0" conaffinity="0"/>
+    <geom name="prop_pallet_rack_frame_1_v8" type="box" size="0.012 0.607 0.012" pos="0 0 2.95" quat="0.9361 -0.3518 0 0" rgba="0.02 0.08 0.35 1" contype="0" conaffinity="0"/>
+    <geom name="prop_pallet_rack_frame_1_c0" type="box" size="0.038 0.038 2.135" pos="0 -0.495 2.135" quat="1 0 0 0" rgba="0.02 0.08 0.35 1" contype="1" conaffinity="1" friction="0.7 0.005 0.0001"/>
+    <geom name="prop_pallet_rack_frame_1_c1" type="box" size="0.038 0.038 2.135" pos="0 0.495 2.135" quat="1 0 0 0" rgba="0.02 0.08 0.35 1" contype="1" conaffinity="1" friction="0.7 0.005 0.0001"/>
+  </body>
+  <body name="prop_pallet_rack_frame_2" pos="-2.56 5.33 0.0005" quat="1 0 0 0">
+    <geom name="prop_pallet_rack_frame_2_v0" type="box" size="0.075 0.075 0.005" pos="0 -0.495 0.005" quat="1 0 0 0" rgba="0.02 0.08 0.35 1" contype="0" conaffinity="0"/>
+    <geom name="prop_pallet_rack_frame_2_v1" type="box" size="0.075 0.075 0.005" pos="0 0.495 0.005" quat="1 0 0 0" rgba="0.02 0.08 0.35 1" contype="0" conaffinity="0"/>
+    <geom name="prop_pallet_rack_frame_2_v2" type="box" size="0.012 0.457 0.012" pos="0 0 0.15" quat="1 0 0 0" rgba="0.02 0.08 0.35 1" contype="0" conaffinity="0"/>
+    <geom name="prop_pallet_rack_frame_2_v3" type="box" size="0.012 0.457 0.012" pos="0 0 4.15" quat="1 0 0 0" rgba="0.02 0.08 0.35 1" contype="0" conaffinity="0"/>
+    <geom name="prop_pallet_rack_frame_2_v4" type="box" size="0.012 0.607 0.012" pos="0 0 0.55" quat="0.9361 0.3518 0 0" rgba="0.02 0.08 0.35 1" contype="0" conaffinity="0"/>
+    <geom name="prop_pallet_rack_frame_2_v5" type="box" size="0.012 0.607 0.012" pos="0 0 2.15" quat="0.9361 0.3518 0 0" rgba="0.02 0.08 0.35 1" contype="0" conaffinity="0"/>
+    <geom name="prop_pallet_rack_frame_2_v6" type="box" size="0.012 0.607 0.012" pos="0 0 3.75" quat="0.9361 0.3518 0 0" rgba="0.02 0.08 0.35 1" contype="0" conaffinity="0"/>
+    <geom name="prop_pallet_rack_frame_2_v7" type="box" size="0.012 0.607 0.012" pos="0 0 1.35" quat="0.9361 -0.3518 0 0" rgba="0.02 0.08 0.35 1" contype="0" conaffinity="0"/>
+    <geom name="prop_pallet_rack_frame_2_v8" type="box" size="0.012 0.607 0.012" pos="0 0 2.95" quat="0.9361 -0.3518 0 0" rgba="0.02 0.08 0.35 1" contype="0" conaffinity="0"/>
+    <geom name="prop_pallet_rack_frame_2_c0" type="box" size="0.038 0.038 2.135" pos="0 -0.495 2.135" quat="1 0 0 0" rgba="0.02 0.08 0.35 1" contype="1" conaffinity="1" friction="0.7 0.005 0.0001"/>
+    <geom name="prop_pallet_rack_frame_2_c1" type="box" size="0.038 0.038 2.135" pos="0 0.495 2.135" quat="1 0 0 0" rgba="0.02 0.08 0.35 1" contype="1" conaffinity="1" friction="0.7 0.005 0.0001"/>
+  </body>
+  <body name="prop_pallet_rack_frame_3" pos="-0.04 5.33 0.0005" quat="1 0 0 0">
+    <geom name="prop_pallet_rack_frame_3_v0" type="box" size="0.075 0.075 0.005" pos="0 -0.495 0.005" quat="1 0 0 0" rgba="0.02 0.08 0.35 1" contype="0" conaffinity="0"/>
+    <geom name="prop_pallet_rack_frame_3_v1" type="box" size="0.075 0.075 0.005" pos="0 0.495 0.005" quat="1 0 0 0" rgba="0.02 0.08 0.35 1" contype="0" conaffinity="0"/>
+    <geom name="prop_pallet_rack_frame_3_v2" type="box" size="0.012 0.457 0.012" pos="0 0 0.15" quat="1 0 0 0" rgba="0.02 0.08 0.35 1" contype="0" conaffinity="0"/>
+    <geom name="prop_pallet_rack_frame_3_v3" type="box" size="0.012 0.457 0.012" pos="0 0 4.15" quat="1 0 0 0" rgba="0.02 0.08 0.35 1" contype="0" conaffinity="0"/>
+    <geom name="prop_pallet_rack_frame_3_v4" type="box" size="0.012 0.607 0.012" pos="0 0 0.55" quat="0.9361 0.3518 0 0" rgba="0.02 0.08 0.35 1" contype="0" conaffinity="0"/>
+    <geom name="prop_pallet_rack_frame_3_v5" type="box" size="0.012 0.607 0.012" pos="0 0 2.15" quat="0.9361 0.3518 0 0" rgba="0.02 0.08 0.35 1" contype="0" conaffinity="0"/>
+    <geom name="prop_pallet_rack_frame_3_v6" type="box" size="0.012 0.607 0.012" pos="0 0 3.75" quat="0.9361 0.3518 0 0" rgba="0.02 0.08 0.35 1" contype="0" conaffinity="0"/>
+    <geom name="prop_pallet_rack_frame_3_v7" type="box" size="0.012 0.607 0.012" pos="0 0 1.35" quat="0.9361 -0.3518 0 0" rgba="0.02 0.08 0.35 1" contype="0" conaffinity="0"/>
+    <geom name="prop_pallet_rack_frame_3_v8" type="box" size="0.012 0.607 0.012" pos="0 0 2.95" quat="0.9361 -0.3518 0 0" rgba="0.02 0.08 0.35 1" contype="0" conaffinity="0"/>
+    <geom name="prop_pallet_rack_frame_3_c0" type="box" size="0.038 0.038 2.135" pos="0 -0.495 2.135" quat="1 0 0 0" rgba="0.02 0.08 0.35 1" contype="1" conaffinity="1" friction="0.7 0.005 0.0001"/>
+    <geom name="prop_pallet_rack_frame_3_c1" type="box" size="0.038 0.038 2.135" pos="0 0.495 2.135" quat="1 0 0 0" rgba="0.02 0.08 0.35 1" contype="1" conaffinity="1" friction="0.7 0.005 0.0001"/>
+  </body>
+  <body name="prop_pallet_rack_frame_4" pos="2.48 5.33 0.0005" quat="1 0 0 0">
+    <geom name="prop_pallet_rack_frame_4_v0" type="box" size="0.075 0.075 0.005" pos="0 -0.495 0.005" quat="1 0 0 0" rgba="0.02 0.08 0.35 1" contype="0" conaffinity="0"/>
+    <geom name="prop_pallet_rack_frame_4_v1" type="box" size="0.075 0.075 0.005" pos="0 0.495 0.005" quat="1 0 0 0" rgba="0.02 0.08 0.35 1" contype="0" conaffinity="0"/>
+    <geom name="prop_pallet_rack_frame_4_v2" type="box" size="0.012 0.457 0.012" pos="0 0 0.15" quat="1 0 0 0" rgba="0.02 0.08 0.35 1" contype="0" conaffinity="0"/>
+    <geom name="prop_pallet_rack_frame_4_v3" type="box" size="0.012 0.457 0.012" pos="0 0 4.15" quat="1 0 0 0" rgba="0.02 0.08 0.35 1" contype="0" conaffinity="0"/>
+    <geom name="prop_pallet_rack_frame_4_v4" type="box" size="0.012 0.607 0.012" pos="0 0 0.55" quat="0.9361 0.3518 0 0" rgba="0.02 0.08 0.35 1" contype="0" conaffinity="0"/>
+    <geom name="prop_pallet_rack_frame_4_v5" type="box" size="0.012 0.607 0.012" pos="0 0 2.15" quat="0.9361 0.3518 0 0" rgba="0.02 0.08 0.35 1" contype="0" conaffinity="0"/>
+    <geom name="prop_pallet_rack_frame_4_v6" type="box" size="0.012 0.607 0.012" pos="0 0 3.75" quat="0.9361 0.3518 0 0" rgba="0.02 0.08 0.35 1" contype="0" conaffinity="0"/>
+    <geom name="prop_pallet_rack_frame_4_v7" type="box" size="0.012 0.607 0.012" pos="0 0 1.35" quat="0.9361 -0.3518 0 0" rgba="0.02 0.08 0.35 1" contype="0" conaffinity="0"/>
+    <geom name="prop_pallet_rack_frame_4_v8" type="box" size="0.012 0.607 0.012" pos="0 0 2.95" quat="0.9361 -0.3518 0 0" rgba="0.02 0.08 0.35 1" contype="0" conaffinity="0"/>
+    <geom name="prop_pallet_rack_frame_4_c0" type="box" size="0.038 0.038 2.135" pos="0 -0.495 2.135" quat="1 0 0 0" rgba="0.02 0.08 0.35 1" contype="1" conaffinity="1" friction="0.7 0.005 0.0001"/>
+    <geom name="prop_pallet_rack_frame_4_c1" type="box" size="0.038 0.038 2.135" pos="0 0.495 2.135" quat="1 0 0 0" rgba="0.02 0.08 0.35 1" contype="1" conaffinity="1" friction="0.7 0.005 0.0001"/>
+  </body>
+  <body name="prop_pallet_rack_beams_0" pos="-6.34 5.33 1.253" quat="1 0 0 0">
+    <geom name="prop_pallet_rack_beams_0_c0" type="box" size="1.22 0.025 0.055" pos="0 -0.51 0.055" quat="1 0 0 0" rgba="0.9 0.2 0.01 1" contype="1" conaffinity="1" friction="0.7 0.005 0.0001"/>
+    <geom name="prop_pallet_rack_beams_0_c1" type="box" size="1.22 0.025 0.055" pos="0 0.51 0.055" quat="1 0 0 0" rgba="0.9 0.2 0.01 1" contype="1" conaffinity="1" friction="0.7 0.005 0.0001"/>
+  </body>
+  <body name="prop_pallet_rack_beams_1" pos="-3.82 5.33 1.253" quat="1 0 0 0">
+    <geom name="prop_pallet_rack_beams_1_c0" type="box" size="1.22 0.025 0.055" pos="0 -0.51 0.055" quat="1 0 0 0" rgba="0.9 0.2 0.01 1" contype="1" conaffinity="1" friction="0.7 0.005 0.0001"/>
+    <geom name="prop_pallet_rack_beams_1_c1" type="box" size="1.22 0.025 0.055" pos="0 0.51 0.055" quat="1 0 0 0" rgba="0.9 0.2 0.01 1" contype="1" conaffinity="1" friction="0.7 0.005 0.0001"/>
+  </body>
+  <body name="prop_pallet_rack_beams_2" pos="-1.3 5.33 1.253" quat="1 0 0 0">
+    <geom name="prop_pallet_rack_beams_2_c0" type="box" size="1.22 0.025 0.055" pos="0 -0.51 0.055" quat="1 0 0 0" rgba="0.9 0.2 0.01 1" contype="1" conaffinity="1" friction="0.7 0.005 0.0001"/>
+    <geom name="prop_pallet_rack_beams_2_c1" type="box" size="1.22 0.025 0.055" pos="0 0.51 0.055" quat="1 0 0 0" rgba="0.9 0.2 0.01 1" contype="1" conaffinity="1" friction="0.7 0.005 0.0001"/>
+  </body>
+  <body name="prop_pallet_rack_beams_3" pos="1.22 5.33 1.253" quat="1 0 0 0">
+    <geom name="prop_pallet_rack_beams_3_c0" type="box" size="1.22 0.025 0.055" pos="0 -0.51 0.055" quat="1 0 0 0" rgba="0.9 0.2 0.01 1" contype="1" conaffinity="1" friction="0.7 0.005 0.0001"/>
+    <geom name="prop_pallet_rack_beams_3_c1" type="box" size="1.22 0.025 0.055" pos="0 0.51 0.055" quat="1 0 0 0" rgba="0.9 0.2 0.01 1" contype="1" conaffinity="1" friction="0.7 0.005 0.0001"/>
+  </body>
+  <body name="prop_pallet_rack_beams_4" pos="-6.34 5.33 2.94" quat="1 0 0 0">
+    <geom name="prop_pallet_rack_beams_4_c0" type="box" size="1.22 0.025 0.055" pos="0 -0.51 0.055" quat="1 0 0 0" rgba="0.9 0.2 0.01 1" contype="1" conaffinity="1" friction="0.7 0.005 0.0001"/>
+    <geom name="prop_pallet_rack_beams_4_c1" type="box" size="1.22 0.025 0.055" pos="0 0.51 0.055" quat="1 0 0 0" rgba="0.9 0.2 0.01 1" contype="1" conaffinity="1" friction="0.7 0.005 0.0001"/>
+  </body>
+  <body name="prop_pallet_rack_beams_5" pos="-3.82 5.33 2.94" quat="1 0 0 0">
+    <geom name="prop_pallet_rack_beams_5_c0" type="box" size="1.22 0.025 0.055" pos="0 -0.51 0.055" quat="1 0 0 0" rgba="0.9 0.2 0.01 1" contype="1" conaffinity="1" friction="0.7 0.005 0.0001"/>
+    <geom name="prop_pallet_rack_beams_5_c1" type="box" size="1.22 0.025 0.055" pos="0 0.51 0.055" quat="1 0 0 0" rgba="0.9 0.2 0.01 1" contype="1" conaffinity="1" friction="0.7 0.005 0.0001"/>
+  </body>
+  <body name="prop_pallet_rack_beams_6" pos="-1.3 5.33 2.94" quat="1 0 0 0">
+    <geom name="prop_pallet_rack_beams_6_c0" type="box" size="1.22 0.025 0.055" pos="0 -0.51 0.055" quat="1 0 0 0" rgba="0.9 0.2 0.01 1" contype="1" conaffinity="1" friction="0.7 0.005 0.0001"/>
+    <geom name="prop_pallet_rack_beams_6_c1" type="box" size="1.22 0.025 0.055" pos="0 0.51 0.055" quat="1 0 0 0" rgba="0.9 0.2 0.01 1" contype="1" conaffinity="1" friction="0.7 0.005 0.0001"/>
+  </body>
+  <body name="prop_pallet_rack_beams_7" pos="1.22 5.33 2.94" quat="1 0 0 0">
+    <geom name="prop_pallet_rack_beams_7_c0" type="box" size="1.22 0.025 0.055" pos="0 -0.51 0.055" quat="1 0 0 0" rgba="0.9 0.2 0.01 1" contype="1" conaffinity="1" friction="0.7 0.005 0.0001"/>
+    <geom name="prop_pallet_rack_beams_7_c1" type="box" size="1.22 0.025 0.055" pos="0 0.51 0.055" quat="1 0 0 0" rgba="0.9 0.2 0.01 1" contype="1" conaffinity="1" friction="0.7 0.005 0.0001"/>
+  </body>
+  <body name="prop_wrapped_pallet_load_0" pos="-6.9 5.33 0.0005" quat="1 0 0 0">
+    <geom name="prop_wrapped_pallet_load_0_v0" type="box" size="0.508 0.0445 0.011" pos="0 -0.565 0.133" quat="1 0 0 0" rgba="0.35 0.22 0.1 1" contype="0" conaffinity="0"/>
+    <geom name="prop_wrapped_pallet_load_0_v1" type="box" size="0.508 0.0445 0.011" pos="0 -0.3767 0.133" quat="1 0 0 0" rgba="0.35 0.22 0.1 1" contype="0" conaffinity="0"/>
+    <geom name="prop_wrapped_pallet_load_0_v2" type="box" size="0.508 0.0445 0.011" pos="0 -0.1884 0.133" quat="1 0 0 0" rgba="0.35 0.22 0.1 1" contype="0" conaffinity="0"/>
+    <geom name="prop_wrapped_pallet_load_0_v3" type="box" size="0.508 0.0445 0.011" pos="0 -0.0001 0.133" quat="1 0 0 0" rgba="0.35 0.22 0.1 1" contype="0" conaffinity="0"/>
+    <geom name="prop_wrapped_pallet_load_0_v4" type="box" size="0.508 0.0445 0.011" pos="0 0.1882 0.133" quat="1 0 0 0" rgba="0.35 0.22 0.1 1" contype="0" conaffinity="0"/>
+    <geom name="prop_wrapped_pallet_load_0_v5" type="box" size="0.508 0.0445 0.011" pos="0 0.3765 0.133" quat="1 0 0 0" rgba="0.35 0.22 0.1 1" contype="0" conaffinity="0"/>
+    <geom name="prop_wrapped_pallet_load_0_v6" type="box" size="0.508 0.0445 0.011" pos="0 0.5648 0.133" quat="1 0 0 0" rgba="0.35 0.22 0.1 1" contype="0" conaffinity="0"/>
+    <geom name="prop_wrapped_pallet_load_0_v7" type="box" size="0.019 0.6095 0.0445" pos="-0.489 0 0.0665" quat="1 0 0 0" rgba="0.3 0.19 0.08 1" contype="0" conaffinity="0"/>
+    <geom name="prop_wrapped_pallet_load_0_v8" type="box" size="0.019 0.6095 0.0445" pos="0 0 0.0665" quat="1 0 0 0" rgba="0.3 0.19 0.08 1" contype="0" conaffinity="0"/>
+    <geom name="prop_wrapped_pallet_load_0_v9" type="box" size="0.019 0.6095 0.0445" pos="0.489 0 0.0665" quat="1 0 0 0" rgba="0.3 0.19 0.08 1" contype="0" conaffinity="0"/>
+    <geom name="prop_wrapped_pallet_load_0_v10" type="box" size="0.47 0.57 0.004" pos="0 0 1.248" quat="1 0 0 0" rgba="0.45 0.29 0.14 1" contype="0" conaffinity="0"/>
+    <geom name="prop_wrapped_pallet_load_0_c0" type="box" size="0.508 0.6095 0.072" pos="0 0 0.072" quat="1 0 0 0" group="3" rgba="0.5 0.5 0.5 0.3" contype="1" conaffinity="1" friction="0.7 0.005 0.0001"/>
+    <geom name="prop_wrapped_pallet_load_0_c1" type="box" size="0.5 0.6 0.55" pos="0 0 0.694" quat="1 0 0 0" rgba="0.62 0.66 0.7 1" contype="1" conaffinity="1" friction="0.7 0.005 0.0001"/>
+  </body>
+  <body name="prop_wrapped_pallet_load_1" pos="-4.38 5.33 0.0005" quat="1 0 0 0">
+    <geom name="prop_wrapped_pallet_load_1_v0" type="box" size="0.508 0.0445 0.011" pos="0 -0.565 0.133" quat="1 0 0 0" rgba="0.35 0.22 0.1 1" contype="0" conaffinity="0"/>
+    <geom name="prop_wrapped_pallet_load_1_v1" type="box" size="0.508 0.0445 0.011" pos="0 -0.3767 0.133" quat="1 0 0 0" rgba="0.35 0.22 0.1 1" contype="0" conaffinity="0"/>
+    <geom name="prop_wrapped_pallet_load_1_v2" type="box" size="0.508 0.0445 0.011" pos="0 -0.1884 0.133" quat="1 0 0 0" rgba="0.35 0.22 0.1 1" contype="0" conaffinity="0"/>
+    <geom name="prop_wrapped_pallet_load_1_v3" type="box" size="0.508 0.0445 0.011" pos="0 -0.0001 0.133" quat="1 0 0 0" rgba="0.35 0.22 0.1 1" contype="0" conaffinity="0"/>
+    <geom name="prop_wrapped_pallet_load_1_v4" type="box" size="0.508 0.0445 0.011" pos="0 0.1882 0.133" quat="1 0 0 0" rgba="0.35 0.22 0.1 1" contype="0" conaffinity="0"/>
+    <geom name="prop_wrapped_pallet_load_1_v5" type="box" size="0.508 0.0445 0.011" pos="0 0.3765 0.133" quat="1 0 0 0" rgba="0.35 0.22 0.1 1" contype="0" conaffinity="0"/>
+    <geom name="prop_wrapped_pallet_load_1_v6" type="box" size="0.508 0.0445 0.011" pos="0 0.5648 0.133" quat="1 0 0 0" rgba="0.35 0.22 0.1 1" contype="0" conaffinity="0"/>
+    <geom name="prop_wrapped_pallet_load_1_v7" type="box" size="0.019 0.6095 0.0445" pos="-0.489 0 0.0665" quat="1 0 0 0" rgba="0.3 0.19 0.08 1" contype="0" conaffinity="0"/>
+    <geom name="prop_wrapped_pallet_load_1_v8" type="box" size="0.019 0.6095 0.0445" pos="0 0 0.0665" quat="1 0 0 0" rgba="0.3 0.19 0.08 1" contype="0" conaffinity="0"/>
+    <geom name="prop_wrapped_pallet_load_1_v9" type="box" size="0.019 0.6095 0.0445" pos="0.489 0 0.0665" quat="1 0 0 0" rgba="0.3 0.19 0.08 1" contype="0" conaffinity="0"/>
+    <geom name="prop_wrapped_pallet_load_1_v10" type="box" size="0.47 0.57 0.004" pos="0 0 1.248" quat="1 0 0 0" rgba="0.45 0.29 0.14 1" contype="0" conaffinity="0"/>
+    <geom name="prop_wrapped_pallet_load_1_c0" type="box" size="0.508 0.6095 0.072" pos="0 0 0.072" quat="1 0 0 0" group="3" rgba="0.5 0.5 0.5 0.3" contype="1" conaffinity="1" friction="0.7 0.005 0.0001"/>
+    <geom name="prop_wrapped_pallet_load_1_c1" type="box" size="0.5 0.6 0.55" pos="0 0 0.694" quat="1 0 0 0" rgba="0.62 0.66 0.7 1" contype="1" conaffinity="1" friction="0.7 0.005 0.0001"/>
+  </body>
+  <body name="prop_wrapped_pallet_load_2" pos="-1.86 5.33 0.0005" quat="1 0 0 0">
+    <geom name="prop_wrapped_pallet_load_2_v0" type="box" size="0.508 0.0445 0.011" pos="0 -0.565 0.133" quat="1 0 0 0" rgba="0.35 0.22 0.1 1" contype="0" conaffinity="0"/>
+    <geom name="prop_wrapped_pallet_load_2_v1" type="box" size="0.508 0.0445 0.011" pos="0 -0.3767 0.133" quat="1 0 0 0" rgba="0.35 0.22 0.1 1" contype="0" conaffinity="0"/>
+    <geom name="prop_wrapped_pallet_load_2_v2" type="box" size="0.508 0.0445 0.011" pos="0 -0.1884 0.133" quat="1 0 0 0" rgba="0.35 0.22 0.1 1" contype="0" conaffinity="0"/>
+    <geom name="prop_wrapped_pallet_load_2_v3" type="box" size="0.508 0.0445 0.011" pos="0 -0.0001 0.133" quat="1 0 0 0" rgba="0.35 0.22 0.1 1" contype="0" conaffinity="0"/>
+    <geom name="prop_wrapped_pallet_load_2_v4" type="box" size="0.508 0.0445 0.011" pos="0 0.1882 0.133" quat="1 0 0 0" rgba="0.35 0.22 0.1 1" contype="0" conaffinity="0"/>
+    <geom name="prop_wrapped_pallet_load_2_v5" type="box" size="0.508 0.0445 0.011" pos="0 0.3765 0.133" quat="1 0 0 0" rgba="0.35 0.22 0.1 1" contype="0" conaffinity="0"/>
+    <geom name="prop_wrapped_pallet_load_2_v6" type="box" size="0.508 0.0445 0.011" pos="0 0.5648 0.133" quat="1 0 0 0" rgba="0.35 0.22 0.1 1" contype="0" conaffinity="0"/>
+    <geom name="prop_wrapped_pallet_load_2_v7" type="box" size="0.019 0.6095 0.0445" pos="-0.489 0 0.0665" quat="1 0 0 0" rgba="0.3 0.19 0.08 1" contype="0" conaffinity="0"/>
+    <geom name="prop_wrapped_pallet_load_2_v8" type="box" size="0.019 0.6095 0.0445" pos="0 0 0.0665" quat="1 0 0 0" rgba="0.3 0.19 0.08 1" contype="0" conaffinity="0"/>
+    <geom name="prop_wrapped_pallet_load_2_v9" type="box" size="0.019 0.6095 0.0445" pos="0.489 0 0.0665" quat="1 0 0 0" rgba="0.3 0.19 0.08 1" contype="0" conaffinity="0"/>
+    <geom name="prop_wrapped_pallet_load_2_v10" type="box" size="0.47 0.57 0.004" pos="0 0 1.248" quat="1 0 0 0" rgba="0.45 0.29 0.14 1" contype="0" conaffinity="0"/>
+    <geom name="prop_wrapped_pallet_load_2_c0" type="box" size="0.508 0.6095 0.072" pos="0 0 0.072" quat="1 0 0 0" group="3" rgba="0.5 0.5 0.5 0.3" contype="1" conaffinity="1" friction="0.7 0.005 0.0001"/>
+    <geom name="prop_wrapped_pallet_load_2_c1" type="box" size="0.5 0.6 0.55" pos="0 0 0.694" quat="1 0 0 0" rgba="0.62 0.66 0.7 1" contype="1" conaffinity="1" friction="0.7 0.005 0.0001"/>
+  </body>
+  <body name="prop_wrapped_pallet_load_3" pos="0.66 5.33 0.0005" quat="1 0 0 0">
+    <geom name="prop_wrapped_pallet_load_3_v0" type="box" size="0.508 0.0445 0.011" pos="0 -0.565 0.133" quat="1 0 0 0" rgba="0.35 0.22 0.1 1" contype="0" conaffinity="0"/>
+    <geom name="prop_wrapped_pallet_load_3_v1" type="box" size="0.508 0.0445 0.011" pos="0 -0.3767 0.133" quat="1 0 0 0" rgba="0.35 0.22 0.1 1" contype="0" conaffinity="0"/>
+    <geom name="prop_wrapped_pallet_load_3_v2" type="box" size="0.508 0.0445 0.011" pos="0 -0.1884 0.133" quat="1 0 0 0" rgba="0.35 0.22 0.1 1" contype="0" conaffinity="0"/>
+    <geom name="prop_wrapped_pallet_load_3_v3" type="box" size="0.508 0.0445 0.011" pos="0 -0.0001 0.133" quat="1 0 0 0" rgba="0.35 0.22 0.1 1" contype="0" conaffinity="0"/>
+    <geom name="prop_wrapped_pallet_load_3_v4" type="box" size="0.508 0.0445 0.011" pos="0 0.1882 0.133" quat="1 0 0 0" rgba="0.35 0.22 0.1 1" contype="0" conaffinity="0"/>
+    <geom name="prop_wrapped_pallet_load_3_v5" type="box" size="0.508 0.0445 0.011" pos="0 0.3765 0.133" quat="1 0 0 0" rgba="0.35 0.22 0.1 1" contype="0" conaffinity="0"/>
+    <geom name="prop_wrapped_pallet_load_3_v6" type="box" size="0.508 0.0445 0.011" pos="0 0.5648 0.133" quat="1 0 0 0" rgba="0.35 0.22 0.1 1" contype="0" conaffinity="0"/>
+    <geom name="prop_wrapped_pallet_load_3_v7" type="box" size="0.019 0.6095 0.0445" pos="-0.489 0 0.0665" quat="1 0 0 0" rgba="0.3 0.19 0.08 1" contype="0" conaffinity="0"/>
+    <geom name="prop_wrapped_pallet_load_3_v8" type="box" size="0.019 0.6095 0.0445" pos="0 0 0.0665" quat="1 0 0 0" rgba="0.3 0.19 0.08 1" contype="0" conaffinity="0"/>
+    <geom name="prop_wrapped_pallet_load_3_v9" type="box" size="0.019 0.6095 0.0445" pos="0.489 0 0.0665" quat="1 0 0 0" rgba="0.3 0.19 0.08 1" contype="0" conaffinity="0"/>
+    <geom name="prop_wrapped_pallet_load_3_v10" type="box" size="0.47 0.57 0.004" pos="0 0 1.248" quat="1 0 0 0" rgba="0.45 0.29 0.14 1" contype="0" conaffinity="0"/>
+    <geom name="prop_wrapped_pallet_load_3_c0" type="box" size="0.508 0.6095 0.072" pos="0 0 0.072" quat="1 0 0 0" group="3" rgba="0.5 0.5 0.5 0.3" contype="1" conaffinity="1" friction="0.7 0.005 0.0001"/>
+    <geom name="prop_wrapped_pallet_load_3_c1" type="box" size="0.5 0.6 0.55" pos="0 0 0.694" quat="1 0 0 0" rgba="0.62 0.66 0.7 1" contype="1" conaffinity="1" friction="0.7 0.005 0.0001"/>
+  </body>
+  <body name="prop_wrapped_pallet_load_4" pos="-5.78 5.33 0.0005" quat="1 0 0 0">
+    <geom name="prop_wrapped_pallet_load_4_v0" type="box" size="0.508 0.0445 0.011" pos="0 -0.565 0.133" quat="1 0 0 0" rgba="0.35 0.22 0.1 1" contype="0" conaffinity="0"/>
+    <geom name="prop_wrapped_pallet_load_4_v1" type="box" size="0.508 0.0445 0.011" pos="0 -0.3767 0.133" quat="1 0 0 0" rgba="0.35 0.22 0.1 1" contype="0" conaffinity="0"/>
+    <geom name="prop_wrapped_pallet_load_4_v2" type="box" size="0.508 0.0445 0.011" pos="0 -0.1884 0.133" quat="1 0 0 0" rgba="0.35 0.22 0.1 1" contype="0" conaffinity="0"/>
+    <geom name="prop_wrapped_pallet_load_4_v3" type="box" size="0.508 0.0445 0.011" pos="0 -0.0001 0.133" quat="1 0 0 0" rgba="0.35 0.22 0.1 1" contype="0" conaffinity="0"/>
+    <geom name="prop_wrapped_pallet_load_4_v4" type="box" size="0.508 0.0445 0.011" pos="0 0.1882 0.133" quat="1 0 0 0" rgba="0.35 0.22 0.1 1" contype="0" conaffinity="0"/>
+    <geom name="prop_wrapped_pallet_load_4_v5" type="box" size="0.508 0.0445 0.011" pos="0 0.3765 0.133" quat="1 0 0 0" rgba="0.35 0.22 0.1 1" contype="0" conaffinity="0"/>
+    <geom name="prop_wrapped_pallet_load_4_v6" type="box" size="0.508 0.0445 0.011" pos="0 0.5648 0.133" quat="1 0 0 0" rgba="0.35 0.22 0.1 1" contype="0" conaffinity="0"/>
+    <geom name="prop_wrapped_pallet_load_4_v7" type="box" size="0.019 0.6095 0.0445" pos="-0.489 0 0.0665" quat="1 0 0 0" rgba="0.3 0.19 0.08 1" contype="0" conaffinity="0"/>
+    <geom name="prop_wrapped_pallet_load_4_v8" type="box" size="0.019 0.6095 0.0445" pos="0 0 0.0665" quat="1 0 0 0" rgba="0.3 0.19 0.08 1" contype="0" conaffinity="0"/>
+    <geom name="prop_wrapped_pallet_load_4_v9" type="box" size="0.019 0.6095 0.0445" pos="0.489 0 0.0665" quat="1 0 0 0" rgba="0.3 0.19 0.08 1" contype="0" conaffinity="0"/>
+    <geom name="prop_wrapped_pallet_load_4_v10" type="box" size="0.47 0.57 0.004" pos="0 0 1.248" quat="1 0 0 0" rgba="0.45 0.29 0.14 1" contype="0" conaffinity="0"/>
+    <geom name="prop_wrapped_pallet_load_4_c0" type="box" size="0.508 0.6095 0.072" pos="0 0 0.072" quat="1 0 0 0" group="3" rgba="0.5 0.5 0.5 0.3" contype="1" conaffinity="1" friction="0.7 0.005 0.0001"/>
+    <geom name="prop_wrapped_pallet_load_4_c1" type="box" size="0.5 0.6 0.55" pos="0 0 0.694" quat="1 0 0 0" rgba="0.62 0.66 0.7 1" contype="1" conaffinity="1" friction="0.7 0.005 0.0001"/>
+  </body>
+  <body name="prop_wrapped_pallet_load_5" pos="-3.26 5.33 0.0005" quat="1 0 0 0">
+    <geom name="prop_wrapped_pallet_load_5_v0" type="box" size="0.508 0.0445 0.011" pos="0 -0.565 0.133" quat="1 0 0 0" rgba="0.35 0.22 0.1 1" contype="0" conaffinity="0"/>
+    <geom name="prop_wrapped_pallet_load_5_v1" type="box" size="0.508 0.0445 0.011" pos="0 -0.3767 0.133" quat="1 0 0 0" rgba="0.35 0.22 0.1 1" contype="0" conaffinity="0"/>
+    <geom name="prop_wrapped_pallet_load_5_v2" type="box" size="0.508 0.0445 0.011" pos="0 -0.1884 0.133" quat="1 0 0 0" rgba="0.35 0.22 0.1 1" contype="0" conaffinity="0"/>
+    <geom name="prop_wrapped_pallet_load_5_v3" type="box" size="0.508 0.0445 0.011" pos="0 -0.0001 0.133" quat="1 0 0 0" rgba="0.35 0.22 0.1 1" contype="0" conaffinity="0"/>
+    <geom name="prop_wrapped_pallet_load_5_v4" type="box" size="0.508 0.0445 0.011" pos="0 0.1882 0.133" quat="1 0 0 0" rgba="0.35 0.22 0.1 1" contype="0" conaffinity="0"/>
+    <geom name="prop_wrapped_pallet_load_5_v5" type="box" size="0.508 0.0445 0.011" pos="0 0.3765 0.133" quat="1 0 0 0" rgba="0.35 0.22 0.1 1" contype="0" conaffinity="0"/>
+    <geom name="prop_wrapped_pallet_load_5_v6" type="box" size="0.508 0.0445 0.011" pos="0 0.5648 0.133" quat="1 0 0 0" rgba="0.35 0.22 0.1 1" contype="0" conaffinity="0"/>
+    <geom name="prop_wrapped_pallet_load_5_v7" type="box" size="0.019 0.6095 0.0445" pos="-0.489 0 0.0665" quat="1 0 0 0" rgba="0.3 0.19 0.08 1" contype="0" conaffinity="0"/>
+    <geom name="prop_wrapped_pallet_load_5_v8" type="box" size="0.019 0.6095 0.0445" pos="0 0 0.0665" quat="1 0 0 0" rgba="0.3 0.19 0.08 1" contype="0" conaffinity="0"/>
+    <geom name="prop_wrapped_pallet_load_5_v9" type="box" size="0.019 0.6095 0.0445" pos="0.489 0 0.0665" quat="1 0 0 0" rgba="0.3 0.19 0.08 1" contype="0" conaffinity="0"/>
+    <geom name="prop_wrapped_pallet_load_5_v10" type="box" size="0.47 0.57 0.004" pos="0 0 1.248" quat="1 0 0 0" rgba="0.45 0.29 0.14 1" contype="0" conaffinity="0"/>
+    <geom name="prop_wrapped_pallet_load_5_c0" type="box" size="0.508 0.6095 0.072" pos="0 0 0.072" quat="1 0 0 0" group="3" rgba="0.5 0.5 0.5 0.3" contype="1" conaffinity="1" friction="0.7 0.005 0.0001"/>
+    <geom name="prop_wrapped_pallet_load_5_c1" type="box" size="0.5 0.6 0.55" pos="0 0 0.694" quat="1 0 0 0" rgba="0.62 0.66 0.7 1" contype="1" conaffinity="1" friction="0.7 0.005 0.0001"/>
+  </body>
+  <body name="prop_wrapped_pallet_load_6" pos="-0.74 5.33 0.0005" quat="1 0 0 0">
+    <geom name="prop_wrapped_pallet_load_6_v0" type="box" size="0.508 0.0445 0.011" pos="0 -0.565 0.133" quat="1 0 0 0" rgba="0.35 0.22 0.1 1" contype="0" conaffinity="0"/>
+    <geom name="prop_wrapped_pallet_load_6_v1" type="box" size="0.508 0.0445 0.011" pos="0 -0.3767 0.133" quat="1 0 0 0" rgba="0.35 0.22 0.1 1" contype="0" conaffinity="0"/>
+    <geom name="prop_wrapped_pallet_load_6_v2" type="box" size="0.508 0.0445 0.011" pos="0 -0.1884 0.133" quat="1 0 0 0" rgba="0.35 0.22 0.1 1" contype="0" conaffinity="0"/>
+    <geom name="prop_wrapped_pallet_load_6_v3" type="box" size="0.508 0.0445 0.011" pos="0 -0.0001 0.133" quat="1 0 0 0" rgba="0.35 0.22 0.1 1" contype="0" conaffinity="0"/>
+    <geom name="prop_wrapped_pallet_load_6_v4" type="box" size="0.508 0.0445 0.011" pos="0 0.1882 0.133" quat="1 0 0 0" rgba="0.35 0.22 0.1 1" contype="0" conaffinity="0"/>
+    <geom name="prop_wrapped_pallet_load_6_v5" type="box" size="0.508 0.0445 0.011" pos="0 0.3765 0.133" quat="1 0 0 0" rgba="0.35 0.22 0.1 1" contype="0" conaffinity="0"/>
+    <geom name="prop_wrapped_pallet_load_6_v6" type="box" size="0.508 0.0445 0.011" pos="0 0.5648 0.133" quat="1 0 0 0" rgba="0.35 0.22 0.1 1" contype="0" conaffinity="0"/>
+    <geom name="prop_wrapped_pallet_load_6_v7" type="box" size="0.019 0.6095 0.0445" pos="-0.489 0 0.0665" quat="1 0 0 0" rgba="0.3 0.19 0.08 1" contype="0" conaffinity="0"/>
+    <geom name="prop_wrapped_pallet_load_6_v8" type="box" size="0.019 0.6095 0.0445" pos="0 0 0.0665" quat="1 0 0 0" rgba="0.3 0.19 0.08 1" contype="0" conaffinity="0"/>
+    <geom name="prop_wrapped_pallet_load_6_v9" type="box" size="0.019 0.6095 0.0445" pos="0.489 0 0.0665" quat="1 0 0 0" rgba="0.3 0.19 0.08 1" contype="0" conaffinity="0"/>
+    <geom name="prop_wrapped_pallet_load_6_v10" type="box" size="0.47 0.57 0.004" pos="0 0 1.248" quat="1 0 0 0" rgba="0.45 0.29 0.14 1" contype="0" conaffinity="0"/>
+    <geom name="prop_wrapped_pallet_load_6_c0" type="box" size="0.508 0.6095 0.072" pos="0 0 0.072" quat="1 0 0 0" group="3" rgba="0.5 0.5 0.5 0.3" contype="1" conaffinity="1" friction="0.7 0.005 0.0001"/>
+    <geom name="prop_wrapped_pallet_load_6_c1" type="box" size="0.5 0.6 0.55" pos="0 0 0.694" quat="1 0 0 0" rgba="0.62 0.66 0.7 1" contype="1" conaffinity="1" friction="0.7 0.005 0.0001"/>
+  </body>
+  <body name="prop_wrapped_pallet_load_7" pos="1.78 5.33 0.0005" quat="1 0 0 0">
+    <geom name="prop_wrapped_pallet_load_7_v0" type="box" size="0.508 0.0445 0.011" pos="0 -0.565 0.133" quat="1 0 0 0" rgba="0.35 0.22 0.1 1" contype="0" conaffinity="0"/>
+    <geom name="prop_wrapped_pallet_load_7_v1" type="box" size="0.508 0.0445 0.011" pos="0 -0.3767 0.133" quat="1 0 0 0" rgba="0.35 0.22 0.1 1" contype="0" conaffinity="0"/>
+    <geom name="prop_wrapped_pallet_load_7_v2" type="box" size="0.508 0.0445 0.011" pos="0 -0.1884 0.133" quat="1 0 0 0" rgba="0.35 0.22 0.1 1" contype="0" conaffinity="0"/>
+    <geom name="prop_wrapped_pallet_load_7_v3" type="box" size="0.508 0.0445 0.011" pos="0 -0.0001 0.133" quat="1 0 0 0" rgba="0.35 0.22 0.1 1" contype="0" conaffinity="0"/>
+    <geom name="prop_wrapped_pallet_load_7_v4" type="box" size="0.508 0.0445 0.011" pos="0 0.1882 0.133" quat="1 0 0 0" rgba="0.35 0.22 0.1 1" contype="0" conaffinity="0"/>
+    <geom name="prop_wrapped_pallet_load_7_v5" type="box" size="0.508 0.0445 0.011" pos="0 0.3765 0.133" quat="1 0 0 0" rgba="0.35 0.22 0.1 1" contype="0" conaffinity="0"/>
+    <geom name="prop_wrapped_pallet_load_7_v6" type="box" size="0.508 0.0445 0.011" pos="0 0.5648 0.133" quat="1 0 0 0" rgba="0.35 0.22 0.1 1" contype="0" conaffinity="0"/>
+    <geom name="prop_wrapped_pallet_load_7_v7" type="box" size="0.019 0.6095 0.0445" pos="-0.489 0 0.0665" quat="1 0 0 0" rgba="0.3 0.19 0.08 1" contype="0" conaffinity="0"/>
+    <geom name="prop_wrapped_pallet_load_7_v8" type="box" size="0.019 0.6095 0.0445" pos="0 0 0.0665" quat="1 0 0 0" rgba="0.3 0.19 0.08 1" contype="0" conaffinity="0"/>
+    <geom name="prop_wrapped_pallet_load_7_v9" type="box" size="0.019 0.6095 0.0445" pos="0.489 0 0.0665" quat="1 0 0 0" rgba="0.3 0.19 0.08 1" contype="0" conaffinity="0"/>
+    <geom name="prop_wrapped_pallet_load_7_v10" type="box" size="0.47 0.57 0.004" pos="0 0 1.248" quat="1 0 0 0" rgba="0.45 0.29 0.14 1" contype="0" conaffinity="0"/>
+    <geom name="prop_wrapped_pallet_load_7_c0" type="box" size="0.508 0.6095 0.072" pos="0 0 0.072" quat="1 0 0 0" group="3" rgba="0.5 0.5 0.5 0.3" contype="1" conaffinity="1" friction="0.7 0.005 0.0001"/>
+    <geom name="prop_wrapped_pallet_load_7_c1" type="box" size="0.5 0.6 0.55" pos="0 0 0.694" quat="1 0 0 0" rgba="0.62 0.66 0.7 1" contype="1" conaffinity="1" friction="0.7 0.005 0.0001"/>
+  </body>
+  <body name="prop_wrapped_pallet_load_8" pos="-6.9 5.33 1.3635" quat="1 0 0 0">
+    <geom name="prop_wrapped_pallet_load_8_v0" type="box" size="0.508 0.0445 0.011" pos="0 -0.565 0.133" quat="1 0 0 0" rgba="0.35 0.22 0.1 1" contype="0" conaffinity="0"/>
+    <geom name="prop_wrapped_pallet_load_8_v1" type="box" size="0.508 0.0445 0.011" pos="0 -0.3767 0.133" quat="1 0 0 0" rgba="0.35 0.22 0.1 1" contype="0" conaffinity="0"/>
+    <geom name="prop_wrapped_pallet_load_8_v2" type="box" size="0.508 0.0445 0.011" pos="0 -0.1884 0.133" quat="1 0 0 0" rgba="0.35 0.22 0.1 1" contype="0" conaffinity="0"/>
+    <geom name="prop_wrapped_pallet_load_8_v3" type="box" size="0.508 0.0445 0.011" pos="0 -0.0001 0.133" quat="1 0 0 0" rgba="0.35 0.22 0.1 1" contype="0" conaffinity="0"/>
+    <geom name="prop_wrapped_pallet_load_8_v4" type="box" size="0.508 0.0445 0.011" pos="0 0.1882 0.133" quat="1 0 0 0" rgba="0.35 0.22 0.1 1" contype="0" conaffinity="0"/>
+    <geom name="prop_wrapped_pallet_load_8_v5" type="box" size="0.508 0.0445 0.011" pos="0 0.3765 0.133" quat="1 0 0 0" rgba="0.35 0.22 0.1 1" contype="0" conaffinity="0"/>
+    <geom name="prop_wrapped_pallet_load_8_v6" type="box" size="0.508 0.0445 0.011" pos="0 0.5648 0.133" quat="1 0 0 0" rgba="0.35 0.22 0.1 1" contype="0" conaffinity="0"/>
+    <geom name="prop_wrapped_pallet_load_8_v7" type="box" size="0.019 0.6095 0.0445" pos="-0.489 0 0.0665" quat="1 0 0 0" rgba="0.3 0.19 0.08 1" contype="0" conaffinity="0"/>
+    <geom name="prop_wrapped_pallet_load_8_v8" type="box" size="0.019 0.6095 0.0445" pos="0 0 0.0665" quat="1 0 0 0" rgba="0.3 0.19 0.08 1" contype="0" conaffinity="0"/>
+    <geom name="prop_wrapped_pallet_load_8_v9" type="box" size="0.019 0.6095 0.0445" pos="0.489 0 0.0665" quat="1 0 0 0" rgba="0.3 0.19 0.08 1" contype="0" conaffinity="0"/>
+    <geom name="prop_wrapped_pallet_load_8_v10" type="box" size="0.47 0.57 0.004" pos="0 0 1.248" quat="1 0 0 0" rgba="0.45 0.29 0.14 1" contype="0" conaffinity="0"/>
+    <geom name="prop_wrapped_pallet_load_8_c0" type="box" size="0.508 0.6095 0.072" pos="0 0 0.072" quat="1 0 0 0" group="3" rgba="0.5 0.5 0.5 0.3" contype="1" conaffinity="1" friction="0.7 0.005 0.0001"/>
+    <geom name="prop_wrapped_pallet_load_8_c1" type="box" size="0.5 0.6 0.55" pos="0 0 0.694" quat="1 0 0 0" rgba="0.62 0.66 0.7 1" contype="1" conaffinity="1" friction="0.7 0.005 0.0001"/>
+  </body>
+  <body name="prop_wrapped_pallet_load_9" pos="-4.38 5.33 1.3635" quat="1 0 0 0">
+    <geom name="prop_wrapped_pallet_load_9_v0" type="box" size="0.508 0.0445 0.011" pos="0 -0.565 0.133" quat="1 0 0 0" rgba="0.35 0.22 0.1 1" contype="0" conaffinity="0"/>
+    <geom name="prop_wrapped_pallet_load_9_v1" type="box" size="0.508 0.0445 0.011" pos="0 -0.3767 0.133" quat="1 0 0 0" rgba="0.35 0.22 0.1 1" contype="0" conaffinity="0"/>
+    <geom name="prop_wrapped_pallet_load_9_v2" type="box" size="0.508 0.0445 0.011" pos="0 -0.1884 0.133" quat="1 0 0 0" rgba="0.35 0.22 0.1 1" contype="0" conaffinity="0"/>
+    <geom name="prop_wrapped_pallet_load_9_v3" type="box" size="0.508 0.0445 0.011" pos="0 -0.0001 0.133" quat="1 0 0 0" rgba="0.35 0.22 0.1 1" contype="0" conaffinity="0"/>
+    <geom name="prop_wrapped_pallet_load_9_v4" type="box" size="0.508 0.0445 0.011" pos="0 0.1882 0.133" quat="1 0 0 0" rgba="0.35 0.22 0.1 1" contype="0" conaffinity="0"/>
+    <geom name="prop_wrapped_pallet_load_9_v5" type="box" size="0.508 0.0445 0.011" pos="0 0.3765 0.133" quat="1 0 0 0" rgba="0.35 0.22 0.1 1" contype="0" conaffinity="0"/>
+    <geom name="prop_wrapped_pallet_load_9_v6" type="box" size="0.508 0.0445 0.011" pos="0 0.5648 0.133" quat="1 0 0 0" rgba="0.35 0.22 0.1 1" contype="0" conaffinity="0"/>
+    <geom name="prop_wrapped_pallet_load_9_v7" type="box" size="0.019 0.6095 0.0445" pos="-0.489 0 0.0665" quat="1 0 0 0" rgba="0.3 0.19 0.08 1" contype="0" conaffinity="0"/>
+    <geom name="prop_wrapped_pallet_load_9_v8" type="box" size="0.019 0.6095 0.0445" pos="0 0 0.0665" quat="1 0 0 0" rgba="0.3 0.19 0.08 1" contype="0" conaffinity="0"/>
+    <geom name="prop_wrapped_pallet_load_9_v9" type="box" size="0.019 0.6095 0.0445" pos="0.489 0 0.0665" quat="1 0 0 0" rgba="0.3 0.19 0.08 1" contype="0" conaffinity="0"/>
+    <geom name="prop_wrapped_pallet_load_9_v10" type="box" size="0.47 0.57 0.004" pos="0 0 1.248" quat="1 0 0 0" rgba="0.45 0.29 0.14 1" contype="0" conaffinity="0"/>
+    <geom name="prop_wrapped_pallet_load_9_c0" type="box" size="0.508 0.6095 0.072" pos="0 0 0.072" quat="1 0 0 0" group="3" rgba="0.5 0.5 0.5 0.3" contype="1" conaffinity="1" friction="0.7 0.005 0.0001"/>
+    <geom name="prop_wrapped_pallet_load_9_c1" type="box" size="0.5 0.6 0.55" pos="0 0 0.694" quat="1 0 0 0" rgba="0.62 0.66 0.7 1" contype="1" conaffinity="1" friction="0.7 0.005 0.0001"/>
+  </body>
+  <body name="prop_wrapped_pallet_load_10" pos="-1.86 5.33 1.3635" quat="1 0 0 0">
+    <geom name="prop_wrapped_pallet_load_10_v0" type="box" size="0.508 0.0445 0.011" pos="0 -0.565 0.133" quat="1 0 0 0" rgba="0.35 0.22 0.1 1" contype="0" conaffinity="0"/>
+    <geom name="prop_wrapped_pallet_load_10_v1" type="box" size="0.508 0.0445 0.011" pos="0 -0.3767 0.133" quat="1 0 0 0" rgba="0.35 0.22 0.1 1" contype="0" conaffinity="0"/>
+    <geom name="prop_wrapped_pallet_load_10_v2" type="box" size="0.508 0.0445 0.011" pos="0 -0.1884 0.133" quat="1 0 0 0" rgba="0.35 0.22 0.1 1" contype="0" conaffinity="0"/>
+    <geom name="prop_wrapped_pallet_load_10_v3" type="box" size="0.508 0.0445 0.011" pos="0 -0.0001 0.133" quat="1 0 0 0" rgba="0.35 0.22 0.1 1" contype="0" conaffinity="0"/>
+    <geom name="prop_wrapped_pallet_load_10_v4" type="box" size="0.508 0.0445 0.011" pos="0 0.1882 0.133" quat="1 0 0 0" rgba="0.35 0.22 0.1 1" contype="0" conaffinity="0"/>
+    <geom name="prop_wrapped_pallet_load_10_v5" type="box" size="0.508 0.0445 0.011" pos="0 0.3765 0.133" quat="1 0 0 0" rgba="0.35 0.22 0.1 1" contype="0" conaffinity="0"/>
+    <geom name="prop_wrapped_pallet_load_10_v6" type="box" size="0.508 0.0445 0.011" pos="0 0.5648 0.133" quat="1 0 0 0" rgba="0.35 0.22 0.1 1" contype="0" conaffinity="0"/>
+    <geom name="prop_wrapped_pallet_load_10_v7" type="box" size="0.019 0.6095 0.0445" pos="-0.489 0 0.0665" quat="1 0 0 0" rgba="0.3 0.19 0.08 1" contype="0" conaffinity="0"/>
+    <geom name="prop_wrapped_pallet_load_10_v8" type="box" size="0.019 0.6095 0.0445" pos="0 0 0.0665" quat="1 0 0 0" rgba="0.3 0.19 0.08 1" contype="0" conaffinity="0"/>
+    <geom name="prop_wrapped_pallet_load_10_v9" type="box" size="0.019 0.6095 0.0445" pos="0.489 0 0.0665" quat="1 0 0 0" rgba="0.3 0.19 0.08 1" contype="0" conaffinity="0"/>
+    <geom name="prop_wrapped_pallet_load_10_v10" type="box" size="0.47 0.57 0.004" pos="0 0 1.248" quat="1 0 0 0" rgba="0.45 0.29 0.14 1" contype="0" conaffinity="0"/>
+    <geom name="prop_wrapped_pallet_load_10_c0" type="box" size="0.508 0.6095 0.072" pos="0 0 0.072" quat="1 0 0 0" group="3" rgba="0.5 0.5 0.5 0.3" contype="1" conaffinity="1" friction="0.7 0.005 0.0001"/>
+    <geom name="prop_wrapped_pallet_load_10_c1" type="box" size="0.5 0.6 0.55" pos="0 0 0.694" quat="1 0 0 0" rgba="0.62 0.66 0.7 1" contype="1" conaffinity="1" friction="0.7 0.005 0.0001"/>
+  </body>
+  <body name="prop_wrapped_pallet_load_11" pos="0.66 5.33 1.3635" quat="1 0 0 0">
+    <geom name="prop_wrapped_pallet_load_11_v0" type="box" size="0.508 0.0445 0.011" pos="0 -0.565 0.133" quat="1 0 0 0" rgba="0.35 0.22 0.1 1" contype="0" conaffinity="0"/>
+    <geom name="prop_wrapped_pallet_load_11_v1" type="box" size="0.508 0.0445 0.011" pos="0 -0.3767 0.133" quat="1 0 0 0" rgba="0.35 0.22 0.1 1" contype="0" conaffinity="0"/>
+    <geom name="prop_wrapped_pallet_load_11_v2" type="box" size="0.508 0.0445 0.011" pos="0 -0.1884 0.133" quat="1 0 0 0" rgba="0.35 0.22 0.1 1" contype="0" conaffinity="0"/>
+    <geom name="prop_wrapped_pallet_load_11_v3" type="box" size="0.508 0.0445 0.011" pos="0 -0.0001 0.133" quat="1 0 0 0" rgba="0.35 0.22 0.1 1" contype="0" conaffinity="0"/>
+    <geom name="prop_wrapped_pallet_load_11_v4" type="box" size="0.508 0.0445 0.011" pos="0 0.1882 0.133" quat="1 0 0 0" rgba="0.35 0.22 0.1 1" contype="0" conaffinity="0"/>
+    <geom name="prop_wrapped_pallet_load_11_v5" type="box" size="0.508 0.0445 0.011" pos="0 0.3765 0.133" quat="1 0 0 0" rgba="0.35 0.22 0.1 1" contype="0" conaffinity="0"/>
+    <geom name="prop_wrapped_pallet_load_11_v6" type="box" size="0.508 0.0445 0.011" pos="0 0.5648 0.133" quat="1 0 0 0" rgba="0.35 0.22 0.1 1" contype="0" conaffinity="0"/>
+    <geom name="prop_wrapped_pallet_load_11_v7" type="box" size="0.019 0.6095 0.0445" pos="-0.489 0 0.0665" quat="1 0 0 0" rgba="0.3 0.19 0.08 1" contype="0" conaffinity="0"/>
+    <geom name="prop_wrapped_pallet_load_11_v8" type="box" size="0.019 0.6095 0.0445" pos="0 0 0.0665" quat="1 0 0 0" rgba="0.3 0.19 0.08 1" contype="0" conaffinity="0"/>
+    <geom name="prop_wrapped_pallet_load_11_v9" type="box" size="0.019 0.6095 0.0445" pos="0.489 0 0.0665" quat="1 0 0 0" rgba="0.3 0.19 0.08 1" contype="0" conaffinity="0"/>
+    <geom name="prop_wrapped_pallet_load_11_v10" type="box" size="0.47 0.57 0.004" pos="0 0 1.248" quat="1 0 0 0" rgba="0.45 0.29 0.14 1" contype="0" conaffinity="0"/>
+    <geom name="prop_wrapped_pallet_load_11_c0" type="box" size="0.508 0.6095 0.072" pos="0 0 0.072" quat="1 0 0 0" group="3" rgba="0.5 0.5 0.5 0.3" contype="1" conaffinity="1" friction="0.7 0.005 0.0001"/>
+    <geom name="prop_wrapped_pallet_load_11_c1" type="box" size="0.5 0.6 0.55" pos="0 0 0.694" quat="1 0 0 0" rgba="0.62 0.66 0.7 1" contype="1" conaffinity="1" friction="0.7 0.005 0.0001"/>
+  </body>
+  <body name="prop_wrapped_pallet_load_12" pos="-5.78 5.33 1.3635" quat="1 0 0 0">
+    <geom name="prop_wrapped_pallet_load_12_v0" type="box" size="0.508 0.0445 0.011" pos="0 -0.565 0.133" quat="1 0 0 0" rgba="0.35 0.22 0.1 1" contype="0" conaffinity="0"/>
+    <geom name="prop_wrapped_pallet_load_12_v1" type="box" size="0.508 0.0445 0.011" pos="0 -0.3767 0.133" quat="1 0 0 0" rgba="0.35 0.22 0.1 1" contype="0" conaffinity="0"/>
+    <geom name="prop_wrapped_pallet_load_12_v2" type="box" size="0.508 0.0445 0.011" pos="0 -0.1884 0.133" quat="1 0 0 0" rgba="0.35 0.22 0.1 1" contype="0" conaffinity="0"/>
+    <geom name="prop_wrapped_pallet_load_12_v3" type="box" size="0.508 0.0445 0.011" pos="0 -0.0001 0.133" quat="1 0 0 0" rgba="0.35 0.22 0.1 1" contype="0" conaffinity="0"/>
+    <geom name="prop_wrapped_pallet_load_12_v4" type="box" size="0.508 0.0445 0.011" pos="0 0.1882 0.133" quat="1 0 0 0" rgba="0.35 0.22 0.1 1" contype="0" conaffinity="0"/>
+    <geom name="prop_wrapped_pallet_load_12_v5" type="box" size="0.508 0.0445 0.011" pos="0 0.3765 0.133" quat="1 0 0 0" rgba="0.35 0.22 0.1 1" contype="0" conaffinity="0"/>
+    <geom name="prop_wrapped_pallet_load_12_v6" type="box" size="0.508 0.0445 0.011" pos="0 0.5648 0.133" quat="1 0 0 0" rgba="0.35 0.22 0.1 1" contype="0" conaffinity="0"/>
+    <geom name="prop_wrapped_pallet_load_12_v7" type="box" size="0.019 0.6095 0.0445" pos="-0.489 0 0.0665" quat="1 0 0 0" rgba="0.3 0.19 0.08 1" contype="0" conaffinity="0"/>
+    <geom name="prop_wrapped_pallet_load_12_v8" type="box" size="0.019 0.6095 0.0445" pos="0 0 0.0665" quat="1 0 0 0" rgba="0.3 0.19 0.08 1" contype="0" conaffinity="0"/>
+    <geom name="prop_wrapped_pallet_load_12_v9" type="box" size="0.019 0.6095 0.0445" pos="0.489 0 0.0665" quat="1 0 0 0" rgba="0.3 0.19 0.08 1" contype="0" conaffinity="0"/>
+    <geom name="prop_wrapped_pallet_load_12_v10" type="box" size="0.47 0.57 0.004" pos="0 0 1.248" quat="1 0 0 0" rgba="0.45 0.29 0.14 1" contype="0" conaffinity="0"/>
+    <geom name="prop_wrapped_pallet_load_12_c0" type="box" size="0.508 0.6095 0.072" pos="0 0 0.072" quat="1 0 0 0" group="3" rgba="0.5 0.5 0.5 0.3" contype="1" conaffinity="1" friction="0.7 0.005 0.0001"/>
+    <geom name="prop_wrapped_pallet_load_12_c1" type="box" size="0.5 0.6 0.55" pos="0 0 0.694" quat="1 0 0 0" rgba="0.62 0.66 0.7 1" contype="1" conaffinity="1" friction="0.7 0.005 0.0001"/>
+  </body>
+  <body name="prop_wrapped_pallet_load_13" pos="-3.26 5.33 1.3635" quat="1 0 0 0">
+    <geom name="prop_wrapped_pallet_load_13_v0" type="box" size="0.508 0.0445 0.011" pos="0 -0.565 0.133" quat="1 0 0 0" rgba="0.35 0.22 0.1 1" contype="0" conaffinity="0"/>
+    <geom name="prop_wrapped_pallet_load_13_v1" type="box" size="0.508 0.0445 0.011" pos="0 -0.3767 0.133" quat="1 0 0 0" rgba="0.35 0.22 0.1 1" contype="0" conaffinity="0"/>
+    <geom name="prop_wrapped_pallet_load_13_v2" type="box" size="0.508 0.0445 0.011" pos="0 -0.1884 0.133" quat="1 0 0 0" rgba="0.35 0.22 0.1 1" contype="0" conaffinity="0"/>
+    <geom name="prop_wrapped_pallet_load_13_v3" type="box" size="0.508 0.0445 0.011" pos="0 -0.0001 0.133" quat="1 0 0 0" rgba="0.35 0.22 0.1 1" contype="0" conaffinity="0"/>
+    <geom name="prop_wrapped_pallet_load_13_v4" type="box" size="0.508 0.0445 0.011" pos="0 0.1882 0.133" quat="1 0 0 0" rgba="0.35 0.22 0.1 1" contype="0" conaffinity="0"/>
+    <geom name="prop_wrapped_pallet_load_13_v5" type="box" size="0.508 0.0445 0.011" pos="0 0.3765 0.133" quat="1 0 0 0" rgba="0.35 0.22 0.1 1" contype="0" conaffinity="0"/>
+    <geom name="prop_wrapped_pallet_load_13_v6" type="box" size="0.508 0.0445 0.011" pos="0 0.5648 0.133" quat="1 0 0 0" rgba="0.35 0.22 0.1 1" contype="0" conaffinity="0"/>
+    <geom name="prop_wrapped_pallet_load_13_v7" type="box" size="0.019 0.6095 0.0445" pos="-0.489 0 0.0665" quat="1 0 0 0" rgba="0.3 0.19 0.08 1" contype="0" conaffinity="0"/>
+    <geom name="prop_wrapped_pallet_load_13_v8" type="box" size="0.019 0.6095 0.0445" pos="0 0 0.0665" quat="1 0 0 0" rgba="0.3 0.19 0.08 1" contype="0" conaffinity="0"/>
+    <geom name="prop_wrapped_pallet_load_13_v9" type="box" size="0.019 0.6095 0.0445" pos="0.489 0 0.0665" quat="1 0 0 0" rgba="0.3 0.19 0.08 1" contype="0" conaffinity="0"/>
+    <geom name="prop_wrapped_pallet_load_13_v10" type="box" size="0.47 0.57 0.004" pos="0 0 1.248" quat="1 0 0 0" rgba="0.45 0.29 0.14 1" contype="0" conaffinity="0"/>
+    <geom name="prop_wrapped_pallet_load_13_c0" type="box" size="0.508 0.6095 0.072" pos="0 0 0.072" quat="1 0 0 0" group="3" rgba="0.5 0.5 0.5 0.3" contype="1" conaffinity="1" friction="0.7 0.005 0.0001"/>
+    <geom name="prop_wrapped_pallet_load_13_c1" type="box" size="0.5 0.6 0.55" pos="0 0 0.694" quat="1 0 0 0" rgba="0.62 0.66 0.7 1" contype="1" conaffinity="1" friction="0.7 0.005 0.0001"/>
+  </body>
+  <body name="prop_wrapped_pallet_load_14" pos="-0.74 5.33 1.3635" quat="1 0 0 0">
+    <geom name="prop_wrapped_pallet_load_14_v0" type="box" size="0.508 0.0445 0.011" pos="0 -0.565 0.133" quat="1 0 0 0" rgba="0.35 0.22 0.1 1" contype="0" conaffinity="0"/>
+    <geom name="prop_wrapped_pallet_load_14_v1" type="box" size="0.508 0.0445 0.011" pos="0 -0.3767 0.133" quat="1 0 0 0" rgba="0.35 0.22 0.1 1" contype="0" conaffinity="0"/>
+    <geom name="prop_wrapped_pallet_load_14_v2" type="box" size="0.508 0.0445 0.011" pos="0 -0.1884 0.133" quat="1 0 0 0" rgba="0.35 0.22 0.1 1" contype="0" conaffinity="0"/>
+    <geom name="prop_wrapped_pallet_load_14_v3" type="box" size="0.508 0.0445 0.011" pos="0 -0.0001 0.133" quat="1 0 0 0" rgba="0.35 0.22 0.1 1" contype="0" conaffinity="0"/>
+    <geom name="prop_wrapped_pallet_load_14_v4" type="box" size="0.508 0.0445 0.011" pos="0 0.1882 0.133" quat="1 0 0 0" rgba="0.35 0.22 0.1 1" contype="0" conaffinity="0"/>
+    <geom name="prop_wrapped_pallet_load_14_v5" type="box" size="0.508 0.0445 0.011" pos="0 0.3765 0.133" quat="1 0 0 0" rgba="0.35 0.22 0.1 1" contype="0" conaffinity="0"/>
+    <geom name="prop_wrapped_pallet_load_14_v6" type="box" size="0.508 0.0445 0.011" pos="0 0.5648 0.133" quat="1 0 0 0" rgba="0.35 0.22 0.1 1" contype="0" conaffinity="0"/>
+    <geom name="prop_wrapped_pallet_load_14_v7" type="box" size="0.019 0.6095 0.0445" pos="-0.489 0 0.0665" quat="1 0 0 0" rgba="0.3 0.19 0.08 1" contype="0" conaffinity="0"/>
+    <geom name="prop_wrapped_pallet_load_14_v8" type="box" size="0.019 0.6095 0.0445" pos="0 0 0.0665" quat="1 0 0 0" rgba="0.3 0.19 0.08 1" contype="0" conaffinity="0"/>
+    <geom name="prop_wrapped_pallet_load_14_v9" type="box" size="0.019 0.6095 0.0445" pos="0.489 0 0.0665" quat="1 0 0 0" rgba="0.3 0.19 0.08 1" contype="0" conaffinity="0"/>
+    <geom name="prop_wrapped_pallet_load_14_v10" type="box" size="0.47 0.57 0.004" pos="0 0 1.248" quat="1 0 0 0" rgba="0.45 0.29 0.14 1" contype="0" conaffinity="0"/>
+    <geom name="prop_wrapped_pallet_load_14_c0" type="box" size="0.508 0.6095 0.072" pos="0 0 0.072" quat="1 0 0 0" group="3" rgba="0.5 0.5 0.5 0.3" contype="1" conaffinity="1" friction="0.7 0.005 0.0001"/>
+    <geom name="prop_wrapped_pallet_load_14_c1" type="box" size="0.5 0.6 0.55" pos="0 0 0.694" quat="1 0 0 0" rgba="0.62 0.66 0.7 1" contype="1" conaffinity="1" friction="0.7 0.005 0.0001"/>
+  </body>
+  <body name="prop_wrapped_pallet_load_15" pos="-6.9 5.33 3.0505" quat="1 0 0 0">
+    <geom name="prop_wrapped_pallet_load_15_v0" type="box" size="0.508 0.0445 0.011" pos="0 -0.565 0.133" quat="1 0 0 0" rgba="0.35 0.22 0.1 1" contype="0" conaffinity="0"/>
+    <geom name="prop_wrapped_pallet_load_15_v1" type="box" size="0.508 0.0445 0.011" pos="0 -0.3767 0.133" quat="1 0 0 0" rgba="0.35 0.22 0.1 1" contype="0" conaffinity="0"/>
+    <geom name="prop_wrapped_pallet_load_15_v2" type="box" size="0.508 0.0445 0.011" pos="0 -0.1884 0.133" quat="1 0 0 0" rgba="0.35 0.22 0.1 1" contype="0" conaffinity="0"/>
+    <geom name="prop_wrapped_pallet_load_15_v3" type="box" size="0.508 0.0445 0.011" pos="0 -0.0001 0.133" quat="1 0 0 0" rgba="0.35 0.22 0.1 1" contype="0" conaffinity="0"/>
+    <geom name="prop_wrapped_pallet_load_15_v4" type="box" size="0.508 0.0445 0.011" pos="0 0.1882 0.133" quat="1 0 0 0" rgba="0.35 0.22 0.1 1" contype="0" conaffinity="0"/>
+    <geom name="prop_wrapped_pallet_load_15_v5" type="box" size="0.508 0.0445 0.011" pos="0 0.3765 0.133" quat="1 0 0 0" rgba="0.35 0.22 0.1 1" contype="0" conaffinity="0"/>
+    <geom name="prop_wrapped_pallet_load_15_v6" type="box" size="0.508 0.0445 0.011" pos="0 0.5648 0.133" quat="1 0 0 0" rgba="0.35 0.22 0.1 1" contype="0" conaffinity="0"/>
+    <geom name="prop_wrapped_pallet_load_15_v7" type="box" size="0.019 0.6095 0.0445" pos="-0.489 0 0.0665" quat="1 0 0 0" rgba="0.3 0.19 0.08 1" contype="0" conaffinity="0"/>
+    <geom name="prop_wrapped_pallet_load_15_v8" type="box" size="0.019 0.6095 0.0445" pos="0 0 0.0665" quat="1 0 0 0" rgba="0.3 0.19 0.08 1" contype="0" conaffinity="0"/>
+    <geom name="prop_wrapped_pallet_load_15_v9" type="box" size="0.019 0.6095 0.0445" pos="0.489 0 0.0665" quat="1 0 0 0" rgba="0.3 0.19 0.08 1" contype="0" conaffinity="0"/>
+    <geom name="prop_wrapped_pallet_load_15_v10" type="box" size="0.47 0.57 0.004" pos="0 0 1.248" quat="1 0 0 0" rgba="0.45 0.29 0.14 1" contype="0" conaffinity="0"/>
+    <geom name="prop_wrapped_pallet_load_15_c0" type="box" size="0.508 0.6095 0.072" pos="0 0 0.072" quat="1 0 0 0" group="3" rgba="0.5 0.5 0.5 0.3" contype="1" conaffinity="1" friction="0.7 0.005 0.0001"/>
+    <geom name="prop_wrapped_pallet_load_15_c1" type="box" size="0.5 0.6 0.55" pos="0 0 0.694" quat="1 0 0 0" rgba="0.62 0.66 0.7 1" contype="1" conaffinity="1" friction="0.7 0.005 0.0001"/>
+  </body>
+  <body name="prop_wrapped_pallet_load_16" pos="-4.38 5.33 3.0505" quat="1 0 0 0">
+    <geom name="prop_wrapped_pallet_load_16_v0" type="box" size="0.508 0.0445 0.011" pos="0 -0.565 0.133" quat="1 0 0 0" rgba="0.35 0.22 0.1 1" contype="0" conaffinity="0"/>
+    <geom name="prop_wrapped_pallet_load_16_v1" type="box" size="0.508 0.0445 0.011" pos="0 -0.3767 0.133" quat="1 0 0 0" rgba="0.35 0.22 0.1 1" contype="0" conaffinity="0"/>
+    <geom name="prop_wrapped_pallet_load_16_v2" type="box" size="0.508 0.0445 0.011" pos="0 -0.1884 0.133" quat="1 0 0 0" rgba="0.35 0.22 0.1 1" contype="0" conaffinity="0"/>
+    <geom name="prop_wrapped_pallet_load_16_v3" type="box" size="0.508 0.0445 0.011" pos="0 -0.0001 0.133" quat="1 0 0 0" rgba="0.35 0.22 0.1 1" contype="0" conaffinity="0"/>
+    <geom name="prop_wrapped_pallet_load_16_v4" type="box" size="0.508 0.0445 0.011" pos="0 0.1882 0.133" quat="1 0 0 0" rgba="0.35 0.22 0.1 1" contype="0" conaffinity="0"/>
+    <geom name="prop_wrapped_pallet_load_16_v5" type="box" size="0.508 0.0445 0.011" pos="0 0.3765 0.133" quat="1 0 0 0" rgba="0.35 0.22 0.1 1" contype="0" conaffinity="0"/>
+    <geom name="prop_wrapped_pallet_load_16_v6" type="box" size="0.508 0.0445 0.011" pos="0 0.5648 0.133" quat="1 0 0 0" rgba="0.35 0.22 0.1 1" contype="0" conaffinity="0"/>
+    <geom name="prop_wrapped_pallet_load_16_v7" type="box" size="0.019 0.6095 0.0445" pos="-0.489 0 0.0665" quat="1 0 0 0" rgba="0.3 0.19 0.08 1" contype="0" conaffinity="0"/>
+    <geom name="prop_wrapped_pallet_load_16_v8" type="box" size="0.019 0.6095 0.0445" pos="0 0 0.0665" quat="1 0 0 0" rgba="0.3 0.19 0.08 1" contype="0" conaffinity="0"/>
+    <geom name="prop_wrapped_pallet_load_16_v9" type="box" size="0.019 0.6095 0.0445" pos="0.489 0 0.0665" quat="1 0 0 0" rgba="0.3 0.19 0.08 1" contype="0" conaffinity="0"/>
+    <geom name="prop_wrapped_pallet_load_16_v10" type="box" size="0.47 0.57 0.004" pos="0 0 1.248" quat="1 0 0 0" rgba="0.45 0.29 0.14 1" contype="0" conaffinity="0"/>
+    <geom name="prop_wrapped_pallet_load_16_c0" type="box" size="0.508 0.6095 0.072" pos="0 0 0.072" quat="1 0 0 0" group="3" rgba="0.5 0.5 0.5 0.3" contype="1" conaffinity="1" friction="0.7 0.005 0.0001"/>
+    <geom name="prop_wrapped_pallet_load_16_c1" type="box" size="0.5 0.6 0.55" pos="0 0 0.694" quat="1 0 0 0" rgba="0.62 0.66 0.7 1" contype="1" conaffinity="1" friction="0.7 0.005 0.0001"/>
+  </body>
+  <body name="prop_wrapped_pallet_load_17" pos="-1.86 5.33 3.0505" quat="1 0 0 0">
+    <geom name="prop_wrapped_pallet_load_17_v0" type="box" size="0.508 0.0445 0.011" pos="0 -0.565 0.133" quat="1 0 0 0" rgba="0.35 0.22 0.1 1" contype="0" conaffinity="0"/>
+    <geom name="prop_wrapped_pallet_load_17_v1" type="box" size="0.508 0.0445 0.011" pos="0 -0.3767 0.133" quat="1 0 0 0" rgba="0.35 0.22 0.1 1" contype="0" conaffinity="0"/>
+    <geom name="prop_wrapped_pallet_load_17_v2" type="box" size="0.508 0.0445 0.011" pos="0 -0.1884 0.133" quat="1 0 0 0" rgba="0.35 0.22 0.1 1" contype="0" conaffinity="0"/>
+    <geom name="prop_wrapped_pallet_load_17_v3" type="box" size="0.508 0.0445 0.011" pos="0 -0.0001 0.133" quat="1 0 0 0" rgba="0.35 0.22 0.1 1" contype="0" conaffinity="0"/>
+    <geom name="prop_wrapped_pallet_load_17_v4" type="box" size="0.508 0.0445 0.011" pos="0 0.1882 0.133" quat="1 0 0 0" rgba="0.35 0.22 0.1 1" contype="0" conaffinity="0"/>
+    <geom name="prop_wrapped_pallet_load_17_v5" type="box" size="0.508 0.0445 0.011" pos="0 0.3765 0.133" quat="1 0 0 0" rgba="0.35 0.22 0.1 1" contype="0" conaffinity="0"/>
+    <geom name="prop_wrapped_pallet_load_17_v6" type="box" size="0.508 0.0445 0.011" pos="0 0.5648 0.133" quat="1 0 0 0" rgba="0.35 0.22 0.1 1" contype="0" conaffinity="0"/>
+    <geom name="prop_wrapped_pallet_load_17_v7" type="box" size="0.019 0.6095 0.0445" pos="-0.489 0 0.0665" quat="1 0 0 0" rgba="0.3 0.19 0.08 1" contype="0" conaffinity="0"/>
+    <geom name="prop_wrapped_pallet_load_17_v8" type="box" size="0.019 0.6095 0.0445" pos="0 0 0.0665" quat="1 0 0 0" rgba="0.3 0.19 0.08 1" contype="0" conaffinity="0"/>
+    <geom name="prop_wrapped_pallet_load_17_v9" type="box" size="0.019 0.6095 0.0445" pos="0.489 0 0.0665" quat="1 0 0 0" rgba="0.3 0.19 0.08 1" contype="0" conaffinity="0"/>
+    <geom name="prop_wrapped_pallet_load_17_v10" type="box" size="0.47 0.57 0.004" pos="0 0 1.248" quat="1 0 0 0" rgba="0.45 0.29 0.14 1" contype="0" conaffinity="0"/>
+    <geom name="prop_wrapped_pallet_load_17_c0" type="box" size="0.508 0.6095 0.072" pos="0 0 0.072" quat="1 0 0 0" group="3" rgba="0.5 0.5 0.5 0.3" contype="1" conaffinity="1" friction="0.7 0.005 0.0001"/>
+    <geom name="prop_wrapped_pallet_load_17_c1" type="box" size="0.5 0.6 0.55" pos="0 0 0.694" quat="1 0 0 0" rgba="0.62 0.66 0.7 1" contype="1" conaffinity="1" friction="0.7 0.005 0.0001"/>
+  </body>
+  <body name="prop_wrapped_pallet_load_18" pos="-5.78 5.33 3.0505" quat="1 0 0 0">
+    <geom name="prop_wrapped_pallet_load_18_v0" type="box" size="0.508 0.0445 0.011" pos="0 -0.565 0.133" quat="1 0 0 0" rgba="0.35 0.22 0.1 1" contype="0" conaffinity="0"/>
+    <geom name="prop_wrapped_pallet_load_18_v1" type="box" size="0.508 0.0445 0.011" pos="0 -0.3767 0.133" quat="1 0 0 0" rgba="0.35 0.22 0.1 1" contype="0" conaffinity="0"/>
+    <geom name="prop_wrapped_pallet_load_18_v2" type="box" size="0.508 0.0445 0.011" pos="0 -0.1884 0.133" quat="1 0 0 0" rgba="0.35 0.22 0.1 1" contype="0" conaffinity="0"/>
+    <geom name="prop_wrapped_pallet_load_18_v3" type="box" size="0.508 0.0445 0.011" pos="0 -0.0001 0.133" quat="1 0 0 0" rgba="0.35 0.22 0.1 1" contype="0" conaffinity="0"/>
+    <geom name="prop_wrapped_pallet_load_18_v4" type="box" size="0.508 0.0445 0.011" pos="0 0.1882 0.133" quat="1 0 0 0" rgba="0.35 0.22 0.1 1" contype="0" conaffinity="0"/>
+    <geom name="prop_wrapped_pallet_load_18_v5" type="box" size="0.508 0.0445 0.011" pos="0 0.3765 0.133" quat="1 0 0 0" rgba="0.35 0.22 0.1 1" contype="0" conaffinity="0"/>
+    <geom name="prop_wrapped_pallet_load_18_v6" type="box" size="0.508 0.0445 0.011" pos="0 0.5648 0.133" quat="1 0 0 0" rgba="0.35 0.22 0.1 1" contype="0" conaffinity="0"/>
+    <geom name="prop_wrapped_pallet_load_18_v7" type="box" size="0.019 0.6095 0.0445" pos="-0.489 0 0.0665" quat="1 0 0 0" rgba="0.3 0.19 0.08 1" contype="0" conaffinity="0"/>
+    <geom name="prop_wrapped_pallet_load_18_v8" type="box" size="0.019 0.6095 0.0445" pos="0 0 0.0665" quat="1 0 0 0" rgba="0.3 0.19 0.08 1" contype="0" conaffinity="0"/>
+    <geom name="prop_wrapped_pallet_load_18_v9" type="box" size="0.019 0.6095 0.0445" pos="0.489 0 0.0665" quat="1 0 0 0" rgba="0.3 0.19 0.08 1" contype="0" conaffinity="0"/>
+    <geom name="prop_wrapped_pallet_load_18_v10" type="box" size="0.47 0.57 0.004" pos="0 0 1.248" quat="1 0 0 0" rgba="0.45 0.29 0.14 1" contype="0" conaffinity="0"/>
+    <geom name="prop_wrapped_pallet_load_18_c0" type="box" size="0.508 0.6095 0.072" pos="0 0 0.072" quat="1 0 0 0" group="3" rgba="0.5 0.5 0.5 0.3" contype="1" conaffinity="1" friction="0.7 0.005 0.0001"/>
+    <geom name="prop_wrapped_pallet_load_18_c1" type="box" size="0.5 0.6 0.55" pos="0 0 0.694" quat="1 0 0 0" rgba="0.62 0.66 0.7 1" contype="1" conaffinity="1" friction="0.7 0.005 0.0001"/>
+  </body>
+  <body name="prop_wrapped_pallet_load_19" pos="-3.26 5.33 3.0505" quat="1 0 0 0">
+    <geom name="prop_wrapped_pallet_load_19_v0" type="box" size="0.508 0.0445 0.011" pos="0 -0.565 0.133" quat="1 0 0 0" rgba="0.35 0.22 0.1 1" contype="0" conaffinity="0"/>
+    <geom name="prop_wrapped_pallet_load_19_v1" type="box" size="0.508 0.0445 0.011" pos="0 -0.3767 0.133" quat="1 0 0 0" rgba="0.35 0.22 0.1 1" contype="0" conaffinity="0"/>
+    <geom name="prop_wrapped_pallet_load_19_v2" type="box" size="0.508 0.0445 0.011" pos="0 -0.1884 0.133" quat="1 0 0 0" rgba="0.35 0.22 0.1 1" contype="0" conaffinity="0"/>
+    <geom name="prop_wrapped_pallet_load_19_v3" type="box" size="0.508 0.0445 0.011" pos="0 -0.0001 0.133" quat="1 0 0 0" rgba="0.35 0.22 0.1 1" contype="0" conaffinity="0"/>
+    <geom name="prop_wrapped_pallet_load_19_v4" type="box" size="0.508 0.0445 0.011" pos="0 0.1882 0.133" quat="1 0 0 0" rgba="0.35 0.22 0.1 1" contype="0" conaffinity="0"/>
+    <geom name="prop_wrapped_pallet_load_19_v5" type="box" size="0.508 0.0445 0.011" pos="0 0.3765 0.133" quat="1 0 0 0" rgba="0.35 0.22 0.1 1" contype="0" conaffinity="0"/>
+    <geom name="prop_wrapped_pallet_load_19_v6" type="box" size="0.508 0.0445 0.011" pos="0 0.5648 0.133" quat="1 0 0 0" rgba="0.35 0.22 0.1 1" contype="0" conaffinity="0"/>
+    <geom name="prop_wrapped_pallet_load_19_v7" type="box" size="0.019 0.6095 0.0445" pos="-0.489 0 0.0665" quat="1 0 0 0" rgba="0.3 0.19 0.08 1" contype="0" conaffinity="0"/>
+    <geom name="prop_wrapped_pallet_load_19_v8" type="box" size="0.019 0.6095 0.0445" pos="0 0 0.0665" quat="1 0 0 0" rgba="0.3 0.19 0.08 1" contype="0" conaffinity="0"/>
+    <geom name="prop_wrapped_pallet_load_19_v9" type="box" size="0.019 0.6095 0.0445" pos="0.489 0 0.0665" quat="1 0 0 0" rgba="0.3 0.19 0.08 1" contype="0" conaffinity="0"/>
+    <geom name="prop_wrapped_pallet_load_19_v10" type="box" size="0.47 0.57 0.004" pos="0 0 1.248" quat="1 0 0 0" rgba="0.45 0.29 0.14 1" contype="0" conaffinity="0"/>
+    <geom name="prop_wrapped_pallet_load_19_c0" type="box" size="0.508 0.6095 0.072" pos="0 0 0.072" quat="1 0 0 0" group="3" rgba="0.5 0.5 0.5 0.3" contype="1" conaffinity="1" friction="0.7 0.005 0.0001"/>
+    <geom name="prop_wrapped_pallet_load_19_c1" type="box" size="0.5 0.6 0.55" pos="0 0 0.694" quat="1 0 0 0" rgba="0.62 0.66 0.7 1" contype="1" conaffinity="1" friction="0.7 0.005 0.0001"/>
+  </body>
+  <body name="prop_wrapped_pallet_load_20" pos="-0.74 5.33 3.0505" quat="1 0 0 0">
+    <geom name="prop_wrapped_pallet_load_20_v0" type="box" size="0.508 0.0445 0.011" pos="0 -0.565 0.133" quat="1 0 0 0" rgba="0.35 0.22 0.1 1" contype="0" conaffinity="0"/>
+    <geom name="prop_wrapped_pallet_load_20_v1" type="box" size="0.508 0.0445 0.011" pos="0 -0.3767 0.133" quat="1 0 0 0" rgba="0.35 0.22 0.1 1" contype="0" conaffinity="0"/>
+    <geom name="prop_wrapped_pallet_load_20_v2" type="box" size="0.508 0.0445 0.011" pos="0 -0.1884 0.133" quat="1 0 0 0" rgba="0.35 0.22 0.1 1" contype="0" conaffinity="0"/>
+    <geom name="prop_wrapped_pallet_load_20_v3" type="box" size="0.508 0.0445 0.011" pos="0 -0.0001 0.133" quat="1 0 0 0" rgba="0.35 0.22 0.1 1" contype="0" conaffinity="0"/>
+    <geom name="prop_wrapped_pallet_load_20_v4" type="box" size="0.508 0.0445 0.011" pos="0 0.1882 0.133" quat="1 0 0 0" rgba="0.35 0.22 0.1 1" contype="0" conaffinity="0"/>
+    <geom name="prop_wrapped_pallet_load_20_v5" type="box" size="0.508 0.0445 0.011" pos="0 0.3765 0.133" quat="1 0 0 0" rgba="0.35 0.22 0.1 1" contype="0" conaffinity="0"/>
+    <geom name="prop_wrapped_pallet_load_20_v6" type="box" size="0.508 0.0445 0.011" pos="0 0.5648 0.133" quat="1 0 0 0" rgba="0.35 0.22 0.1 1" contype="0" conaffinity="0"/>
+    <geom name="prop_wrapped_pallet_load_20_v7" type="box" size="0.019 0.6095 0.0445" pos="-0.489 0 0.0665" quat="1 0 0 0" rgba="0.3 0.19 0.08 1" contype="0" conaffinity="0"/>
+    <geom name="prop_wrapped_pallet_load_20_v8" type="box" size="0.019 0.6095 0.0445" pos="0 0 0.0665" quat="1 0 0 0" rgba="0.3 0.19 0.08 1" contype="0" conaffinity="0"/>
+    <geom name="prop_wrapped_pallet_load_20_v9" type="box" size="0.019 0.6095 0.0445" pos="0.489 0 0.0665" quat="1 0 0 0" rgba="0.3 0.19 0.08 1" contype="0" conaffinity="0"/>
+    <geom name="prop_wrapped_pallet_load_20_v10" type="box" size="0.47 0.57 0.004" pos="0 0 1.248" quat="1 0 0 0" rgba="0.45 0.29 0.14 1" contype="0" conaffinity="0"/>
+    <geom name="prop_wrapped_pallet_load_20_c0" type="box" size="0.508 0.6095 0.072" pos="0 0 0.072" quat="1 0 0 0" group="3" rgba="0.5 0.5 0.5 0.3" contype="1" conaffinity="1" friction="0.7 0.005 0.0001"/>
+    <geom name="prop_wrapped_pallet_load_20_c1" type="box" size="0.5 0.6 0.55" pos="0 0 0.694" quat="1 0 0 0" rgba="0.62 0.66 0.7 1" contype="1" conaffinity="1" friction="0.7 0.005 0.0001"/>
+  </body>
+  <body name="prop_wrapped_pallet_load_21" pos="1.78 5.33 3.0505" quat="1 0 0 0">
+    <geom name="prop_wrapped_pallet_load_21_v0" type="box" size="0.508 0.0445 0.011" pos="0 -0.565 0.133" quat="1 0 0 0" rgba="0.35 0.22 0.1 1" contype="0" conaffinity="0"/>
+    <geom name="prop_wrapped_pallet_load_21_v1" type="box" size="0.508 0.0445 0.011" pos="0 -0.3767 0.133" quat="1 0 0 0" rgba="0.35 0.22 0.1 1" contype="0" conaffinity="0"/>
+    <geom name="prop_wrapped_pallet_load_21_v2" type="box" size="0.508 0.0445 0.011" pos="0 -0.1884 0.133" quat="1 0 0 0" rgba="0.35 0.22 0.1 1" contype="0" conaffinity="0"/>
+    <geom name="prop_wrapped_pallet_load_21_v3" type="box" size="0.508 0.0445 0.011" pos="0 -0.0001 0.133" quat="1 0 0 0" rgba="0.35 0.22 0.1 1" contype="0" conaffinity="0"/>
+    <geom name="prop_wrapped_pallet_load_21_v4" type="box" size="0.508 0.0445 0.011" pos="0 0.1882 0.133" quat="1 0 0 0" rgba="0.35 0.22 0.1 1" contype="0" conaffinity="0"/>
+    <geom name="prop_wrapped_pallet_load_21_v5" type="box" size="0.508 0.0445 0.011" pos="0 0.3765 0.133" quat="1 0 0 0" rgba="0.35 0.22 0.1 1" contype="0" conaffinity="0"/>
+    <geom name="prop_wrapped_pallet_load_21_v6" type="box" size="0.508 0.0445 0.011" pos="0 0.5648 0.133" quat="1 0 0 0" rgba="0.35 0.22 0.1 1" contype="0" conaffinity="0"/>
+    <geom name="prop_wrapped_pallet_load_21_v7" type="box" size="0.019 0.6095 0.0445" pos="-0.489 0 0.0665" quat="1 0 0 0" rgba="0.3 0.19 0.08 1" contype="0" conaffinity="0"/>
+    <geom name="prop_wrapped_pallet_load_21_v8" type="box" size="0.019 0.6095 0.0445" pos="0 0 0.0665" quat="1 0 0 0" rgba="0.3 0.19 0.08 1" contype="0" conaffinity="0"/>
+    <geom name="prop_wrapped_pallet_load_21_v9" type="box" size="0.019 0.6095 0.0445" pos="0.489 0 0.0665" quat="1 0 0 0" rgba="0.3 0.19 0.08 1" contype="0" conaffinity="0"/>
+    <geom name="prop_wrapped_pallet_load_21_v10" type="box" size="0.47 0.57 0.004" pos="0 0 1.248" quat="1 0 0 0" rgba="0.45 0.29 0.14 1" contype="0" conaffinity="0"/>
+    <geom name="prop_wrapped_pallet_load_21_c0" type="box" size="0.508 0.6095 0.072" pos="0 0 0.072" quat="1 0 0 0" group="3" rgba="0.5 0.5 0.5 0.3" contype="1" conaffinity="1" friction="0.7 0.005 0.0001"/>
+    <geom name="prop_wrapped_pallet_load_21_c1" type="box" size="0.5 0.6 0.55" pos="0 0 0.694" quat="1 0 0 0" rgba="0.62 0.66 0.7 1" contype="1" conaffinity="1" friction="0.7 0.005 0.0001"/>
+  </body>
+  <body name="prop_pallet_rack_frame_5" pos="-7.6 1.45 0.0005" quat="1 0 0 0">
+    <geom name="prop_pallet_rack_frame_5_v0" type="box" size="0.075 0.075 0.005" pos="0 -0.495 0.005" quat="1 0 0 0" rgba="0.02 0.08 0.35 1" contype="0" conaffinity="0"/>
+    <geom name="prop_pallet_rack_frame_5_v1" type="box" size="0.075 0.075 0.005" pos="0 0.495 0.005" quat="1 0 0 0" rgba="0.02 0.08 0.35 1" contype="0" conaffinity="0"/>
+    <geom name="prop_pallet_rack_frame_5_v2" type="box" size="0.012 0.457 0.012" pos="0 0 0.15" quat="1 0 0 0" rgba="0.02 0.08 0.35 1" contype="0" conaffinity="0"/>
+    <geom name="prop_pallet_rack_frame_5_v3" type="box" size="0.012 0.457 0.012" pos="0 0 4.15" quat="1 0 0 0" rgba="0.02 0.08 0.35 1" contype="0" conaffinity="0"/>
+    <geom name="prop_pallet_rack_frame_5_v4" type="box" size="0.012 0.607 0.012" pos="0 0 0.55" quat="0.9361 0.3518 0 0" rgba="0.02 0.08 0.35 1" contype="0" conaffinity="0"/>
+    <geom name="prop_pallet_rack_frame_5_v5" type="box" size="0.012 0.607 0.012" pos="0 0 2.15" quat="0.9361 0.3518 0 0" rgba="0.02 0.08 0.35 1" contype="0" conaffinity="0"/>
+    <geom name="prop_pallet_rack_frame_5_v6" type="box" size="0.012 0.607 0.012" pos="0 0 3.75" quat="0.9361 0.3518 0 0" rgba="0.02 0.08 0.35 1" contype="0" conaffinity="0"/>
+    <geom name="prop_pallet_rack_frame_5_v7" type="box" size="0.012 0.607 0.012" pos="0 0 1.35" quat="0.9361 -0.3518 0 0" rgba="0.02 0.08 0.35 1" contype="0" conaffinity="0"/>
+    <geom name="prop_pallet_rack_frame_5_v8" type="box" size="0.012 0.607 0.012" pos="0 0 2.95" quat="0.9361 -0.3518 0 0" rgba="0.02 0.08 0.35 1" contype="0" conaffinity="0"/>
+    <geom name="prop_pallet_rack_frame_5_c0" type="box" size="0.038 0.038 2.135" pos="0 -0.495 2.135" quat="1 0 0 0" rgba="0.02 0.08 0.35 1" contype="1" conaffinity="1" friction="0.7 0.005 0.0001"/>
+    <geom name="prop_pallet_rack_frame_5_c1" type="box" size="0.038 0.038 2.135" pos="0 0.495 2.135" quat="1 0 0 0" rgba="0.02 0.08 0.35 1" contype="1" conaffinity="1" friction="0.7 0.005 0.0001"/>
+  </body>
+  <body name="prop_pallet_rack_frame_6" pos="-5.08 1.45 0.0005" quat="1 0 0 0">
+    <geom name="prop_pallet_rack_frame_6_v0" type="box" size="0.075 0.075 0.005" pos="0 -0.495 0.005" quat="1 0 0 0" rgba="0.02 0.08 0.35 1" contype="0" conaffinity="0"/>
+    <geom name="prop_pallet_rack_frame_6_v1" type="box" size="0.075 0.075 0.005" pos="0 0.495 0.005" quat="1 0 0 0" rgba="0.02 0.08 0.35 1" contype="0" conaffinity="0"/>
+    <geom name="prop_pallet_rack_frame_6_v2" type="box" size="0.012 0.457 0.012" pos="0 0 0.15" quat="1 0 0 0" rgba="0.02 0.08 0.35 1" contype="0" conaffinity="0"/>
+    <geom name="prop_pallet_rack_frame_6_v3" type="box" size="0.012 0.457 0.012" pos="0 0 4.15" quat="1 0 0 0" rgba="0.02 0.08 0.35 1" contype="0" conaffinity="0"/>
+    <geom name="prop_pallet_rack_frame_6_v4" type="box" size="0.012 0.607 0.012" pos="0 0 0.55" quat="0.9361 0.3518 0 0" rgba="0.02 0.08 0.35 1" contype="0" conaffinity="0"/>
+    <geom name="prop_pallet_rack_frame_6_v5" type="box" size="0.012 0.607 0.012" pos="0 0 2.15" quat="0.9361 0.3518 0 0" rgba="0.02 0.08 0.35 1" contype="0" conaffinity="0"/>
+    <geom name="prop_pallet_rack_frame_6_v6" type="box" size="0.012 0.607 0.012" pos="0 0 3.75" quat="0.9361 0.3518 0 0" rgba="0.02 0.08 0.35 1" contype="0" conaffinity="0"/>
+    <geom name="prop_pallet_rack_frame_6_v7" type="box" size="0.012 0.607 0.012" pos="0 0 1.35" quat="0.9361 -0.3518 0 0" rgba="0.02 0.08 0.35 1" contype="0" conaffinity="0"/>
+    <geom name="prop_pallet_rack_frame_6_v8" type="box" size="0.012 0.607 0.012" pos="0 0 2.95" quat="0.9361 -0.3518 0 0" rgba="0.02 0.08 0.35 1" contype="0" conaffinity="0"/>
+    <geom name="prop_pallet_rack_frame_6_c0" type="box" size="0.038 0.038 2.135" pos="0 -0.495 2.135" quat="1 0 0 0" rgba="0.02 0.08 0.35 1" contype="1" conaffinity="1" friction="0.7 0.005 0.0001"/>
+    <geom name="prop_pallet_rack_frame_6_c1" type="box" size="0.038 0.038 2.135" pos="0 0.495 2.135" quat="1 0 0 0" rgba="0.02 0.08 0.35 1" contype="1" conaffinity="1" friction="0.7 0.005 0.0001"/>
+  </body>
+  <body name="prop_pallet_rack_frame_7" pos="-2.56 1.45 0.0005" quat="1 0 0 0">
+    <geom name="prop_pallet_rack_frame_7_v0" type="box" size="0.075 0.075 0.005" pos="0 -0.495 0.005" quat="1 0 0 0" rgba="0.02 0.08 0.35 1" contype="0" conaffinity="0"/>
+    <geom name="prop_pallet_rack_frame_7_v1" type="box" size="0.075 0.075 0.005" pos="0 0.495 0.005" quat="1 0 0 0" rgba="0.02 0.08 0.35 1" contype="0" conaffinity="0"/>
+    <geom name="prop_pallet_rack_frame_7_v2" type="box" size="0.012 0.457 0.012" pos="0 0 0.15" quat="1 0 0 0" rgba="0.02 0.08 0.35 1" contype="0" conaffinity="0"/>
+    <geom name="prop_pallet_rack_frame_7_v3" type="box" size="0.012 0.457 0.012" pos="0 0 4.15" quat="1 0 0 0" rgba="0.02 0.08 0.35 1" contype="0" conaffinity="0"/>
+    <geom name="prop_pallet_rack_frame_7_v4" type="box" size="0.012 0.607 0.012" pos="0 0 0.55" quat="0.9361 0.3518 0 0" rgba="0.02 0.08 0.35 1" contype="0" conaffinity="0"/>
+    <geom name="prop_pallet_rack_frame_7_v5" type="box" size="0.012 0.607 0.012" pos="0 0 2.15" quat="0.9361 0.3518 0 0" rgba="0.02 0.08 0.35 1" contype="0" conaffinity="0"/>
+    <geom name="prop_pallet_rack_frame_7_v6" type="box" size="0.012 0.607 0.012" pos="0 0 3.75" quat="0.9361 0.3518 0 0" rgba="0.02 0.08 0.35 1" contype="0" conaffinity="0"/>
+    <geom name="prop_pallet_rack_frame_7_v7" type="box" size="0.012 0.607 0.012" pos="0 0 1.35" quat="0.9361 -0.3518 0 0" rgba="0.02 0.08 0.35 1" contype="0" conaffinity="0"/>
+    <geom name="prop_pallet_rack_frame_7_v8" type="box" size="0.012 0.607 0.012" pos="0 0 2.95" quat="0.9361 -0.3518 0 0" rgba="0.02 0.08 0.35 1" contype="0" conaffinity="0"/>
+    <geom name="prop_pallet_rack_frame_7_c0" type="box" size="0.038 0.038 2.135" pos="0 -0.495 2.135" quat="1 0 0 0" rgba="0.02 0.08 0.35 1" contype="1" conaffinity="1" friction="0.7 0.005 0.0001"/>
+    <geom name="prop_pallet_rack_frame_7_c1" type="box" size="0.038 0.038 2.135" pos="0 0.495 2.135" quat="1 0 0 0" rgba="0.02 0.08 0.35 1" contype="1" conaffinity="1" friction="0.7 0.005 0.0001"/>
+  </body>
+  <body name="prop_pallet_rack_frame_8" pos="-0.04 1.45 0.0005" quat="1 0 0 0">
+    <geom name="prop_pallet_rack_frame_8_v0" type="box" size="0.075 0.075 0.005" pos="0 -0.495 0.005" quat="1 0 0 0" rgba="0.02 0.08 0.35 1" contype="0" conaffinity="0"/>
+    <geom name="prop_pallet_rack_frame_8_v1" type="box" size="0.075 0.075 0.005" pos="0 0.495 0.005" quat="1 0 0 0" rgba="0.02 0.08 0.35 1" contype="0" conaffinity="0"/>
+    <geom name="prop_pallet_rack_frame_8_v2" type="box" size="0.012 0.457 0.012" pos="0 0 0.15" quat="1 0 0 0" rgba="0.02 0.08 0.35 1" contype="0" conaffinity="0"/>
+    <geom name="prop_pallet_rack_frame_8_v3" type="box" size="0.012 0.457 0.012" pos="0 0 4.15" quat="1 0 0 0" rgba="0.02 0.08 0.35 1" contype="0" conaffinity="0"/>
+    <geom name="prop_pallet_rack_frame_8_v4" type="box" size="0.012 0.607 0.012" pos="0 0 0.55" quat="0.9361 0.3518 0 0" rgba="0.02 0.08 0.35 1" contype="0" conaffinity="0"/>
+    <geom name="prop_pallet_rack_frame_8_v5" type="box" size="0.012 0.607 0.012" pos="0 0 2.15" quat="0.9361 0.3518 0 0" rgba="0.02 0.08 0.35 1" contype="0" conaffinity="0"/>
+    <geom name="prop_pallet_rack_frame_8_v6" type="box" size="0.012 0.607 0.012" pos="0 0 3.75" quat="0.9361 0.3518 0 0" rgba="0.02 0.08 0.35 1" contype="0" conaffinity="0"/>
+    <geom name="prop_pallet_rack_frame_8_v7" type="box" size="0.012 0.607 0.012" pos="0 0 1.35" quat="0.9361 -0.3518 0 0" rgba="0.02 0.08 0.35 1" contype="0" conaffinity="0"/>
+    <geom name="prop_pallet_rack_frame_8_v8" type="box" size="0.012 0.607 0.012" pos="0 0 2.95" quat="0.9361 -0.3518 0 0" rgba="0.02 0.08 0.35 1" contype="0" conaffinity="0"/>
+    <geom name="prop_pallet_rack_frame_8_c0" type="box" size="0.038 0.038 2.135" pos="0 -0.495 2.135" quat="1 0 0 0" rgba="0.02 0.08 0.35 1" contype="1" conaffinity="1" friction="0.7 0.005 0.0001"/>
+    <geom name="prop_pallet_rack_frame_8_c1" type="box" size="0.038 0.038 2.135" pos="0 0.495 2.135" quat="1 0 0 0" rgba="0.02 0.08 0.35 1" contype="1" conaffinity="1" friction="0.7 0.005 0.0001"/>
+  </body>
+  <body name="prop_pallet_rack_frame_9" pos="2.48 1.45 0.0005" quat="1 0 0 0">
+    <geom name="prop_pallet_rack_frame_9_v0" type="box" size="0.075 0.075 0.005" pos="0 -0.495 0.005" quat="1 0 0 0" rgba="0.02 0.08 0.35 1" contype="0" conaffinity="0"/>
+    <geom name="prop_pallet_rack_frame_9_v1" type="box" size="0.075 0.075 0.005" pos="0 0.495 0.005" quat="1 0 0 0" rgba="0.02 0.08 0.35 1" contype="0" conaffinity="0"/>
+    <geom name="prop_pallet_rack_frame_9_v2" type="box" size="0.012 0.457 0.012" pos="0 0 0.15" quat="1 0 0 0" rgba="0.02 0.08 0.35 1" contype="0" conaffinity="0"/>
+    <geom name="prop_pallet_rack_frame_9_v3" type="box" size="0.012 0.457 0.012" pos="0 0 4.15" quat="1 0 0 0" rgba="0.02 0.08 0.35 1" contype="0" conaffinity="0"/>
+    <geom name="prop_pallet_rack_frame_9_v4" type="box" size="0.012 0.607 0.012" pos="0 0 0.55" quat="0.9361 0.3518 0 0" rgba="0.02 0.08 0.35 1" contype="0" conaffinity="0"/>
+    <geom name="prop_pallet_rack_frame_9_v5" type="box" size="0.012 0.607 0.012" pos="0 0 2.15" quat="0.9361 0.3518 0 0" rgba="0.02 0.08 0.35 1" contype="0" conaffinity="0"/>
+    <geom name="prop_pallet_rack_frame_9_v6" type="box" size="0.012 0.607 0.012" pos="0 0 3.75" quat="0.9361 0.3518 0 0" rgba="0.02 0.08 0.35 1" contype="0" conaffinity="0"/>
+    <geom name="prop_pallet_rack_frame_9_v7" type="box" size="0.012 0.607 0.012" pos="0 0 1.35" quat="0.9361 -0.3518 0 0" rgba="0.02 0.08 0.35 1" contype="0" conaffinity="0"/>
+    <geom name="prop_pallet_rack_frame_9_v8" type="box" size="0.012 0.607 0.012" pos="0 0 2.95" quat="0.9361 -0.3518 0 0" rgba="0.02 0.08 0.35 1" contype="0" conaffinity="0"/>
+    <geom name="prop_pallet_rack_frame_9_c0" type="box" size="0.038 0.038 2.135" pos="0 -0.495 2.135" quat="1 0 0 0" rgba="0.02 0.08 0.35 1" contype="1" conaffinity="1" friction="0.7 0.005 0.0001"/>
+    <geom name="prop_pallet_rack_frame_9_c1" type="box" size="0.038 0.038 2.135" pos="0 0.495 2.135" quat="1 0 0 0" rgba="0.02 0.08 0.35 1" contype="1" conaffinity="1" friction="0.7 0.005 0.0001"/>
+  </body>
+  <body name="prop_pallet_rack_beams_8" pos="-6.34 1.45 1.41" quat="1 0 0 0">
+    <geom name="prop_pallet_rack_beams_8_c0" type="box" size="1.22 0.025 0.055" pos="0 -0.51 0.055" quat="1 0 0 0" rgba="0.9 0.2 0.01 1" contype="1" conaffinity="1" friction="0.7 0.005 0.0001"/>
+    <geom name="prop_pallet_rack_beams_8_c1" type="box" size="1.22 0.025 0.055" pos="0 0.51 0.055" quat="1 0 0 0" rgba="0.9 0.2 0.01 1" contype="1" conaffinity="1" friction="0.7 0.005 0.0001"/>
+  </body>
+  <body name="prop_pallet_rack_beams_9" pos="-3.82 1.45 1.41" quat="1 0 0 0">
+    <geom name="prop_pallet_rack_beams_9_c0" type="box" size="1.22 0.025 0.055" pos="0 -0.51 0.055" quat="1 0 0 0" rgba="0.9 0.2 0.01 1" contype="1" conaffinity="1" friction="0.7 0.005 0.0001"/>
+    <geom name="prop_pallet_rack_beams_9_c1" type="box" size="1.22 0.025 0.055" pos="0 0.51 0.055" quat="1 0 0 0" rgba="0.9 0.2 0.01 1" contype="1" conaffinity="1" friction="0.7 0.005 0.0001"/>
+  </body>
+  <body name="prop_pallet_rack_beams_10" pos="-1.3 1.45 1.41" quat="1 0 0 0">
+    <geom name="prop_pallet_rack_beams_10_c0" type="box" size="1.22 0.025 0.055" pos="0 -0.51 0.055" quat="1 0 0 0" rgba="0.9 0.2 0.01 1" contype="1" conaffinity="1" friction="0.7 0.005 0.0001"/>
+    <geom name="prop_pallet_rack_beams_10_c1" type="box" size="1.22 0.025 0.055" pos="0 0.51 0.055" quat="1 0 0 0" rgba="0.9 0.2 0.01 1" contype="1" conaffinity="1" friction="0.7 0.005 0.0001"/>
+  </body>
+  <body name="prop_pallet_rack_beams_11" pos="1.22 1.45 1.41" quat="1 0 0 0">
+    <geom name="prop_pallet_rack_beams_11_c0" type="box" size="1.22 0.025 0.055" pos="0 -0.51 0.055" quat="1 0 0 0" rgba="0.9 0.2 0.01 1" contype="1" conaffinity="1" friction="0.7 0.005 0.0001"/>
+    <geom name="prop_pallet_rack_beams_11_c1" type="box" size="1.22 0.025 0.055" pos="0 0.51 0.055" quat="1 0 0 0" rgba="0.9 0.2 0.01 1" contype="1" conaffinity="1" friction="0.7 0.005 0.0001"/>
+  </body>
+  <body name="prop_pallet_rack_beams_12" pos="-6.34 1.45 2.773" quat="1 0 0 0">
+    <geom name="prop_pallet_rack_beams_12_c0" type="box" size="1.22 0.025 0.055" pos="0 -0.51 0.055" quat="1 0 0 0" rgba="0.9 0.2 0.01 1" contype="1" conaffinity="1" friction="0.7 0.005 0.0001"/>
+    <geom name="prop_pallet_rack_beams_12_c1" type="box" size="1.22 0.025 0.055" pos="0 0.51 0.055" quat="1 0 0 0" rgba="0.9 0.2 0.01 1" contype="1" conaffinity="1" friction="0.7 0.005 0.0001"/>
+  </body>
+  <body name="prop_pallet_rack_beams_13" pos="-3.82 1.45 2.773" quat="1 0 0 0">
+    <geom name="prop_pallet_rack_beams_13_c0" type="box" size="1.22 0.025 0.055" pos="0 -0.51 0.055" quat="1 0 0 0" rgba="0.9 0.2 0.01 1" contype="1" conaffinity="1" friction="0.7 0.005 0.0001"/>
+    <geom name="prop_pallet_rack_beams_13_c1" type="box" size="1.22 0.025 0.055" pos="0 0.51 0.055" quat="1 0 0 0" rgba="0.9 0.2 0.01 1" contype="1" conaffinity="1" friction="0.7 0.005 0.0001"/>
+  </body>
+  <body name="prop_pallet_rack_beams_14" pos="-1.3 1.45 2.773" quat="1 0 0 0">
+    <geom name="prop_pallet_rack_beams_14_c0" type="box" size="1.22 0.025 0.055" pos="0 -0.51 0.055" quat="1 0 0 0" rgba="0.9 0.2 0.01 1" contype="1" conaffinity="1" friction="0.7 0.005 0.0001"/>
+    <geom name="prop_pallet_rack_beams_14_c1" type="box" size="1.22 0.025 0.055" pos="0 0.51 0.055" quat="1 0 0 0" rgba="0.9 0.2 0.01 1" contype="1" conaffinity="1" friction="0.7 0.005 0.0001"/>
+  </body>
+  <body name="prop_pallet_rack_beams_15" pos="1.22 1.45 2.773" quat="1 0 0 0">
+    <geom name="prop_pallet_rack_beams_15_c0" type="box" size="1.22 0.025 0.055" pos="0 -0.51 0.055" quat="1 0 0 0" rgba="0.9 0.2 0.01 1" contype="1" conaffinity="1" friction="0.7 0.005 0.0001"/>
+    <geom name="prop_pallet_rack_beams_15_c1" type="box" size="1.22 0.025 0.055" pos="0 0.51 0.055" quat="1 0 0 0" rgba="0.9 0.2 0.01 1" contype="1" conaffinity="1" friction="0.7 0.005 0.0001"/>
+  </body>
+  <body name="prop_pallet_gma_0" pos="-6.9 1.45 0.0005" quat="1 0 0 0">
+    <geom name="prop_pallet_gma_0_c0" type="box" size="0.508 0.0445 0.011" pos="0 -0.565 0.133" quat="1 0 0 0" rgba="0.35 0.22 0.1 1" contype="1" conaffinity="1" friction="0.5 0.005 0.0001"/>
+    <geom name="prop_pallet_gma_0_c1" type="box" size="0.508 0.0445 0.011" pos="0 -0.3767 0.133" quat="1 0 0 0" rgba="0.35 0.22 0.1 1" contype="1" conaffinity="1" friction="0.5 0.005 0.0001"/>
+    <geom name="prop_pallet_gma_0_c2" type="box" size="0.508 0.0445 0.011" pos="0 -0.1884 0.133" quat="1 0 0 0" rgba="0.35 0.22 0.1 1" contype="1" conaffinity="1" friction="0.5 0.005 0.0001"/>
+    <geom name="prop_pallet_gma_0_c3" type="box" size="0.508 0.0445 0.011" pos="0 -0.0001 0.133" quat="1 0 0 0" rgba="0.35 0.22 0.1 1" contype="1" conaffinity="1" friction="0.5 0.005 0.0001"/>
+    <geom name="prop_pallet_gma_0_c4" type="box" size="0.508 0.0445 0.011" pos="0 0.1882 0.133" quat="1 0 0 0" rgba="0.35 0.22 0.1 1" contype="1" conaffinity="1" friction="0.5 0.005 0.0001"/>
+    <geom name="prop_pallet_gma_0_c5" type="box" size="0.508 0.0445 0.011" pos="0 0.3765 0.133" quat="1 0 0 0" rgba="0.35 0.22 0.1 1" contype="1" conaffinity="1" friction="0.5 0.005 0.0001"/>
+    <geom name="prop_pallet_gma_0_c6" type="box" size="0.508 0.0445 0.011" pos="0 0.5648 0.133" quat="1 0 0 0" rgba="0.35 0.22 0.1 1" contype="1" conaffinity="1" friction="0.5 0.005 0.0001"/>
+    <geom name="prop_pallet_gma_0_c7" type="box" size="0.019 0.6095 0.0445" pos="-0.489 0 0.0665" quat="1 0 0 0" rgba="0.3 0.19 0.08 1" contype="1" conaffinity="1" friction="0.5 0.005 0.0001"/>
+    <geom name="prop_pallet_gma_0_c8" type="box" size="0.019 0.6095 0.0445" pos="0 0 0.0665" quat="1 0 0 0" rgba="0.3 0.19 0.08 1" contype="1" conaffinity="1" friction="0.5 0.005 0.0001"/>
+    <geom name="prop_pallet_gma_0_c9" type="box" size="0.019 0.6095 0.0445" pos="0.489 0 0.0665" quat="1 0 0 0" rgba="0.3 0.19 0.08 1" contype="1" conaffinity="1" friction="0.5 0.005 0.0001"/>
+    <geom name="prop_pallet_gma_0_c10" type="box" size="0.508 0.0445 0.011" pos="0 -0.565 0.011" quat="1 0 0 0" rgba="0.35 0.22 0.1 1" contype="1" conaffinity="1" friction="0.5 0.005 0.0001"/>
+    <geom name="prop_pallet_gma_0_c11" type="box" size="0.508 0.0445 0.011" pos="0 0 0.011" quat="1 0 0 0" rgba="0.35 0.22 0.1 1" contype="1" conaffinity="1" friction="0.5 0.005 0.0001"/>
+    <geom name="prop_pallet_gma_0_c12" type="box" size="0.508 0.0445 0.011" pos="0 0.565 0.011" quat="1 0 0 0" rgba="0.35 0.22 0.1 1" contype="1" conaffinity="1" friction="0.5 0.005 0.0001"/>
+  </body>
+  <body name="prop_pallet_gma_1" pos="-4.38 1.45 0.0005" quat="1 0 0 0">
+    <geom name="prop_pallet_gma_1_c0" type="box" size="0.508 0.0445 0.011" pos="0 -0.565 0.133" quat="1 0 0 0" rgba="0.35 0.22 0.1 1" contype="1" conaffinity="1" friction="0.5 0.005 0.0001"/>
+    <geom name="prop_pallet_gma_1_c1" type="box" size="0.508 0.0445 0.011" pos="0 -0.3767 0.133" quat="1 0 0 0" rgba="0.35 0.22 0.1 1" contype="1" conaffinity="1" friction="0.5 0.005 0.0001"/>
+    <geom name="prop_pallet_gma_1_c2" type="box" size="0.508 0.0445 0.011" pos="0 -0.1884 0.133" quat="1 0 0 0" rgba="0.35 0.22 0.1 1" contype="1" conaffinity="1" friction="0.5 0.005 0.0001"/>
+    <geom name="prop_pallet_gma_1_c3" type="box" size="0.508 0.0445 0.011" pos="0 -0.0001 0.133" quat="1 0 0 0" rgba="0.35 0.22 0.1 1" contype="1" conaffinity="1" friction="0.5 0.005 0.0001"/>
+    <geom name="prop_pallet_gma_1_c4" type="box" size="0.508 0.0445 0.011" pos="0 0.1882 0.133" quat="1 0 0 0" rgba="0.35 0.22 0.1 1" contype="1" conaffinity="1" friction="0.5 0.005 0.0001"/>
+    <geom name="prop_pallet_gma_1_c5" type="box" size="0.508 0.0445 0.011" pos="0 0.3765 0.133" quat="1 0 0 0" rgba="0.35 0.22 0.1 1" contype="1" conaffinity="1" friction="0.5 0.005 0.0001"/>
+    <geom name="prop_pallet_gma_1_c6" type="box" size="0.508 0.0445 0.011" pos="0 0.5648 0.133" quat="1 0 0 0" rgba="0.35 0.22 0.1 1" contype="1" conaffinity="1" friction="0.5 0.005 0.0001"/>
+    <geom name="prop_pallet_gma_1_c7" type="box" size="0.019 0.6095 0.0445" pos="-0.489 0 0.0665" quat="1 0 0 0" rgba="0.3 0.19 0.08 1" contype="1" conaffinity="1" friction="0.5 0.005 0.0001"/>
+    <geom name="prop_pallet_gma_1_c8" type="box" size="0.019 0.6095 0.0445" pos="0 0 0.0665" quat="1 0 0 0" rgba="0.3 0.19 0.08 1" contype="1" conaffinity="1" friction="0.5 0.005 0.0001"/>
+    <geom name="prop_pallet_gma_1_c9" type="box" size="0.019 0.6095 0.0445" pos="0.489 0 0.0665" quat="1 0 0 0" rgba="0.3 0.19 0.08 1" contype="1" conaffinity="1" friction="0.5 0.005 0.0001"/>
+    <geom name="prop_pallet_gma_1_c10" type="box" size="0.508 0.0445 0.011" pos="0 -0.565 0.011" quat="1 0 0 0" rgba="0.35 0.22 0.1 1" contype="1" conaffinity="1" friction="0.5 0.005 0.0001"/>
+    <geom name="prop_pallet_gma_1_c11" type="box" size="0.508 0.0445 0.011" pos="0 0 0.011" quat="1 0 0 0" rgba="0.35 0.22 0.1 1" contype="1" conaffinity="1" friction="0.5 0.005 0.0001"/>
+    <geom name="prop_pallet_gma_1_c12" type="box" size="0.508 0.0445 0.011" pos="0 0.565 0.011" quat="1 0 0 0" rgba="0.35 0.22 0.1 1" contype="1" conaffinity="1" friction="0.5 0.005 0.0001"/>
+  </body>
+  <body name="prop_pallet_gma_2" pos="-1.86 1.45 0.0005" quat="1 0 0 0">
+    <geom name="prop_pallet_gma_2_c0" type="box" size="0.508 0.0445 0.011" pos="0 -0.565 0.133" quat="1 0 0 0" rgba="0.35 0.22 0.1 1" contype="1" conaffinity="1" friction="0.5 0.005 0.0001"/>
+    <geom name="prop_pallet_gma_2_c1" type="box" size="0.508 0.0445 0.011" pos="0 -0.3767 0.133" quat="1 0 0 0" rgba="0.35 0.22 0.1 1" contype="1" conaffinity="1" friction="0.5 0.005 0.0001"/>
+    <geom name="prop_pallet_gma_2_c2" type="box" size="0.508 0.0445 0.011" pos="0 -0.1884 0.133" quat="1 0 0 0" rgba="0.35 0.22 0.1 1" contype="1" conaffinity="1" friction="0.5 0.005 0.0001"/>
+    <geom name="prop_pallet_gma_2_c3" type="box" size="0.508 0.0445 0.011" pos="0 -0.0001 0.133" quat="1 0 0 0" rgba="0.35 0.22 0.1 1" contype="1" conaffinity="1" friction="0.5 0.005 0.0001"/>
+    <geom name="prop_pallet_gma_2_c4" type="box" size="0.508 0.0445 0.011" pos="0 0.1882 0.133" quat="1 0 0 0" rgba="0.35 0.22 0.1 1" contype="1" conaffinity="1" friction="0.5 0.005 0.0001"/>
+    <geom name="prop_pallet_gma_2_c5" type="box" size="0.508 0.0445 0.011" pos="0 0.3765 0.133" quat="1 0 0 0" rgba="0.35 0.22 0.1 1" contype="1" conaffinity="1" friction="0.5 0.005 0.0001"/>
+    <geom name="prop_pallet_gma_2_c6" type="box" size="0.508 0.0445 0.011" pos="0 0.5648 0.133" quat="1 0 0 0" rgba="0.35 0.22 0.1 1" contype="1" conaffinity="1" friction="0.5 0.005 0.0001"/>
+    <geom name="prop_pallet_gma_2_c7" type="box" size="0.019 0.6095 0.0445" pos="-0.489 0 0.0665" quat="1 0 0 0" rgba="0.3 0.19 0.08 1" contype="1" conaffinity="1" friction="0.5 0.005 0.0001"/>
+    <geom name="prop_pallet_gma_2_c8" type="box" size="0.019 0.6095 0.0445" pos="0 0 0.0665" quat="1 0 0 0" rgba="0.3 0.19 0.08 1" contype="1" conaffinity="1" friction="0.5 0.005 0.0001"/>
+    <geom name="prop_pallet_gma_2_c9" type="box" size="0.019 0.6095 0.0445" pos="0.489 0 0.0665" quat="1 0 0 0" rgba="0.3 0.19 0.08 1" contype="1" conaffinity="1" friction="0.5 0.005 0.0001"/>
+    <geom name="prop_pallet_gma_2_c10" type="box" size="0.508 0.0445 0.011" pos="0 -0.565 0.011" quat="1 0 0 0" rgba="0.35 0.22 0.1 1" contype="1" conaffinity="1" friction="0.5 0.005 0.0001"/>
+    <geom name="prop_pallet_gma_2_c11" type="box" size="0.508 0.0445 0.011" pos="0 0 0.011" quat="1 0 0 0" rgba="0.35 0.22 0.1 1" contype="1" conaffinity="1" friction="0.5 0.005 0.0001"/>
+    <geom name="prop_pallet_gma_2_c12" type="box" size="0.508 0.0445 0.011" pos="0 0.565 0.011" quat="1 0 0 0" rgba="0.35 0.22 0.1 1" contype="1" conaffinity="1" friction="0.5 0.005 0.0001"/>
+  </body>
+  <body name="prop_pallet_gma_3" pos="0.66 1.45 0.0005" quat="1 0 0 0">
+    <geom name="prop_pallet_gma_3_c0" type="box" size="0.508 0.0445 0.011" pos="0 -0.565 0.133" quat="1 0 0 0" rgba="0.35 0.22 0.1 1" contype="1" conaffinity="1" friction="0.5 0.005 0.0001"/>
+    <geom name="prop_pallet_gma_3_c1" type="box" size="0.508 0.0445 0.011" pos="0 -0.3767 0.133" quat="1 0 0 0" rgba="0.35 0.22 0.1 1" contype="1" conaffinity="1" friction="0.5 0.005 0.0001"/>
+    <geom name="prop_pallet_gma_3_c2" type="box" size="0.508 0.0445 0.011" pos="0 -0.1884 0.133" quat="1 0 0 0" rgba="0.35 0.22 0.1 1" contype="1" conaffinity="1" friction="0.5 0.005 0.0001"/>
+    <geom name="prop_pallet_gma_3_c3" type="box" size="0.508 0.0445 0.011" pos="0 -0.0001 0.133" quat="1 0 0 0" rgba="0.35 0.22 0.1 1" contype="1" conaffinity="1" friction="0.5 0.005 0.0001"/>
+    <geom name="prop_pallet_gma_3_c4" type="box" size="0.508 0.0445 0.011" pos="0 0.1882 0.133" quat="1 0 0 0" rgba="0.35 0.22 0.1 1" contype="1" conaffinity="1" friction="0.5 0.005 0.0001"/>
+    <geom name="prop_pallet_gma_3_c5" type="box" size="0.508 0.0445 0.011" pos="0 0.3765 0.133" quat="1 0 0 0" rgba="0.35 0.22 0.1 1" contype="1" conaffinity="1" friction="0.5 0.005 0.0001"/>
+    <geom name="prop_pallet_gma_3_c6" type="box" size="0.508 0.0445 0.011" pos="0 0.5648 0.133" quat="1 0 0 0" rgba="0.35 0.22 0.1 1" contype="1" conaffinity="1" friction="0.5 0.005 0.0001"/>
+    <geom name="prop_pallet_gma_3_c7" type="box" size="0.019 0.6095 0.0445" pos="-0.489 0 0.0665" quat="1 0 0 0" rgba="0.3 0.19 0.08 1" contype="1" conaffinity="1" friction="0.5 0.005 0.0001"/>
+    <geom name="prop_pallet_gma_3_c8" type="box" size="0.019 0.6095 0.0445" pos="0 0 0.0665" quat="1 0 0 0" rgba="0.3 0.19 0.08 1" contype="1" conaffinity="1" friction="0.5 0.005 0.0001"/>
+    <geom name="prop_pallet_gma_3_c9" type="box" size="0.019 0.6095 0.0445" pos="0.489 0 0.0665" quat="1 0 0 0" rgba="0.3 0.19 0.08 1" contype="1" conaffinity="1" friction="0.5 0.005 0.0001"/>
+    <geom name="prop_pallet_gma_3_c10" type="box" size="0.508 0.0445 0.011" pos="0 -0.565 0.011" quat="1 0 0 0" rgba="0.35 0.22 0.1 1" contype="1" conaffinity="1" friction="0.5 0.005 0.0001"/>
+    <geom name="prop_pallet_gma_3_c11" type="box" size="0.508 0.0445 0.011" pos="0 0 0.011" quat="1 0 0 0" rgba="0.35 0.22 0.1 1" contype="1" conaffinity="1" friction="0.5 0.005 0.0001"/>
+    <geom name="prop_pallet_gma_3_c12" type="box" size="0.508 0.0445 0.011" pos="0 0.565 0.011" quat="1 0 0 0" rgba="0.35 0.22 0.1 1" contype="1" conaffinity="1" friction="0.5 0.005 0.0001"/>
+  </body>
+  <body name="prop_pallet_gma_4" pos="-5.78 1.45 0.0005" quat="1 0 0 0">
+    <geom name="prop_pallet_gma_4_c0" type="box" size="0.508 0.0445 0.011" pos="0 -0.565 0.133" quat="1 0 0 0" rgba="0.35 0.22 0.1 1" contype="1" conaffinity="1" friction="0.5 0.005 0.0001"/>
+    <geom name="prop_pallet_gma_4_c1" type="box" size="0.508 0.0445 0.011" pos="0 -0.3767 0.133" quat="1 0 0 0" rgba="0.35 0.22 0.1 1" contype="1" conaffinity="1" friction="0.5 0.005 0.0001"/>
+    <geom name="prop_pallet_gma_4_c2" type="box" size="0.508 0.0445 0.011" pos="0 -0.1884 0.133" quat="1 0 0 0" rgba="0.35 0.22 0.1 1" contype="1" conaffinity="1" friction="0.5 0.005 0.0001"/>
+    <geom name="prop_pallet_gma_4_c3" type="box" size="0.508 0.0445 0.011" pos="0 -0.0001 0.133" quat="1 0 0 0" rgba="0.35 0.22 0.1 1" contype="1" conaffinity="1" friction="0.5 0.005 0.0001"/>
+    <geom name="prop_pallet_gma_4_c4" type="box" size="0.508 0.0445 0.011" pos="0 0.1882 0.133" quat="1 0 0 0" rgba="0.35 0.22 0.1 1" contype="1" conaffinity="1" friction="0.5 0.005 0.0001"/>
+    <geom name="prop_pallet_gma_4_c5" type="box" size="0.508 0.0445 0.011" pos="0 0.3765 0.133" quat="1 0 0 0" rgba="0.35 0.22 0.1 1" contype="1" conaffinity="1" friction="0.5 0.005 0.0001"/>
+    <geom name="prop_pallet_gma_4_c6" type="box" size="0.508 0.0445 0.011" pos="0 0.5648 0.133" quat="1 0 0 0" rgba="0.35 0.22 0.1 1" contype="1" conaffinity="1" friction="0.5 0.005 0.0001"/>
+    <geom name="prop_pallet_gma_4_c7" type="box" size="0.019 0.6095 0.0445" pos="-0.489 0 0.0665" quat="1 0 0 0" rgba="0.3 0.19 0.08 1" contype="1" conaffinity="1" friction="0.5 0.005 0.0001"/>
+    <geom name="prop_pallet_gma_4_c8" type="box" size="0.019 0.6095 0.0445" pos="0 0 0.0665" quat="1 0 0 0" rgba="0.3 0.19 0.08 1" contype="1" conaffinity="1" friction="0.5 0.005 0.0001"/>
+    <geom name="prop_pallet_gma_4_c9" type="box" size="0.019 0.6095 0.0445" pos="0.489 0 0.0665" quat="1 0 0 0" rgba="0.3 0.19 0.08 1" contype="1" conaffinity="1" friction="0.5 0.005 0.0001"/>
+    <geom name="prop_pallet_gma_4_c10" type="box" size="0.508 0.0445 0.011" pos="0 -0.565 0.011" quat="1 0 0 0" rgba="0.35 0.22 0.1 1" contype="1" conaffinity="1" friction="0.5 0.005 0.0001"/>
+    <geom name="prop_pallet_gma_4_c11" type="box" size="0.508 0.0445 0.011" pos="0 0 0.011" quat="1 0 0 0" rgba="0.35 0.22 0.1 1" contype="1" conaffinity="1" friction="0.5 0.005 0.0001"/>
+    <geom name="prop_pallet_gma_4_c12" type="box" size="0.508 0.0445 0.011" pos="0 0.565 0.011" quat="1 0 0 0" rgba="0.35 0.22 0.1 1" contype="1" conaffinity="1" friction="0.5 0.005 0.0001"/>
+  </body>
+  <body name="prop_pallet_gma_5" pos="-3.26 1.45 0.0005" quat="1 0 0 0">
+    <geom name="prop_pallet_gma_5_c0" type="box" size="0.508 0.0445 0.011" pos="0 -0.565 0.133" quat="1 0 0 0" rgba="0.35 0.22 0.1 1" contype="1" conaffinity="1" friction="0.5 0.005 0.0001"/>
+    <geom name="prop_pallet_gma_5_c1" type="box" size="0.508 0.0445 0.011" pos="0 -0.3767 0.133" quat="1 0 0 0" rgba="0.35 0.22 0.1 1" contype="1" conaffinity="1" friction="0.5 0.005 0.0001"/>
+    <geom name="prop_pallet_gma_5_c2" type="box" size="0.508 0.0445 0.011" pos="0 -0.1884 0.133" quat="1 0 0 0" rgba="0.35 0.22 0.1 1" contype="1" conaffinity="1" friction="0.5 0.005 0.0001"/>
+    <geom name="prop_pallet_gma_5_c3" type="box" size="0.508 0.0445 0.011" pos="0 -0.0001 0.133" quat="1 0 0 0" rgba="0.35 0.22 0.1 1" contype="1" conaffinity="1" friction="0.5 0.005 0.0001"/>
+    <geom name="prop_pallet_gma_5_c4" type="box" size="0.508 0.0445 0.011" pos="0 0.1882 0.133" quat="1 0 0 0" rgba="0.35 0.22 0.1 1" contype="1" conaffinity="1" friction="0.5 0.005 0.0001"/>
+    <geom name="prop_pallet_gma_5_c5" type="box" size="0.508 0.0445 0.011" pos="0 0.3765 0.133" quat="1 0 0 0" rgba="0.35 0.22 0.1 1" contype="1" conaffinity="1" friction="0.5 0.005 0.0001"/>
+    <geom name="prop_pallet_gma_5_c6" type="box" size="0.508 0.0445 0.011" pos="0 0.5648 0.133" quat="1 0 0 0" rgba="0.35 0.22 0.1 1" contype="1" conaffinity="1" friction="0.5 0.005 0.0001"/>
+    <geom name="prop_pallet_gma_5_c7" type="box" size="0.019 0.6095 0.0445" pos="-0.489 0 0.0665" quat="1 0 0 0" rgba="0.3 0.19 0.08 1" contype="1" conaffinity="1" friction="0.5 0.005 0.0001"/>
+    <geom name="prop_pallet_gma_5_c8" type="box" size="0.019 0.6095 0.0445" pos="0 0 0.0665" quat="1 0 0 0" rgba="0.3 0.19 0.08 1" contype="1" conaffinity="1" friction="0.5 0.005 0.0001"/>
+    <geom name="prop_pallet_gma_5_c9" type="box" size="0.019 0.6095 0.0445" pos="0.489 0 0.0665" quat="1 0 0 0" rgba="0.3 0.19 0.08 1" contype="1" conaffinity="1" friction="0.5 0.005 0.0001"/>
+    <geom name="prop_pallet_gma_5_c10" type="box" size="0.508 0.0445 0.011" pos="0 -0.565 0.011" quat="1 0 0 0" rgba="0.35 0.22 0.1 1" contype="1" conaffinity="1" friction="0.5 0.005 0.0001"/>
+    <geom name="prop_pallet_gma_5_c11" type="box" size="0.508 0.0445 0.011" pos="0 0 0.011" quat="1 0 0 0" rgba="0.35 0.22 0.1 1" contype="1" conaffinity="1" friction="0.5 0.005 0.0001"/>
+    <geom name="prop_pallet_gma_5_c12" type="box" size="0.508 0.0445 0.011" pos="0 0.565 0.011" quat="1 0 0 0" rgba="0.35 0.22 0.1 1" contype="1" conaffinity="1" friction="0.5 0.005 0.0001"/>
+  </body>
+  <body name="prop_pallet_gma_6" pos="-0.74 1.45 0.0005" quat="1 0 0 0">
+    <geom name="prop_pallet_gma_6_c0" type="box" size="0.508 0.0445 0.011" pos="0 -0.565 0.133" quat="1 0 0 0" rgba="0.35 0.22 0.1 1" contype="1" conaffinity="1" friction="0.5 0.005 0.0001"/>
+    <geom name="prop_pallet_gma_6_c1" type="box" size="0.508 0.0445 0.011" pos="0 -0.3767 0.133" quat="1 0 0 0" rgba="0.35 0.22 0.1 1" contype="1" conaffinity="1" friction="0.5 0.005 0.0001"/>
+    <geom name="prop_pallet_gma_6_c2" type="box" size="0.508 0.0445 0.011" pos="0 -0.1884 0.133" quat="1 0 0 0" rgba="0.35 0.22 0.1 1" contype="1" conaffinity="1" friction="0.5 0.005 0.0001"/>
+    <geom name="prop_pallet_gma_6_c3" type="box" size="0.508 0.0445 0.011" pos="0 -0.0001 0.133" quat="1 0 0 0" rgba="0.35 0.22 0.1 1" contype="1" conaffinity="1" friction="0.5 0.005 0.0001"/>
+    <geom name="prop_pallet_gma_6_c4" type="box" size="0.508 0.0445 0.011" pos="0 0.1882 0.133" quat="1 0 0 0" rgba="0.35 0.22 0.1 1" contype="1" conaffinity="1" friction="0.5 0.005 0.0001"/>
+    <geom name="prop_pallet_gma_6_c5" type="box" size="0.508 0.0445 0.011" pos="0 0.3765 0.133" quat="1 0 0 0" rgba="0.35 0.22 0.1 1" contype="1" conaffinity="1" friction="0.5 0.005 0.0001"/>
+    <geom name="prop_pallet_gma_6_c6" type="box" size="0.508 0.0445 0.011" pos="0 0.5648 0.133" quat="1 0 0 0" rgba="0.35 0.22 0.1 1" contype="1" conaffinity="1" friction="0.5 0.005 0.0001"/>
+    <geom name="prop_pallet_gma_6_c7" type="box" size="0.019 0.6095 0.0445" pos="-0.489 0 0.0665" quat="1 0 0 0" rgba="0.3 0.19 0.08 1" contype="1" conaffinity="1" friction="0.5 0.005 0.0001"/>
+    <geom name="prop_pallet_gma_6_c8" type="box" size="0.019 0.6095 0.0445" pos="0 0 0.0665" quat="1 0 0 0" rgba="0.3 0.19 0.08 1" contype="1" conaffinity="1" friction="0.5 0.005 0.0001"/>
+    <geom name="prop_pallet_gma_6_c9" type="box" size="0.019 0.6095 0.0445" pos="0.489 0 0.0665" quat="1 0 0 0" rgba="0.3 0.19 0.08 1" contype="1" conaffinity="1" friction="0.5 0.005 0.0001"/>
+    <geom name="prop_pallet_gma_6_c10" type="box" size="0.508 0.0445 0.011" pos="0 -0.565 0.011" quat="1 0 0 0" rgba="0.35 0.22 0.1 1" contype="1" conaffinity="1" friction="0.5 0.005 0.0001"/>
+    <geom name="prop_pallet_gma_6_c11" type="box" size="0.508 0.0445 0.011" pos="0 0 0.011" quat="1 0 0 0" rgba="0.35 0.22 0.1 1" contype="1" conaffinity="1" friction="0.5 0.005 0.0001"/>
+    <geom name="prop_pallet_gma_6_c12" type="box" size="0.508 0.0445 0.011" pos="0 0.565 0.011" quat="1 0 0 0" rgba="0.35 0.22 0.1 1" contype="1" conaffinity="1" friction="0.5 0.005 0.0001"/>
+  </body>
+  <body name="prop_pallet_gma_7" pos="1.78 1.45 0.0005" quat="1 0 0 0">
+    <geom name="prop_pallet_gma_7_c0" type="box" size="0.508 0.0445 0.011" pos="0 -0.565 0.133" quat="1 0 0 0" rgba="0.35 0.22 0.1 1" contype="1" conaffinity="1" friction="0.5 0.005 0.0001"/>
+    <geom name="prop_pallet_gma_7_c1" type="box" size="0.508 0.0445 0.011" pos="0 -0.3767 0.133" quat="1 0 0 0" rgba="0.35 0.22 0.1 1" contype="1" conaffinity="1" friction="0.5 0.005 0.0001"/>
+    <geom name="prop_pallet_gma_7_c2" type="box" size="0.508 0.0445 0.011" pos="0 -0.1884 0.133" quat="1 0 0 0" rgba="0.35 0.22 0.1 1" contype="1" conaffinity="1" friction="0.5 0.005 0.0001"/>
+    <geom name="prop_pallet_gma_7_c3" type="box" size="0.508 0.0445 0.011" pos="0 -0.0001 0.133" quat="1 0 0 0" rgba="0.35 0.22 0.1 1" contype="1" conaffinity="1" friction="0.5 0.005 0.0001"/>
+    <geom name="prop_pallet_gma_7_c4" type="box" size="0.508 0.0445 0.011" pos="0 0.1882 0.133" quat="1 0 0 0" rgba="0.35 0.22 0.1 1" contype="1" conaffinity="1" friction="0.5 0.005 0.0001"/>
+    <geom name="prop_pallet_gma_7_c5" type="box" size="0.508 0.0445 0.011" pos="0 0.3765 0.133" quat="1 0 0 0" rgba="0.35 0.22 0.1 1" contype="1" conaffinity="1" friction="0.5 0.005 0.0001"/>
+    <geom name="prop_pallet_gma_7_c6" type="box" size="0.508 0.0445 0.011" pos="0 0.5648 0.133" quat="1 0 0 0" rgba="0.35 0.22 0.1 1" contype="1" conaffinity="1" friction="0.5 0.005 0.0001"/>
+    <geom name="prop_pallet_gma_7_c7" type="box" size="0.019 0.6095 0.0445" pos="-0.489 0 0.0665" quat="1 0 0 0" rgba="0.3 0.19 0.08 1" contype="1" conaffinity="1" friction="0.5 0.005 0.0001"/>
+    <geom name="prop_pallet_gma_7_c8" type="box" size="0.019 0.6095 0.0445" pos="0 0 0.0665" quat="1 0 0 0" rgba="0.3 0.19 0.08 1" contype="1" conaffinity="1" friction="0.5 0.005 0.0001"/>
+    <geom name="prop_pallet_gma_7_c9" type="box" size="0.019 0.6095 0.0445" pos="0.489 0 0.0665" quat="1 0 0 0" rgba="0.3 0.19 0.08 1" contype="1" conaffinity="1" friction="0.5 0.005 0.0001"/>
+    <geom name="prop_pallet_gma_7_c10" type="box" size="0.508 0.0445 0.011" pos="0 -0.565 0.011" quat="1 0 0 0" rgba="0.35 0.22 0.1 1" contype="1" conaffinity="1" friction="0.5 0.005 0.0001"/>
+    <geom name="prop_pallet_gma_7_c11" type="box" size="0.508 0.0445 0.011" pos="0 0 0.011" quat="1 0 0 0" rgba="0.35 0.22 0.1 1" contype="1" conaffinity="1" friction="0.5 0.005 0.0001"/>
+    <geom name="prop_pallet_gma_7_c12" type="box" size="0.508 0.0445 0.011" pos="0 0.565 0.011" quat="1 0 0 0" rgba="0.35 0.22 0.1 1" contype="1" conaffinity="1" friction="0.5 0.005 0.0001"/>
+  </body>
+  <body name="prop_shipping_box_medium_0" pos="-6.9 1.2 0.145" quat="1 0 0 0">
+    <freejoint name="prop_shipping_box_medium_0_free"/>
+    <inertial pos="0 0 0.203" mass="5" diaginertia="0.1561 0.1561 0.1748"/>
+    <geom name="prop_shipping_box_medium_0_v0" type="box" size="0.2295 0.024 0.0006" pos="0 0 0.4066" quat="1 0 0 0" rgba="0.62 0.48 0.28 1" contype="0" conaffinity="0"/>
+    <geom name="prop_shipping_box_medium_0_c0" type="box" size="0.229 0.229 0.203" pos="0 0 0.203" quat="1 0 0 0" rgba="0.43 0.27 0.13 1" contype="8" conaffinity="15" condim="4" priority="1" friction="0.6 0.005 0.0001"/>
+  </body>
+  <body name="prop_shipping_box_medium_1" pos="-4.38 1.2 0.145" quat="1 0 0 0">
+    <freejoint name="prop_shipping_box_medium_1_free"/>
+    <inertial pos="0 0 0.203" mass="5" diaginertia="0.1561 0.1561 0.1748"/>
+    <geom name="prop_shipping_box_medium_1_v0" type="box" size="0.2295 0.024 0.0006" pos="0 0 0.4066" quat="1 0 0 0" rgba="0.62 0.48 0.28 1" contype="0" conaffinity="0"/>
+    <geom name="prop_shipping_box_medium_1_c0" type="box" size="0.229 0.229 0.203" pos="0 0 0.203" quat="1 0 0 0" rgba="0.43 0.27 0.13 1" contype="8" conaffinity="15" condim="4" priority="1" friction="0.6 0.005 0.0001"/>
+  </body>
+  <body name="prop_shipping_box_medium_2" pos="-1.86 1.2 0.145" quat="1 0 0 0">
+    <freejoint name="prop_shipping_box_medium_2_free"/>
+    <inertial pos="0 0 0.203" mass="5" diaginertia="0.1561 0.1561 0.1748"/>
+    <geom name="prop_shipping_box_medium_2_v0" type="box" size="0.2295 0.024 0.0006" pos="0 0 0.4066" quat="1 0 0 0" rgba="0.62 0.48 0.28 1" contype="0" conaffinity="0"/>
+    <geom name="prop_shipping_box_medium_2_c0" type="box" size="0.229 0.229 0.203" pos="0 0 0.203" quat="1 0 0 0" rgba="0.43 0.27 0.13 1" contype="8" conaffinity="15" condim="4" priority="1" friction="0.6 0.005 0.0001"/>
+  </body>
+  <body name="prop_shipping_box_medium_3" pos="0.66 1.2 0.145" quat="1 0 0 0">
+    <freejoint name="prop_shipping_box_medium_3_free"/>
+    <inertial pos="0 0 0.203" mass="5" diaginertia="0.1561 0.1561 0.1748"/>
+    <geom name="prop_shipping_box_medium_3_v0" type="box" size="0.2295 0.024 0.0006" pos="0 0 0.4066" quat="1 0 0 0" rgba="0.62 0.48 0.28 1" contype="0" conaffinity="0"/>
+    <geom name="prop_shipping_box_medium_3_c0" type="box" size="0.229 0.229 0.203" pos="0 0 0.203" quat="1 0 0 0" rgba="0.43 0.27 0.13 1" contype="8" conaffinity="15" condim="4" priority="1" friction="0.6 0.005 0.0001"/>
+  </body>
+  <body name="prop_shipping_box_medium_4" pos="-6.9 1.7 0.145" quat="0.9994 0 0 0.0349">
+    <freejoint name="prop_shipping_box_medium_4_free"/>
+    <inertial pos="0 0 0.203" mass="5" diaginertia="0.1561 0.1561 0.1748"/>
+    <geom name="prop_shipping_box_medium_4_v0" type="box" size="0.2295 0.024 0.0006" pos="0 0 0.4066" quat="1 0 0 0" rgba="0.62 0.48 0.28 1" contype="0" conaffinity="0"/>
+    <geom name="prop_shipping_box_medium_4_c0" type="box" size="0.229 0.229 0.203" pos="0 0 0.203" quat="1 0 0 0" rgba="0.43 0.27 0.13 1" contype="8" conaffinity="15" condim="4" priority="1" friction="0.6 0.005 0.0001"/>
+  </body>
+  <body name="prop_shipping_box_medium_5" pos="-4.38 1.7 0.145" quat="0.9994 0 0 0.0349">
+    <freejoint name="prop_shipping_box_medium_5_free"/>
+    <inertial pos="0 0 0.203" mass="5" diaginertia="0.1561 0.1561 0.1748"/>
+    <geom name="prop_shipping_box_medium_5_v0" type="box" size="0.2295 0.024 0.0006" pos="0 0 0.4066" quat="1 0 0 0" rgba="0.62 0.48 0.28 1" contype="0" conaffinity="0"/>
+    <geom name="prop_shipping_box_medium_5_c0" type="box" size="0.229 0.229 0.203" pos="0 0 0.203" quat="1 0 0 0" rgba="0.43 0.27 0.13 1" contype="8" conaffinity="15" condim="4" priority="1" friction="0.6 0.005 0.0001"/>
+  </body>
+  <body name="prop_shipping_box_medium_6" pos="-1.86 1.7 0.145" quat="0.9994 0 0 0.0349">
+    <freejoint name="prop_shipping_box_medium_6_free"/>
+    <inertial pos="0 0 0.203" mass="5" diaginertia="0.1561 0.1561 0.1748"/>
+    <geom name="prop_shipping_box_medium_6_v0" type="box" size="0.2295 0.024 0.0006" pos="0 0 0.4066" quat="1 0 0 0" rgba="0.62 0.48 0.28 1" contype="0" conaffinity="0"/>
+    <geom name="prop_shipping_box_medium_6_c0" type="box" size="0.229 0.229 0.203" pos="0 0 0.203" quat="1 0 0 0" rgba="0.43 0.27 0.13 1" contype="8" conaffinity="15" condim="4" priority="1" friction="0.6 0.005 0.0001"/>
+  </body>
+  <body name="prop_shipping_box_medium_7" pos="0.66 1.7 0.145" quat="0.9994 0 0 0.0349">
+    <freejoint name="prop_shipping_box_medium_7_free"/>
+    <inertial pos="0 0 0.203" mass="5" diaginertia="0.1561 0.1561 0.1748"/>
+    <geom name="prop_shipping_box_medium_7_v0" type="box" size="0.2295 0.024 0.0006" pos="0 0 0.4066" quat="1 0 0 0" rgba="0.62 0.48 0.28 1" contype="0" conaffinity="0"/>
+    <geom name="prop_shipping_box_medium_7_c0" type="box" size="0.229 0.229 0.203" pos="0 0 0.203" quat="1 0 0 0" rgba="0.43 0.27 0.13 1" contype="8" conaffinity="15" condim="4" priority="1" friction="0.6 0.005 0.0001"/>
+  </body>
+  <body name="prop_tote_blue_0" pos="-5.78 1.2 0.145" quat="0.7071 0 0 0.7071">
+    <freejoint name="prop_tote_blue_0_free"/>
+    <inertial pos="0 0 0.15" mass="1.8" diaginertia="0.03516 0.0675 0.07566"/>
+    <geom name="prop_tote_blue_0_c0" type="box" size="0.3 0.19 0.004" pos="0 0 0.004" quat="1 0 0 0" rgba="0.02 0.1 0.45 1" contype="8" conaffinity="15" condim="4" priority="1" friction="0.5 0.005 0.0001"/>
+    <geom name="prop_tote_blue_0_c1" type="box" size="0.3 0.004 0.15" pos="0 -0.186 0.15" quat="1 0 0 0" rgba="0.02 0.1 0.45 1" contype="8" conaffinity="15" condim="4" priority="1" friction="0.5 0.005 0.0001"/>
+    <geom name="prop_tote_blue_0_c2" type="box" size="0.3 0.004 0.15" pos="0 0.186 0.15" quat="1 0 0 0" rgba="0.02 0.1 0.45 1" contype="8" conaffinity="15" condim="4" priority="1" friction="0.5 0.005 0.0001"/>
+    <geom name="prop_tote_blue_0_c3" type="box" size="0.004 0.19 0.15" pos="-0.296 0 0.15" quat="1 0 0 0" rgba="0.02 0.1 0.45 1" contype="8" conaffinity="15" condim="4" priority="1" friction="0.5 0.005 0.0001"/>
+    <geom name="prop_tote_blue_0_c4" type="box" size="0.004 0.19 0.15" pos="0.296 0 0.15" quat="1 0 0 0" rgba="0.02 0.1 0.45 1" contype="8" conaffinity="15" condim="4" priority="1" friction="0.5 0.005 0.0001"/>
+  </body>
+  <body name="prop_tote_blue_1" pos="-3.26 1.2 0.145" quat="0.7071 0 0 0.7071">
+    <freejoint name="prop_tote_blue_1_free"/>
+    <inertial pos="0 0 0.15" mass="1.8" diaginertia="0.03516 0.0675 0.07566"/>
+    <geom name="prop_tote_blue_1_c0" type="box" size="0.3 0.19 0.004" pos="0 0 0.004" quat="1 0 0 0" rgba="0.02 0.1 0.45 1" contype="8" conaffinity="15" condim="4" priority="1" friction="0.5 0.005 0.0001"/>
+    <geom name="prop_tote_blue_1_c1" type="box" size="0.3 0.004 0.15" pos="0 -0.186 0.15" quat="1 0 0 0" rgba="0.02 0.1 0.45 1" contype="8" conaffinity="15" condim="4" priority="1" friction="0.5 0.005 0.0001"/>
+    <geom name="prop_tote_blue_1_c2" type="box" size="0.3 0.004 0.15" pos="0 0.186 0.15" quat="1 0 0 0" rgba="0.02 0.1 0.45 1" contype="8" conaffinity="15" condim="4" priority="1" friction="0.5 0.005 0.0001"/>
+    <geom name="prop_tote_blue_1_c3" type="box" size="0.004 0.19 0.15" pos="-0.296 0 0.15" quat="1 0 0 0" rgba="0.02 0.1 0.45 1" contype="8" conaffinity="15" condim="4" priority="1" friction="0.5 0.005 0.0001"/>
+    <geom name="prop_tote_blue_1_c4" type="box" size="0.004 0.19 0.15" pos="0.296 0 0.15" quat="1 0 0 0" rgba="0.02 0.1 0.45 1" contype="8" conaffinity="15" condim="4" priority="1" friction="0.5 0.005 0.0001"/>
+  </body>
+  <body name="prop_tote_blue_2" pos="-0.74 1.2 0.145" quat="0.7071 0 0 0.7071">
+    <freejoint name="prop_tote_blue_2_free"/>
+    <inertial pos="0 0 0.15" mass="1.8" diaginertia="0.03516 0.0675 0.07566"/>
+    <geom name="prop_tote_blue_2_c0" type="box" size="0.3 0.19 0.004" pos="0 0 0.004" quat="1 0 0 0" rgba="0.02 0.1 0.45 1" contype="8" conaffinity="15" condim="4" priority="1" friction="0.5 0.005 0.0001"/>
+    <geom name="prop_tote_blue_2_c1" type="box" size="0.3 0.004 0.15" pos="0 -0.186 0.15" quat="1 0 0 0" rgba="0.02 0.1 0.45 1" contype="8" conaffinity="15" condim="4" priority="1" friction="0.5 0.005 0.0001"/>
+    <geom name="prop_tote_blue_2_c2" type="box" size="0.3 0.004 0.15" pos="0 0.186 0.15" quat="1 0 0 0" rgba="0.02 0.1 0.45 1" contype="8" conaffinity="15" condim="4" priority="1" friction="0.5 0.005 0.0001"/>
+    <geom name="prop_tote_blue_2_c3" type="box" size="0.004 0.19 0.15" pos="-0.296 0 0.15" quat="1 0 0 0" rgba="0.02 0.1 0.45 1" contype="8" conaffinity="15" condim="4" priority="1" friction="0.5 0.005 0.0001"/>
+    <geom name="prop_tote_blue_2_c4" type="box" size="0.004 0.19 0.15" pos="0.296 0 0.15" quat="1 0 0 0" rgba="0.02 0.1 0.45 1" contype="8" conaffinity="15" condim="4" priority="1" friction="0.5 0.005 0.0001"/>
+  </body>
+  <body name="prop_tote_blue_3" pos="1.78 1.2 0.145" quat="0.7071 0 0 0.7071">
+    <freejoint name="prop_tote_blue_3_free"/>
+    <inertial pos="0 0 0.15" mass="1.8" diaginertia="0.03516 0.0675 0.07566"/>
+    <geom name="prop_tote_blue_3_c0" type="box" size="0.3 0.19 0.004" pos="0 0 0.004" quat="1 0 0 0" rgba="0.02 0.1 0.45 1" contype="8" conaffinity="15" condim="4" priority="1" friction="0.5 0.005 0.0001"/>
+    <geom name="prop_tote_blue_3_c1" type="box" size="0.3 0.004 0.15" pos="0 -0.186 0.15" quat="1 0 0 0" rgba="0.02 0.1 0.45 1" contype="8" conaffinity="15" condim="4" priority="1" friction="0.5 0.005 0.0001"/>
+    <geom name="prop_tote_blue_3_c2" type="box" size="0.3 0.004 0.15" pos="0 0.186 0.15" quat="1 0 0 0" rgba="0.02 0.1 0.45 1" contype="8" conaffinity="15" condim="4" priority="1" friction="0.5 0.005 0.0001"/>
+    <geom name="prop_tote_blue_3_c3" type="box" size="0.004 0.19 0.15" pos="-0.296 0 0.15" quat="1 0 0 0" rgba="0.02 0.1 0.45 1" contype="8" conaffinity="15" condim="4" priority="1" friction="0.5 0.005 0.0001"/>
+    <geom name="prop_tote_blue_3_c4" type="box" size="0.004 0.19 0.15" pos="0.296 0 0.15" quat="1 0 0 0" rgba="0.02 0.1 0.45 1" contype="8" conaffinity="15" condim="4" priority="1" friction="0.5 0.005 0.0001"/>
+  </body>
+  <body name="prop_shipping_box_small_0" pos="-5.78 1.75 0.145" quat="0.9986 0 0 -0.0523">
+    <freejoint name="prop_shipping_box_small_0_free"/>
+    <inertial pos="0 0 0.1525" mass="2" diaginertia="0.03101 0.03101 0.03101"/>
+    <geom name="prop_shipping_box_small_0_v0" type="box" size="0.153 0.024 0.0006" pos="0 0 0.3056" quat="1 0 0 0" rgba="0.62 0.48 0.28 1" contype="0" conaffinity="0"/>
+    <geom name="prop_shipping_box_small_0_c0" type="box" size="0.1525 0.1525 0.1525" pos="0 0 0.1525" quat="1 0 0 0" rgba="0.45 0.29 0.14 1" contype="8" conaffinity="15" condim="4" priority="1" friction="0.6 0.005 0.0001"/>
+  </body>
+  <body name="prop_shipping_box_small_1" pos="-3.26 1.75 0.145" quat="0.9986 0 0 -0.0523">
+    <freejoint name="prop_shipping_box_small_1_free"/>
+    <inertial pos="0 0 0.1525" mass="2" diaginertia="0.03101 0.03101 0.03101"/>
+    <geom name="prop_shipping_box_small_1_v0" type="box" size="0.153 0.024 0.0006" pos="0 0 0.3056" quat="1 0 0 0" rgba="0.62 0.48 0.28 1" contype="0" conaffinity="0"/>
+    <geom name="prop_shipping_box_small_1_c0" type="box" size="0.1525 0.1525 0.1525" pos="0 0 0.1525" quat="1 0 0 0" rgba="0.45 0.29 0.14 1" contype="8" conaffinity="15" condim="4" priority="1" friction="0.6 0.005 0.0001"/>
+  </body>
+  <body name="prop_shipping_box_small_2" pos="-0.74 1.75 0.145" quat="0.9986 0 0 -0.0523">
+    <freejoint name="prop_shipping_box_small_2_free"/>
+    <inertial pos="0 0 0.1525" mass="2" diaginertia="0.03101 0.03101 0.03101"/>
+    <geom name="prop_shipping_box_small_2_v0" type="box" size="0.153 0.024 0.0006" pos="0 0 0.3056" quat="1 0 0 0" rgba="0.62 0.48 0.28 1" contype="0" conaffinity="0"/>
+    <geom name="prop_shipping_box_small_2_c0" type="box" size="0.1525 0.1525 0.1525" pos="0 0 0.1525" quat="1 0 0 0" rgba="0.45 0.29 0.14 1" contype="8" conaffinity="15" condim="4" priority="1" friction="0.6 0.005 0.0001"/>
+  </body>
+  <body name="prop_shipping_box_small_3" pos="1.78 1.75 0.145" quat="0.9986 0 0 -0.0523">
+    <freejoint name="prop_shipping_box_small_3_free"/>
+    <inertial pos="0 0 0.1525" mass="2" diaginertia="0.03101 0.03101 0.03101"/>
+    <geom name="prop_shipping_box_small_3_v0" type="box" size="0.153 0.024 0.0006" pos="0 0 0.3056" quat="1 0 0 0" rgba="0.62 0.48 0.28 1" contype="0" conaffinity="0"/>
+    <geom name="prop_shipping_box_small_3_c0" type="box" size="0.1525 0.1525 0.1525" pos="0 0 0.1525" quat="1 0 0 0" rgba="0.45 0.29 0.14 1" contype="8" conaffinity="15" condim="4" priority="1" friction="0.6 0.005 0.0001"/>
+  </body>
+  <body name="prop_wrapped_pallet_load_22" pos="-6.9 1.45 1.5205" quat="1 0 0 0">
+    <geom name="prop_wrapped_pallet_load_22_v0" type="box" size="0.508 0.0445 0.011" pos="0 -0.565 0.133" quat="1 0 0 0" rgba="0.35 0.22 0.1 1" contype="0" conaffinity="0"/>
+    <geom name="prop_wrapped_pallet_load_22_v1" type="box" size="0.508 0.0445 0.011" pos="0 -0.3767 0.133" quat="1 0 0 0" rgba="0.35 0.22 0.1 1" contype="0" conaffinity="0"/>
+    <geom name="prop_wrapped_pallet_load_22_v2" type="box" size="0.508 0.0445 0.011" pos="0 -0.1884 0.133" quat="1 0 0 0" rgba="0.35 0.22 0.1 1" contype="0" conaffinity="0"/>
+    <geom name="prop_wrapped_pallet_load_22_v3" type="box" size="0.508 0.0445 0.011" pos="0 -0.0001 0.133" quat="1 0 0 0" rgba="0.35 0.22 0.1 1" contype="0" conaffinity="0"/>
+    <geom name="prop_wrapped_pallet_load_22_v4" type="box" size="0.508 0.0445 0.011" pos="0 0.1882 0.133" quat="1 0 0 0" rgba="0.35 0.22 0.1 1" contype="0" conaffinity="0"/>
+    <geom name="prop_wrapped_pallet_load_22_v5" type="box" size="0.508 0.0445 0.011" pos="0 0.3765 0.133" quat="1 0 0 0" rgba="0.35 0.22 0.1 1" contype="0" conaffinity="0"/>
+    <geom name="prop_wrapped_pallet_load_22_v6" type="box" size="0.508 0.0445 0.011" pos="0 0.5648 0.133" quat="1 0 0 0" rgba="0.35 0.22 0.1 1" contype="0" conaffinity="0"/>
+    <geom name="prop_wrapped_pallet_load_22_v7" type="box" size="0.019 0.6095 0.0445" pos="-0.489 0 0.0665" quat="1 0 0 0" rgba="0.3 0.19 0.08 1" contype="0" conaffinity="0"/>
+    <geom name="prop_wrapped_pallet_load_22_v8" type="box" size="0.019 0.6095 0.0445" pos="0 0 0.0665" quat="1 0 0 0" rgba="0.3 0.19 0.08 1" contype="0" conaffinity="0"/>
+    <geom name="prop_wrapped_pallet_load_22_v9" type="box" size="0.019 0.6095 0.0445" pos="0.489 0 0.0665" quat="1 0 0 0" rgba="0.3 0.19 0.08 1" contype="0" conaffinity="0"/>
+    <geom name="prop_wrapped_pallet_load_22_v10" type="box" size="0.47 0.57 0.004" pos="0 0 1.248" quat="1 0 0 0" rgba="0.45 0.29 0.14 1" contype="0" conaffinity="0"/>
+    <geom name="prop_wrapped_pallet_load_22_c0" type="box" size="0.508 0.6095 0.072" pos="0 0 0.072" quat="1 0 0 0" group="3" rgba="0.5 0.5 0.5 0.3" contype="1" conaffinity="1" friction="0.7 0.005 0.0001"/>
+    <geom name="prop_wrapped_pallet_load_22_c1" type="box" size="0.5 0.6 0.55" pos="0 0 0.694" quat="1 0 0 0" rgba="0.62 0.66 0.7 1" contype="1" conaffinity="1" friction="0.7 0.005 0.0001"/>
+  </body>
+  <body name="prop_wrapped_pallet_load_23" pos="-4.38 1.45 1.5205" quat="1 0 0 0">
+    <geom name="prop_wrapped_pallet_load_23_v0" type="box" size="0.508 0.0445 0.011" pos="0 -0.565 0.133" quat="1 0 0 0" rgba="0.35 0.22 0.1 1" contype="0" conaffinity="0"/>
+    <geom name="prop_wrapped_pallet_load_23_v1" type="box" size="0.508 0.0445 0.011" pos="0 -0.3767 0.133" quat="1 0 0 0" rgba="0.35 0.22 0.1 1" contype="0" conaffinity="0"/>
+    <geom name="prop_wrapped_pallet_load_23_v2" type="box" size="0.508 0.0445 0.011" pos="0 -0.1884 0.133" quat="1 0 0 0" rgba="0.35 0.22 0.1 1" contype="0" conaffinity="0"/>
+    <geom name="prop_wrapped_pallet_load_23_v3" type="box" size="0.508 0.0445 0.011" pos="0 -0.0001 0.133" quat="1 0 0 0" rgba="0.35 0.22 0.1 1" contype="0" conaffinity="0"/>
+    <geom name="prop_wrapped_pallet_load_23_v4" type="box" size="0.508 0.0445 0.011" pos="0 0.1882 0.133" quat="1 0 0 0" rgba="0.35 0.22 0.1 1" contype="0" conaffinity="0"/>
+    <geom name="prop_wrapped_pallet_load_23_v5" type="box" size="0.508 0.0445 0.011" pos="0 0.3765 0.133" quat="1 0 0 0" rgba="0.35 0.22 0.1 1" contype="0" conaffinity="0"/>
+    <geom name="prop_wrapped_pallet_load_23_v6" type="box" size="0.508 0.0445 0.011" pos="0 0.5648 0.133" quat="1 0 0 0" rgba="0.35 0.22 0.1 1" contype="0" conaffinity="0"/>
+    <geom name="prop_wrapped_pallet_load_23_v7" type="box" size="0.019 0.6095 0.0445" pos="-0.489 0 0.0665" quat="1 0 0 0" rgba="0.3 0.19 0.08 1" contype="0" conaffinity="0"/>
+    <geom name="prop_wrapped_pallet_load_23_v8" type="box" size="0.019 0.6095 0.0445" pos="0 0 0.0665" quat="1 0 0 0" rgba="0.3 0.19 0.08 1" contype="0" conaffinity="0"/>
+    <geom name="prop_wrapped_pallet_load_23_v9" type="box" size="0.019 0.6095 0.0445" pos="0.489 0 0.0665" quat="1 0 0 0" rgba="0.3 0.19 0.08 1" contype="0" conaffinity="0"/>
+    <geom name="prop_wrapped_pallet_load_23_v10" type="box" size="0.47 0.57 0.004" pos="0 0 1.248" quat="1 0 0 0" rgba="0.45 0.29 0.14 1" contype="0" conaffinity="0"/>
+    <geom name="prop_wrapped_pallet_load_23_c0" type="box" size="0.508 0.6095 0.072" pos="0 0 0.072" quat="1 0 0 0" group="3" rgba="0.5 0.5 0.5 0.3" contype="1" conaffinity="1" friction="0.7 0.005 0.0001"/>
+    <geom name="prop_wrapped_pallet_load_23_c1" type="box" size="0.5 0.6 0.55" pos="0 0 0.694" quat="1 0 0 0" rgba="0.62 0.66 0.7 1" contype="1" conaffinity="1" friction="0.7 0.005 0.0001"/>
+  </body>
+  <body name="prop_wrapped_pallet_load_24" pos="-1.86 1.45 1.5205" quat="1 0 0 0">
+    <geom name="prop_wrapped_pallet_load_24_v0" type="box" size="0.508 0.0445 0.011" pos="0 -0.565 0.133" quat="1 0 0 0" rgba="0.35 0.22 0.1 1" contype="0" conaffinity="0"/>
+    <geom name="prop_wrapped_pallet_load_24_v1" type="box" size="0.508 0.0445 0.011" pos="0 -0.3767 0.133" quat="1 0 0 0" rgba="0.35 0.22 0.1 1" contype="0" conaffinity="0"/>
+    <geom name="prop_wrapped_pallet_load_24_v2" type="box" size="0.508 0.0445 0.011" pos="0 -0.1884 0.133" quat="1 0 0 0" rgba="0.35 0.22 0.1 1" contype="0" conaffinity="0"/>
+    <geom name="prop_wrapped_pallet_load_24_v3" type="box" size="0.508 0.0445 0.011" pos="0 -0.0001 0.133" quat="1 0 0 0" rgba="0.35 0.22 0.1 1" contype="0" conaffinity="0"/>
+    <geom name="prop_wrapped_pallet_load_24_v4" type="box" size="0.508 0.0445 0.011" pos="0 0.1882 0.133" quat="1 0 0 0" rgba="0.35 0.22 0.1 1" contype="0" conaffinity="0"/>
+    <geom name="prop_wrapped_pallet_load_24_v5" type="box" size="0.508 0.0445 0.011" pos="0 0.3765 0.133" quat="1 0 0 0" rgba="0.35 0.22 0.1 1" contype="0" conaffinity="0"/>
+    <geom name="prop_wrapped_pallet_load_24_v6" type="box" size="0.508 0.0445 0.011" pos="0 0.5648 0.133" quat="1 0 0 0" rgba="0.35 0.22 0.1 1" contype="0" conaffinity="0"/>
+    <geom name="prop_wrapped_pallet_load_24_v7" type="box" size="0.019 0.6095 0.0445" pos="-0.489 0 0.0665" quat="1 0 0 0" rgba="0.3 0.19 0.08 1" contype="0" conaffinity="0"/>
+    <geom name="prop_wrapped_pallet_load_24_v8" type="box" size="0.019 0.6095 0.0445" pos="0 0 0.0665" quat="1 0 0 0" rgba="0.3 0.19 0.08 1" contype="0" conaffinity="0"/>
+    <geom name="prop_wrapped_pallet_load_24_v9" type="box" size="0.019 0.6095 0.0445" pos="0.489 0 0.0665" quat="1 0 0 0" rgba="0.3 0.19 0.08 1" contype="0" conaffinity="0"/>
+    <geom name="prop_wrapped_pallet_load_24_v10" type="box" size="0.47 0.57 0.004" pos="0 0 1.248" quat="1 0 0 0" rgba="0.45 0.29 0.14 1" contype="0" conaffinity="0"/>
+    <geom name="prop_wrapped_pallet_load_24_c0" type="box" size="0.508 0.6095 0.072" pos="0 0 0.072" quat="1 0 0 0" group="3" rgba="0.5 0.5 0.5 0.3" contype="1" conaffinity="1" friction="0.7 0.005 0.0001"/>
+    <geom name="prop_wrapped_pallet_load_24_c1" type="box" size="0.5 0.6 0.55" pos="0 0 0.694" quat="1 0 0 0" rgba="0.62 0.66 0.7 1" contype="1" conaffinity="1" friction="0.7 0.005 0.0001"/>
+  </body>
+  <body name="prop_wrapped_pallet_load_25" pos="-5.78 1.45 1.5205" quat="1 0 0 0">
+    <geom name="prop_wrapped_pallet_load_25_v0" type="box" size="0.508 0.0445 0.011" pos="0 -0.565 0.133" quat="1 0 0 0" rgba="0.35 0.22 0.1 1" contype="0" conaffinity="0"/>
+    <geom name="prop_wrapped_pallet_load_25_v1" type="box" size="0.508 0.0445 0.011" pos="0 -0.3767 0.133" quat="1 0 0 0" rgba="0.35 0.22 0.1 1" contype="0" conaffinity="0"/>
+    <geom name="prop_wrapped_pallet_load_25_v2" type="box" size="0.508 0.0445 0.011" pos="0 -0.1884 0.133" quat="1 0 0 0" rgba="0.35 0.22 0.1 1" contype="0" conaffinity="0"/>
+    <geom name="prop_wrapped_pallet_load_25_v3" type="box" size="0.508 0.0445 0.011" pos="0 -0.0001 0.133" quat="1 0 0 0" rgba="0.35 0.22 0.1 1" contype="0" conaffinity="0"/>
+    <geom name="prop_wrapped_pallet_load_25_v4" type="box" size="0.508 0.0445 0.011" pos="0 0.1882 0.133" quat="1 0 0 0" rgba="0.35 0.22 0.1 1" contype="0" conaffinity="0"/>
+    <geom name="prop_wrapped_pallet_load_25_v5" type="box" size="0.508 0.0445 0.011" pos="0 0.3765 0.133" quat="1 0 0 0" rgba="0.35 0.22 0.1 1" contype="0" conaffinity="0"/>
+    <geom name="prop_wrapped_pallet_load_25_v6" type="box" size="0.508 0.0445 0.011" pos="0 0.5648 0.133" quat="1 0 0 0" rgba="0.35 0.22 0.1 1" contype="0" conaffinity="0"/>
+    <geom name="prop_wrapped_pallet_load_25_v7" type="box" size="0.019 0.6095 0.0445" pos="-0.489 0 0.0665" quat="1 0 0 0" rgba="0.3 0.19 0.08 1" contype="0" conaffinity="0"/>
+    <geom name="prop_wrapped_pallet_load_25_v8" type="box" size="0.019 0.6095 0.0445" pos="0 0 0.0665" quat="1 0 0 0" rgba="0.3 0.19 0.08 1" contype="0" conaffinity="0"/>
+    <geom name="prop_wrapped_pallet_load_25_v9" type="box" size="0.019 0.6095 0.0445" pos="0.489 0 0.0665" quat="1 0 0 0" rgba="0.3 0.19 0.08 1" contype="0" conaffinity="0"/>
+    <geom name="prop_wrapped_pallet_load_25_v10" type="box" size="0.47 0.57 0.004" pos="0 0 1.248" quat="1 0 0 0" rgba="0.45 0.29 0.14 1" contype="0" conaffinity="0"/>
+    <geom name="prop_wrapped_pallet_load_25_c0" type="box" size="0.508 0.6095 0.072" pos="0 0 0.072" quat="1 0 0 0" group="3" rgba="0.5 0.5 0.5 0.3" contype="1" conaffinity="1" friction="0.7 0.005 0.0001"/>
+    <geom name="prop_wrapped_pallet_load_25_c1" type="box" size="0.5 0.6 0.55" pos="0 0 0.694" quat="1 0 0 0" rgba="0.62 0.66 0.7 1" contype="1" conaffinity="1" friction="0.7 0.005 0.0001"/>
+  </body>
+  <body name="prop_wrapped_pallet_load_26" pos="-3.26 1.45 1.5205" quat="1 0 0 0">
+    <geom name="prop_wrapped_pallet_load_26_v0" type="box" size="0.508 0.0445 0.011" pos="0 -0.565 0.133" quat="1 0 0 0" rgba="0.35 0.22 0.1 1" contype="0" conaffinity="0"/>
+    <geom name="prop_wrapped_pallet_load_26_v1" type="box" size="0.508 0.0445 0.011" pos="0 -0.3767 0.133" quat="1 0 0 0" rgba="0.35 0.22 0.1 1" contype="0" conaffinity="0"/>
+    <geom name="prop_wrapped_pallet_load_26_v2" type="box" size="0.508 0.0445 0.011" pos="0 -0.1884 0.133" quat="1 0 0 0" rgba="0.35 0.22 0.1 1" contype="0" conaffinity="0"/>
+    <geom name="prop_wrapped_pallet_load_26_v3" type="box" size="0.508 0.0445 0.011" pos="0 -0.0001 0.133" quat="1 0 0 0" rgba="0.35 0.22 0.1 1" contype="0" conaffinity="0"/>
+    <geom name="prop_wrapped_pallet_load_26_v4" type="box" size="0.508 0.0445 0.011" pos="0 0.1882 0.133" quat="1 0 0 0" rgba="0.35 0.22 0.1 1" contype="0" conaffinity="0"/>
+    <geom name="prop_wrapped_pallet_load_26_v5" type="box" size="0.508 0.0445 0.011" pos="0 0.3765 0.133" quat="1 0 0 0" rgba="0.35 0.22 0.1 1" contype="0" conaffinity="0"/>
+    <geom name="prop_wrapped_pallet_load_26_v6" type="box" size="0.508 0.0445 0.011" pos="0 0.5648 0.133" quat="1 0 0 0" rgba="0.35 0.22 0.1 1" contype="0" conaffinity="0"/>
+    <geom name="prop_wrapped_pallet_load_26_v7" type="box" size="0.019 0.6095 0.0445" pos="-0.489 0 0.0665" quat="1 0 0 0" rgba="0.3 0.19 0.08 1" contype="0" conaffinity="0"/>
+    <geom name="prop_wrapped_pallet_load_26_v8" type="box" size="0.019 0.6095 0.0445" pos="0 0 0.0665" quat="1 0 0 0" rgba="0.3 0.19 0.08 1" contype="0" conaffinity="0"/>
+    <geom name="prop_wrapped_pallet_load_26_v9" type="box" size="0.019 0.6095 0.0445" pos="0.489 0 0.0665" quat="1 0 0 0" rgba="0.3 0.19 0.08 1" contype="0" conaffinity="0"/>
+    <geom name="prop_wrapped_pallet_load_26_v10" type="box" size="0.47 0.57 0.004" pos="0 0 1.248" quat="1 0 0 0" rgba="0.45 0.29 0.14 1" contype="0" conaffinity="0"/>
+    <geom name="prop_wrapped_pallet_load_26_c0" type="box" size="0.508 0.6095 0.072" pos="0 0 0.072" quat="1 0 0 0" group="3" rgba="0.5 0.5 0.5 0.3" contype="1" conaffinity="1" friction="0.7 0.005 0.0001"/>
+    <geom name="prop_wrapped_pallet_load_26_c1" type="box" size="0.5 0.6 0.55" pos="0 0 0.694" quat="1 0 0 0" rgba="0.62 0.66 0.7 1" contype="1" conaffinity="1" friction="0.7 0.005 0.0001"/>
+  </body>
+  <body name="prop_wrapped_pallet_load_27" pos="-0.74 1.45 1.5205" quat="1 0 0 0">
+    <geom name="prop_wrapped_pallet_load_27_v0" type="box" size="0.508 0.0445 0.011" pos="0 -0.565 0.133" quat="1 0 0 0" rgba="0.35 0.22 0.1 1" contype="0" conaffinity="0"/>
+    <geom name="prop_wrapped_pallet_load_27_v1" type="box" size="0.508 0.0445 0.011" pos="0 -0.3767 0.133" quat="1 0 0 0" rgba="0.35 0.22 0.1 1" contype="0" conaffinity="0"/>
+    <geom name="prop_wrapped_pallet_load_27_v2" type="box" size="0.508 0.0445 0.011" pos="0 -0.1884 0.133" quat="1 0 0 0" rgba="0.35 0.22 0.1 1" contype="0" conaffinity="0"/>
+    <geom name="prop_wrapped_pallet_load_27_v3" type="box" size="0.508 0.0445 0.011" pos="0 -0.0001 0.133" quat="1 0 0 0" rgba="0.35 0.22 0.1 1" contype="0" conaffinity="0"/>
+    <geom name="prop_wrapped_pallet_load_27_v4" type="box" size="0.508 0.0445 0.011" pos="0 0.1882 0.133" quat="1 0 0 0" rgba="0.35 0.22 0.1 1" contype="0" conaffinity="0"/>
+    <geom name="prop_wrapped_pallet_load_27_v5" type="box" size="0.508 0.0445 0.011" pos="0 0.3765 0.133" quat="1 0 0 0" rgba="0.35 0.22 0.1 1" contype="0" conaffinity="0"/>
+    <geom name="prop_wrapped_pallet_load_27_v6" type="box" size="0.508 0.0445 0.011" pos="0 0.5648 0.133" quat="1 0 0 0" rgba="0.35 0.22 0.1 1" contype="0" conaffinity="0"/>
+    <geom name="prop_wrapped_pallet_load_27_v7" type="box" size="0.019 0.6095 0.0445" pos="-0.489 0 0.0665" quat="1 0 0 0" rgba="0.3 0.19 0.08 1" contype="0" conaffinity="0"/>
+    <geom name="prop_wrapped_pallet_load_27_v8" type="box" size="0.019 0.6095 0.0445" pos="0 0 0.0665" quat="1 0 0 0" rgba="0.3 0.19 0.08 1" contype="0" conaffinity="0"/>
+    <geom name="prop_wrapped_pallet_load_27_v9" type="box" size="0.019 0.6095 0.0445" pos="0.489 0 0.0665" quat="1 0 0 0" rgba="0.3 0.19 0.08 1" contype="0" conaffinity="0"/>
+    <geom name="prop_wrapped_pallet_load_27_v10" type="box" size="0.47 0.57 0.004" pos="0 0 1.248" quat="1 0 0 0" rgba="0.45 0.29 0.14 1" contype="0" conaffinity="0"/>
+    <geom name="prop_wrapped_pallet_load_27_c0" type="box" size="0.508 0.6095 0.072" pos="0 0 0.072" quat="1 0 0 0" group="3" rgba="0.5 0.5 0.5 0.3" contype="1" conaffinity="1" friction="0.7 0.005 0.0001"/>
+    <geom name="prop_wrapped_pallet_load_27_c1" type="box" size="0.5 0.6 0.55" pos="0 0 0.694" quat="1 0 0 0" rgba="0.62 0.66 0.7 1" contype="1" conaffinity="1" friction="0.7 0.005 0.0001"/>
+  </body>
+  <body name="prop_wrapped_pallet_load_28" pos="1.78 1.45 1.5205" quat="1 0 0 0">
+    <geom name="prop_wrapped_pallet_load_28_v0" type="box" size="0.508 0.0445 0.011" pos="0 -0.565 0.133" quat="1 0 0 0" rgba="0.35 0.22 0.1 1" contype="0" conaffinity="0"/>
+    <geom name="prop_wrapped_pallet_load_28_v1" type="box" size="0.508 0.0445 0.011" pos="0 -0.3767 0.133" quat="1 0 0 0" rgba="0.35 0.22 0.1 1" contype="0" conaffinity="0"/>
+    <geom name="prop_wrapped_pallet_load_28_v2" type="box" size="0.508 0.0445 0.011" pos="0 -0.1884 0.133" quat="1 0 0 0" rgba="0.35 0.22 0.1 1" contype="0" conaffinity="0"/>
+    <geom name="prop_wrapped_pallet_load_28_v3" type="box" size="0.508 0.0445 0.011" pos="0 -0.0001 0.133" quat="1 0 0 0" rgba="0.35 0.22 0.1 1" contype="0" conaffinity="0"/>
+    <geom name="prop_wrapped_pallet_load_28_v4" type="box" size="0.508 0.0445 0.011" pos="0 0.1882 0.133" quat="1 0 0 0" rgba="0.35 0.22 0.1 1" contype="0" conaffinity="0"/>
+    <geom name="prop_wrapped_pallet_load_28_v5" type="box" size="0.508 0.0445 0.011" pos="0 0.3765 0.133" quat="1 0 0 0" rgba="0.35 0.22 0.1 1" contype="0" conaffinity="0"/>
+    <geom name="prop_wrapped_pallet_load_28_v6" type="box" size="0.508 0.0445 0.011" pos="0 0.5648 0.133" quat="1 0 0 0" rgba="0.35 0.22 0.1 1" contype="0" conaffinity="0"/>
+    <geom name="prop_wrapped_pallet_load_28_v7" type="box" size="0.019 0.6095 0.0445" pos="-0.489 0 0.0665" quat="1 0 0 0" rgba="0.3 0.19 0.08 1" contype="0" conaffinity="0"/>
+    <geom name="prop_wrapped_pallet_load_28_v8" type="box" size="0.019 0.6095 0.0445" pos="0 0 0.0665" quat="1 0 0 0" rgba="0.3 0.19 0.08 1" contype="0" conaffinity="0"/>
+    <geom name="prop_wrapped_pallet_load_28_v9" type="box" size="0.019 0.6095 0.0445" pos="0.489 0 0.0665" quat="1 0 0 0" rgba="0.3 0.19 0.08 1" contype="0" conaffinity="0"/>
+    <geom name="prop_wrapped_pallet_load_28_v10" type="box" size="0.47 0.57 0.004" pos="0 0 1.248" quat="1 0 0 0" rgba="0.45 0.29 0.14 1" contype="0" conaffinity="0"/>
+    <geom name="prop_wrapped_pallet_load_28_c0" type="box" size="0.508 0.6095 0.072" pos="0 0 0.072" quat="1 0 0 0" group="3" rgba="0.5 0.5 0.5 0.3" contype="1" conaffinity="1" friction="0.7 0.005 0.0001"/>
+    <geom name="prop_wrapped_pallet_load_28_c1" type="box" size="0.5 0.6 0.55" pos="0 0 0.694" quat="1 0 0 0" rgba="0.62 0.66 0.7 1" contype="1" conaffinity="1" friction="0.7 0.005 0.0001"/>
+  </body>
+  <body name="prop_wrapped_pallet_load_29" pos="-6.9 1.45 2.8835" quat="1 0 0 0">
+    <geom name="prop_wrapped_pallet_load_29_v0" type="box" size="0.508 0.0445 0.011" pos="0 -0.565 0.133" quat="1 0 0 0" rgba="0.35 0.22 0.1 1" contype="0" conaffinity="0"/>
+    <geom name="prop_wrapped_pallet_load_29_v1" type="box" size="0.508 0.0445 0.011" pos="0 -0.3767 0.133" quat="1 0 0 0" rgba="0.35 0.22 0.1 1" contype="0" conaffinity="0"/>
+    <geom name="prop_wrapped_pallet_load_29_v2" type="box" size="0.508 0.0445 0.011" pos="0 -0.1884 0.133" quat="1 0 0 0" rgba="0.35 0.22 0.1 1" contype="0" conaffinity="0"/>
+    <geom name="prop_wrapped_pallet_load_29_v3" type="box" size="0.508 0.0445 0.011" pos="0 -0.0001 0.133" quat="1 0 0 0" rgba="0.35 0.22 0.1 1" contype="0" conaffinity="0"/>
+    <geom name="prop_wrapped_pallet_load_29_v4" type="box" size="0.508 0.0445 0.011" pos="0 0.1882 0.133" quat="1 0 0 0" rgba="0.35 0.22 0.1 1" contype="0" conaffinity="0"/>
+    <geom name="prop_wrapped_pallet_load_29_v5" type="box" size="0.508 0.0445 0.011" pos="0 0.3765 0.133" quat="1 0 0 0" rgba="0.35 0.22 0.1 1" contype="0" conaffinity="0"/>
+    <geom name="prop_wrapped_pallet_load_29_v6" type="box" size="0.508 0.0445 0.011" pos="0 0.5648 0.133" quat="1 0 0 0" rgba="0.35 0.22 0.1 1" contype="0" conaffinity="0"/>
+    <geom name="prop_wrapped_pallet_load_29_v7" type="box" size="0.019 0.6095 0.0445" pos="-0.489 0 0.0665" quat="1 0 0 0" rgba="0.3 0.19 0.08 1" contype="0" conaffinity="0"/>
+    <geom name="prop_wrapped_pallet_load_29_v8" type="box" size="0.019 0.6095 0.0445" pos="0 0 0.0665" quat="1 0 0 0" rgba="0.3 0.19 0.08 1" contype="0" conaffinity="0"/>
+    <geom name="prop_wrapped_pallet_load_29_v9" type="box" size="0.019 0.6095 0.0445" pos="0.489 0 0.0665" quat="1 0 0 0" rgba="0.3 0.19 0.08 1" contype="0" conaffinity="0"/>
+    <geom name="prop_wrapped_pallet_load_29_v10" type="box" size="0.47 0.57 0.004" pos="0 0 1.248" quat="1 0 0 0" rgba="0.45 0.29 0.14 1" contype="0" conaffinity="0"/>
+    <geom name="prop_wrapped_pallet_load_29_c0" type="box" size="0.508 0.6095 0.072" pos="0 0 0.072" quat="1 0 0 0" group="3" rgba="0.5 0.5 0.5 0.3" contype="1" conaffinity="1" friction="0.7 0.005 0.0001"/>
+    <geom name="prop_wrapped_pallet_load_29_c1" type="box" size="0.5 0.6 0.55" pos="0 0 0.694" quat="1 0 0 0" rgba="0.62 0.66 0.7 1" contype="1" conaffinity="1" friction="0.7 0.005 0.0001"/>
+  </body>
+  <body name="prop_wrapped_pallet_load_30" pos="-4.38 1.45 2.8835" quat="1 0 0 0">
+    <geom name="prop_wrapped_pallet_load_30_v0" type="box" size="0.508 0.0445 0.011" pos="0 -0.565 0.133" quat="1 0 0 0" rgba="0.35 0.22 0.1 1" contype="0" conaffinity="0"/>
+    <geom name="prop_wrapped_pallet_load_30_v1" type="box" size="0.508 0.0445 0.011" pos="0 -0.3767 0.133" quat="1 0 0 0" rgba="0.35 0.22 0.1 1" contype="0" conaffinity="0"/>
+    <geom name="prop_wrapped_pallet_load_30_v2" type="box" size="0.508 0.0445 0.011" pos="0 -0.1884 0.133" quat="1 0 0 0" rgba="0.35 0.22 0.1 1" contype="0" conaffinity="0"/>
+    <geom name="prop_wrapped_pallet_load_30_v3" type="box" size="0.508 0.0445 0.011" pos="0 -0.0001 0.133" quat="1 0 0 0" rgba="0.35 0.22 0.1 1" contype="0" conaffinity="0"/>
+    <geom name="prop_wrapped_pallet_load_30_v4" type="box" size="0.508 0.0445 0.011" pos="0 0.1882 0.133" quat="1 0 0 0" rgba="0.35 0.22 0.1 1" contype="0" conaffinity="0"/>
+    <geom name="prop_wrapped_pallet_load_30_v5" type="box" size="0.508 0.0445 0.011" pos="0 0.3765 0.133" quat="1 0 0 0" rgba="0.35 0.22 0.1 1" contype="0" conaffinity="0"/>
+    <geom name="prop_wrapped_pallet_load_30_v6" type="box" size="0.508 0.0445 0.011" pos="0 0.5648 0.133" quat="1 0 0 0" rgba="0.35 0.22 0.1 1" contype="0" conaffinity="0"/>
+    <geom name="prop_wrapped_pallet_load_30_v7" type="box" size="0.019 0.6095 0.0445" pos="-0.489 0 0.0665" quat="1 0 0 0" rgba="0.3 0.19 0.08 1" contype="0" conaffinity="0"/>
+    <geom name="prop_wrapped_pallet_load_30_v8" type="box" size="0.019 0.6095 0.0445" pos="0 0 0.0665" quat="1 0 0 0" rgba="0.3 0.19 0.08 1" contype="0" conaffinity="0"/>
+    <geom name="prop_wrapped_pallet_load_30_v9" type="box" size="0.019 0.6095 0.0445" pos="0.489 0 0.0665" quat="1 0 0 0" rgba="0.3 0.19 0.08 1" contype="0" conaffinity="0"/>
+    <geom name="prop_wrapped_pallet_load_30_v10" type="box" size="0.47 0.57 0.004" pos="0 0 1.248" quat="1 0 0 0" rgba="0.45 0.29 0.14 1" contype="0" conaffinity="0"/>
+    <geom name="prop_wrapped_pallet_load_30_c0" type="box" size="0.508 0.6095 0.072" pos="0 0 0.072" quat="1 0 0 0" group="3" rgba="0.5 0.5 0.5 0.3" contype="1" conaffinity="1" friction="0.7 0.005 0.0001"/>
+    <geom name="prop_wrapped_pallet_load_30_c1" type="box" size="0.5 0.6 0.55" pos="0 0 0.694" quat="1 0 0 0" rgba="0.62 0.66 0.7 1" contype="1" conaffinity="1" friction="0.7 0.005 0.0001"/>
+  </body>
+  <body name="prop_wrapped_pallet_load_31" pos="-1.86 1.45 2.8835" quat="1 0 0 0">
+    <geom name="prop_wrapped_pallet_load_31_v0" type="box" size="0.508 0.0445 0.011" pos="0 -0.565 0.133" quat="1 0 0 0" rgba="0.35 0.22 0.1 1" contype="0" conaffinity="0"/>
+    <geom name="prop_wrapped_pallet_load_31_v1" type="box" size="0.508 0.0445 0.011" pos="0 -0.3767 0.133" quat="1 0 0 0" rgba="0.35 0.22 0.1 1" contype="0" conaffinity="0"/>
+    <geom name="prop_wrapped_pallet_load_31_v2" type="box" size="0.508 0.0445 0.011" pos="0 -0.1884 0.133" quat="1 0 0 0" rgba="0.35 0.22 0.1 1" contype="0" conaffinity="0"/>
+    <geom name="prop_wrapped_pallet_load_31_v3" type="box" size="0.508 0.0445 0.011" pos="0 -0.0001 0.133" quat="1 0 0 0" rgba="0.35 0.22 0.1 1" contype="0" conaffinity="0"/>
+    <geom name="prop_wrapped_pallet_load_31_v4" type="box" size="0.508 0.0445 0.011" pos="0 0.1882 0.133" quat="1 0 0 0" rgba="0.35 0.22 0.1 1" contype="0" conaffinity="0"/>
+    <geom name="prop_wrapped_pallet_load_31_v5" type="box" size="0.508 0.0445 0.011" pos="0 0.3765 0.133" quat="1 0 0 0" rgba="0.35 0.22 0.1 1" contype="0" conaffinity="0"/>
+    <geom name="prop_wrapped_pallet_load_31_v6" type="box" size="0.508 0.0445 0.011" pos="0 0.5648 0.133" quat="1 0 0 0" rgba="0.35 0.22 0.1 1" contype="0" conaffinity="0"/>
+    <geom name="prop_wrapped_pallet_load_31_v7" type="box" size="0.019 0.6095 0.0445" pos="-0.489 0 0.0665" quat="1 0 0 0" rgba="0.3 0.19 0.08 1" contype="0" conaffinity="0"/>
+    <geom name="prop_wrapped_pallet_load_31_v8" type="box" size="0.019 0.6095 0.0445" pos="0 0 0.0665" quat="1 0 0 0" rgba="0.3 0.19 0.08 1" contype="0" conaffinity="0"/>
+    <geom name="prop_wrapped_pallet_load_31_v9" type="box" size="0.019 0.6095 0.0445" pos="0.489 0 0.0665" quat="1 0 0 0" rgba="0.3 0.19 0.08 1" contype="0" conaffinity="0"/>
+    <geom name="prop_wrapped_pallet_load_31_v10" type="box" size="0.47 0.57 0.004" pos="0 0 1.248" quat="1 0 0 0" rgba="0.45 0.29 0.14 1" contype="0" conaffinity="0"/>
+    <geom name="prop_wrapped_pallet_load_31_c0" type="box" size="0.508 0.6095 0.072" pos="0 0 0.072" quat="1 0 0 0" group="3" rgba="0.5 0.5 0.5 0.3" contype="1" conaffinity="1" friction="0.7 0.005 0.0001"/>
+    <geom name="prop_wrapped_pallet_load_31_c1" type="box" size="0.5 0.6 0.55" pos="0 0 0.694" quat="1 0 0 0" rgba="0.62 0.66 0.7 1" contype="1" conaffinity="1" friction="0.7 0.005 0.0001"/>
+  </body>
+  <body name="prop_wrapped_pallet_load_32" pos="0.66 1.45 2.8835" quat="1 0 0 0">
+    <geom name="prop_wrapped_pallet_load_32_v0" type="box" size="0.508 0.0445 0.011" pos="0 -0.565 0.133" quat="1 0 0 0" rgba="0.35 0.22 0.1 1" contype="0" conaffinity="0"/>
+    <geom name="prop_wrapped_pallet_load_32_v1" type="box" size="0.508 0.0445 0.011" pos="0 -0.3767 0.133" quat="1 0 0 0" rgba="0.35 0.22 0.1 1" contype="0" conaffinity="0"/>
+    <geom name="prop_wrapped_pallet_load_32_v2" type="box" size="0.508 0.0445 0.011" pos="0 -0.1884 0.133" quat="1 0 0 0" rgba="0.35 0.22 0.1 1" contype="0" conaffinity="0"/>
+    <geom name="prop_wrapped_pallet_load_32_v3" type="box" size="0.508 0.0445 0.011" pos="0 -0.0001 0.133" quat="1 0 0 0" rgba="0.35 0.22 0.1 1" contype="0" conaffinity="0"/>
+    <geom name="prop_wrapped_pallet_load_32_v4" type="box" size="0.508 0.0445 0.011" pos="0 0.1882 0.133" quat="1 0 0 0" rgba="0.35 0.22 0.1 1" contype="0" conaffinity="0"/>
+    <geom name="prop_wrapped_pallet_load_32_v5" type="box" size="0.508 0.0445 0.011" pos="0 0.3765 0.133" quat="1 0 0 0" rgba="0.35 0.22 0.1 1" contype="0" conaffinity="0"/>
+    <geom name="prop_wrapped_pallet_load_32_v6" type="box" size="0.508 0.0445 0.011" pos="0 0.5648 0.133" quat="1 0 0 0" rgba="0.35 0.22 0.1 1" contype="0" conaffinity="0"/>
+    <geom name="prop_wrapped_pallet_load_32_v7" type="box" size="0.019 0.6095 0.0445" pos="-0.489 0 0.0665" quat="1 0 0 0" rgba="0.3 0.19 0.08 1" contype="0" conaffinity="0"/>
+    <geom name="prop_wrapped_pallet_load_32_v8" type="box" size="0.019 0.6095 0.0445" pos="0 0 0.0665" quat="1 0 0 0" rgba="0.3 0.19 0.08 1" contype="0" conaffinity="0"/>
+    <geom name="prop_wrapped_pallet_load_32_v9" type="box" size="0.019 0.6095 0.0445" pos="0.489 0 0.0665" quat="1 0 0 0" rgba="0.3 0.19 0.08 1" contype="0" conaffinity="0"/>
+    <geom name="prop_wrapped_pallet_load_32_v10" type="box" size="0.47 0.57 0.004" pos="0 0 1.248" quat="1 0 0 0" rgba="0.45 0.29 0.14 1" contype="0" conaffinity="0"/>
+    <geom name="prop_wrapped_pallet_load_32_c0" type="box" size="0.508 0.6095 0.072" pos="0 0 0.072" quat="1 0 0 0" group="3" rgba="0.5 0.5 0.5 0.3" contype="1" conaffinity="1" friction="0.7 0.005 0.0001"/>
+    <geom name="prop_wrapped_pallet_load_32_c1" type="box" size="0.5 0.6 0.55" pos="0 0 0.694" quat="1 0 0 0" rgba="0.62 0.66 0.7 1" contype="1" conaffinity="1" friction="0.7 0.005 0.0001"/>
+  </body>
+  <body name="prop_wrapped_pallet_load_33" pos="-5.78 1.45 2.8835" quat="1 0 0 0">
+    <geom name="prop_wrapped_pallet_load_33_v0" type="box" size="0.508 0.0445 0.011" pos="0 -0.565 0.133" quat="1 0 0 0" rgba="0.35 0.22 0.1 1" contype="0" conaffinity="0"/>
+    <geom name="prop_wrapped_pallet_load_33_v1" type="box" size="0.508 0.0445 0.011" pos="0 -0.3767 0.133" quat="1 0 0 0" rgba="0.35 0.22 0.1 1" contype="0" conaffinity="0"/>
+    <geom name="prop_wrapped_pallet_load_33_v2" type="box" size="0.508 0.0445 0.011" pos="0 -0.1884 0.133" quat="1 0 0 0" rgba="0.35 0.22 0.1 1" contype="0" conaffinity="0"/>
+    <geom name="prop_wrapped_pallet_load_33_v3" type="box" size="0.508 0.0445 0.011" pos="0 -0.0001 0.133" quat="1 0 0 0" rgba="0.35 0.22 0.1 1" contype="0" conaffinity="0"/>
+    <geom name="prop_wrapped_pallet_load_33_v4" type="box" size="0.508 0.0445 0.011" pos="0 0.1882 0.133" quat="1 0 0 0" rgba="0.35 0.22 0.1 1" contype="0" conaffinity="0"/>
+    <geom name="prop_wrapped_pallet_load_33_v5" type="box" size="0.508 0.0445 0.011" pos="0 0.3765 0.133" quat="1 0 0 0" rgba="0.35 0.22 0.1 1" contype="0" conaffinity="0"/>
+    <geom name="prop_wrapped_pallet_load_33_v6" type="box" size="0.508 0.0445 0.011" pos="0 0.5648 0.133" quat="1 0 0 0" rgba="0.35 0.22 0.1 1" contype="0" conaffinity="0"/>
+    <geom name="prop_wrapped_pallet_load_33_v7" type="box" size="0.019 0.6095 0.0445" pos="-0.489 0 0.0665" quat="1 0 0 0" rgba="0.3 0.19 0.08 1" contype="0" conaffinity="0"/>
+    <geom name="prop_wrapped_pallet_load_33_v8" type="box" size="0.019 0.6095 0.0445" pos="0 0 0.0665" quat="1 0 0 0" rgba="0.3 0.19 0.08 1" contype="0" conaffinity="0"/>
+    <geom name="prop_wrapped_pallet_load_33_v9" type="box" size="0.019 0.6095 0.0445" pos="0.489 0 0.0665" quat="1 0 0 0" rgba="0.3 0.19 0.08 1" contype="0" conaffinity="0"/>
+    <geom name="prop_wrapped_pallet_load_33_v10" type="box" size="0.47 0.57 0.004" pos="0 0 1.248" quat="1 0 0 0" rgba="0.45 0.29 0.14 1" contype="0" conaffinity="0"/>
+    <geom name="prop_wrapped_pallet_load_33_c0" type="box" size="0.508 0.6095 0.072" pos="0 0 0.072" quat="1 0 0 0" group="3" rgba="0.5 0.5 0.5 0.3" contype="1" conaffinity="1" friction="0.7 0.005 0.0001"/>
+    <geom name="prop_wrapped_pallet_load_33_c1" type="box" size="0.5 0.6 0.55" pos="0 0 0.694" quat="1 0 0 0" rgba="0.62 0.66 0.7 1" contype="1" conaffinity="1" friction="0.7 0.005 0.0001"/>
+  </body>
+  <body name="prop_wrapped_pallet_load_34" pos="-3.26 1.45 2.8835" quat="1 0 0 0">
+    <geom name="prop_wrapped_pallet_load_34_v0" type="box" size="0.508 0.0445 0.011" pos="0 -0.565 0.133" quat="1 0 0 0" rgba="0.35 0.22 0.1 1" contype="0" conaffinity="0"/>
+    <geom name="prop_wrapped_pallet_load_34_v1" type="box" size="0.508 0.0445 0.011" pos="0 -0.3767 0.133" quat="1 0 0 0" rgba="0.35 0.22 0.1 1" contype="0" conaffinity="0"/>
+    <geom name="prop_wrapped_pallet_load_34_v2" type="box" size="0.508 0.0445 0.011" pos="0 -0.1884 0.133" quat="1 0 0 0" rgba="0.35 0.22 0.1 1" contype="0" conaffinity="0"/>
+    <geom name="prop_wrapped_pallet_load_34_v3" type="box" size="0.508 0.0445 0.011" pos="0 -0.0001 0.133" quat="1 0 0 0" rgba="0.35 0.22 0.1 1" contype="0" conaffinity="0"/>
+    <geom name="prop_wrapped_pallet_load_34_v4" type="box" size="0.508 0.0445 0.011" pos="0 0.1882 0.133" quat="1 0 0 0" rgba="0.35 0.22 0.1 1" contype="0" conaffinity="0"/>
+    <geom name="prop_wrapped_pallet_load_34_v5" type="box" size="0.508 0.0445 0.011" pos="0 0.3765 0.133" quat="1 0 0 0" rgba="0.35 0.22 0.1 1" contype="0" conaffinity="0"/>
+    <geom name="prop_wrapped_pallet_load_34_v6" type="box" size="0.508 0.0445 0.011" pos="0 0.5648 0.133" quat="1 0 0 0" rgba="0.35 0.22 0.1 1" contype="0" conaffinity="0"/>
+    <geom name="prop_wrapped_pallet_load_34_v7" type="box" size="0.019 0.6095 0.0445" pos="-0.489 0 0.0665" quat="1 0 0 0" rgba="0.3 0.19 0.08 1" contype="0" conaffinity="0"/>
+    <geom name="prop_wrapped_pallet_load_34_v8" type="box" size="0.019 0.6095 0.0445" pos="0 0 0.0665" quat="1 0 0 0" rgba="0.3 0.19 0.08 1" contype="0" conaffinity="0"/>
+    <geom name="prop_wrapped_pallet_load_34_v9" type="box" size="0.019 0.6095 0.0445" pos="0.489 0 0.0665" quat="1 0 0 0" rgba="0.3 0.19 0.08 1" contype="0" conaffinity="0"/>
+    <geom name="prop_wrapped_pallet_load_34_v10" type="box" size="0.47 0.57 0.004" pos="0 0 1.248" quat="1 0 0 0" rgba="0.45 0.29 0.14 1" contype="0" conaffinity="0"/>
+    <geom name="prop_wrapped_pallet_load_34_c0" type="box" size="0.508 0.6095 0.072" pos="0 0 0.072" quat="1 0 0 0" group="3" rgba="0.5 0.5 0.5 0.3" contype="1" conaffinity="1" friction="0.7 0.005 0.0001"/>
+    <geom name="prop_wrapped_pallet_load_34_c1" type="box" size="0.5 0.6 0.55" pos="0 0 0.694" quat="1 0 0 0" rgba="0.62 0.66 0.7 1" contype="1" conaffinity="1" friction="0.7 0.005 0.0001"/>
+  </body>
+  <body name="prop_safety_bollard_0" pos="2.75 0.95 0.0005" quat="1 0 0 0">
+    <geom name="prop_safety_bollard_0_v0" type="sphere" size="0.057" pos="0 0 1.07" quat="1 0 0 0" rgba="0.85 0.55 0 1" contype="0" conaffinity="0"/>
+    <geom name="prop_safety_bollard_0_c0" type="cylinder" size="0.057 0.535" pos="0 0 0.535" quat="1 0 0 0" rgba="0.85 0.55 0 1" contype="1" conaffinity="1" friction="0.7 0.005 0.0001"/>
+  </body>
+  <body name="prop_safety_bollard_1" pos="2.75 1.95 0.0005" quat="1 0 0 0">
+    <geom name="prop_safety_bollard_1_v0" type="sphere" size="0.057" pos="0 0 1.07" quat="1 0 0 0" rgba="0.85 0.55 0 1" contype="0" conaffinity="0"/>
+    <geom name="prop_safety_bollard_1_c0" type="cylinder" size="0.057 0.535" pos="0 0 0.535" quat="1 0 0 0" rgba="0.85 0.55 0 1" contype="1" conaffinity="1" friction="0.7 0.005 0.0001"/>
+  </body>
+  <body name="prop_safety_bollard_2" pos="2.75 4.85 0.0005" quat="1 0 0 0">
+    <geom name="prop_safety_bollard_2_v0" type="sphere" size="0.057" pos="0 0 1.07" quat="1 0 0 0" rgba="0.85 0.55 0 1" contype="0" conaffinity="0"/>
+    <geom name="prop_safety_bollard_2_c0" type="cylinder" size="0.057 0.535" pos="0 0 0.535" quat="1 0 0 0" rgba="0.85 0.55 0 1" contype="1" conaffinity="1" friction="0.7 0.005 0.0001"/>
+  </body>
+  <body name="prop_safety_bollard_3" pos="2.75 5.8 0.0005" quat="1 0 0 0">
+    <geom name="prop_safety_bollard_3_v0" type="sphere" size="0.057" pos="0 0 1.07" quat="1 0 0 0" rgba="0.85 0.55 0 1" contype="0" conaffinity="0"/>
+    <geom name="prop_safety_bollard_3_c0" type="cylinder" size="0.057 0.535" pos="0 0 0.535" quat="1 0 0 0" rgba="0.85 0.55 0 1" contype="1" conaffinity="1" friction="0.7 0.005 0.0001"/>
+  </body>
+  <body name="prop_dock_door_0" pos="-3.5 -6 0.0005" quat="0 0 0 1">
+    <geom name="prop_dock_door_0_v0" type="box" size="1.37 0.015 1.525" pos="0 -0.015 1.525" quat="1 0 0 0" rgba="0.5 0.52 0.55 1" contype="0" conaffinity="0"/>
+    <geom name="prop_dock_door_0_v1" type="box" size="1.37 0.003 0.006" pos="0 -0.031 0.2" quat="1 0 0 0" rgba="0.28 0.29 0.31 1" contype="0" conaffinity="0"/>
+    <geom name="prop_dock_door_0_v2" type="box" size="1.37 0.003 0.006" pos="0 -0.031 0.47" quat="1 0 0 0" rgba="0.28 0.29 0.31 1" contype="0" conaffinity="0"/>
+    <geom name="prop_dock_door_0_v3" type="box" size="1.37 0.003 0.006" pos="0 -0.031 0.74" quat="1 0 0 0" rgba="0.28 0.29 0.31 1" contype="0" conaffinity="0"/>
+    <geom name="prop_dock_door_0_v4" type="box" size="1.37 0.003 0.006" pos="0 -0.031 1.01" quat="1 0 0 0" rgba="0.28 0.29 0.31 1" contype="0" conaffinity="0"/>
+    <geom name="prop_dock_door_0_v5" type="box" size="1.37 0.003 0.006" pos="0 -0.031 1.28" quat="1 0 0 0" rgba="0.28 0.29 0.31 1" contype="0" conaffinity="0"/>
+    <geom name="prop_dock_door_0_v6" type="box" size="1.37 0.003 0.006" pos="0 -0.031 1.55" quat="1 0 0 0" rgba="0.28 0.29 0.31 1" contype="0" conaffinity="0"/>
+    <geom name="prop_dock_door_0_v7" type="box" size="1.37 0.003 0.006" pos="0 -0.031 1.82" quat="1 0 0 0" rgba="0.28 0.29 0.31 1" contype="0" conaffinity="0"/>
+    <geom name="prop_dock_door_0_v8" type="box" size="1.37 0.003 0.006" pos="0 -0.031 2.09" quat="1 0 0 0" rgba="0.28 0.29 0.31 1" contype="0" conaffinity="0"/>
+    <geom name="prop_dock_door_0_v9" type="box" size="1.37 0.003 0.006" pos="0 -0.031 2.36" quat="1 0 0 0" rgba="0.28 0.29 0.31 1" contype="0" conaffinity="0"/>
+    <geom name="prop_dock_door_0_v10" type="box" size="1.37 0.003 0.006" pos="0 -0.031 2.63" quat="1 0 0 0" rgba="0.28 0.29 0.31 1" contype="0" conaffinity="0"/>
+    <geom name="prop_dock_door_0_v11" type="box" size="1.37 0.003 0.006" pos="0 -0.031 2.9" quat="1 0 0 0" rgba="0.28 0.29 0.31 1" contype="0" conaffinity="0"/>
+    <geom name="prop_dock_door_0_v12" type="box" size="0.045 0.05 1.6" pos="1.43 -0.05 1.6" quat="1 0 0 0" rgba="0.3 0.31 0.33 1" contype="0" conaffinity="0"/>
+    <geom name="prop_dock_door_0_v13" type="box" size="0.045 0.05 1.6" pos="-1.43 -0.05 1.6" quat="1 0 0 0" rgba="0.3 0.31 0.33 1" contype="0" conaffinity="0"/>
+    <geom name="prop_dock_door_0_v14" type="box" size="1.5 0.12 0.15" pos="0 -0.12 3.3" quat="1 0 0 0" rgba="0.3 0.31 0.33 1" contype="0" conaffinity="0"/>
+    <geom name="prop_dock_door_0_v15" type="box" size="0.08 0.004 1.5" pos="1.56 -0.004 1.5" quat="1 0 0 0" rgba="0.85 0.55 0 1" contype="0" conaffinity="0"/>
+    <geom name="prop_dock_door_0_v16" type="box" size="0.08 0.004 1.5" pos="-1.56 -0.004 1.5" quat="1 0 0 0" rgba="0.85 0.55 0 1" contype="0" conaffinity="0"/>
+    <geom name="prop_dock_door_0_v17" type="box" size="1 0.9 0.003" pos="0 -0.9 0.003" quat="1 0 0 0" rgba="0.22 0.23 0.25 1" contype="0" conaffinity="0"/>
+    <geom name="prop_dock_door_0_v18" type="box" size="1 0.04 0.0035" pos="0 -1.76 0.0035" quat="1 0 0 0" rgba="0.85 0.55 0 1" contype="0" conaffinity="0"/>
+  </body>
+  <body name="prop_dock_door_1" pos="0.5 -6 0.0005" quat="0 0 0 1">
+    <geom name="prop_dock_door_1_v0" type="box" size="1.37 0.015 1.525" pos="0 -0.015 1.525" quat="1 0 0 0" rgba="0.5 0.52 0.55 1" contype="0" conaffinity="0"/>
+    <geom name="prop_dock_door_1_v1" type="box" size="1.37 0.003 0.006" pos="0 -0.031 0.2" quat="1 0 0 0" rgba="0.28 0.29 0.31 1" contype="0" conaffinity="0"/>
+    <geom name="prop_dock_door_1_v2" type="box" size="1.37 0.003 0.006" pos="0 -0.031 0.47" quat="1 0 0 0" rgba="0.28 0.29 0.31 1" contype="0" conaffinity="0"/>
+    <geom name="prop_dock_door_1_v3" type="box" size="1.37 0.003 0.006" pos="0 -0.031 0.74" quat="1 0 0 0" rgba="0.28 0.29 0.31 1" contype="0" conaffinity="0"/>
+    <geom name="prop_dock_door_1_v4" type="box" size="1.37 0.003 0.006" pos="0 -0.031 1.01" quat="1 0 0 0" rgba="0.28 0.29 0.31 1" contype="0" conaffinity="0"/>
+    <geom name="prop_dock_door_1_v5" type="box" size="1.37 0.003 0.006" pos="0 -0.031 1.28" quat="1 0 0 0" rgba="0.28 0.29 0.31 1" contype="0" conaffinity="0"/>
+    <geom name="prop_dock_door_1_v6" type="box" size="1.37 0.003 0.006" pos="0 -0.031 1.55" quat="1 0 0 0" rgba="0.28 0.29 0.31 1" contype="0" conaffinity="0"/>
+    <geom name="prop_dock_door_1_v7" type="box" size="1.37 0.003 0.006" pos="0 -0.031 1.82" quat="1 0 0 0" rgba="0.28 0.29 0.31 1" contype="0" conaffinity="0"/>
+    <geom name="prop_dock_door_1_v8" type="box" size="1.37 0.003 0.006" pos="0 -0.031 2.09" quat="1 0 0 0" rgba="0.28 0.29 0.31 1" contype="0" conaffinity="0"/>
+    <geom name="prop_dock_door_1_v9" type="box" size="1.37 0.003 0.006" pos="0 -0.031 2.36" quat="1 0 0 0" rgba="0.28 0.29 0.31 1" contype="0" conaffinity="0"/>
+    <geom name="prop_dock_door_1_v10" type="box" size="1.37 0.003 0.006" pos="0 -0.031 2.63" quat="1 0 0 0" rgba="0.28 0.29 0.31 1" contype="0" conaffinity="0"/>
+    <geom name="prop_dock_door_1_v11" type="box" size="1.37 0.003 0.006" pos="0 -0.031 2.9" quat="1 0 0 0" rgba="0.28 0.29 0.31 1" contype="0" conaffinity="0"/>
+    <geom name="prop_dock_door_1_v12" type="box" size="0.045 0.05 1.6" pos="1.43 -0.05 1.6" quat="1 0 0 0" rgba="0.3 0.31 0.33 1" contype="0" conaffinity="0"/>
+    <geom name="prop_dock_door_1_v13" type="box" size="0.045 0.05 1.6" pos="-1.43 -0.05 1.6" quat="1 0 0 0" rgba="0.3 0.31 0.33 1" contype="0" conaffinity="0"/>
+    <geom name="prop_dock_door_1_v14" type="box" size="1.5 0.12 0.15" pos="0 -0.12 3.3" quat="1 0 0 0" rgba="0.3 0.31 0.33 1" contype="0" conaffinity="0"/>
+    <geom name="prop_dock_door_1_v15" type="box" size="0.08 0.004 1.5" pos="1.56 -0.004 1.5" quat="1 0 0 0" rgba="0.85 0.55 0 1" contype="0" conaffinity="0"/>
+    <geom name="prop_dock_door_1_v16" type="box" size="0.08 0.004 1.5" pos="-1.56 -0.004 1.5" quat="1 0 0 0" rgba="0.85 0.55 0 1" contype="0" conaffinity="0"/>
+    <geom name="prop_dock_door_1_v17" type="box" size="1 0.9 0.003" pos="0 -0.9 0.003" quat="1 0 0 0" rgba="0.22 0.23 0.25 1" contype="0" conaffinity="0"/>
+    <geom name="prop_dock_door_1_v18" type="box" size="1 0.04 0.0035" pos="0 -1.76 0.0035" quat="1 0 0 0" rgba="0.85 0.55 0 1" contype="0" conaffinity="0"/>
+  </body>
+  <body name="prop_safety_bollard_4" pos="-5.3 -5.75 0.0005" quat="1 0 0 0">
+    <geom name="prop_safety_bollard_4_v0" type="sphere" size="0.057" pos="0 0 1.07" quat="1 0 0 0" rgba="0.85 0.55 0 1" contype="0" conaffinity="0"/>
+    <geom name="prop_safety_bollard_4_c0" type="cylinder" size="0.057 0.535" pos="0 0 0.535" quat="1 0 0 0" rgba="0.85 0.55 0 1" contype="1" conaffinity="1" friction="0.7 0.005 0.0001"/>
+  </body>
+  <body name="prop_safety_bollard_5" pos="-1.7 -5.75 0.0005" quat="1 0 0 0">
+    <geom name="prop_safety_bollard_5_v0" type="sphere" size="0.057" pos="0 0 1.07" quat="1 0 0 0" rgba="0.85 0.55 0 1" contype="0" conaffinity="0"/>
+    <geom name="prop_safety_bollard_5_c0" type="cylinder" size="0.057 0.535" pos="0 0 0.535" quat="1 0 0 0" rgba="0.85 0.55 0 1" contype="1" conaffinity="1" friction="0.7 0.005 0.0001"/>
+  </body>
+  <body name="prop_safety_bollard_6" pos="-1.3 -5.75 0.0005" quat="1 0 0 0">
+    <geom name="prop_safety_bollard_6_v0" type="sphere" size="0.057" pos="0 0 1.07" quat="1 0 0 0" rgba="0.85 0.55 0 1" contype="0" conaffinity="0"/>
+    <geom name="prop_safety_bollard_6_c0" type="cylinder" size="0.057 0.535" pos="0 0 0.535" quat="1 0 0 0" rgba="0.85 0.55 0 1" contype="1" conaffinity="1" friction="0.7 0.005 0.0001"/>
+  </body>
+  <body name="prop_safety_bollard_7" pos="2.3 -5.75 0.0005" quat="1 0 0 0">
+    <geom name="prop_safety_bollard_7_v0" type="sphere" size="0.057" pos="0 0 1.07" quat="1 0 0 0" rgba="0.85 0.55 0 1" contype="0" conaffinity="0"/>
+    <geom name="prop_safety_bollard_7_c0" type="cylinder" size="0.057 0.535" pos="0 0 0.535" quat="1 0 0 0" rgba="0.85 0.55 0 1" contype="1" conaffinity="1" friction="0.7 0.005 0.0001"/>
+  </body>
+  <body name="prop_pallet_gma_8" pos="-3.5 -3.4 0.0005" quat="0.7071 0 0 0.7071">
+    <freejoint name="prop_pallet_gma_8_free"/>
+    <inertial pos="0 0 0.072" mass="22" diaginertia="2.762 1.93 4.617"/>
+    <geom name="prop_pallet_gma_8_c0" type="box" size="0.508 0.0445 0.011" pos="0 -0.565 0.133" quat="1 0 0 0" rgba="0.35 0.22 0.1 1" contype="8" conaffinity="15" condim="4" priority="1" friction="0.5 0.005 0.0001"/>
+    <geom name="prop_pallet_gma_8_c1" type="box" size="0.508 0.0445 0.011" pos="0 -0.3767 0.133" quat="1 0 0 0" rgba="0.35 0.22 0.1 1" contype="8" conaffinity="15" condim="4" priority="1" friction="0.5 0.005 0.0001"/>
+    <geom name="prop_pallet_gma_8_c2" type="box" size="0.508 0.0445 0.011" pos="0 -0.1884 0.133" quat="1 0 0 0" rgba="0.35 0.22 0.1 1" contype="8" conaffinity="15" condim="4" priority="1" friction="0.5 0.005 0.0001"/>
+    <geom name="prop_pallet_gma_8_c3" type="box" size="0.508 0.0445 0.011" pos="0 -0.0001 0.133" quat="1 0 0 0" rgba="0.35 0.22 0.1 1" contype="8" conaffinity="15" condim="4" priority="1" friction="0.5 0.005 0.0001"/>
+    <geom name="prop_pallet_gma_8_c4" type="box" size="0.508 0.0445 0.011" pos="0 0.1882 0.133" quat="1 0 0 0" rgba="0.35 0.22 0.1 1" contype="8" conaffinity="15" condim="4" priority="1" friction="0.5 0.005 0.0001"/>
+    <geom name="prop_pallet_gma_8_c5" type="box" size="0.508 0.0445 0.011" pos="0 0.3765 0.133" quat="1 0 0 0" rgba="0.35 0.22 0.1 1" contype="8" conaffinity="15" condim="4" priority="1" friction="0.5 0.005 0.0001"/>
+    <geom name="prop_pallet_gma_8_c6" type="box" size="0.508 0.0445 0.011" pos="0 0.5648 0.133" quat="1 0 0 0" rgba="0.35 0.22 0.1 1" contype="8" conaffinity="15" condim="4" priority="1" friction="0.5 0.005 0.0001"/>
+    <geom name="prop_pallet_gma_8_c7" type="box" size="0.019 0.6095 0.0445" pos="-0.489 0 0.0665" quat="1 0 0 0" rgba="0.3 0.19 0.08 1" contype="8" conaffinity="15" condim="4" priority="1" friction="0.5 0.005 0.0001"/>
+    <geom name="prop_pallet_gma_8_c8" type="box" size="0.019 0.6095 0.0445" pos="0 0 0.0665" quat="1 0 0 0" rgba="0.3 0.19 0.08 1" contype="8" conaffinity="15" condim="4" priority="1" friction="0.5 0.005 0.0001"/>
+    <geom name="prop_pallet_gma_8_c9" type="box" size="0.019 0.6095 0.0445" pos="0.489 0 0.0665" quat="1 0 0 0" rgba="0.3 0.19 0.08 1" contype="8" conaffinity="15" condim="4" priority="1" friction="0.5 0.005 0.0001"/>
+    <geom name="prop_pallet_gma_8_c10" type="box" size="0.508 0.0445 0.011" pos="0 -0.565 0.011" quat="1 0 0 0" rgba="0.35 0.22 0.1 1" contype="8" conaffinity="15" condim="4" priority="1" friction="0.5 0.005 0.0001"/>
+    <geom name="prop_pallet_gma_8_c11" type="box" size="0.508 0.0445 0.011" pos="0 0 0.011" quat="1 0 0 0" rgba="0.35 0.22 0.1 1" contype="8" conaffinity="15" condim="4" priority="1" friction="0.5 0.005 0.0001"/>
+    <geom name="prop_pallet_gma_8_c12" type="box" size="0.508 0.0445 0.011" pos="0 0.565 0.011" quat="1 0 0 0" rgba="0.35 0.22 0.1 1" contype="8" conaffinity="15" condim="4" priority="1" friction="0.5 0.005 0.0001"/>
+  </body>
+  <body name="prop_shipping_box_small_4" pos="-3.66 -3.56 0.145" quat="1 0 0 0">
+    <freejoint name="prop_shipping_box_small_4_free"/>
+    <inertial pos="0 0 0.1525" mass="2" diaginertia="0.03101 0.03101 0.03101"/>
+    <geom name="prop_shipping_box_small_4_v0" type="box" size="0.153 0.024 0.0006" pos="0 0 0.3056" quat="1 0 0 0" rgba="0.62 0.48 0.28 1" contype="0" conaffinity="0"/>
+    <geom name="prop_shipping_box_small_4_c0" type="box" size="0.1525 0.1525 0.1525" pos="0 0 0.1525" quat="1 0 0 0" rgba="0.45 0.29 0.14 1" contype="8" conaffinity="15" condim="4" priority="1" friction="0.6 0.005 0.0001"/>
+  </body>
+  <body name="prop_shipping_box_small_5" pos="-3.34 -3.56 0.145" quat="1 0 0 0">
+    <freejoint name="prop_shipping_box_small_5_free"/>
+    <inertial pos="0 0 0.1525" mass="2" diaginertia="0.03101 0.03101 0.03101"/>
+    <geom name="prop_shipping_box_small_5_v0" type="box" size="0.153 0.024 0.0006" pos="0 0 0.3056" quat="1 0 0 0" rgba="0.62 0.48 0.28 1" contype="0" conaffinity="0"/>
+    <geom name="prop_shipping_box_small_5_c0" type="box" size="0.1525 0.1525 0.1525" pos="0 0 0.1525" quat="1 0 0 0" rgba="0.45 0.29 0.14 1" contype="8" conaffinity="15" condim="4" priority="1" friction="0.6 0.005 0.0001"/>
+  </body>
+  <body name="prop_shipping_box_small_6" pos="-3.66 -3.24 0.145" quat="1 0 0 0">
+    <freejoint name="prop_shipping_box_small_6_free"/>
+    <inertial pos="0 0 0.1525" mass="2" diaginertia="0.03101 0.03101 0.03101"/>
+    <geom name="prop_shipping_box_small_6_v0" type="box" size="0.153 0.024 0.0006" pos="0 0 0.3056" quat="1 0 0 0" rgba="0.62 0.48 0.28 1" contype="0" conaffinity="0"/>
+    <geom name="prop_shipping_box_small_6_c0" type="box" size="0.1525 0.1525 0.1525" pos="0 0 0.1525" quat="1 0 0 0" rgba="0.45 0.29 0.14 1" contype="8" conaffinity="15" condim="4" priority="1" friction="0.6 0.005 0.0001"/>
+  </body>
+  <body name="prop_shipping_box_small_7" pos="-3.34 -3.24 0.145" quat="0.999 0 0 0.0436">
+    <freejoint name="prop_shipping_box_small_7_free"/>
+    <inertial pos="0 0 0.1525" mass="2" diaginertia="0.03101 0.03101 0.03101"/>
+    <geom name="prop_shipping_box_small_7_v0" type="box" size="0.153 0.024 0.0006" pos="0 0 0.3056" quat="1 0 0 0" rgba="0.62 0.48 0.28 1" contype="0" conaffinity="0"/>
+    <geom name="prop_shipping_box_small_7_c0" type="box" size="0.1525 0.1525 0.1525" pos="0 0 0.1525" quat="1 0 0 0" rgba="0.45 0.29 0.14 1" contype="8" conaffinity="15" condim="4" priority="1" friction="0.6 0.005 0.0001"/>
+  </body>
+  <body name="prop_pallet_gma_9" pos="0.5 -3.4 0.0005" quat="0.7071 0 0 0.7071">
+    <freejoint name="prop_pallet_gma_9_free"/>
+    <inertial pos="0 0 0.072" mass="22" diaginertia="2.762 1.93 4.617"/>
+    <geom name="prop_pallet_gma_9_c0" type="box" size="0.508 0.0445 0.011" pos="0 -0.565 0.133" quat="1 0 0 0" rgba="0.35 0.22 0.1 1" contype="8" conaffinity="15" condim="4" priority="1" friction="0.5 0.005 0.0001"/>
+    <geom name="prop_pallet_gma_9_c1" type="box" size="0.508 0.0445 0.011" pos="0 -0.3767 0.133" quat="1 0 0 0" rgba="0.35 0.22 0.1 1" contype="8" conaffinity="15" condim="4" priority="1" friction="0.5 0.005 0.0001"/>
+    <geom name="prop_pallet_gma_9_c2" type="box" size="0.508 0.0445 0.011" pos="0 -0.1884 0.133" quat="1 0 0 0" rgba="0.35 0.22 0.1 1" contype="8" conaffinity="15" condim="4" priority="1" friction="0.5 0.005 0.0001"/>
+    <geom name="prop_pallet_gma_9_c3" type="box" size="0.508 0.0445 0.011" pos="0 -0.0001 0.133" quat="1 0 0 0" rgba="0.35 0.22 0.1 1" contype="8" conaffinity="15" condim="4" priority="1" friction="0.5 0.005 0.0001"/>
+    <geom name="prop_pallet_gma_9_c4" type="box" size="0.508 0.0445 0.011" pos="0 0.1882 0.133" quat="1 0 0 0" rgba="0.35 0.22 0.1 1" contype="8" conaffinity="15" condim="4" priority="1" friction="0.5 0.005 0.0001"/>
+    <geom name="prop_pallet_gma_9_c5" type="box" size="0.508 0.0445 0.011" pos="0 0.3765 0.133" quat="1 0 0 0" rgba="0.35 0.22 0.1 1" contype="8" conaffinity="15" condim="4" priority="1" friction="0.5 0.005 0.0001"/>
+    <geom name="prop_pallet_gma_9_c6" type="box" size="0.508 0.0445 0.011" pos="0 0.5648 0.133" quat="1 0 0 0" rgba="0.35 0.22 0.1 1" contype="8" conaffinity="15" condim="4" priority="1" friction="0.5 0.005 0.0001"/>
+    <geom name="prop_pallet_gma_9_c7" type="box" size="0.019 0.6095 0.0445" pos="-0.489 0 0.0665" quat="1 0 0 0" rgba="0.3 0.19 0.08 1" contype="8" conaffinity="15" condim="4" priority="1" friction="0.5 0.005 0.0001"/>
+    <geom name="prop_pallet_gma_9_c8" type="box" size="0.019 0.6095 0.0445" pos="0 0 0.0665" quat="1 0 0 0" rgba="0.3 0.19 0.08 1" contype="8" conaffinity="15" condim="4" priority="1" friction="0.5 0.005 0.0001"/>
+    <geom name="prop_pallet_gma_9_c9" type="box" size="0.019 0.6095 0.0445" pos="0.489 0 0.0665" quat="1 0 0 0" rgba="0.3 0.19 0.08 1" contype="8" conaffinity="15" condim="4" priority="1" friction="0.5 0.005 0.0001"/>
+    <geom name="prop_pallet_gma_9_c10" type="box" size="0.508 0.0445 0.011" pos="0 -0.565 0.011" quat="1 0 0 0" rgba="0.35 0.22 0.1 1" contype="8" conaffinity="15" condim="4" priority="1" friction="0.5 0.005 0.0001"/>
+    <geom name="prop_pallet_gma_9_c11" type="box" size="0.508 0.0445 0.011" pos="0 0 0.011" quat="1 0 0 0" rgba="0.35 0.22 0.1 1" contype="8" conaffinity="15" condim="4" priority="1" friction="0.5 0.005 0.0001"/>
+    <geom name="prop_pallet_gma_9_c12" type="box" size="0.508 0.0445 0.011" pos="0 0.565 0.011" quat="1 0 0 0" rgba="0.35 0.22 0.1 1" contype="8" conaffinity="15" condim="4" priority="1" friction="0.5 0.005 0.0001"/>
+  </body>
+  <body name="prop_shipping_box_large_0" pos="0.5 -3.65 0.145" quat="1 0 0 0">
+    <freejoint name="prop_shipping_box_large_0_free"/>
+    <inertial pos="0 0 0.229" mass="9" diaginertia="0.3146 0.4364 0.4364"/>
+    <geom name="prop_shipping_box_large_0_v0" type="box" size="0.3055 0.024 0.0006" pos="0 0 0.4586" quat="1 0 0 0" rgba="0.62 0.48 0.28 1" contype="0" conaffinity="0"/>
+    <geom name="prop_shipping_box_large_0_c0" type="box" size="0.305 0.229 0.229" pos="0 0 0.229" quat="1 0 0 0" rgba="0.42 0.26 0.12 1" contype="8" conaffinity="15" condim="4" priority="1" friction="0.6 0.005 0.0001"/>
+  </body>
+  <body name="prop_shipping_box_medium_8" pos="0.5 -3.1 0.145" quat="0.9962 0 0 0.0872">
+    <freejoint name="prop_shipping_box_medium_8_free"/>
+    <inertial pos="0 0 0.203" mass="5" diaginertia="0.1561 0.1561 0.1748"/>
+    <geom name="prop_shipping_box_medium_8_v0" type="box" size="0.2295 0.024 0.0006" pos="0 0 0.4066" quat="1 0 0 0" rgba="0.62 0.48 0.28 1" contype="0" conaffinity="0"/>
+    <geom name="prop_shipping_box_medium_8_c0" type="box" size="0.229 0.229 0.203" pos="0 0 0.203" quat="1 0 0 0" rgba="0.43 0.27 0.13 1" contype="8" conaffinity="15" condim="4" priority="1" friction="0.6 0.005 0.0001"/>
+  </body>
+  <body name="prop_shipping_box_small_8" pos="-1.6 -3.2 0.0005" quat="1 0 0 0">
+    <freejoint name="prop_shipping_box_small_8_free"/>
+    <inertial pos="0 0 0.1525" mass="2" diaginertia="0.03101 0.03101 0.03101"/>
+    <geom name="prop_shipping_box_small_8_v0" type="box" size="0.153 0.024 0.0006" pos="0 0 0.3056" quat="1 0 0 0" rgba="0.62 0.48 0.28 1" contype="0" conaffinity="0"/>
+    <geom name="prop_shipping_box_small_8_c0" type="box" size="0.1525 0.1525 0.1525" pos="0 0 0.1525" quat="1 0 0 0" rgba="0.45 0.29 0.14 1" contype="8" conaffinity="15" condim="4" priority="1" friction="0.6 0.005 0.0001"/>
+  </body>
+  <body name="prop_shipping_box_small_9" pos="-1.6 -3.2 0.3072" quat="0.9945 0 0 0.1045">
+    <freejoint name="prop_shipping_box_small_9_free"/>
+    <inertial pos="0 0 0.1525" mass="2" diaginertia="0.03101 0.03101 0.03101"/>
+    <geom name="prop_shipping_box_small_9_v0" type="box" size="0.153 0.024 0.0006" pos="0 0 0.3056" quat="1 0 0 0" rgba="0.62 0.48 0.28 1" contype="0" conaffinity="0"/>
+    <geom name="prop_shipping_box_small_9_c0" type="box" size="0.1525 0.1525 0.1525" pos="0 0 0.1525" quat="1 0 0 0" rgba="0.45 0.29 0.14 1" contype="8" conaffinity="15" condim="4" priority="1" friction="0.6 0.005 0.0001"/>
+  </body>
+  <body name="prop_shipping_box_medium_9" pos="-1 -3.25 0.0005" quat="0.9976 0 0 -0.0698">
+    <freejoint name="prop_shipping_box_medium_9_free"/>
+    <inertial pos="0 0 0.203" mass="5" diaginertia="0.1561 0.1561 0.1748"/>
+    <geom name="prop_shipping_box_medium_9_v0" type="box" size="0.2295 0.024 0.0006" pos="0 0 0.4066" quat="1 0 0 0" rgba="0.62 0.48 0.28 1" contype="0" conaffinity="0"/>
+    <geom name="prop_shipping_box_medium_9_c0" type="box" size="0.229 0.229 0.203" pos="0 0 0.203" quat="1 0 0 0" rgba="0.43 0.27 0.13 1" contype="8" conaffinity="15" condim="4" priority="1" friction="0.6 0.005 0.0001"/>
+  </body>
+  <body name="prop_cardboard_box_ph_0" pos="-4.6 -3 0.0005" quat="0.7071 0 0 0.7071">
+    <freejoint name="prop_cardboard_box_ph_0_free"/>
+    <inertial pos="0 0 0.1709" mass="3" diaginertia="0.09574 0.06665 0.104"/>
+    <geom name="prop_cardboard_box_ph_0_v0" type="mesh" mesh="prop_cardboard_box_ph_cardboard_box_01_0" rgba="0.3447 0.2584 0.1296 1" contype="0" conaffinity="0"/>
+    <geom name="prop_cardboard_box_ph_0_c0" type="box" size="0.1935 0.2579 0.1709" pos="0 0 0.1709" quat="1 0 0 0" group="3" rgba="0.5 0.5 0.5 0.3" contype="8" conaffinity="15" condim="4" priority="1" friction="0.6 0.005 0.0001"/>
+  </body>
+  <body name="prop_tote_blue_4" pos="1.7 -3 0.0005" quat="1 0 0 0">
+    <freejoint name="prop_tote_blue_4_free"/>
+    <inertial pos="0 0 0.15" mass="1.8" diaginertia="0.03516 0.0675 0.07566"/>
+    <geom name="prop_tote_blue_4_c0" type="box" size="0.3 0.19 0.004" pos="0 0 0.004" quat="1 0 0 0" rgba="0.02 0.1 0.45 1" contype="8" conaffinity="15" condim="4" priority="1" friction="0.5 0.005 0.0001"/>
+    <geom name="prop_tote_blue_4_c1" type="box" size="0.3 0.004 0.15" pos="0 -0.186 0.15" quat="1 0 0 0" rgba="0.02 0.1 0.45 1" contype="8" conaffinity="15" condim="4" priority="1" friction="0.5 0.005 0.0001"/>
+    <geom name="prop_tote_blue_4_c2" type="box" size="0.3 0.004 0.15" pos="0 0.186 0.15" quat="1 0 0 0" rgba="0.02 0.1 0.45 1" contype="8" conaffinity="15" condim="4" priority="1" friction="0.5 0.005 0.0001"/>
+    <geom name="prop_tote_blue_4_c3" type="box" size="0.004 0.19 0.15" pos="-0.296 0 0.15" quat="1 0 0 0" rgba="0.02 0.1 0.45 1" contype="8" conaffinity="15" condim="4" priority="1" friction="0.5 0.005 0.0001"/>
+    <geom name="prop_tote_blue_4_c4" type="box" size="0.004 0.19 0.15" pos="0.296 0 0.15" quat="1 0 0 0" rgba="0.02 0.1 0.45 1" contype="8" conaffinity="15" condim="4" priority="1" friction="0.5 0.005 0.0001"/>
+  </body>
+  <body name="prop_plastic_crate_0" pos="1.7 -3.6 0.0005" quat="0.7071 0 0 0.7071">
+    <freejoint name="prop_plastic_crate_0_free"/>
+    <inertial pos="0 0 0.127" mass="1.5" diaginertia="0.02862 0.04001 0.0525"/>
+    <geom name="prop_plastic_crate_0_v0" type="mesh" mesh="prop_plastic_crate_plastic_crate_02_0" rgba="0.2964 0.0426 0 1" contype="0" conaffinity="0"/>
+    <geom name="prop_plastic_crate_0_c0" type="box" size="0.2528 0.2028 0.004" pos="0 0 0.004" quat="1 0 0 0" group="3" rgba="0.5 0.5 0.5 0.3" contype="8" conaffinity="15" condim="4" priority="1" friction="0.5 0.005 0.0001"/>
+    <geom name="prop_plastic_crate_0_c1" type="box" size="0.2528 0.004 0.127" pos="0 -0.1988 0.127" quat="1 0 0 0" group="3" rgba="0.5 0.5 0.5 0.3" contype="8" conaffinity="15" condim="4" priority="1" friction="0.5 0.005 0.0001"/>
+    <geom name="prop_plastic_crate_0_c2" type="box" size="0.2528 0.004 0.127" pos="0 0.1988 0.127" quat="1 0 0 0" group="3" rgba="0.5 0.5 0.5 0.3" contype="8" conaffinity="15" condim="4" priority="1" friction="0.5 0.005 0.0001"/>
+    <geom name="prop_plastic_crate_0_c3" type="box" size="0.004 0.2028 0.127" pos="-0.2488 0 0.127" quat="1 0 0 0" group="3" rgba="0.5 0.5 0.5 0.3" contype="8" conaffinity="15" condim="4" priority="1" friction="0.5 0.005 0.0001"/>
+    <geom name="prop_plastic_crate_0_c4" type="box" size="0.004 0.2028 0.127" pos="0.2488 0 0.127" quat="1 0 0 0" group="3" rgba="0.5 0.5 0.5 0.3" contype="8" conaffinity="15" condim="4" priority="1" friction="0.5 0.005 0.0001"/>
+  </body>
+  <body name="prop_pallet_jack_0" pos="-1.5 -3.95 0.0005" quat="1 0 0 0">
+    <freejoint name="prop_pallet_jack_0_free"/>
+    <inertial pos="0 -0.485 0.1375" mass="70" diaginertia="10.73 2.51 12.42"/>
+    <geom name="prop_pallet_jack_0_v0" type="cylinder" size="0.05 0.04" pos="0 0.13 0.05" quat="0.7071 0 0.7071 0" rgba="0.02 0.02 0.02 1" contype="0" conaffinity="0"/>
+    <geom name="prop_pallet_jack_0_v1" type="box" size="0.016 0.016 0.5" pos="0 0.27 0.72" quat="0.9877 -0.1564 0 0" rgba="0.02 0.02 0.02 1" contype="0" conaffinity="0"/>
+    <geom name="prop_pallet_jack_0_v2" type="box" size="0.12 0.02 0.02" pos="0 0.42 1.19" quat="1 0 0 0" rgba="0.02 0.02 0.02 1" contype="0" conaffinity="0"/>
+    <geom name="prop_pallet_jack_0_c0" type="box" size="0.08 0.575 0.035" pos="0.21 -0.575 0.04" quat="1 0 0 0" rgba="0.5 0.02 0.01 1" contype="8" conaffinity="15" condim="4" priority="1" friction="0.08 0.005 0.0001"/>
+    <geom name="prop_pallet_jack_0_c1" type="box" size="0.08 0.575 0.035" pos="-0.21 -0.575 0.04" quat="1 0 0 0" rgba="0.5 0.02 0.01 1" contype="8" conaffinity="15" condim="4" priority="1" friction="0.08 0.005 0.0001"/>
+    <geom name="prop_pallet_jack_0_c2" type="box" size="0.3 0.1 0.13" pos="0 0.08 0.14" quat="1 0 0 0" rgba="0.5 0.02 0.01 1" contype="8" conaffinity="15" condim="4" priority="1" friction="0.08 0.005 0.0001"/>
+  </body>
+  <body name="prop_drum_55gal_0" pos="6.9 5.3 0.0005" quat="1 0 0 0">
+    <freejoint name="prop_drum_55gal_0_free"/>
+    <inertial pos="0 0 0.44" mass="25" diaginertia="2.324 2.324 1.421"/>
+    <geom name="prop_drum_55gal_0_v0" type="cylinder" size="0.297 0.01" pos="0 0 0.3" quat="1 0 0 0" rgba="0.015 0.09 0.4 1" contype="0" conaffinity="0"/>
+    <geom name="prop_drum_55gal_0_v1" type="cylinder" size="0.297 0.01" pos="0 0 0.6" quat="1 0 0 0" rgba="0.015 0.09 0.4 1" contype="0" conaffinity="0"/>
+    <geom name="prop_drum_55gal_0_c0" type="cylinder" size="0.292 0.44" pos="0 0 0.44" quat="1 0 0 0" rgba="0.02 0.12 0.5 1" contype="8" conaffinity="15" condim="4" priority="1" friction="0.5 0.005 0.0001"/>
+  </body>
+  <body name="prop_drum_55gal_1" pos="7.5 5.3 0.0005" quat="1 0 0 0">
+    <freejoint name="prop_drum_55gal_1_free"/>
+    <inertial pos="0 0 0.44" mass="25" diaginertia="2.324 2.324 1.421"/>
+    <geom name="prop_drum_55gal_1_v0" type="cylinder" size="0.297 0.01" pos="0 0 0.3" quat="1 0 0 0" rgba="0.015 0.09 0.4 1" contype="0" conaffinity="0"/>
+    <geom name="prop_drum_55gal_1_v1" type="cylinder" size="0.297 0.01" pos="0 0 0.6" quat="1 0 0 0" rgba="0.015 0.09 0.4 1" contype="0" conaffinity="0"/>
+    <geom name="prop_drum_55gal_1_c0" type="cylinder" size="0.292 0.44" pos="0 0 0.44" quat="1 0 0 0" rgba="0.02 0.12 0.5 1" contype="8" conaffinity="15" condim="4" priority="1" friction="0.5 0.005 0.0001"/>
+  </body>
+  <body name="prop_drum_55gal_2" pos="7.2 4.75 0.0005" quat="1 0 0 0">
+    <freejoint name="prop_drum_55gal_2_free"/>
+    <inertial pos="0 0 0.44" mass="25" diaginertia="2.324 2.324 1.421"/>
+    <geom name="prop_drum_55gal_2_v0" type="cylinder" size="0.297 0.01" pos="0 0 0.3" quat="1 0 0 0" rgba="0.015 0.09 0.4 1" contype="0" conaffinity="0"/>
+    <geom name="prop_drum_55gal_2_v1" type="cylinder" size="0.297 0.01" pos="0 0 0.6" quat="1 0 0 0" rgba="0.015 0.09 0.4 1" contype="0" conaffinity="0"/>
+    <geom name="prop_drum_55gal_2_c0" type="cylinder" size="0.292 0.44" pos="0 0 0.44" quat="1 0 0 0" rgba="0.02 0.12 0.5 1" contype="8" conaffinity="15" condim="4" priority="1" friction="0.5 0.005 0.0001"/>
+  </body>
+  <body name="prop_fire_extinguisher_0" pos="8 -2 0.0005" quat="0.7071 0 0 -0.7071">
+    <geom name="prop_fire_extinguisher_0_v0" type="box" size="0.04 0.012 0.06" pos="0 -0.012 1.02" quat="1 0 0 0" rgba="0.1 0.1 0.1 1" contype="0" conaffinity="0"/>
+    <geom name="prop_fire_extinguisher_0_v1" type="cylinder" size="0.02 0.025" pos="0 -0.09 1.165" quat="1 0 0 0" rgba="0.05 0.05 0.05 1" contype="0" conaffinity="0"/>
+    <geom name="prop_fire_extinguisher_0_v2" type="box" size="0.012 0.06 0.006" pos="0 -0.11 1.2" quat="0.9914 -0.1305 0 0" rgba="0.05 0.05 0.05 1" contype="0" conaffinity="0"/>
+    <geom name="prop_fire_extinguisher_0_v3" type="box" size="0.007 0.007 0.17" pos="0.07 -0.09 1" quat="1 0 0 0" rgba="0.02 0.02 0.02 1" contype="0" conaffinity="0"/>
+    <geom name="prop_fire_extinguisher_0_v4" type="box" size="0.05 0.003 0.03" pos="0 -0.157 0.97" quat="1 0 0 0" rgba="0.85 0.85 0.85 1" contype="0" conaffinity="0"/>
+    <geom name="prop_fire_extinguisher_0_c0" type="cylinder" size="0.065 0.19" pos="0 -0.09 0.95" quat="1 0 0 0" rgba="0.55 0.01 0.01 1" contype="1" conaffinity="1" friction="0.7 0.005 0.0001"/>
+  </body>
+  <body name="prop_fire_extinguisher_1" pos="-8 -2.5 0.0005" quat="0.7071 0 0 0.7071">
+    <geom name="prop_fire_extinguisher_1_v0" type="box" size="0.04 0.012 0.06" pos="0 -0.012 1.02" quat="1 0 0 0" rgba="0.1 0.1 0.1 1" contype="0" conaffinity="0"/>
+    <geom name="prop_fire_extinguisher_1_v1" type="cylinder" size="0.02 0.025" pos="0 -0.09 1.165" quat="1 0 0 0" rgba="0.05 0.05 0.05 1" contype="0" conaffinity="0"/>
+    <geom name="prop_fire_extinguisher_1_v2" type="box" size="0.012 0.06 0.006" pos="0 -0.11 1.2" quat="0.9914 -0.1305 0 0" rgba="0.05 0.05 0.05 1" contype="0" conaffinity="0"/>
+    <geom name="prop_fire_extinguisher_1_v3" type="box" size="0.007 0.007 0.17" pos="0.07 -0.09 1" quat="1 0 0 0" rgba="0.02 0.02 0.02 1" contype="0" conaffinity="0"/>
+    <geom name="prop_fire_extinguisher_1_v4" type="box" size="0.05 0.003 0.03" pos="0 -0.157 0.97" quat="1 0 0 0" rgba="0.85 0.85 0.85 1" contype="0" conaffinity="0"/>
+    <geom name="prop_fire_extinguisher_1_c0" type="cylinder" size="0.065 0.19" pos="0 -0.09 0.95" quat="1 0 0 0" rgba="0.55 0.01 0.01 1" contype="1" conaffinity="1" friction="0.7 0.005 0.0001"/>
+  </body>
+  <body name="prop_fire_extinguisher_2" pos="-1.5 -6 0.0005" quat="0 0 0 1">
+    <geom name="prop_fire_extinguisher_2_v0" type="box" size="0.04 0.012 0.06" pos="0 -0.012 1.02" quat="1 0 0 0" rgba="0.1 0.1 0.1 1" contype="0" conaffinity="0"/>
+    <geom name="prop_fire_extinguisher_2_v1" type="cylinder" size="0.02 0.025" pos="0 -0.09 1.165" quat="1 0 0 0" rgba="0.05 0.05 0.05 1" contype="0" conaffinity="0"/>
+    <geom name="prop_fire_extinguisher_2_v2" type="box" size="0.012 0.06 0.006" pos="0 -0.11 1.2" quat="0.9914 -0.1305 0 0" rgba="0.05 0.05 0.05 1" contype="0" conaffinity="0"/>
+    <geom name="prop_fire_extinguisher_2_v3" type="box" size="0.007 0.007 0.17" pos="0.07 -0.09 1" quat="1 0 0 0" rgba="0.02 0.02 0.02 1" contype="0" conaffinity="0"/>
+    <geom name="prop_fire_extinguisher_2_v4" type="box" size="0.05 0.003 0.03" pos="0 -0.157 0.97" quat="1 0 0 0" rgba="0.85 0.85 0.85 1" contype="0" conaffinity="0"/>
+    <geom name="prop_fire_extinguisher_2_c0" type="cylinder" size="0.065 0.19" pos="0 -0.09 0.95" quat="1 0 0 0" rgba="0.55 0.01 0.01 1" contype="1" conaffinity="1" friction="0.7 0.005 0.0001"/>
+  </body>
+  <body name="prop_duplex_outlet_0" pos="8 -1 0.0005" quat="0.7071 0 0 -0.7071">
+    <geom name="prop_duplex_outlet_0_v0" type="box" size="0.035 0.003 0.057" pos="0 -0.003 0.4" quat="1 0 0 0" rgba="0.83 0.81 0.74 1" contype="0" conaffinity="0"/>
+    <geom name="prop_duplex_outlet_0_v1" type="box" size="0.018 0.002 0.017" pos="0 -0.007 0.432" quat="1 0 0 0" rgba="0.8 0.78 0.71 1" contype="0" conaffinity="0"/>
+    <geom name="prop_duplex_outlet_0_v2" type="box" size="0.018 0.002 0.017" pos="0 -0.007 0.368" quat="1 0 0 0" rgba="0.8 0.78 0.71 1" contype="0" conaffinity="0"/>
+    <geom name="prop_duplex_outlet_0_v3" type="box" size="0.0015 0.001 0.005" pos="-0.006 -0.0095 0.435" quat="1 0 0 0" rgba="0.05 0.05 0.05 1" contype="0" conaffinity="0"/>
+    <geom name="prop_duplex_outlet_0_v4" type="box" size="0.0015 0.001 0.0065" pos="0.006 -0.0095 0.435" quat="1 0 0 0" rgba="0.05 0.05 0.05 1" contype="0" conaffinity="0"/>
+    <geom name="prop_duplex_outlet_0_v5" type="box" size="0.0025 0.001 0.0025" pos="0 -0.0095 0.423" quat="1 0 0 0" rgba="0.05 0.05 0.05 1" contype="0" conaffinity="0"/>
+    <geom name="prop_duplex_outlet_0_v6" type="box" size="0.0015 0.001 0.005" pos="-0.006 -0.0095 0.371" quat="1 0 0 0" rgba="0.05 0.05 0.05 1" contype="0" conaffinity="0"/>
+    <geom name="prop_duplex_outlet_0_v7" type="box" size="0.0015 0.001 0.0065" pos="0.006 -0.0095 0.371" quat="1 0 0 0" rgba="0.05 0.05 0.05 1" contype="0" conaffinity="0"/>
+    <geom name="prop_duplex_outlet_0_v8" type="box" size="0.0025 0.001 0.0025" pos="0 -0.0095 0.359" quat="1 0 0 0" rgba="0.05 0.05 0.05 1" contype="0" conaffinity="0"/>
+  </body>
+  <body name="prop_duplex_outlet_1" pos="8 1.6 0.0005" quat="0.7071 0 0 -0.7071">
+    <geom name="prop_duplex_outlet_1_v0" type="box" size="0.035 0.003 0.057" pos="0 -0.003 0.4" quat="1 0 0 0" rgba="0.83 0.81 0.74 1" contype="0" conaffinity="0"/>
+    <geom name="prop_duplex_outlet_1_v1" type="box" size="0.018 0.002 0.017" pos="0 -0.007 0.432" quat="1 0 0 0" rgba="0.8 0.78 0.71 1" contype="0" conaffinity="0"/>
+    <geom name="prop_duplex_outlet_1_v2" type="box" size="0.018 0.002 0.017" pos="0 -0.007 0.368" quat="1 0 0 0" rgba="0.8 0.78 0.71 1" contype="0" conaffinity="0"/>
+    <geom name="prop_duplex_outlet_1_v3" type="box" size="0.0015 0.001 0.005" pos="-0.006 -0.0095 0.435" quat="1 0 0 0" rgba="0.05 0.05 0.05 1" contype="0" conaffinity="0"/>
+    <geom name="prop_duplex_outlet_1_v4" type="box" size="0.0015 0.001 0.0065" pos="0.006 -0.0095 0.435" quat="1 0 0 0" rgba="0.05 0.05 0.05 1" contype="0" conaffinity="0"/>
+    <geom name="prop_duplex_outlet_1_v5" type="box" size="0.0025 0.001 0.0025" pos="0 -0.0095 0.423" quat="1 0 0 0" rgba="0.05 0.05 0.05 1" contype="0" conaffinity="0"/>
+    <geom name="prop_duplex_outlet_1_v6" type="box" size="0.0015 0.001 0.005" pos="-0.006 -0.0095 0.371" quat="1 0 0 0" rgba="0.05 0.05 0.05 1" contype="0" conaffinity="0"/>
+    <geom name="prop_duplex_outlet_1_v7" type="box" size="0.0015 0.001 0.0065" pos="0.006 -0.0095 0.371" quat="1 0 0 0" rgba="0.05 0.05 0.05 1" contype="0" conaffinity="0"/>
+    <geom name="prop_duplex_outlet_1_v8" type="box" size="0.0025 0.001 0.0025" pos="0 -0.0095 0.359" quat="1 0 0 0" rgba="0.05 0.05 0.05 1" contype="0" conaffinity="0"/>
+  </body>
+  <body name="prop_duplex_outlet_2" pos="-8 -1 0.0005" quat="0.7071 0 0 0.7071">
+    <geom name="prop_duplex_outlet_2_v0" type="box" size="0.035 0.003 0.057" pos="0 -0.003 0.4" quat="1 0 0 0" rgba="0.83 0.81 0.74 1" contype="0" conaffinity="0"/>
+    <geom name="prop_duplex_outlet_2_v1" type="box" size="0.018 0.002 0.017" pos="0 -0.007 0.432" quat="1 0 0 0" rgba="0.8 0.78 0.71 1" contype="0" conaffinity="0"/>
+    <geom name="prop_duplex_outlet_2_v2" type="box" size="0.018 0.002 0.017" pos="0 -0.007 0.368" quat="1 0 0 0" rgba="0.8 0.78 0.71 1" contype="0" conaffinity="0"/>
+    <geom name="prop_duplex_outlet_2_v3" type="box" size="0.0015 0.001 0.005" pos="-0.006 -0.0095 0.435" quat="1 0 0 0" rgba="0.05 0.05 0.05 1" contype="0" conaffinity="0"/>
+    <geom name="prop_duplex_outlet_2_v4" type="box" size="0.0015 0.001 0.0065" pos="0.006 -0.0095 0.435" quat="1 0 0 0" rgba="0.05 0.05 0.05 1" contype="0" conaffinity="0"/>
+    <geom name="prop_duplex_outlet_2_v5" type="box" size="0.0025 0.001 0.0025" pos="0 -0.0095 0.423" quat="1 0 0 0" rgba="0.05 0.05 0.05 1" contype="0" conaffinity="0"/>
+    <geom name="prop_duplex_outlet_2_v6" type="box" size="0.0015 0.001 0.005" pos="-0.006 -0.0095 0.371" quat="1 0 0 0" rgba="0.05 0.05 0.05 1" contype="0" conaffinity="0"/>
+    <geom name="prop_duplex_outlet_2_v7" type="box" size="0.0015 0.001 0.0065" pos="0.006 -0.0095 0.371" quat="1 0 0 0" rgba="0.05 0.05 0.05 1" contype="0" conaffinity="0"/>
+    <geom name="prop_duplex_outlet_2_v8" type="box" size="0.0025 0.001 0.0025" pos="0 -0.0095 0.359" quat="1 0 0 0" rgba="0.05 0.05 0.05 1" contype="0" conaffinity="0"/>
+  </body>
+  <body name="prop_duplex_outlet_3" pos="4.5 -6 0.0005" quat="0 0 0 1">
+    <geom name="prop_duplex_outlet_3_v0" type="box" size="0.035 0.003 0.057" pos="0 -0.003 0.4" quat="1 0 0 0" rgba="0.83 0.81 0.74 1" contype="0" conaffinity="0"/>
+    <geom name="prop_duplex_outlet_3_v1" type="box" size="0.018 0.002 0.017" pos="0 -0.007 0.432" quat="1 0 0 0" rgba="0.8 0.78 0.71 1" contype="0" conaffinity="0"/>
+    <geom name="prop_duplex_outlet_3_v2" type="box" size="0.018 0.002 0.017" pos="0 -0.007 0.368" quat="1 0 0 0" rgba="0.8 0.78 0.71 1" contype="0" conaffinity="0"/>
+    <geom name="prop_duplex_outlet_3_v3" type="box" size="0.0015 0.001 0.005" pos="-0.006 -0.0095 0.435" quat="1 0 0 0" rgba="0.05 0.05 0.05 1" contype="0" conaffinity="0"/>
+    <geom name="prop_duplex_outlet_3_v4" type="box" size="0.0015 0.001 0.0065" pos="0.006 -0.0095 0.435" quat="1 0 0 0" rgba="0.05 0.05 0.05 1" contype="0" conaffinity="0"/>
+    <geom name="prop_duplex_outlet_3_v5" type="box" size="0.0025 0.001 0.0025" pos="0 -0.0095 0.423" quat="1 0 0 0" rgba="0.05 0.05 0.05 1" contype="0" conaffinity="0"/>
+    <geom name="prop_duplex_outlet_3_v6" type="box" size="0.0015 0.001 0.005" pos="-0.006 -0.0095 0.371" quat="1 0 0 0" rgba="0.05 0.05 0.05 1" contype="0" conaffinity="0"/>
+    <geom name="prop_duplex_outlet_3_v7" type="box" size="0.0015 0.001 0.0065" pos="0.006 -0.0095 0.371" quat="1 0 0 0" rgba="0.05 0.05 0.05 1" contype="0" conaffinity="0"/>
+    <geom name="prop_duplex_outlet_3_v8" type="box" size="0.0025 0.001 0.0025" pos="0 -0.0095 0.359" quat="1 0 0 0" rgba="0.05 0.05 0.05 1" contype="0" conaffinity="0"/>
+  </body>
+</worldbody>
+</mujoco>

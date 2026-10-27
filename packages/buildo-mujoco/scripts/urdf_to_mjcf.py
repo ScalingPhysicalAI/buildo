@@ -1,7 +1,10 @@
 #!/usr/bin/env python3
 """Convert the Humanoid_description_latest_version ROS2/xacro package into a
-native MuJoCo MJCF scene: the robot, plus a bare lab-room environment and a
-placeholder actuator set so it can actually be driven around in the sim.
+native MuJoCo MJCF model: the robot (mjcf/humanoid.xml) with a placeholder
+actuator set so it can actually be driven around in the sim, plus the
+kitchen environment as a separate fragment (mjcf/environments/kitchen/)
+that's <include>d alongside it. Other environments come from
+build_environment.py.
 
 The source URDF is a xacro file exported by a SolidWorks-to-URDF plugin. It
 only uses xacro for three top-level <xacro:include> directives (materials,
@@ -23,8 +26,8 @@ IMPORTANT -- what this script does and does not know:
     there is still no tactile-sensor data anywhere. Don't use this (or any
     dataset collected from it) for sim-to-real transfer until that's true.
 
-Usage:
-    python3 model/scripts/urdf_to_mjcf.py
+Usage (needs requirements.txt -- mujoco must be exactly 3.12.0):
+    python3 scripts/urdf_to_mjcf.py
 """
 
 import json
@@ -35,6 +38,8 @@ import xml.etree.ElementTree as ET
 
 import mujoco
 import numpy as np
+
+import props as props_lib
 
 MIN_EIGENVALUE = 1e-9
 MIN_MASS = 1e-6  # kg
@@ -53,6 +58,18 @@ RESOLVED_URDF_PATH = DESCRIPTION_DIR / "urdf" / "Humanoid.resolved.urdf"
 OUTPUT_DIR = ROOT / "mjcf"
 OUTPUT_MESHES_DIR = OUTPUT_DIR / "meshes"
 OUTPUT_MJCF_PATH = OUTPUT_DIR / "humanoid.xml"
+# The CAD export carries up to 36k faces per part (a single finger tip has
+# 25k); the robot is compiled into every environment, and compile memory in
+# the browser's wasm heap scales with total faces.
+ROBOT_MAX_FACES_PER_MESH = 10000
+# Environments are written as separate MJCF files that the robot model
+# doesn't reference. A scene is composed by <include>-ing both (see
+# _write_composite()); mesh paths inside an environment file are relative to
+# OUTPUT_DIR, since MuJoCo resolves included files' assets against the main
+# model's own directory.
+OUTPUT_ENVIRONMENTS_DIR = OUTPUT_DIR / "environments"
+KITCHEN_ENV_ID = "kitchen"
+KITCHEN_ENV_REL = f"environments/{KITCHEN_ENV_ID}"
 
 # Purchased kitchen environment asset (see model/scripts/convert_kitchen_obj.py
 # for how model/kitchen/new+kitchen.obj became these per-part STLs + this
@@ -240,8 +257,9 @@ PICKUP_OBJECT_RGBA = "0.95 0.45 0.1 1"
 # to reach *this* spot, not the old one). The saucer moved the same total
 # delta from its own original spot (see convert_kitchen_obj.py's
 # _SAUCER_SHIFT); z stays close to the original (island counter top 0.91 +
-# this cup's own half-height 0.043).
-CUP_OBJECT_POS = (0.85, 1.93, 0.953)
+# this cup's own half-height 0.043), plus the saucer's 6mm collider now that
+# the saucer is a movable prop the cup rests on.
+CUP_OBJECT_POS = (0.85, 1.93, 0.959)
 CUP_OBJECT_RADIUS = 0.045
 CUP_OBJECT_HALF_HEIGHT = 0.043
 CUP_OBJECT_MASS = 0.12  # kg -- lighter than the placeholder box, this is just a cup
@@ -520,25 +538,16 @@ def _build_actuators(model: "mujoco.MjModel") -> str:
 
 
 def _build_pickup_object() -> str:
-    """A small free-floating box for the Pick & Place demo. contype=8 (a bit
-    of its own) / conaffinity=5 (bits 1+4) makes it collide with the
-    tabletop/walls (bit 1) and, since it isn't part of the robot, the
-    floor's own isolated bit (4, see the floor geom below) so a
-    dropped/missed grasp lands on the floor instead of falling through it
-    forever -- but deliberately *not* with the robot itself (contype 2,
-    conaffinity 1): the frontend's scripted Pick & Place sequence carries
-    this object welded to palm_right_1 (see _build_grasp_weld()) rather than
-    through finger contact, and letting it also collide with the robot's own
-    body was confirmed live to fail mid-carry -- as the arm swings the held
-    object through its reach trajectory, it clips some other robot body
-    (shoulder/torso) and the resulting contact impulse overpowers the weld,
-    dropping the object. Finger/object contact was never load-bearing here
-    anyway (the thumb chain lands ~0.5m from the other four fingertips
-    regardless of joint values, so the fingers that do converge on the
-    object approach from only one side with nothing to press it against);
-    removing robot collision entirely just makes that explicit and stops it
-    from actively breaking the carry, at the cost of the fingers not
-    visually stopping right at the object's surface."""
+    """A small free-floating box for the Pick & Place demo. contype=8 /
+    conaffinity=15 -- props.MOVABLE_BITS, the same as every movable prop:
+    collides with the walls/furniture (bit 1), the robot (bit 2), the floor
+    (bit 4) and other props (bit 8), so the robot can push it around and
+    knock it over. While held, the viewer clears the robot bit on the held
+    body (MujocoViewer.tsx's setRobotCollision): the hold is a kinematic
+    follow, and letting the held object also collide with the robot's own
+    body was confirmed live to fail mid-carry -- as the arm swings it
+    through its reach trajectory it clips the shoulder/torso and the contact
+    impulse knocks it out of the hand."""
     x, y, z = PICKUP_OBJECT_POS
     s = PICKUP_OBJECT_HALF_SIZE
     return (
@@ -546,7 +555,7 @@ def _build_pickup_object() -> str:
         f'    <freejoint name="pickup_object_free"/>\n'
         f'    <inertial pos="0 0 0" mass="{PICKUP_OBJECT_MASS}" diaginertia="0.0001 0.0001 0.0001"/>\n'
         f'    <geom name="pickup_object_geom" type="box" size="{s} {s} {s}" rgba="{PICKUP_OBJECT_RGBA}" '
-        f'contype="8" conaffinity="5" friction="1.2 0.01 0.0002"/>\n'
+        f'{props_lib.MOVABLE_BITS} condim="{props_lib.PROP_CONDIM}" friction="1.2 0.01 0.0002"/>\n'
         f"  </body>"
     )
 
@@ -562,12 +571,8 @@ def _build_cup_object() -> tuple[str, str]:
     origin) for how it looks, contype=0/conaffinity=0 since a detailed
     non-convex mesh makes a poor collision shape; a plain cylinder,
     invisible (group=3, see the kitchen collision boxes' own convention)
-    for actually colliding, contype=8/conaffinity=5 -- same reasoning as
-    _build_pickup_object(): collides with the counter/floor/walls (bits 1
-    and 4) but not the robot's own body (bit 2), since holding it is a
-    kinematic follow, not finger contact (see MujocoViewer.tsx's
-    GRABBABLE_OBJECTS -- this is the second body it can hold, alongside
-    pickup_object)."""
+    for actually colliding, with the movable-prop bits -- same reasoning as
+    _build_pickup_object()."""
     x, y, z = CUP_OBJECT_POS
     r, h = CUP_OBJECT_RADIUS, CUP_OBJECT_HALF_HEIGHT
     asset_xml = '  <mesh file="meshes/kitchen_cup_object_visual.stl" name="kitchen_cup_object_visual"/>'
@@ -577,8 +582,8 @@ def _build_cup_object() -> tuple[str, str]:
         f'    <inertial pos="0 0 0" mass="{CUP_OBJECT_MASS}" diaginertia="0.0001 0.0001 0.0001"/>\n'
         f'    <geom name="cup_object_visual" type="mesh" mesh="kitchen_cup_object_visual" rgba="{CUP_OBJECT_RGBA}" '
         f'contype="0" conaffinity="0"/>\n'
-        f'    <geom name="cup_object_geom" type="cylinder" size="{r} {h}" group="3" contype="8" conaffinity="5" '
-        f'friction="1.2 0.01 0.0002"/>\n'
+        f'    <geom name="cup_object_geom" type="cylinder" size="{r} {h}" group="3" {props_lib.MOVABLE_BITS} '
+        f'condim="{props_lib.PROP_CONDIM}" friction="1.2 0.01 0.0002"/>\n'
         f"  </body>"
     )
     return asset_xml, body_xml
@@ -718,7 +723,7 @@ def _build_grasp_weld(model: "mujoco.MjModel") -> str:
 # worth the same rework for a dead code path.
 
 
-def _build_kitchen_import() -> tuple[str, str]:
+def _build_kitchen_import(skip_files: frozenset[str] = frozenset()) -> tuple[str, str]:
     """Reads model/kitchen/manifest.json (see convert_kitchen_obj.py) and
     returns (asset_xml, geom_xml) for the purchased kitchen furniture set --
     one <mesh> asset declaration and one flat-colored static <geom> per part,
@@ -742,7 +747,10 @@ def _build_kitchen_import() -> tuple[str, str]:
     it -- explaining both reported symptoms (can't move inside the kitchen,
     moves freely once outside it) as the same root cause. Real collision
     now comes entirely from _build_kitchen_collision_proxy()'s own simple,
-    hand-measured boxes instead."""
+    hand-measured boxes instead.
+
+    `skip_files` are mesh files that were cut out into movable props in
+    their entirety (props.trim_kitchen_meshes())."""
     manifest = json.loads(KITCHEN_MANIFEST_PATH.read_text())
     asset_lines = []
     geom_lines = []
@@ -752,6 +760,8 @@ def _build_kitchen_import() -> tuple[str, str]:
             # and friends) instead of fixed kitchen dressing -- skip its
             # static copy here or the room would show two cups, one of them
             # a ghost the robot can walk straight through.
+            continue
+        if entry["file"] in skip_files:
             continue
         mesh_name = pathlib.Path(entry["file"]).stem
         rgba = " ".join(f"{c:.4f}" for c in entry["rgba"])
@@ -902,7 +912,7 @@ def _build_kitchen_collision_proxy() -> str:
     return "\n".join(lines)
 
 
-def _build_room() -> str:
+def _build_room(skip_files: frozenset[str] = frozenset()) -> str:
     """The room is entirely the purchased kitchen asset now (see
     _build_kitchen_import()/convert_kitchen_obj.py) -- floor, walls,
     ceiling, cabinets, appliances, and decor all come from that one import,
@@ -914,8 +924,53 @@ def _build_room() -> str:
     from _build_kitchen_collision_proxy()'s own invisible boxes instead --
     see _build_kitchen_import()'s own comment for why the imported mesh
     geometry itself can't be used for that."""
-    _, kitchen_geoms = _build_kitchen_import()
+    _, kitchen_geoms = _build_kitchen_import(skip_files)
     return kitchen_geoms + "\n" + _build_kitchen_collision_proxy()
+
+
+KITCHEN_PROPS_PATH = ROOT / "environments" / KITCHEN_ENV_ID / "props.json"
+
+
+def _kitchen_placements() -> list["props_lib.Placement"]:
+    return props_lib.placements_from_layout(KITCHEN_ENV_ID, json.loads(KITCHEN_PROPS_PATH.read_text())["props"])
+
+
+def _build_kitchen_scene(
+    equality_xml: str = "",
+    placements: list["props_lib.Placement"] = (),
+    skip_files: frozenset[str] = frozenset(),
+) -> str:
+    """The kitchen environment as a standalone MJCF fragment: furniture
+    meshes, collision proxy, the two scripted-workflow objects, and the
+    movable props (environments/kitchen/props.json). Loaded alongside
+    humanoid.xml via <include>, never on its own (the grasp weld references
+    robot bodies)."""
+    kitchen_asset_xml, _ = _build_kitchen_import(skip_files)
+    cup_asset_xml, cup_body_xml = _build_cup_object()
+    prop_assets, prop_bodies = props_lib.emit(list(placements))
+    assets = "\n".join([cup_asset_xml, kitchen_asset_xml, *prop_assets])
+    bodies = "\n".join([_build_pickup_object(), cup_body_xml, *prop_bodies])
+    xml = (
+        f'<mujoco model="{KITCHEN_ENV_ID}">\n'
+        f"<asset>\n{assets}\n</asset>\n"
+        f"<worldbody>\n{_build_room(skip_files)}\n{bodies}\n</worldbody>\n"
+        f"{equality_xml}\n"
+        "</mujoco>\n"
+    )
+    return xml.replace('file="meshes/', f'file="{KITCHEN_ENV_REL}/meshes/')
+
+
+def _write_composite(env_id: str) -> pathlib.Path:
+    """Writes mjcf/scene_<env_id>.xml: robot + one environment, loadable
+    directly with MjModel.from_xml_path for headless use."""
+    path = OUTPUT_DIR / f"scene_{env_id}.xml"
+    path.write_text(
+        f'<mujoco model="buildo_{env_id}">\n'
+        f'  <include file="{OUTPUT_MJCF_PATH.name}"/>\n'
+        f'  <include file="environments/{env_id}/scene.xml"/>\n'
+        "</mujoco>\n"
+    )
+    return path
 
 
 # The four ground-contact wheel discs (2 drive wheels + 2 caster wheels).
@@ -1315,20 +1370,21 @@ def main() -> None:
     for stl in MESHES_DIR.glob("*.stl"):
         if f'"../meshes/{stl.name}"' in mjcf_text:
             shutil.copy2(stl, OUTPUT_MESHES_DIR / stl.name)
+    props_lib.decimate_meshes(OUTPUT_MESHES_DIR, ROBOT_MAX_FACES_PER_MESH)
     mjcf_text = mjcf_text.replace('file="../meshes/', 'file="meshes/')
 
-    # Kitchen environment furniture meshes (see convert_kitchen_obj.py) --
-    # copied and declared the same way as the robot's own meshes just above,
-    # into the same meshes/ directory (flat, no subfolder, so
-    # loadHumanoidScene.ts's generic "fetch every file referenced as
-    # meshes/<name>" logic needs no changes to pick these up too). mj_saveLastXML
-    # already wrote an <asset> block for the robot's own meshes; this just
-    # appends more <mesh> entries to it via text injection, since these
-    # parts were never part of the compiled `model` object above.
+    # Kitchen environment furniture meshes (see convert_kitchen_obj.py) live
+    # in the kitchen environment's own directory, not the robot's meshes/ --
+    # see _build_kitchen_scene().
+    kitchen_out_dir = OUTPUT_ENVIRONMENTS_DIR / KITCHEN_ENV_ID
+    kitchen_out_meshes = kitchen_out_dir / "meshes"
+    kitchen_out_meshes.mkdir(parents=True, exist_ok=True)
+    for stale in kitchen_out_meshes.glob("*.stl"):
+        stale.unlink()
     for stl in KITCHEN_MESHES_DIR.glob("*.stl"):
-        shutil.copy2(stl, OUTPUT_MESHES_DIR / stl.name)
-    kitchen_asset_xml, _ = _build_kitchen_import()
-    mjcf_text = mjcf_text.replace("<asset>", "<asset>\n" + kitchen_asset_xml, 1)
+        shutil.copy2(stl, kitchen_out_meshes / stl.name)
+    kitchen_skip = frozenset(props_lib.trim_kitchen_meshes(kitchen_out_meshes))
+    props_lib.decimate_meshes(kitchen_out_meshes, props_lib.KITCHEN_MAX_FACES_PER_MESH)
 
     # hide_dummy_actuator_meshes() is NOT called here (left defined, in case
     # a future joint's own mesh gap turns out not to be a jnt_pos bug the
@@ -1339,17 +1395,14 @@ def main() -> None:
     # anything. Brought back per the user's own request once that was fixed.
     mjcf_text = disable_wheel_floor_collision(mjcf_text)
 
-    # The room -- entirely the imported kitchen asset now, including its own
-    # floor mesh (see _build_room()'s own comment) -- shares collision bit 1
-    # with the robot's own default conaffinity (see the
-    # <default><geom .../></default> added below), so it stops the robot
-    # from being driven through it, and the pickup object's own conaffinity
-    # (bits 1+4, see _build_pickup_object()) already includes bit 1 too, so
-    # it still has a floor to land on if dropped -- no separate procedural
-    # floor plane is needed for that anymore. (The virtual planar base, see
-    # resolve_urdf(), fixes the robot's own height directly regardless of
-    # floor contact, same as before.)
-    mjcf_text = mjcf_text.replace("<worldbody>", f"<worldbody>\n{_build_room()}\n", 1)
+    # The room (see _build_kitchen_scene()) shares collision bit 1 with the
+    # robot's own default conaffinity (see the <default><geom .../></default>
+    # added below), so it stops the robot from being driven through it, and
+    # the pickup object's own conaffinity (bits 1+4, see
+    # _build_pickup_object()) already includes bit 1 too, so it still has a
+    # floor to land on if dropped. Any new environment has to follow the
+    # same bitmask convention. (The virtual planar base, see resolve_urdf(),
+    # fixes the robot's own height directly regardless of floor contact.)
 
     # Per-joint *passive* damping -- small, uniform, numerical-stability-only
     # (real per-joint response damping is each position actuator's own kv
@@ -1404,15 +1457,6 @@ def main() -> None:
     # (unlike geom/joint) -- inject it onto every <body ...> tag directly.
     mjcf_text = re.sub(r"<body ", '<body gravcomp="1" ', mjcf_text)
 
-    # Added *after* the blanket gravcomp injection above, deliberately: this
-    # is a normal passive prop, not a robot link fighting a placeholder
-    # position-gain -- it should fall/rest under ordinary gravity, not float.
-    cup_asset_xml, cup_body_xml = _build_cup_object()
-    mjcf_text = mjcf_text.replace("<asset>", "<asset>\n" + cup_asset_xml, 1)
-    mjcf_text = mjcf_text.replace(
-        "</worldbody>", f"{_build_pickup_object()}\n{cup_body_xml}\n</worldbody>", 1
-    )
-
     # Lift sleeve: a plain <geom>, added directly inside base_link's own
     # <body> block (right after its own two mesh geoms, the last thing
     # there before base_link's nested <body name="wheelbase_lift_1">) so it
@@ -1426,21 +1470,29 @@ def main() -> None:
 
     mjcf_text = mjcf_text.replace("</mujoco>", actuator_xml + "\n</mujoco>")
     OUTPUT_MJCF_PATH.write_text(mjcf_text)
-
-    # _build_grasp_weld() needs a compiled model that actually has the
-    # pickup object in it (added as text above, so the in-memory `model`
-    # from earlier in this function doesn't have it) -- reload what was just
-    # written, purely to compute the weld's relpose, then append it and
-    # write again. Loaded via from_xml_path (not from_xml_string) so the
-    # "meshes/..." paths resolve relative to this file's own directory, same
-    # as every other load in this script.
-    staging_model = mujoco.MjModel.from_xml_path(str(OUTPUT_MJCF_PATH))
-    mjcf_text = mjcf_text.replace("</mujoco>", _build_grasp_weld(staging_model) + "\n</mujoco>")
-    OUTPUT_MJCF_PATH.write_text(mjcf_text)
-
-    # Verify the saved MJCF is loadable standalone before declaring success.
+    # The robot alone must stay loadable, independent of any environment.
     mujoco.MjModel.from_xml_path(str(OUTPUT_MJCF_PATH))
     print(f"wrote MJCF -> {OUTPUT_MJCF_PATH.relative_to(ROOT.parent)}")
+
+    # The kitchen scene is written in stages, compiling the composite each
+    # time: first without props, to measure the surfaces they rest on
+    # (props.settle_heights()); then with props, since _build_grasp_weld()
+    # needs a compiled robot + kitchen (it measures the pickup object
+    # against a robot fingertip); then with the weld.
+    kitchen_scene_path = kitchen_out_dir / "scene.xml"
+    kitchen_scene_path.write_text(_build_kitchen_scene(skip_files=kitchen_skip))
+    composite_path = _write_composite(KITCHEN_ENV_ID)
+    placements = _kitchen_placements()
+    bare_model = mujoco.MjModel.from_xml_path(str(composite_path))
+    props_lib.settle_heights(placements, props_lib.static_boxes_from_model(bare_model))
+    kitchen_scene_path.write_text(_build_kitchen_scene(placements=placements, skip_files=kitchen_skip))
+    staging_model = mujoco.MjModel.from_xml_path(str(composite_path))
+    weld_xml = _build_grasp_weld(staging_model)
+    kitchen_scene_path.write_text(_build_kitchen_scene(weld_xml, placements, kitchen_skip))
+
+    mujoco.MjModel.from_xml_path(str(composite_path))
+    print(f"wrote environment -> {kitchen_scene_path.relative_to(ROOT.parent)} ({len(placements)} props)")
+    props_lib.settle_check(composite_path, placements)
 
 
 if __name__ == "__main__":

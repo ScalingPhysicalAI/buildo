@@ -1,0 +1,11 @@
+# For scripts/urdf_to_mjcf.py and scripts/build_environment.py.
+# mujoco is pinned: mj_saveLastXML's output format changes between releases,
+# and urdf_to_mjcf.py post-processes that output as text. 3.12.0 reproduces
+# the committed mjcf/ byte-for-byte.
+mujoco==3.12.0
+numpy
+trimesh
+pillow
+scipy
+fast-simplification
+certifi

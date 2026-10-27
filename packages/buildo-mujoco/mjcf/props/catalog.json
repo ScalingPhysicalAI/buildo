@@ -1,0 +1,943 @@
+{
+ "mug_white": {
+  "name": "Coffee mug (white, 12 oz)",
+  "category": "kitchen",
+  "mass": 0.35,
+  "movable": true,
+  "size": [
+   0.104,
+   0.082,
+   0.095
+  ],
+  "center": [
+   0.011,
+   0.0,
+   0.0475
+  ],
+  "assets": [],
+  "body": "<body name=\"{name}\" pos=\"0 0 0\" quat=\"1 0 0 0\">\n  <freejoint name=\"{name}_free\"/>\n  <inertial pos=\"0.011 0 0.0475\" mass=\"0.35\" diaginertia=\"0.0004593 0.0005787 0.0005116\"/>\n  <geom name=\"{name}_v0\" type=\"box\" size=\"0.01 0.006 0.005\" pos=\"0.047 0 0.074\" quat=\"1 0 0 0\" rgba=\"0.8 0.8 0.78 1\" contype=\"0\" conaffinity=\"0\"/>\n  <geom name=\"{name}_v1\" type=\"box\" size=\"0.01 0.006 0.005\" pos=\"0.047 0 0.026\" quat=\"1 0 0 0\" rgba=\"0.8 0.8 0.78 1\" contype=\"0\" conaffinity=\"0\"/>\n  <geom name=\"{name}_c0\" type=\"cylinder\" size=\"0.041 0.0475\" pos=\"0 0 0.0475\" quat=\"1 0 0 0\" rgba=\"0.8 0.8 0.78 1\" contype=\"8\" conaffinity=\"15\" condim=\"4\" priority=\"1\" friction=\"0.8 0.005 0.0001\"/>\n  <geom name=\"{name}_c1\" type=\"box\" size=\"0.006 0.006 0.028\" pos=\"0.057 0 0.05\" quat=\"1 0 0 0\" rgba=\"0.8 0.8 0.78 1\" contype=\"8\" conaffinity=\"15\" condim=\"4\" priority=\"1\" friction=\"0.8 0.005 0.0001\"/>\n</body>"
+ },
+ "mug_navy": {
+  "name": "Coffee mug (navy, 12 oz)",
+  "category": "kitchen",
+  "mass": 0.35,
+  "movable": true,
+  "size": [
+   0.104,
+   0.082,
+   0.095
+  ],
+  "center": [
+   0.011,
+   0.0,
+   0.0475
+  ],
+  "assets": [],
+  "body": "<body name=\"{name}\" pos=\"0 0 0\" quat=\"1 0 0 0\">\n  <freejoint name=\"{name}_free\"/>\n  <inertial pos=\"0.011 0 0.0475\" mass=\"0.35\" diaginertia=\"0.0004593 0.0005787 0.0005116\"/>\n  <geom name=\"{name}_v0\" type=\"box\" size=\"0.01 0.006 0.005\" pos=\"0.047 0 0.074\" quat=\"1 0 0 0\" rgba=\"0.02 0.03 0.12 1\" contype=\"0\" conaffinity=\"0\"/>\n  <geom name=\"{name}_v1\" type=\"box\" size=\"0.01 0.006 0.005\" pos=\"0.047 0 0.026\" quat=\"1 0 0 0\" rgba=\"0.02 0.03 0.12 1\" contype=\"0\" conaffinity=\"0\"/>\n  <geom name=\"{name}_c0\" type=\"cylinder\" size=\"0.041 0.0475\" pos=\"0 0 0.0475\" quat=\"1 0 0 0\" rgba=\"0.02 0.03 0.12 1\" contype=\"8\" conaffinity=\"15\" condim=\"4\" priority=\"1\" friction=\"0.8 0.005 0.0001\"/>\n  <geom name=\"{name}_c1\" type=\"box\" size=\"0.006 0.006 0.028\" pos=\"0.057 0 0.05\" quat=\"1 0 0 0\" rgba=\"0.02 0.03 0.12 1\" contype=\"8\" conaffinity=\"15\" condim=\"4\" priority=\"1\" friction=\"0.8 0.005 0.0001\"/>\n</body>"
+ },
+ "mug_red": {
+  "name": "Coffee mug (red, 12 oz)",
+  "category": "kitchen",
+  "mass": 0.35,
+  "movable": true,
+  "size": [
+   0.104,
+   0.082,
+   0.095
+  ],
+  "center": [
+   0.011,
+   0.0,
+   0.0475
+  ],
+  "assets": [],
+  "body": "<body name=\"{name}\" pos=\"0 0 0\" quat=\"1 0 0 0\">\n  <freejoint name=\"{name}_free\"/>\n  <inertial pos=\"0.011 0 0.0475\" mass=\"0.35\" diaginertia=\"0.0004593 0.0005787 0.0005116\"/>\n  <geom name=\"{name}_v0\" type=\"box\" size=\"0.01 0.006 0.005\" pos=\"0.047 0 0.074\" quat=\"1 0 0 0\" rgba=\"0.45 0.02 0.02 1\" contype=\"0\" conaffinity=\"0\"/>\n  <geom name=\"{name}_v1\" type=\"box\" size=\"0.01 0.006 0.005\" pos=\"0.047 0 0.026\" quat=\"1 0 0 0\" rgba=\"0.45 0.02 0.02 1\" contype=\"0\" conaffinity=\"0\"/>\n  <geom name=\"{name}_c0\" type=\"cylinder\" size=\"0.041 0.0475\" pos=\"0 0 0.0475\" quat=\"1 0 0 0\" rgba=\"0.45 0.02 0.02 1\" contype=\"8\" conaffinity=\"15\" condim=\"4\" priority=\"1\" friction=\"0.8 0.005 0.0001\"/>\n  <geom name=\"{name}_c1\" type=\"box\" size=\"0.006 0.006 0.028\" pos=\"0.057 0 0.05\" quat=\"1 0 0 0\" rgba=\"0.45 0.02 0.02 1\" contype=\"8\" conaffinity=\"15\" condim=\"4\" priority=\"1\" friction=\"0.8 0.005 0.0001\"/>\n</body>"
+ },
+ "kitchen_plate": {
+  "name": "Dinner plate",
+  "category": "kitchen",
+  "mass": 0.55,
+  "movable": true,
+  "size": [
+   0.2574,
+   0.2574,
+   0.0193
+  ],
+  "center": [
+   0.0,
+   0.0,
+   0.0097
+  ],
+  "assets": [
+   "  <mesh name=\"prop_kitchen_plate_0\" file=\"props/kitchen_plate/prop_kitchen_plate_0.stl\"/>"
+  ],
+  "body": "<body name=\"{name}\" pos=\"0 0 0\" quat=\"1 0 0 0\">\n  <freejoint name=\"{name}_free\"/>\n  <inertial pos=\"0 0 0.0097\" mass=\"0.55\" diaginertia=\"0.003054 0.003054 0.006074\"/>\n  <geom name=\"{name}_v0\" type=\"mesh\" mesh=\"prop_kitchen_plate_0\" rgba=\"0.94 0.92 0.87 1\" contype=\"0\" conaffinity=\"0\"/>\n  <geom name=\"{name}_c0\" type=\"cylinder\" size=\"0.1287 0.0097\" pos=\"0 0 0.0097\" quat=\"1 0 0 0\" group=\"3\" rgba=\"0.5 0.5 0.5 0.3\" contype=\"8\" conaffinity=\"15\" condim=\"4\" priority=\"1\" friction=\"0.5 0.005 0.0001\"/>\n</body>"
+ },
+ "kitchen_pancakes": {
+  "name": "Pancakes",
+  "category": "kitchen",
+  "mass": 0.12,
+  "movable": true,
+  "size": [
+   0.1142,
+   0.1143,
+   0.0226
+  ],
+  "center": [
+   0.0,
+   0.0,
+   0.0113
+  ],
+  "assets": [
+   "  <mesh name=\"prop_kitchen_pancakes_0\" file=\"props/kitchen_pancakes/prop_kitchen_pancakes_0.stl\"/>",
+   "  <mesh name=\"prop_kitchen_pancakes_1\" file=\"props/kitchen_pancakes/prop_kitchen_pancakes_1.stl\"/>"
+  ],
+  "body": "<body name=\"{name}\" pos=\"0 0 0\" quat=\"1 0 0 0\">\n  <freejoint name=\"{name}_free\"/>\n  <inertial pos=\"0 0 0.0113\" mass=\"0.12\" diaginertia=\"0.0001358 0.0001358 0.0002613\"/>\n  <geom name=\"{name}_v0\" type=\"mesh\" mesh=\"prop_kitchen_pancakes_0\" rgba=\"0.85 0.6 0.56 1\" contype=\"0\" conaffinity=\"0\"/>\n  <geom name=\"{name}_v1\" type=\"mesh\" mesh=\"prop_kitchen_pancakes_1\" rgba=\"0.85 0.6 0.56 1\" contype=\"0\" conaffinity=\"0\"/>\n  <geom name=\"{name}_c0\" type=\"cylinder\" size=\"0.0572 0.0113\" pos=\"0 0 0.0113\" quat=\"1 0 0 0\" group=\"3\" rgba=\"0.5 0.5 0.5 0.3\" contype=\"8\" conaffinity=\"15\" condim=\"4\" priority=\"1\" friction=\"0.9 0.005 0.0001\"/>\n</body>"
+ },
+ "kitchen_toast_1": {
+  "name": "Slice of toast",
+  "category": "kitchen",
+  "mass": 0.03,
+  "movable": true,
+  "size": [
+   0.0935,
+   0.1023,
+   0.0361
+  ],
+  "center": [
+   0.0,
+   0.0,
+   0.0181
+  ],
+  "assets": [
+   "  <mesh name=\"prop_kitchen_toast_1_0\" file=\"props/kitchen_toast_1/prop_kitchen_toast_1_0.stl\"/>"
+  ],
+  "body": "<body name=\"{name}\" pos=\"0 0 0\" quat=\"1 0 0 0\">\n  <freejoint name=\"{name}_free\"/>\n  <inertial pos=\"0 0 0.0181\" mass=\"0.03\" diaginertia=\"2.942e-05 2.51e-05 4.8e-05\"/>\n  <geom name=\"{name}_v0\" type=\"mesh\" mesh=\"prop_kitchen_toast_1_0\" rgba=\"0.55 0.35 0.18 1\" contype=\"0\" conaffinity=\"0\"/>\n  <geom name=\"{name}_c0\" type=\"box\" size=\"0.0467 0.0511 0.0181\" pos=\"0 0 0.0181\" quat=\"1 0 0 0\" group=\"3\" rgba=\"0.5 0.5 0.5 0.3\" contype=\"8\" conaffinity=\"15\" condim=\"4\" priority=\"1\" friction=\"0.9 0.005 0.0001\"/>\n</body>"
+ },
+ "kitchen_toast_2": {
+  "name": "Slice of toast",
+  "category": "kitchen",
+  "mass": 0.03,
+  "movable": true,
+  "size": [
+   0.1198,
+   0.1215,
+   0.0324
+  ],
+  "center": [
+   0.0,
+   0.0,
+   0.0162
+  ],
+  "assets": [
+   "  <mesh name=\"prop_kitchen_toast_2_0\" file=\"props/kitchen_toast_2/prop_kitchen_toast_2_0.stl\"/>"
+  ],
+  "body": "<body name=\"{name}\" pos=\"0 0 0\" quat=\"1 0 0 0\">\n  <freejoint name=\"{name}_free\"/>\n  <inertial pos=\"0 0 0.0162\" mass=\"0.03\" diaginertia=\"3.954e-05 3.849e-05 7.279e-05\"/>\n  <geom name=\"{name}_v0\" type=\"mesh\" mesh=\"prop_kitchen_toast_2_0\" rgba=\"0.55 0.35 0.18 1\" contype=\"0\" conaffinity=\"0\"/>\n  <geom name=\"{name}_c0\" type=\"box\" size=\"0.0599 0.0608 0.0162\" pos=\"0 0 0.0162\" quat=\"1 0 0 0\" group=\"3\" rgba=\"0.5 0.5 0.5 0.3\" contype=\"8\" conaffinity=\"15\" condim=\"4\" priority=\"1\" friction=\"0.9 0.005 0.0001\"/>\n</body>"
+ },
+ "kitchen_fork": {
+  "name": "Fork",
+  "category": "kitchen",
+  "mass": 0.045,
+  "movable": true,
+  "size": [
+   0.0885,
+   0.1724,
+   0.0247
+  ],
+  "center": [
+   0.0,
+   0.0,
+   0.0124
+  ],
+  "assets": [
+   "  <mesh name=\"prop_kitchen_fork_0\" file=\"props/kitchen_fork/prop_kitchen_fork_0.stl\"/>"
+  ],
+  "body": "<body name=\"{name}\" pos=\"0 0 0\" quat=\"1 0 0 0\">\n  <freejoint name=\"{name}_free\"/>\n  <inertial pos=\"0 0 0.0124\" mass=\"0.045\" diaginertia=\"0.0001138 3.163e-05 0.0001408\"/>\n  <geom name=\"{name}_v0\" type=\"mesh\" mesh=\"prop_kitchen_fork_0\" rgba=\"0.8 0.81 0.82 1\" contype=\"0\" conaffinity=\"0\"/>\n  <geom name=\"{name}_c0\" type=\"box\" size=\"0.0442 0.0862 0.0124\" pos=\"0 0 0.0124\" quat=\"1 0 0 0\" group=\"3\" rgba=\"0.5 0.5 0.5 0.3\" contype=\"8\" conaffinity=\"15\" condim=\"4\" priority=\"1\" friction=\"0.5 0.005 0.0001\"/>\n</body>"
+ },
+ "kitchen_knife": {
+  "name": "Table knife",
+  "category": "kitchen",
+  "mass": 0.07,
+  "movable": true,
+  "size": [
+   0.0172,
+   0.1854,
+   0.0178
+  ],
+  "center": [
+   0.0,
+   0.0,
+   0.0089
+  ],
+  "assets": [
+   "  <mesh name=\"prop_kitchen_knife_0\" file=\"props/kitchen_knife/prop_kitchen_knife_0.stl\"/>"
+  ],
+  "body": "<body name=\"{name}\" pos=\"0 0 0\" quat=\"1 0 0 0\">\n  <freejoint name=\"{name}_free\"/>\n  <inertial pos=\"0 0 0.0089\" mass=\"0.07\" diaginertia=\"0.0002024 3.58e-06 0.0002022\"/>\n  <geom name=\"{name}_v0\" type=\"mesh\" mesh=\"prop_kitchen_knife_0\" rgba=\"0.8 0.81 0.82 1\" contype=\"0\" conaffinity=\"0\"/>\n  <geom name=\"{name}_c0\" type=\"box\" size=\"0.0086 0.0927 0.0089\" pos=\"0 0 0.0089\" quat=\"1 0 0 0\" group=\"3\" rgba=\"0.5 0.5 0.5 0.3\" contype=\"8\" conaffinity=\"15\" condim=\"4\" priority=\"1\" friction=\"0.5 0.005 0.0001\"/>\n</body>"
+ },
+ "kitchen_saucer": {
+  "name": "Saucer",
+  "category": "kitchen",
+  "mass": 0.15,
+  "movable": true,
+  "size": [
+   0.1544,
+   0.1544,
+   0.016
+  ],
+  "center": [
+   0.0,
+   0.0,
+   0.008
+  ],
+  "assets": [
+   "  <mesh name=\"prop_kitchen_saucer_0\" file=\"props/kitchen_saucer/prop_kitchen_saucer_0.stl\"/>"
+  ],
+  "body": "<body name=\"{name}\" pos=\"0 0 0\" quat=\"1 0 0 0\">\n  <freejoint name=\"{name}_free\"/>\n  <inertial pos=\"0 0 0.003\" mass=\"0.15\" diaginertia=\"0.0002994 0.0002994 0.0005963\"/>\n  <geom name=\"{name}_v0\" type=\"mesh\" mesh=\"prop_kitchen_saucer_0\" rgba=\"0.94 0.92 0.87 1\" contype=\"0\" conaffinity=\"0\"/>\n  <geom name=\"{name}_c0\" type=\"cylinder\" size=\"0.0772 0.003\" pos=\"0 0 0.003\" quat=\"1 0 0 0\" group=\"3\" rgba=\"0.5 0.5 0.5 0.3\" contype=\"8\" conaffinity=\"15\" condim=\"4\" priority=\"1\" friction=\"0.6 0.005 0.0001\"/>\n</body>"
+ },
+ "kitchen_books": {
+  "name": "Stack of cookbooks",
+  "category": "kitchen",
+  "mass": 1.6,
+  "movable": true,
+  "size": [
+   0.3861,
+   0.4221,
+   0.1031
+  ],
+  "center": [
+   0.0,
+   0.0,
+   0.0516
+  ],
+  "assets": [
+   "  <mesh name=\"prop_kitchen_books_0\" file=\"props/kitchen_books/prop_kitchen_books_0.stl\"/>",
+   "  <mesh name=\"prop_kitchen_books_1\" file=\"props/kitchen_books/prop_kitchen_books_1.stl\"/>",
+   "  <mesh name=\"prop_kitchen_books_2\" file=\"props/kitchen_books/prop_kitchen_books_2.stl\"/>"
+  ],
+  "body": "<body name=\"{name}\" pos=\"0 0 0\" quat=\"1 0 0 0\">\n  <freejoint name=\"{name}_free\"/>\n  <inertial pos=\"0 0 0.0516\" mass=\"1.6\" diaginertia=\"0.02517 0.0213 0.04363\"/>\n  <geom name=\"{name}_v0\" type=\"mesh\" mesh=\"prop_kitchen_books_0\" rgba=\"0.45 0.11 0.12 1\" contype=\"0\" conaffinity=\"0\"/>\n  <geom name=\"{name}_v1\" type=\"mesh\" mesh=\"prop_kitchen_books_1\" rgba=\"0.1 0.16 0.38 1\" contype=\"0\" conaffinity=\"0\"/>\n  <geom name=\"{name}_v2\" type=\"mesh\" mesh=\"prop_kitchen_books_2\" rgba=\"0.93 0.88 0.78 1\" contype=\"0\" conaffinity=\"0\"/>\n  <geom name=\"{name}_c0\" type=\"box\" size=\"0.1931 0.211 0.0516\" pos=\"0 0 0.0516\" quat=\"1 0 0 0\" group=\"3\" rgba=\"0.5 0.5 0.5 0.3\" contype=\"8\" conaffinity=\"15\" condim=\"4\" priority=\"1\" friction=\"0.6 0.005 0.0001\"/>\n</body>"
+ },
+ "kitchen_fruit_bowl": {
+  "name": "Fruit bowl",
+  "category": "kitchen",
+  "mass": 2.0,
+  "movable": true,
+  "size": [
+   0.3821,
+   0.3737,
+   0.1915
+  ],
+  "center": [
+   0.0,
+   0.0,
+   0.0957
+  ],
+  "assets": [
+   "  <mesh name=\"prop_kitchen_fruit_bowl_0\" file=\"props/kitchen_fruit_bowl/prop_kitchen_fruit_bowl_0.stl\"/>",
+   "  <mesh name=\"prop_kitchen_fruit_bowl_1\" file=\"props/kitchen_fruit_bowl/prop_kitchen_fruit_bowl_1.stl\"/>",
+   "  <mesh name=\"prop_kitchen_fruit_bowl_2\" file=\"props/kitchen_fruit_bowl/prop_kitchen_fruit_bowl_2.stl\"/>"
+  ],
+  "body": "<body name=\"{name}\" pos=\"0 0 0\" quat=\"1 0 0 0\">\n  <freejoint name=\"{name}_free\"/>\n  <inertial pos=\"0 0 0.0957\" mass=\"2\" diaginertia=\"0.03045 0.03045 0.04868\"/>\n  <geom name=\"{name}_v0\" type=\"mesh\" mesh=\"prop_kitchen_fruit_bowl_0\" rgba=\"0.82 0.83 0.84 0.55\" contype=\"0\" conaffinity=\"0\"/>\n  <geom name=\"{name}_v1\" type=\"mesh\" mesh=\"prop_kitchen_fruit_bowl_1\" rgba=\"0.72 0.1 0.08 1\" contype=\"0\" conaffinity=\"0\"/>\n  <geom name=\"{name}_v2\" type=\"mesh\" mesh=\"prop_kitchen_fruit_bowl_2\" rgba=\"0.88 0.72 0.1 1\" contype=\"0\" conaffinity=\"0\"/>\n  <geom name=\"{name}_c0\" type=\"cylinder\" size=\"0.1911 0.0957\" pos=\"0 0 0.0957\" quat=\"1 0 0 0\" group=\"3\" rgba=\"0.5 0.5 0.5 0.3\" contype=\"8\" conaffinity=\"15\" condim=\"4\" priority=\"1\" friction=\"0.7 0.005 0.0001\"/>\n</body>"
+ },
+ "kitchen_juicer": {
+  "name": "Juicer",
+  "category": "kitchen",
+  "mass": 4.0,
+  "movable": true,
+  "size": [
+   0.313,
+   0.4412,
+   0.3824
+  ],
+  "center": [
+   0.0,
+   0.0,
+   0.1912
+  ],
+  "assets": [
+   "  <mesh name=\"prop_kitchen_juicer_0\" file=\"props/kitchen_juicer/prop_kitchen_juicer_0.stl\"/>",
+   "  <mesh name=\"prop_kitchen_juicer_1\" file=\"props/kitchen_juicer/prop_kitchen_juicer_1.stl\"/>",
+   "  <mesh name=\"prop_kitchen_juicer_2\" file=\"props/kitchen_juicer/prop_kitchen_juicer_2.stl\"/>"
+  ],
+  "body": "<body name=\"{name}\" pos=\"0 0 0\" quat=\"1 0 0 0\">\n  <freejoint name=\"{name}_free\"/>\n  <inertial pos=\"0 0 0.1912\" mass=\"4\" diaginertia=\"0.1136 0.08141 0.09754\"/>\n  <geom name=\"{name}_v0\" type=\"mesh\" mesh=\"prop_kitchen_juicer_0\" rgba=\"0.8 0.24 0.05 1\" contype=\"0\" conaffinity=\"0\"/>\n  <geom name=\"{name}_v1\" type=\"mesh\" mesh=\"prop_kitchen_juicer_1\" rgba=\"0.8 0.81 0.83 1\" contype=\"0\" conaffinity=\"0\"/>\n  <geom name=\"{name}_v2\" type=\"mesh\" mesh=\"prop_kitchen_juicer_2\" rgba=\"0.07 0.07 0.08 1\" contype=\"0\" conaffinity=\"0\"/>\n  <geom name=\"{name}_c0\" type=\"box\" size=\"0.1565 0.2206 0.1912\" pos=\"0 0 0.1912\" quat=\"1 0 0 0\" group=\"3\" rgba=\"0.5 0.5 0.5 0.3\" contype=\"8\" conaffinity=\"15\" condim=\"4\" priority=\"1\" friction=\"0.7 0.005 0.0001\"/>\n</body>"
+ },
+ "kitchen_canister_ceramic": {
+  "name": "Ceramic canister",
+  "category": "kitchen",
+  "mass": 1.0,
+  "movable": true,
+  "size": [
+   0.1242,
+   0.1241,
+   0.1683
+  ],
+  "center": [
+   0.0,
+   0.0,
+   0.0841
+  ],
+  "assets": [
+   "  <mesh name=\"prop_kitchen_canister_ceramic_0\" file=\"props/kitchen_canister_ceramic/prop_kitchen_canister_ceramic_0.stl\"/>"
+  ],
+  "body": "<body name=\"{name}\" pos=\"0 0 0\" quat=\"1 0 0 0\">\n  <freejoint name=\"{name}_free\"/>\n  <inertial pos=\"0 0 0.0841\" mass=\"1\" diaginertia=\"0.003644 0.003644 0.002569\"/>\n  <geom name=\"{name}_v0\" type=\"mesh\" mesh=\"prop_kitchen_canister_ceramic_0\" rgba=\"0.9608 0.9608 0.9608 1\" contype=\"0\" conaffinity=\"0\"/>\n  <geom name=\"{name}_c0\" type=\"cylinder\" size=\"0.0621 0.0841\" pos=\"0 0 0.0841\" quat=\"1 0 0 0\" group=\"3\" rgba=\"0.5 0.5 0.5 0.3\" contype=\"8\" conaffinity=\"15\" condim=\"4\" priority=\"1\" friction=\"0.7 0.005 0.0001\"/>\n</body>"
+ },
+ "kitchen_canister_xl": {
+  "name": "Storage canister (XL)",
+  "category": "kitchen",
+  "mass": 0.6,
+  "movable": true,
+  "size": [
+   0.1778,
+   0.1778,
+   0.1905
+  ],
+  "center": [
+   0.0,
+   0.0,
+   0.0953
+  ],
+  "assets": [
+   "  <mesh name=\"prop_kitchen_canister_xl_0\" file=\"props/kitchen_canister_xl/prop_kitchen_canister_xl_0.stl\"/>"
+  ],
+  "body": "<body name=\"{name}\" pos=\"0 0 0\" quat=\"1 0 0 0\">\n  <freejoint name=\"{name}_free\"/>\n  <inertial pos=\"0 0 0.0953\" mass=\"0.6\" diaginertia=\"0.003395 0.003395 0.003161\"/>\n  <geom name=\"{name}_v0\" type=\"mesh\" mesh=\"prop_kitchen_canister_xl_0\" rgba=\"0.2745 0.2706 0.2824 1\" contype=\"0\" conaffinity=\"0\"/>\n  <geom name=\"{name}_c0\" type=\"cylinder\" size=\"0.0889 0.0953\" pos=\"0 0 0.0953\" quat=\"1 0 0 0\" group=\"3\" rgba=\"0.5 0.5 0.5 0.3\" contype=\"8\" conaffinity=\"15\" condim=\"4\" priority=\"1\" friction=\"0.6 0.005 0.0001\"/>\n</body>"
+ },
+ "kitchen_canister_l": {
+  "name": "Storage canister (L)",
+  "category": "kitchen",
+  "mass": 0.45,
+  "movable": true,
+  "size": [
+   0.1397,
+   0.1397,
+   0.1842
+  ],
+  "center": [
+   0.0,
+   0.0,
+   0.0921
+  ],
+  "assets": [
+   "  <mesh name=\"prop_kitchen_canister_l_0\" file=\"props/kitchen_canister_l/prop_kitchen_canister_l_0.stl\"/>"
+  ],
+  "body": "<body name=\"{name}\" pos=\"0 0 0\" quat=\"1 0 0 0\">\n  <freejoint name=\"{name}_free\"/>\n  <inertial pos=\"0 0 0.0921\" mass=\"0.45\" diaginertia=\"0.002004 0.002004 0.001464\"/>\n  <geom name=\"{name}_v0\" type=\"mesh\" mesh=\"prop_kitchen_canister_l_0\" rgba=\"0.8471 0.8471 0.8471 1\" contype=\"0\" conaffinity=\"0\"/>\n  <geom name=\"{name}_c0\" type=\"cylinder\" size=\"0.0698 0.0921\" pos=\"0 0 0.0921\" quat=\"1 0 0 0\" group=\"3\" rgba=\"0.5 0.5 0.5 0.3\" contype=\"8\" conaffinity=\"15\" condim=\"4\" priority=\"1\" friction=\"0.6 0.005 0.0001\"/>\n</body>"
+ },
+ "kitchen_canister_m": {
+  "name": "Storage canister (M)",
+  "category": "kitchen",
+  "mass": 0.3,
+  "movable": true,
+  "size": [
+   0.1016,
+   0.1016,
+   0.1397
+  ],
+  "center": [
+   0.0,
+   0.0,
+   0.0699
+  ],
+  "assets": [
+   "  <mesh name=\"prop_kitchen_canister_m_0\" file=\"props/kitchen_canister_m/prop_kitchen_canister_m_0.stl\"/>"
+  ],
+  "body": "<body name=\"{name}\" pos=\"0 0 0\" quat=\"1 0 0 0\">\n  <freejoint name=\"{name}_free\"/>\n  <inertial pos=\"0 0 0.0699\" mass=\"0.3\" diaginertia=\"0.000746 0.000746 0.0005161\"/>\n  <geom name=\"{name}_v0\" type=\"mesh\" mesh=\"prop_kitchen_canister_m_0\" rgba=\"0.4863 0.4824 0.4784 1\" contype=\"0\" conaffinity=\"0\"/>\n  <geom name=\"{name}_c0\" type=\"cylinder\" size=\"0.0508 0.0699\" pos=\"0 0 0.0699\" quat=\"1 0 0 0\" group=\"3\" rgba=\"0.5 0.5 0.5 0.3\" contype=\"8\" conaffinity=\"15\" condim=\"4\" priority=\"1\" friction=\"0.6 0.005 0.0001\"/>\n</body>"
+ },
+ "kitchen_canister_s": {
+  "name": "Storage canister (S)",
+  "category": "kitchen",
+  "mass": 0.25,
+  "movable": true,
+  "size": [
+   0.1016,
+   0.1016,
+   0.1164
+  ],
+  "center": [
+   0.0,
+   0.0,
+   0.0582
+  ],
+  "assets": [
+   "  <mesh name=\"prop_kitchen_canister_s_0\" file=\"props/kitchen_canister_s/prop_kitchen_canister_s_0.stl\"/>"
+  ],
+  "body": "<body name=\"{name}\" pos=\"0 0 0\" quat=\"1 0 0 0\">\n  <freejoint name=\"{name}_free\"/>\n  <inertial pos=\"0 0 0.0582\" mass=\"0.25\" diaginertia=\"0.0004973 0.0004973 0.0004301\"/>\n  <geom name=\"{name}_v0\" type=\"mesh\" mesh=\"prop_kitchen_canister_s_0\" rgba=\"1 1 1 1\" contype=\"0\" conaffinity=\"0\"/>\n  <geom name=\"{name}_c0\" type=\"cylinder\" size=\"0.0508 0.0582\" pos=\"0 0 0.0582\" quat=\"1 0 0 0\" group=\"3\" rgba=\"0.5 0.5 0.5 0.3\" contype=\"8\" conaffinity=\"15\" condim=\"4\" priority=\"1\" friction=\"0.6 0.005 0.0001\"/>\n</body>"
+ },
+ "task_chair": {
+  "name": "Office task chair",
+  "category": "office",
+  "mass": 12.0,
+  "movable": true,
+  "size": [
+   0.61,
+   0.6363,
+   1.0517
+  ],
+  "center": [
+   0.02,
+   0.0013,
+   0.5259
+  ],
+  "assets": [],
+  "body": "<body name=\"{name}\" pos=\"0 0 0\" quat=\"1 0 0 0\">\n  <freejoint name=\"{name}_free\"/>\n  <inertial pos=\"0.02 0.0013 0.5259\" mass=\"12\" diaginertia=\"1.511 1.478 0.777\"/>\n  <geom name=\"{name}_v0\" type=\"box\" size=\"0.15 0.022 0.014\" pos=\"0.15 0 0.065\" quat=\"1 0 0 0\" rgba=\"0.02 0.02 0.022 1\" contype=\"0\" conaffinity=\"0\"/>\n  <geom name=\"{name}_v1\" type=\"box\" size=\"0.15 0.022 0.014\" pos=\"0.0464 0.1427 0.065\" quat=\"0.809 0 0 0.5878\" rgba=\"0.02 0.02 0.022 1\" contype=\"0\" conaffinity=\"0\"/>\n  <geom name=\"{name}_v2\" type=\"box\" size=\"0.15 0.022 0.014\" pos=\"-0.1214 0.0882 0.065\" quat=\"0.309 0 0 0.9511\" rgba=\"0.02 0.02 0.022 1\" contype=\"0\" conaffinity=\"0\"/>\n  <geom name=\"{name}_v3\" type=\"box\" size=\"0.15 0.022 0.014\" pos=\"-0.1214 -0.0882 0.065\" quat=\"-0.309 0 0 0.9511\" rgba=\"0.02 0.02 0.022 1\" contype=\"0\" conaffinity=\"0\"/>\n  <geom name=\"{name}_v4\" type=\"box\" size=\"0.15 0.022 0.014\" pos=\"0.0464 -0.1427 0.065\" quat=\"-0.809 0 0 0.5878\" rgba=\"0.02 0.02 0.022 1\" contype=\"0\" conaffinity=\"0\"/>\n  <geom name=\"{name}_v5\" type=\"cylinder\" size=\"0.04 0.02\" pos=\"0 0 0.075\" quat=\"1 0 0 0\" rgba=\"0.02 0.02 0.022 1\" contype=\"0\" conaffinity=\"0\"/>\n  <geom name=\"{name}_v6\" type=\"box\" size=\"0.025 0.02 0.13\" pos=\"0 0.235 0.56\" quat=\"1 0 0 0\" rgba=\"0.02 0.02 0.022 1\" contype=\"0\" conaffinity=\"0\"/>\n  <geom name=\"{name}_v7\" type=\"box\" size=\"0.016 0.016 0.09\" pos=\"0.25 0.04 0.57\" quat=\"1 0 0 0\" rgba=\"0.02 0.02 0.022 1\" contype=\"0\" conaffinity=\"0\"/>\n  <geom name=\"{name}_v8\" type=\"box\" size=\"0.016 0.016 0.09\" pos=\"-0.25 0.04 0.57\" quat=\"1 0 0 0\" rgba=\"0.02 0.02 0.022 1\" contype=\"0\" conaffinity=\"0\"/>\n  <geom name=\"{name}_c0\" type=\"sphere\" size=\"0.025\" pos=\"0.3 0 0.025\" quat=\"1 0 0 0\" rgba=\"0.01 0.01 0.01 1\" contype=\"8\" conaffinity=\"15\" condim=\"4\" priority=\"1\" friction=\"0.05 0.005 0.0001\"/>\n  <geom name=\"{name}_c1\" type=\"sphere\" size=\"0.025\" pos=\"0.0927 0.2853 0.025\" quat=\"0.809 0 0 0.5878\" rgba=\"0.01 0.01 0.01 1\" contype=\"8\" conaffinity=\"15\" condim=\"4\" priority=\"1\" friction=\"0.05 0.005 0.0001\"/>\n  <geom name=\"{name}_c2\" type=\"sphere\" size=\"0.025\" pos=\"-0.2427 0.1763 0.025\" quat=\"0.309 0 0 0.9511\" rgba=\"0.01 0.01 0.01 1\" contype=\"8\" conaffinity=\"15\" condim=\"4\" priority=\"1\" friction=\"0.05 0.005 0.0001\"/>\n  <geom name=\"{name}_c3\" type=\"sphere\" size=\"0.025\" pos=\"-0.2427 -0.1763 0.025\" quat=\"-0.309 0 0 0.9511\" rgba=\"0.01 0.01 0.01 1\" contype=\"8\" conaffinity=\"15\" condim=\"4\" priority=\"1\" friction=\"0.05 0.005 0.0001\"/>\n  <geom name=\"{name}_c4\" type=\"sphere\" size=\"0.025\" pos=\"0.0927 -0.2853 0.025\" quat=\"-0.809 0 0 0.5878\" rgba=\"0.01 0.01 0.01 1\" contype=\"8\" conaffinity=\"15\" condim=\"4\" priority=\"1\" friction=\"0.05 0.005 0.0001\"/>\n  <geom name=\"{name}_c5\" type=\"cylinder\" size=\"0.024 0.17\" pos=\"0 0 0.26\" quat=\"1 0 0 0\" rgba=\"0.45 0.45 0.47 1\" contype=\"8\" conaffinity=\"15\" condim=\"4\" priority=\"1\" friction=\"0.6 0.005 0.0001\"/>\n  <geom name=\"{name}_c6\" type=\"box\" size=\"0.245 0.235 0.045\" pos=\"0 -0.01 0.47\" quat=\"1 0 0 0\" rgba=\"0.025 0.025 0.03 1\" contype=\"8\" conaffinity=\"15\" condim=\"4\" priority=\"1\" friction=\"0.6 0.005 0.0001\"/>\n  <geom name=\"{name}_c7\" type=\"box\" size=\"0.225 0.03 0.25\" pos=\"0 0.255 0.8\" quat=\"0.9976 -0.0698 0 0\" rgba=\"0.025 0.025 0.03 1\" contype=\"8\" conaffinity=\"15\" condim=\"4\" priority=\"1\" friction=\"0.6 0.005 0.0001\"/>\n  <geom name=\"{name}_c8\" type=\"box\" size=\"0.035 0.13 0.014\" pos=\"0.25 0.02 0.67\" quat=\"1 0 0 0\" rgba=\"0.02 0.02 0.022 1\" contype=\"8\" conaffinity=\"15\" condim=\"4\" priority=\"1\" friction=\"0.6 0.005 0.0001\"/>\n  <geom name=\"{name}_c9\" type=\"box\" size=\"0.035 0.13 0.014\" pos=\"-0.25 0.02 0.67\" quat=\"1 0 0 0\" rgba=\"0.02 0.02 0.022 1\" contype=\"8\" conaffinity=\"15\" condim=\"4\" priority=\"1\" friction=\"0.6 0.005 0.0001\"/>\n</body>"
+ },
+ "monitor_24in": {
+  "name": "24\" monitor",
+  "category": "office",
+  "mass": 4.5,
+  "movable": true,
+  "size": [
+   0.544,
+   0.18,
+   0.546
+  ],
+  "center": [
+   0.0,
+   0.02,
+   0.273
+  ],
+  "assets": [],
+  "body": "<body name=\"{name}\" pos=\"0 0 0\" quat=\"1 0 0 0\">\n  <freejoint name=\"{name}_free\"/>\n  <inertial pos=\"0 0.02 0.273\" mass=\"4.5\" diaginertia=\"0.1239 0.2228 0.1231\"/>\n  <geom name=\"{name}_v0\" type=\"box\" size=\"0.262 0.002 0.152\" pos=\"0 -0.0025 0.386\" quat=\"1 0 0 0\" rgba=\"0.004 0.006 0.01 1\" contype=\"0\" conaffinity=\"0\"/>\n  <geom name=\"{name}_c0\" type=\"box\" size=\"0.12 0.09 0.008\" pos=\"0 0.02 0.008\" quat=\"1 0 0 0\" rgba=\"0.03 0.03 0.035 1\" contype=\"8\" conaffinity=\"15\" condim=\"4\" priority=\"1\" friction=\"0.6 0.005 0.0001\"/>\n  <geom name=\"{name}_c1\" type=\"box\" size=\"0.025 0.015 0.14\" pos=\"0 0.05 0.15\" quat=\"1 0 0 0\" rgba=\"0.03 0.03 0.035 1\" contype=\"8\" conaffinity=\"15\" condim=\"4\" priority=\"1\" friction=\"0.6 0.005 0.0001\"/>\n  <geom name=\"{name}_c2\" type=\"box\" size=\"0.272 0.022 0.166\" pos=\"0 0.02 0.38\" quat=\"1 0 0 0\" rgba=\"0.02 0.02 0.022 1\" contype=\"8\" conaffinity=\"15\" condim=\"4\" priority=\"1\" friction=\"0.6 0.005 0.0001\"/>\n</body>"
+ },
+ "keyboard": {
+  "name": "Keyboard",
+  "category": "office",
+  "mass": 0.7,
+  "movable": true,
+  "size": [
+   0.44,
+   0.136,
+   0.025
+  ],
+  "center": [
+   0.0,
+   0.0,
+   0.0125
+  ],
+  "assets": [],
+  "body": "<body name=\"{name}\" pos=\"0 0 0\" quat=\"1 0 0 0\">\n  <freejoint name=\"{name}_free\"/>\n  <inertial pos=\"0 0 0.011\" mass=\"0.7\" diaginertia=\"0.001107 0.01132 0.01237\"/>\n  <geom name=\"{name}_v0\" type=\"box\" size=\"0.21 0.058 0.002\" pos=\"0 0 0.023\" quat=\"1 0 0 0\" rgba=\"0.06 0.06 0.065 1\" contype=\"0\" conaffinity=\"0\"/>\n  <geom name=\"{name}_c0\" type=\"box\" size=\"0.22 0.068 0.011\" pos=\"0 0 0.011\" quat=\"1 0 0 0\" rgba=\"0.02 0.02 0.022 1\" contype=\"8\" conaffinity=\"15\" condim=\"4\" priority=\"1\" friction=\"0.8 0.005 0.0001\"/>\n</body>"
+ },
+ "mouse": {
+  "name": "Computer mouse",
+  "category": "office",
+  "mass": 0.1,
+  "movable": true,
+  "size": [
+   0.062,
+   0.112,
+   0.038
+  ],
+  "center": [
+   0.0,
+   0.0,
+   0.019
+  ],
+  "assets": [],
+  "body": "<body name=\"{name}\" pos=\"0 0 0\" quat=\"1 0 0 0\">\n  <freejoint name=\"{name}_free\"/>\n  <inertial pos=\"0 0 0.019\" mass=\"0.1\" diaginertia=\"0.0001166 4.407e-05 0.0001366\"/>\n  <geom name=\"{name}_c0\" type=\"ellipsoid\" size=\"0.031 0.056 0.019\" pos=\"0 0 0.019\" quat=\"1 0 0 0\" rgba=\"0.02 0.02 0.022 1\" contype=\"8\" conaffinity=\"15\" condim=\"4\" priority=\"1\" friction=\"0.8 0.005 0.0001\"/>\n</body>"
+ },
+ "legal_pad": {
+  "name": "Legal pad",
+  "category": "office",
+  "mass": 0.25,
+  "movable": true,
+  "size": [
+   0.216,
+   0.356,
+   0.0144
+  ],
+  "center": [
+   0.0,
+   0.0,
+   0.0072
+  ],
+  "assets": [],
+  "body": "<body name=\"{name}\" pos=\"0 0 0\" quat=\"1 0 0 0\">\n  <freejoint name=\"{name}_free\"/>\n  <inertial pos=\"0 0 0.006\" mass=\"0.25\" diaginertia=\"0.002643 0.000975 0.003612\"/>\n  <geom name=\"{name}_v0\" type=\"box\" size=\"0.108 0.014 0.0012\" pos=\"0 0.164 0.0132\" quat=\"1 0 0 0\" rgba=\"0.25 0.04 0.02 1\" contype=\"0\" conaffinity=\"0\"/>\n  <geom name=\"{name}_c0\" type=\"box\" size=\"0.108 0.178 0.006\" pos=\"0 0 0.006\" quat=\"1 0 0 0\" rgba=\"0.9 0.75 0.12 1\" contype=\"8\" conaffinity=\"15\" condim=\"4\" priority=\"1\" friction=\"0.6 0.005 0.0001\"/>\n</body>"
+ },
+ "binder": {
+  "name": "3-ring binder",
+  "category": "office",
+  "mass": 0.8,
+  "movable": true,
+  "size": [
+   0.296,
+   0.284,
+   0.05
+  ],
+  "center": [
+   -0.003,
+   0.0,
+   0.025
+  ],
+  "assets": [],
+  "body": "<body name=\"{name}\" pos=\"0 0 0\" quat=\"1 0 0 0\">\n  <freejoint name=\"{name}_free\"/>\n  <inertial pos=\"0 0 0.025\" mass=\"0.8\" diaginertia=\"0.005544 0.005773 0.01098\"/>\n  <geom name=\"{name}_v0\" type=\"box\" size=\"0.004 0.142 0.025\" pos=\"-0.147 0 0.025\" quat=\"1 0 0 0\" rgba=\"0.015 0.03 0.12 1\" contype=\"0\" conaffinity=\"0\"/>\n  <geom name=\"{name}_c0\" type=\"box\" size=\"0.145 0.142 0.025\" pos=\"0 0 0.025\" quat=\"1 0 0 0\" rgba=\"0.02 0.04 0.16 1\" contype=\"8\" conaffinity=\"15\" condim=\"4\" priority=\"1\" friction=\"0.6 0.005 0.0001\"/>\n</body>"
+ },
+ "dry_erase_marker_black": {
+  "name": "Dry-erase marker (black)",
+  "category": "office",
+  "mass": 0.015,
+  "movable": true,
+  "size": [
+   0.132,
+   0.018,
+   0.018
+  ],
+  "center": [
+   0.0,
+   0.0,
+   0.009
+  ],
+  "assets": [],
+  "body": "<body name=\"{name}\" pos=\"0 0 0\" quat=\"1 0 0 0\">\n  <freejoint name=\"{name}_free\"/>\n  <inertial pos=\"0 0 0.009\" mass=\"0.015\" diaginertia=\"8.1e-07 2.219e-05 2.219e-05\"/>\n  <geom name=\"{name}_c0\" type=\"cylinder\" size=\"0.009 0.066\" pos=\"0 0 0.009\" quat=\"0.7071 0 0.7071 0\" rgba=\"0.02 0.02 0.02 1\" contype=\"8\" conaffinity=\"15\" condim=\"4\" priority=\"1\" friction=\"0.5 0.005 0.0001\"/>\n</body>"
+ },
+ "dry_erase_marker_blue": {
+  "name": "Dry-erase marker (blue)",
+  "category": "office",
+  "mass": 0.015,
+  "movable": true,
+  "size": [
+   0.132,
+   0.018,
+   0.018
+  ],
+  "center": [
+   0.0,
+   0.0,
+   0.009
+  ],
+  "assets": [],
+  "body": "<body name=\"{name}\" pos=\"0 0 0\" quat=\"1 0 0 0\">\n  <freejoint name=\"{name}_free\"/>\n  <inertial pos=\"0 0 0.009\" mass=\"0.015\" diaginertia=\"8.1e-07 2.219e-05 2.219e-05\"/>\n  <geom name=\"{name}_c0\" type=\"cylinder\" size=\"0.009 0.066\" pos=\"0 0 0.009\" quat=\"0.7071 0 0.7071 0\" rgba=\"0.01 0.04 0.45 1\" contype=\"8\" conaffinity=\"15\" condim=\"4\" priority=\"1\" friction=\"0.5 0.005 0.0001\"/>\n</body>"
+ },
+ "dry_erase_marker_red": {
+  "name": "Dry-erase marker (red)",
+  "category": "office",
+  "mass": 0.015,
+  "movable": true,
+  "size": [
+   0.132,
+   0.018,
+   0.018
+  ],
+  "center": [
+   0.0,
+   0.0,
+   0.009
+  ],
+  "assets": [],
+  "body": "<body name=\"{name}\" pos=\"0 0 0\" quat=\"1 0 0 0\">\n  <freejoint name=\"{name}_free\"/>\n  <inertial pos=\"0 0 0.009\" mass=\"0.015\" diaginertia=\"8.1e-07 2.219e-05 2.219e-05\"/>\n  <geom name=\"{name}_c0\" type=\"cylinder\" size=\"0.009 0.066\" pos=\"0 0 0.009\" quat=\"0.7071 0 0.7071 0\" rgba=\"0.5 0.01 0.01 1\" contype=\"8\" conaffinity=\"15\" condim=\"4\" priority=\"1\" friction=\"0.5 0.005 0.0001\"/>\n</body>"
+ },
+ "whiteboard_eraser": {
+  "name": "Whiteboard eraser",
+  "category": "office",
+  "mass": 0.1,
+  "movable": true,
+  "size": [
+   0.15,
+   0.052,
+   0.034
+  ],
+  "center": [
+   0.0,
+   0.0,
+   0.017
+  ],
+  "assets": [],
+  "body": "<body name=\"{name}\" pos=\"0 0 0\" quat=\"1 0 0 0\">\n  <freejoint name=\"{name}_free\"/>\n  <inertial pos=\"0 0 0.017\" mass=\"0.1\" diaginertia=\"3.217e-05 0.0001971 0.00021\"/>\n  <geom name=\"{name}_c0\" type=\"box\" size=\"0.075 0.026 0.012\" pos=\"0 0 0.022\" quat=\"1 0 0 0\" rgba=\"0.02 0.02 0.022 1\" contype=\"8\" conaffinity=\"15\" condim=\"4\" priority=\"1\" friction=\"0.8 0.005 0.0001\"/>\n  <geom name=\"{name}_c1\" type=\"box\" size=\"0.075 0.026 0.005\" pos=\"0 0 0.005\" quat=\"1 0 0 0\" rgba=\"0.25 0.25 0.27 1\" contype=\"8\" conaffinity=\"15\" condim=\"4\" priority=\"1\" friction=\"0.8 0.005 0.0001\"/>\n</body>"
+ },
+ "wastebasket": {
+  "name": "Wastebasket",
+  "category": "office",
+  "mass": 0.6,
+  "movable": true,
+  "size": [
+   0.276,
+   0.276,
+   0.3
+  ],
+  "center": [
+   0.0,
+   0.0,
+   0.15
+  ],
+  "assets": [],
+  "body": "<body name=\"{name}\" pos=\"0 0 0\" quat=\"1 0 0 0\">\n  <freejoint name=\"{name}_free\"/>\n  <inertial pos=\"0 0 0.15\" mass=\"0.6\" diaginertia=\"0.008309 0.008309 0.007618\"/>\n  <geom name=\"{name}_c0\" type=\"cylinder\" size=\"0.13 0.004\" pos=\"0 0 0.004\" quat=\"1 0 0 0\" rgba=\"0.02 0.02 0.022 1\" contype=\"8\" conaffinity=\"15\" condim=\"4\" priority=\"1\" friction=\"0.6 0.005 0.0001\"/>\n  <geom name=\"{name}_c1\" type=\"box\" size=\"0.004 0.036 0.15\" pos=\"0.134 0 0.15\" quat=\"1 0 0 0\" rgba=\"0.02 0.02 0.022 1\" contype=\"8\" conaffinity=\"15\" condim=\"4\" priority=\"1\" friction=\"0.6 0.005 0.0001\"/>\n  <geom name=\"{name}_c2\" type=\"box\" size=\"0.004 0.036 0.15\" pos=\"0.116 0.067 0.15\" quat=\"0.9659 0 0 0.2588\" rgba=\"0.02 0.02 0.022 1\" contype=\"8\" conaffinity=\"15\" condim=\"4\" priority=\"1\" friction=\"0.6 0.005 0.0001\"/>\n  <geom name=\"{name}_c3\" type=\"box\" size=\"0.004 0.036 0.15\" pos=\"0.067 0.116 0.15\" quat=\"0.866 0 0 0.5\" rgba=\"0.02 0.02 0.022 1\" contype=\"8\" conaffinity=\"15\" condim=\"4\" priority=\"1\" friction=\"0.6 0.005 0.0001\"/>\n  <geom name=\"{name}_c4\" type=\"box\" size=\"0.004 0.036 0.15\" pos=\"0 0.134 0.15\" quat=\"0.7071 0 0 0.7071\" rgba=\"0.02 0.02 0.022 1\" contype=\"8\" conaffinity=\"15\" condim=\"4\" priority=\"1\" friction=\"0.6 0.005 0.0001\"/>\n  <geom name=\"{name}_c5\" type=\"box\" size=\"0.004 0.036 0.15\" pos=\"-0.067 0.116 0.15\" quat=\"0.5 0 0 0.866\" rgba=\"0.02 0.02 0.022 1\" contype=\"8\" conaffinity=\"15\" condim=\"4\" priority=\"1\" friction=\"0.6 0.005 0.0001\"/>\n  <geom name=\"{name}_c6\" type=\"box\" size=\"0.004 0.036 0.15\" pos=\"-0.116 0.067 0.15\" quat=\"0.2588 0 0 0.9659\" rgba=\"0.02 0.02 0.022 1\" contype=\"8\" conaffinity=\"15\" condim=\"4\" priority=\"1\" friction=\"0.6 0.005 0.0001\"/>\n  <geom name=\"{name}_c7\" type=\"box\" size=\"0.004 0.036 0.15\" pos=\"-0.134 0 0.15\" quat=\"0 0 0 1\" rgba=\"0.02 0.02 0.022 1\" contype=\"8\" conaffinity=\"15\" condim=\"4\" priority=\"1\" friction=\"0.6 0.005 0.0001\"/>\n  <geom name=\"{name}_c8\" type=\"box\" size=\"0.004 0.036 0.15\" pos=\"-0.116 -0.067 0.15\" quat=\"-0.2588 0 0 0.9659\" rgba=\"0.02 0.02 0.022 1\" contype=\"8\" conaffinity=\"15\" condim=\"4\" priority=\"1\" friction=\"0.6 0.005 0.0001\"/>\n  <geom name=\"{name}_c9\" type=\"box\" size=\"0.004 0.036 0.15\" pos=\"-0.067 -0.116 0.15\" quat=\"-0.5 0 0 0.866\" rgba=\"0.02 0.02 0.022 1\" contype=\"8\" conaffinity=\"15\" condim=\"4\" priority=\"1\" friction=\"0.6 0.005 0.0001\"/>\n  <geom name=\"{name}_c10\" type=\"box\" size=\"0.004 0.036 0.15\" pos=\"0 -0.134 0.15\" quat=\"-0.7071 0 0 0.7071\" rgba=\"0.02 0.02 0.022 1\" contype=\"8\" conaffinity=\"15\" condim=\"4\" priority=\"1\" friction=\"0.6 0.005 0.0001\"/>\n  <geom name=\"{name}_c11\" type=\"box\" size=\"0.004 0.036 0.15\" pos=\"0.067 -0.116 0.15\" quat=\"-0.866 0 0 0.5\" rgba=\"0.02 0.02 0.022 1\" contype=\"8\" conaffinity=\"15\" condim=\"4\" priority=\"1\" friction=\"0.6 0.005 0.0001\"/>\n  <geom name=\"{name}_c12\" type=\"box\" size=\"0.004 0.036 0.15\" pos=\"0.116 -0.067 0.15\" quat=\"-0.9659 0 0 0.2588\" rgba=\"0.02 0.02 0.022 1\" contype=\"8\" conaffinity=\"15\" condim=\"4\" priority=\"1\" friction=\"0.6 0.005 0.0001\"/>\n</body>"
+ },
+ "whiteboard": {
+  "name": "Whiteboard (6 x 4 ft, wall-mounted)",
+  "category": "office",
+  "mass": 15.0,
+  "movable": false,
+  "size": [
+   1.86,
+   0.1,
+   1.268
+  ],
+  "center": [
+   0.0,
+   -0.05,
+   1.496
+  ],
+  "assets": [],
+  "body": "<body name=\"{name}\" pos=\"0 0 0\" quat=\"1 0 0 0\">\n  <geom name=\"{name}_v0\" type=\"box\" size=\"0.915 0.012 0.015\" pos=\"0 -0.012 2.115\" quat=\"1 0 0 0\" rgba=\"0.55 0.56 0.58 1\" contype=\"0\" conaffinity=\"0\"/>\n  <geom name=\"{name}_v1\" type=\"box\" size=\"0.915 0.012 0.015\" pos=\"0 -0.012 0.885\" quat=\"1 0 0 0\" rgba=\"0.55 0.56 0.58 1\" contype=\"0\" conaffinity=\"0\"/>\n  <geom name=\"{name}_v2\" type=\"box\" size=\"0.015 0.012 0.6\" pos=\"0.915 -0.012 1.5\" quat=\"1 0 0 0\" rgba=\"0.55 0.56 0.58 1\" contype=\"0\" conaffinity=\"0\"/>\n  <geom name=\"{name}_v3\" type=\"box\" size=\"0.015 0.012 0.6\" pos=\"-0.915 -0.012 1.5\" quat=\"1 0 0 0\" rgba=\"0.55 0.56 0.58 1\" contype=\"0\" conaffinity=\"0\"/>\n  <geom name=\"{name}_c0\" type=\"box\" size=\"0.9 0.008 0.6\" pos=\"0 -0.012 1.5\" quat=\"1 0 0 0\" rgba=\"0.92 0.92 0.92 1\" contype=\"1\" conaffinity=\"1\" friction=\"0.7 0.005 0.0001\"/>\n  <geom name=\"{name}_c1\" type=\"box\" size=\"0.4 0.04 0.008\" pos=\"0 -0.06 0.87\" quat=\"1 0 0 0\" rgba=\"0.55 0.56 0.58 1\" contype=\"1\" conaffinity=\"1\" friction=\"0.7 0.005 0.0001\"/>\n</body>"
+ },
+ "water_cooler": {
+  "name": "Water cooler (5 gal)",
+  "category": "office",
+  "mass": 30.0,
+  "movable": false,
+  "size": [
+   0.31,
+   0.355,
+   1.5
+  ],
+  "center": [
+   0.0,
+   -0.0225,
+   0.75
+  ],
+  "assets": [],
+  "body": "<body name=\"{name}\" pos=\"0 0 0\" quat=\"1 0 0 0\">\n  <geom name=\"{name}_v0\" type=\"cylinder\" size=\"0.04 0.03\" pos=\"0 0 1.03\" quat=\"1 0 0 0\" rgba=\"0.35 0.55 0.8 0.6\" contype=\"0\" conaffinity=\"0\"/>\n  <geom name=\"{name}_v1\" type=\"box\" size=\"0.012 0.012 0.015\" pos=\"0.05 -0.16 0.86\" quat=\"1 0 0 0\" rgba=\"0.02 0.1 0.6 1\" contype=\"0\" conaffinity=\"0\"/>\n  <geom name=\"{name}_v2\" type=\"box\" size=\"0.012 0.012 0.015\" pos=\"-0.05 -0.16 0.86\" quat=\"1 0 0 0\" rgba=\"0.6 0.02 0.02 1\" contype=\"0\" conaffinity=\"0\"/>\n  <geom name=\"{name}_c0\" type=\"box\" size=\"0.155 0.155 0.5\" pos=\"0 0 0.5\" quat=\"1 0 0 0\" rgba=\"0.85 0.85 0.83 1\" contype=\"1\" conaffinity=\"1\" friction=\"0.7 0.005 0.0001\"/>\n  <geom name=\"{name}_c1\" type=\"cylinder\" size=\"0.135 0.24\" pos=\"0 0 1.26\" quat=\"1 0 0 0\" rgba=\"0.35 0.55 0.8 0.6\" contype=\"1\" conaffinity=\"1\" friction=\"0.7 0.005 0.0001\"/>\n  <geom name=\"{name}_c2\" type=\"box\" size=\"0.1 0.03 0.006\" pos=\"0 -0.17 0.62\" quat=\"1 0 0 0\" rgba=\"0.15 0.15 0.16 1\" contype=\"1\" conaffinity=\"1\" friction=\"0.7 0.005 0.0001\"/>\n</body>"
+ },
+ "duplex_outlet": {
+  "name": "Wall outlet (NEMA 5-15)",
+  "category": "fixtures",
+  "mass": 0.1,
+  "movable": false,
+  "size": [
+   0.07,
+   0.0105,
+   0.114
+  ],
+  "center": [
+   0.0,
+   -0.0052,
+   0.4
+  ],
+  "assets": [],
+  "body": "<body name=\"{name}\" pos=\"0 0 0\" quat=\"1 0 0 0\">\n  <geom name=\"{name}_v0\" type=\"box\" size=\"0.035 0.003 0.057\" pos=\"0 -0.003 0.4\" quat=\"1 0 0 0\" rgba=\"0.83 0.81 0.74 1\" contype=\"0\" conaffinity=\"0\"/>\n  <geom name=\"{name}_v1\" type=\"box\" size=\"0.018 0.002 0.017\" pos=\"0 -0.007 0.432\" quat=\"1 0 0 0\" rgba=\"0.8 0.78 0.71 1\" contype=\"0\" conaffinity=\"0\"/>\n  <geom name=\"{name}_v2\" type=\"box\" size=\"0.018 0.002 0.017\" pos=\"0 -0.007 0.368\" quat=\"1 0 0 0\" rgba=\"0.8 0.78 0.71 1\" contype=\"0\" conaffinity=\"0\"/>\n  <geom name=\"{name}_v3\" type=\"box\" size=\"0.0015 0.001 0.005\" pos=\"-0.006 -0.0095 0.435\" quat=\"1 0 0 0\" rgba=\"0.05 0.05 0.05 1\" contype=\"0\" conaffinity=\"0\"/>\n  <geom name=\"{name}_v4\" type=\"box\" size=\"0.0015 0.001 0.0065\" pos=\"0.006 -0.0095 0.435\" quat=\"1 0 0 0\" rgba=\"0.05 0.05 0.05 1\" contype=\"0\" conaffinity=\"0\"/>\n  <geom name=\"{name}_v5\" type=\"box\" size=\"0.0025 0.001 0.0025\" pos=\"0 -0.0095 0.423\" quat=\"1 0 0 0\" rgba=\"0.05 0.05 0.05 1\" contype=\"0\" conaffinity=\"0\"/>\n  <geom name=\"{name}_v6\" type=\"box\" size=\"0.0015 0.001 0.005\" pos=\"-0.006 -0.0095 0.371\" quat=\"1 0 0 0\" rgba=\"0.05 0.05 0.05 1\" contype=\"0\" conaffinity=\"0\"/>\n  <geom name=\"{name}_v7\" type=\"box\" size=\"0.0015 0.001 0.0065\" pos=\"0.006 -0.0095 0.371\" quat=\"1 0 0 0\" rgba=\"0.05 0.05 0.05 1\" contype=\"0\" conaffinity=\"0\"/>\n  <geom name=\"{name}_v8\" type=\"box\" size=\"0.0025 0.001 0.0025\" pos=\"0 -0.0095 0.359\" quat=\"1 0 0 0\" rgba=\"0.05 0.05 0.05 1\" contype=\"0\" conaffinity=\"0\"/>\n</body>"
+ },
+ "fire_extinguisher": {
+  "name": "Fire extinguisher (5 lb ABC, wall-mounted)",
+  "category": "fixtures",
+  "mass": 4.5,
+  "movable": false,
+  "size": [
+   0.142,
+   0.1695,
+   0.4613
+  ],
+  "center": [
+   0.006,
+   -0.0848,
+   0.9907
+  ],
+  "assets": [],
+  "body": "<body name=\"{name}\" pos=\"0 0 0\" quat=\"1 0 0 0\">\n  <geom name=\"{name}_v0\" type=\"box\" size=\"0.04 0.012 0.06\" pos=\"0 -0.012 1.02\" quat=\"1 0 0 0\" rgba=\"0.1 0.1 0.1 1\" contype=\"0\" conaffinity=\"0\"/>\n  <geom name=\"{name}_v1\" type=\"cylinder\" size=\"0.02 0.025\" pos=\"0 -0.09 1.165\" quat=\"1 0 0 0\" rgba=\"0.05 0.05 0.05 1\" contype=\"0\" conaffinity=\"0\"/>\n  <geom name=\"{name}_v2\" type=\"box\" size=\"0.012 0.06 0.006\" pos=\"0 -0.11 1.2\" quat=\"0.9914 -0.1305 0 0\" rgba=\"0.05 0.05 0.05 1\" contype=\"0\" conaffinity=\"0\"/>\n  <geom name=\"{name}_v3\" type=\"box\" size=\"0.007 0.007 0.17\" pos=\"0.07 -0.09 1\" quat=\"1 0 0 0\" rgba=\"0.02 0.02 0.02 1\" contype=\"0\" conaffinity=\"0\"/>\n  <geom name=\"{name}_v4\" type=\"box\" size=\"0.05 0.003 0.03\" pos=\"0 -0.157 0.97\" quat=\"1 0 0 0\" rgba=\"0.85 0.85 0.85 1\" contype=\"0\" conaffinity=\"0\"/>\n  <geom name=\"{name}_c0\" type=\"cylinder\" size=\"0.065 0.19\" pos=\"0 -0.09 0.95\" quat=\"1 0 0 0\" rgba=\"0.55 0.01 0.01 1\" contype=\"1\" conaffinity=\"1\" friction=\"0.7 0.005 0.0001\"/>\n</body>"
+ },
+ "drum_55gal": {
+  "name": "55-gallon steel drum",
+  "category": "warehouse",
+  "mass": 25.0,
+  "movable": true,
+  "size": [
+   0.594,
+   0.594,
+   0.88
+  ],
+  "center": [
+   0.0,
+   0.0,
+   0.44
+  ],
+  "assets": [],
+  "body": "<body name=\"{name}\" pos=\"0 0 0\" quat=\"1 0 0 0\">\n  <freejoint name=\"{name}_free\"/>\n  <inertial pos=\"0 0 0.44\" mass=\"25\" diaginertia=\"2.324 2.324 1.421\"/>\n  <geom name=\"{name}_v0\" type=\"cylinder\" size=\"0.297 0.01\" pos=\"0 0 0.3\" quat=\"1 0 0 0\" rgba=\"0.015 0.09 0.4 1\" contype=\"0\" conaffinity=\"0\"/>\n  <geom name=\"{name}_v1\" type=\"cylinder\" size=\"0.297 0.01\" pos=\"0 0 0.6\" quat=\"1 0 0 0\" rgba=\"0.015 0.09 0.4 1\" contype=\"0\" conaffinity=\"0\"/>\n  <geom name=\"{name}_c0\" type=\"cylinder\" size=\"0.292 0.44\" pos=\"0 0 0.44\" quat=\"1 0 0 0\" rgba=\"0.02 0.12 0.5 1\" contype=\"8\" conaffinity=\"15\" condim=\"4\" priority=\"1\" friction=\"0.5 0.005 0.0001\"/>\n</body>"
+ },
+ "shipping_box_small": {
+  "name": "Shipping box (12x12x12 in)",
+  "category": "warehouse",
+  "mass": 2.0,
+  "movable": true,
+  "size": [
+   0.306,
+   0.305,
+   0.3062
+  ],
+  "center": [
+   0.0,
+   0.0,
+   0.1531
+  ],
+  "assets": [],
+  "body": "<body name=\"{name}\" pos=\"0 0 0\" quat=\"1 0 0 0\">\n  <freejoint name=\"{name}_free\"/>\n  <inertial pos=\"0 0 0.1525\" mass=\"2\" diaginertia=\"0.03101 0.03101 0.03101\"/>\n  <geom name=\"{name}_v0\" type=\"box\" size=\"0.153 0.024 0.0006\" pos=\"0 0 0.3056\" quat=\"1 0 0 0\" rgba=\"0.62 0.48 0.28 1\" contype=\"0\" conaffinity=\"0\"/>\n  <geom name=\"{name}_c0\" type=\"box\" size=\"0.1525 0.1525 0.1525\" pos=\"0 0 0.1525\" quat=\"1 0 0 0\" rgba=\"0.45 0.29 0.14 1\" contype=\"8\" conaffinity=\"15\" condim=\"4\" priority=\"1\" friction=\"0.6 0.005 0.0001\"/>\n</body>"
+ },
+ "shipping_box_medium": {
+  "name": "Shipping box (18x18x16 in)",
+  "category": "warehouse",
+  "mass": 5.0,
+  "movable": true,
+  "size": [
+   0.459,
+   0.458,
+   0.4072
+  ],
+  "center": [
+   0.0,
+   0.0,
+   0.2036
+  ],
+  "assets": [],
+  "body": "<body name=\"{name}\" pos=\"0 0 0\" quat=\"1 0 0 0\">\n  <freejoint name=\"{name}_free\"/>\n  <inertial pos=\"0 0 0.203\" mass=\"5\" diaginertia=\"0.1561 0.1561 0.1748\"/>\n  <geom name=\"{name}_v0\" type=\"box\" size=\"0.2295 0.024 0.0006\" pos=\"0 0 0.4066\" quat=\"1 0 0 0\" rgba=\"0.62 0.48 0.28 1\" contype=\"0\" conaffinity=\"0\"/>\n  <geom name=\"{name}_c0\" type=\"box\" size=\"0.229 0.229 0.203\" pos=\"0 0 0.203\" quat=\"1 0 0 0\" rgba=\"0.43 0.27 0.13 1\" contype=\"8\" conaffinity=\"15\" condim=\"4\" priority=\"1\" friction=\"0.6 0.005 0.0001\"/>\n</body>"
+ },
+ "shipping_box_large": {
+  "name": "Shipping box (24x18x18 in)",
+  "category": "warehouse",
+  "mass": 9.0,
+  "movable": true,
+  "size": [
+   0.611,
+   0.458,
+   0.4592
+  ],
+  "center": [
+   0.0,
+   0.0,
+   0.2296
+  ],
+  "assets": [],
+  "body": "<body name=\"{name}\" pos=\"0 0 0\" quat=\"1 0 0 0\">\n  <freejoint name=\"{name}_free\"/>\n  <inertial pos=\"0 0 0.229\" mass=\"9\" diaginertia=\"0.3146 0.4364 0.4364\"/>\n  <geom name=\"{name}_v0\" type=\"box\" size=\"0.3055 0.024 0.0006\" pos=\"0 0 0.4586\" quat=\"1 0 0 0\" rgba=\"0.62 0.48 0.28 1\" contype=\"0\" conaffinity=\"0\"/>\n  <geom name=\"{name}_c0\" type=\"box\" size=\"0.305 0.229 0.229\" pos=\"0 0 0.229\" quat=\"1 0 0 0\" rgba=\"0.42 0.26 0.12 1\" contype=\"8\" conaffinity=\"15\" condim=\"4\" priority=\"1\" friction=\"0.6 0.005 0.0001\"/>\n</body>"
+ },
+ "tote_blue": {
+  "name": "Storage tote (24x15x12 in)",
+  "category": "warehouse",
+  "mass": 1.8,
+  "movable": true,
+  "size": [
+   0.6,
+   0.38,
+   0.3
+  ],
+  "center": [
+   0.0,
+   0.0,
+   0.15
+  ],
+  "assets": [],
+  "body": "<body name=\"{name}\" pos=\"0 0 0\" quat=\"1 0 0 0\">\n  <freejoint name=\"{name}_free\"/>\n  <inertial pos=\"0 0 0.15\" mass=\"1.8\" diaginertia=\"0.03516 0.0675 0.07566\"/>\n  <geom name=\"{name}_c0\" type=\"box\" size=\"0.3 0.19 0.004\" pos=\"0 0 0.004\" quat=\"1 0 0 0\" rgba=\"0.02 0.1 0.45 1\" contype=\"8\" conaffinity=\"15\" condim=\"4\" priority=\"1\" friction=\"0.5 0.005 0.0001\"/>\n  <geom name=\"{name}_c1\" type=\"box\" size=\"0.3 0.004 0.15\" pos=\"0 -0.186 0.15\" quat=\"1 0 0 0\" rgba=\"0.02 0.1 0.45 1\" contype=\"8\" conaffinity=\"15\" condim=\"4\" priority=\"1\" friction=\"0.5 0.005 0.0001\"/>\n  <geom name=\"{name}_c2\" type=\"box\" size=\"0.3 0.004 0.15\" pos=\"0 0.186 0.15\" quat=\"1 0 0 0\" rgba=\"0.02 0.1 0.45 1\" contype=\"8\" conaffinity=\"15\" condim=\"4\" priority=\"1\" friction=\"0.5 0.005 0.0001\"/>\n  <geom name=\"{name}_c3\" type=\"box\" size=\"0.004 0.19 0.15\" pos=\"-0.296 0 0.15\" quat=\"1 0 0 0\" rgba=\"0.02 0.1 0.45 1\" contype=\"8\" conaffinity=\"15\" condim=\"4\" priority=\"1\" friction=\"0.5 0.005 0.0001\"/>\n  <geom name=\"{name}_c4\" type=\"box\" size=\"0.004 0.19 0.15\" pos=\"0.296 0 0.15\" quat=\"1 0 0 0\" rgba=\"0.02 0.1 0.45 1\" contype=\"8\" conaffinity=\"15\" condim=\"4\" priority=\"1\" friction=\"0.5 0.005 0.0001\"/>\n</body>"
+ },
+ "pallet_gma": {
+  "name": "Wood pallet (48x40 in GMA)",
+  "category": "warehouse",
+  "mass": 22.0,
+  "movable": true,
+  "size": [
+   1.016,
+   1.219,
+   0.144
+  ],
+  "center": [
+   0.0,
+   0.0,
+   0.072
+  ],
+  "assets": [],
+  "body": "<body name=\"{name}\" pos=\"0 0 0\" quat=\"1 0 0 0\">\n  <freejoint name=\"{name}_free\"/>\n  <inertial pos=\"0 0 0.072\" mass=\"22\" diaginertia=\"2.762 1.93 4.617\"/>\n  <geom name=\"{name}_c0\" type=\"box\" size=\"0.508 0.0445 0.011\" pos=\"0 -0.565 0.133\" quat=\"1 0 0 0\" rgba=\"0.35 0.22 0.1 1\" contype=\"8\" conaffinity=\"15\" condim=\"4\" priority=\"1\" friction=\"0.5 0.005 0.0001\"/>\n  <geom name=\"{name}_c1\" type=\"box\" size=\"0.508 0.0445 0.011\" pos=\"0 -0.3767 0.133\" quat=\"1 0 0 0\" rgba=\"0.35 0.22 0.1 1\" contype=\"8\" conaffinity=\"15\" condim=\"4\" priority=\"1\" friction=\"0.5 0.005 0.0001\"/>\n  <geom name=\"{name}_c2\" type=\"box\" size=\"0.508 0.0445 0.011\" pos=\"0 -0.1884 0.133\" quat=\"1 0 0 0\" rgba=\"0.35 0.22 0.1 1\" contype=\"8\" conaffinity=\"15\" condim=\"4\" priority=\"1\" friction=\"0.5 0.005 0.0001\"/>\n  <geom name=\"{name}_c3\" type=\"box\" size=\"0.508 0.0445 0.011\" pos=\"0 -0.0001 0.133\" quat=\"1 0 0 0\" rgba=\"0.35 0.22 0.1 1\" contype=\"8\" conaffinity=\"15\" condim=\"4\" priority=\"1\" friction=\"0.5 0.005 0.0001\"/>\n  <geom name=\"{name}_c4\" type=\"box\" size=\"0.508 0.0445 0.011\" pos=\"0 0.1882 0.133\" quat=\"1 0 0 0\" rgba=\"0.35 0.22 0.1 1\" contype=\"8\" conaffinity=\"15\" condim=\"4\" priority=\"1\" friction=\"0.5 0.005 0.0001\"/>\n  <geom name=\"{name}_c5\" type=\"box\" size=\"0.508 0.0445 0.011\" pos=\"0 0.3765 0.133\" quat=\"1 0 0 0\" rgba=\"0.35 0.22 0.1 1\" contype=\"8\" conaffinity=\"15\" condim=\"4\" priority=\"1\" friction=\"0.5 0.005 0.0001\"/>\n  <geom name=\"{name}_c6\" type=\"box\" size=\"0.508 0.0445 0.011\" pos=\"0 0.5648 0.133\" quat=\"1 0 0 0\" rgba=\"0.35 0.22 0.1 1\" contype=\"8\" conaffinity=\"15\" condim=\"4\" priority=\"1\" friction=\"0.5 0.005 0.0001\"/>\n  <geom name=\"{name}_c7\" type=\"box\" size=\"0.019 0.6095 0.0445\" pos=\"-0.489 0 0.0665\" quat=\"1 0 0 0\" rgba=\"0.3 0.19 0.08 1\" contype=\"8\" conaffinity=\"15\" condim=\"4\" priority=\"1\" friction=\"0.5 0.005 0.0001\"/>\n  <geom name=\"{name}_c8\" type=\"box\" size=\"0.019 0.6095 0.0445\" pos=\"0 0 0.0665\" quat=\"1 0 0 0\" rgba=\"0.3 0.19 0.08 1\" contype=\"8\" conaffinity=\"15\" condim=\"4\" priority=\"1\" friction=\"0.5 0.005 0.0001\"/>\n  <geom name=\"{name}_c9\" type=\"box\" size=\"0.019 0.6095 0.0445\" pos=\"0.489 0 0.0665\" quat=\"1 0 0 0\" rgba=\"0.3 0.19 0.08 1\" contype=\"8\" conaffinity=\"15\" condim=\"4\" priority=\"1\" friction=\"0.5 0.005 0.0001\"/>\n  <geom name=\"{name}_c10\" type=\"box\" size=\"0.508 0.0445 0.011\" pos=\"0 -0.565 0.011\" quat=\"1 0 0 0\" rgba=\"0.35 0.22 0.1 1\" contype=\"8\" conaffinity=\"15\" condim=\"4\" priority=\"1\" friction=\"0.5 0.005 0.0001\"/>\n  <geom name=\"{name}_c11\" type=\"box\" size=\"0.508 0.0445 0.011\" pos=\"0 0 0.011\" quat=\"1 0 0 0\" rgba=\"0.35 0.22 0.1 1\" contype=\"8\" conaffinity=\"15\" condim=\"4\" priority=\"1\" friction=\"0.5 0.005 0.0001\"/>\n  <geom name=\"{name}_c12\" type=\"box\" size=\"0.508 0.0445 0.011\" pos=\"0 0.565 0.011\" quat=\"1 0 0 0\" rgba=\"0.35 0.22 0.1 1\" contype=\"8\" conaffinity=\"15\" condim=\"4\" priority=\"1\" friction=\"0.5 0.005 0.0001\"/>\n</body>"
+ },
+ "wrapped_pallet_load": {
+  "name": "Stretch-wrapped pallet load",
+  "category": "warehouse",
+  "mass": 300.0,
+  "movable": false,
+  "size": [
+   1.016,
+   1.219,
+   1.252
+  ],
+  "center": [
+   0.0,
+   0.0,
+   0.626
+  ],
+  "assets": [],
+  "body": "<body name=\"{name}\" pos=\"0 0 0\" quat=\"1 0 0 0\">\n  <geom name=\"{name}_v0\" type=\"box\" size=\"0.508 0.0445 0.011\" pos=\"0 -0.565 0.133\" quat=\"1 0 0 0\" rgba=\"0.35 0.22 0.1 1\" contype=\"0\" conaffinity=\"0\"/>\n  <geom name=\"{name}_v1\" type=\"box\" size=\"0.508 0.0445 0.011\" pos=\"0 -0.3767 0.133\" quat=\"1 0 0 0\" rgba=\"0.35 0.22 0.1 1\" contype=\"0\" conaffinity=\"0\"/>\n  <geom name=\"{name}_v2\" type=\"box\" size=\"0.508 0.0445 0.011\" pos=\"0 -0.1884 0.133\" quat=\"1 0 0 0\" rgba=\"0.35 0.22 0.1 1\" contype=\"0\" conaffinity=\"0\"/>\n  <geom name=\"{name}_v3\" type=\"box\" size=\"0.508 0.0445 0.011\" pos=\"0 -0.0001 0.133\" quat=\"1 0 0 0\" rgba=\"0.35 0.22 0.1 1\" contype=\"0\" conaffinity=\"0\"/>\n  <geom name=\"{name}_v4\" type=\"box\" size=\"0.508 0.0445 0.011\" pos=\"0 0.1882 0.133\" quat=\"1 0 0 0\" rgba=\"0.35 0.22 0.1 1\" contype=\"0\" conaffinity=\"0\"/>\n  <geom name=\"{name}_v5\" type=\"box\" size=\"0.508 0.0445 0.011\" pos=\"0 0.3765 0.133\" quat=\"1 0 0 0\" rgba=\"0.35 0.22 0.1 1\" contype=\"0\" conaffinity=\"0\"/>\n  <geom name=\"{name}_v6\" type=\"box\" size=\"0.508 0.0445 0.011\" pos=\"0 0.5648 0.133\" quat=\"1 0 0 0\" rgba=\"0.35 0.22 0.1 1\" contype=\"0\" conaffinity=\"0\"/>\n  <geom name=\"{name}_v7\" type=\"box\" size=\"0.019 0.6095 0.0445\" pos=\"-0.489 0 0.0665\" quat=\"1 0 0 0\" rgba=\"0.3 0.19 0.08 1\" contype=\"0\" conaffinity=\"0\"/>\n  <geom name=\"{name}_v8\" type=\"box\" size=\"0.019 0.6095 0.0445\" pos=\"0 0 0.0665\" quat=\"1 0 0 0\" rgba=\"0.3 0.19 0.08 1\" contype=\"0\" conaffinity=\"0\"/>\n  <geom name=\"{name}_v9\" type=\"box\" size=\"0.019 0.6095 0.0445\" pos=\"0.489 0 0.0665\" quat=\"1 0 0 0\" rgba=\"0.3 0.19 0.08 1\" contype=\"0\" conaffinity=\"0\"/>\n  <geom name=\"{name}_v10\" type=\"box\" size=\"0.47 0.57 0.004\" pos=\"0 0 1.248\" quat=\"1 0 0 0\" rgba=\"0.45 0.29 0.14 1\" contype=\"0\" conaffinity=\"0\"/>\n  <geom name=\"{name}_c0\" type=\"box\" size=\"0.508 0.6095 0.072\" pos=\"0 0 0.072\" quat=\"1 0 0 0\" group=\"3\" rgba=\"0.5 0.5 0.5 0.3\" contype=\"1\" conaffinity=\"1\" friction=\"0.7 0.005 0.0001\"/>\n  <geom name=\"{name}_c1\" type=\"box\" size=\"0.5 0.6 0.55\" pos=\"0 0 0.694\" quat=\"1 0 0 0\" rgba=\"0.62 0.66 0.7 1\" contype=\"1\" conaffinity=\"1\" friction=\"0.7 0.005 0.0001\"/>\n</body>"
+ },
+ "pallet_rack_frame": {
+  "name": "Pallet rack upright frame (42 in x 14 ft)",
+  "category": "warehouse",
+  "mass": 60.0,
+  "movable": false,
+  "size": [
+   0.15,
+   1.14,
+   4.27
+  ],
+  "center": [
+   0.0,
+   0.0,
+   2.135
+  ],
+  "assets": [],
+  "body": "<body name=\"{name}\" pos=\"0 0 0\" quat=\"1 0 0 0\">\n  <geom name=\"{name}_v0\" type=\"box\" size=\"0.075 0.075 0.005\" pos=\"0 -0.495 0.005\" quat=\"1 0 0 0\" rgba=\"0.02 0.08 0.35 1\" contype=\"0\" conaffinity=\"0\"/>\n  <geom name=\"{name}_v1\" type=\"box\" size=\"0.075 0.075 0.005\" pos=\"0 0.495 0.005\" quat=\"1 0 0 0\" rgba=\"0.02 0.08 0.35 1\" contype=\"0\" conaffinity=\"0\"/>\n  <geom name=\"{name}_v2\" type=\"box\" size=\"0.012 0.457 0.012\" pos=\"0 0 0.15\" quat=\"1 0 0 0\" rgba=\"0.02 0.08 0.35 1\" contype=\"0\" conaffinity=\"0\"/>\n  <geom name=\"{name}_v3\" type=\"box\" size=\"0.012 0.457 0.012\" pos=\"0 0 4.15\" quat=\"1 0 0 0\" rgba=\"0.02 0.08 0.35 1\" contype=\"0\" conaffinity=\"0\"/>\n  <geom name=\"{name}_v4\" type=\"box\" size=\"0.012 0.607 0.012\" pos=\"0 0 0.55\" quat=\"0.9361 0.3518 0 0\" rgba=\"0.02 0.08 0.35 1\" contype=\"0\" conaffinity=\"0\"/>\n  <geom name=\"{name}_v5\" type=\"box\" size=\"0.012 0.607 0.012\" pos=\"0 0 2.15\" quat=\"0.9361 0.3518 0 0\" rgba=\"0.02 0.08 0.35 1\" contype=\"0\" conaffinity=\"0\"/>\n  <geom name=\"{name}_v6\" type=\"box\" size=\"0.012 0.607 0.012\" pos=\"0 0 3.75\" quat=\"0.9361 0.3518 0 0\" rgba=\"0.02 0.08 0.35 1\" contype=\"0\" conaffinity=\"0\"/>\n  <geom name=\"{name}_v7\" type=\"box\" size=\"0.012 0.607 0.012\" pos=\"0 0 1.35\" quat=\"0.9361 -0.3518 0 0\" rgba=\"0.02 0.08 0.35 1\" contype=\"0\" conaffinity=\"0\"/>\n  <geom name=\"{name}_v8\" type=\"box\" size=\"0.012 0.607 0.012\" pos=\"0 0 2.95\" quat=\"0.9361 -0.3518 0 0\" rgba=\"0.02 0.08 0.35 1\" contype=\"0\" conaffinity=\"0\"/>\n  <geom name=\"{name}_c0\" type=\"box\" size=\"0.038 0.038 2.135\" pos=\"0 -0.495 2.135\" quat=\"1 0 0 0\" rgba=\"0.02 0.08 0.35 1\" contype=\"1\" conaffinity=\"1\" friction=\"0.7 0.005 0.0001\"/>\n  <geom name=\"{name}_c1\" type=\"box\" size=\"0.038 0.038 2.135\" pos=\"0 0.495 2.135\" quat=\"1 0 0 0\" rgba=\"0.02 0.08 0.35 1\" contype=\"1\" conaffinity=\"1\" friction=\"0.7 0.005 0.0001\"/>\n</body>"
+ },
+ "pallet_rack_beams": {
+  "name": "Pallet rack beam pair (96 in)",
+  "category": "warehouse",
+  "mass": 30.0,
+  "movable": false,
+  "size": [
+   2.44,
+   1.07,
+   0.11
+  ],
+  "center": [
+   0.0,
+   0.0,
+   0.055
+  ],
+  "assets": [],
+  "body": "<body name=\"{name}\" pos=\"0 0 0\" quat=\"1 0 0 0\">\n  <geom name=\"{name}_c0\" type=\"box\" size=\"1.22 0.025 0.055\" pos=\"0 -0.51 0.055\" quat=\"1 0 0 0\" rgba=\"0.9 0.2 0.01 1\" contype=\"1\" conaffinity=\"1\" friction=\"0.7 0.005 0.0001\"/>\n  <geom name=\"{name}_c1\" type=\"box\" size=\"1.22 0.025 0.055\" pos=\"0 0.51 0.055\" quat=\"1 0 0 0\" rgba=\"0.9 0.2 0.01 1\" contype=\"1\" conaffinity=\"1\" friction=\"0.7 0.005 0.0001\"/>\n</body>"
+ },
+ "safety_bollard": {
+  "name": "Safety bollard (4.5 in x 42 in)",
+  "category": "warehouse",
+  "mass": 40.0,
+  "movable": false,
+  "size": [
+   0.114,
+   0.114,
+   1.127
+  ],
+  "center": [
+   0.0,
+   0.0,
+   0.5635
+  ],
+  "assets": [],
+  "body": "<body name=\"{name}\" pos=\"0 0 0\" quat=\"1 0 0 0\">\n  <geom name=\"{name}_v0\" type=\"sphere\" size=\"0.057\" pos=\"0 0 1.07\" quat=\"1 0 0 0\" rgba=\"0.85 0.55 0 1\" contype=\"0\" conaffinity=\"0\"/>\n  <geom name=\"{name}_c0\" type=\"cylinder\" size=\"0.057 0.535\" pos=\"0 0 0.535\" quat=\"1 0 0 0\" rgba=\"0.85 0.55 0 1\" contype=\"1\" conaffinity=\"1\" friction=\"0.7 0.005 0.0001\"/>\n</body>"
+ },
+ "pallet_jack": {
+  "name": "Manual pallet jack",
+  "category": "warehouse",
+  "mass": 70.0,
+  "movable": true,
+  "size": [
+   0.6,
+   1.59,
+   1.21
+  ],
+  "center": [
+   0.0,
+   -0.355,
+   0.605
+  ],
+  "assets": [],
+  "body": "<body name=\"{name}\" pos=\"0 0 0\" quat=\"1 0 0 0\">\n  <freejoint name=\"{name}_free\"/>\n  <inertial pos=\"0 -0.485 0.1375\" mass=\"70\" diaginertia=\"10.73 2.51 12.42\"/>\n  <geom name=\"{name}_v0\" type=\"cylinder\" size=\"0.05 0.04\" pos=\"0 0.13 0.05\" quat=\"0.7071 0 0.7071 0\" rgba=\"0.02 0.02 0.02 1\" contype=\"0\" conaffinity=\"0\"/>\n  <geom name=\"{name}_v1\" type=\"box\" size=\"0.016 0.016 0.5\" pos=\"0 0.27 0.72\" quat=\"0.9877 -0.1564 0 0\" rgba=\"0.02 0.02 0.02 1\" contype=\"0\" conaffinity=\"0\"/>\n  <geom name=\"{name}_v2\" type=\"box\" size=\"0.12 0.02 0.02\" pos=\"0 0.42 1.19\" quat=\"1 0 0 0\" rgba=\"0.02 0.02 0.02 1\" contype=\"0\" conaffinity=\"0\"/>\n  <geom name=\"{name}_c0\" type=\"box\" size=\"0.08 0.575 0.035\" pos=\"0.21 -0.575 0.04\" quat=\"1 0 0 0\" rgba=\"0.5 0.02 0.01 1\" contype=\"8\" conaffinity=\"15\" condim=\"4\" priority=\"1\" friction=\"0.08 0.005 0.0001\"/>\n  <geom name=\"{name}_c1\" type=\"box\" size=\"0.08 0.575 0.035\" pos=\"-0.21 -0.575 0.04\" quat=\"1 0 0 0\" rgba=\"0.5 0.02 0.01 1\" contype=\"8\" conaffinity=\"15\" condim=\"4\" priority=\"1\" friction=\"0.08 0.005 0.0001\"/>\n  <geom name=\"{name}_c2\" type=\"box\" size=\"0.3 0.1 0.13\" pos=\"0 0.08 0.14\" quat=\"1 0 0 0\" rgba=\"0.5 0.02 0.01 1\" contype=\"8\" conaffinity=\"15\" condim=\"4\" priority=\"1\" friction=\"0.08 0.005 0.0001\"/>\n</body>"
+ },
+ "dock_door": {
+  "name": "Loading dock door (9 x 10 ft, roll-up)",
+  "category": "fixtures",
+  "mass": 200.0,
+  "movable": false,
+  "size": [
+   3.28,
+   1.8,
+   3.45
+  ],
+  "center": [
+   0.0,
+   -0.9,
+   1.725
+  ],
+  "assets": [],
+  "body": "<body name=\"{name}\" pos=\"0 0 0\" quat=\"1 0 0 0\">\n  <geom name=\"{name}_v0\" type=\"box\" size=\"1.37 0.015 1.525\" pos=\"0 -0.015 1.525\" quat=\"1 0 0 0\" rgba=\"0.5 0.52 0.55 1\" contype=\"0\" conaffinity=\"0\"/>\n  <geom name=\"{name}_v1\" type=\"box\" size=\"1.37 0.003 0.006\" pos=\"0 -0.031 0.2\" quat=\"1 0 0 0\" rgba=\"0.28 0.29 0.31 1\" contype=\"0\" conaffinity=\"0\"/>\n  <geom name=\"{name}_v2\" type=\"box\" size=\"1.37 0.003 0.006\" pos=\"0 -0.031 0.47\" quat=\"1 0 0 0\" rgba=\"0.28 0.29 0.31 1\" contype=\"0\" conaffinity=\"0\"/>\n  <geom name=\"{name}_v3\" type=\"box\" size=\"1.37 0.003 0.006\" pos=\"0 -0.031 0.74\" quat=\"1 0 0 0\" rgba=\"0.28 0.29 0.31 1\" contype=\"0\" conaffinity=\"0\"/>\n  <geom name=\"{name}_v4\" type=\"box\" size=\"1.37 0.003 0.006\" pos=\"0 -0.031 1.01\" quat=\"1 0 0 0\" rgba=\"0.28 0.29 0.31 1\" contype=\"0\" conaffinity=\"0\"/>\n  <geom name=\"{name}_v5\" type=\"box\" size=\"1.37 0.003 0.006\" pos=\"0 -0.031 1.28\" quat=\"1 0 0 0\" rgba=\"0.28 0.29 0.31 1\" contype=\"0\" conaffinity=\"0\"/>\n  <geom name=\"{name}_v6\" type=\"box\" size=\"1.37 0.003 0.006\" pos=\"0 -0.031 1.55\" quat=\"1 0 0 0\" rgba=\"0.28 0.29 0.31 1\" contype=\"0\" conaffinity=\"0\"/>\n  <geom name=\"{name}_v7\" type=\"box\" size=\"1.37 0.003 0.006\" pos=\"0 -0.031 1.82\" quat=\"1 0 0 0\" rgba=\"0.28 0.29 0.31 1\" contype=\"0\" conaffinity=\"0\"/>\n  <geom name=\"{name}_v8\" type=\"box\" size=\"1.37 0.003 0.006\" pos=\"0 -0.031 2.09\" quat=\"1 0 0 0\" rgba=\"0.28 0.29 0.31 1\" contype=\"0\" conaffinity=\"0\"/>\n  <geom name=\"{name}_v9\" type=\"box\" size=\"1.37 0.003 0.006\" pos=\"0 -0.031 2.36\" quat=\"1 0 0 0\" rgba=\"0.28 0.29 0.31 1\" contype=\"0\" conaffinity=\"0\"/>\n  <geom name=\"{name}_v10\" type=\"box\" size=\"1.37 0.003 0.006\" pos=\"0 -0.031 2.63\" quat=\"1 0 0 0\" rgba=\"0.28 0.29 0.31 1\" contype=\"0\" conaffinity=\"0\"/>\n  <geom name=\"{name}_v11\" type=\"box\" size=\"1.37 0.003 0.006\" pos=\"0 -0.031 2.9\" quat=\"1 0 0 0\" rgba=\"0.28 0.29 0.31 1\" contype=\"0\" conaffinity=\"0\"/>\n  <geom name=\"{name}_v12\" type=\"box\" size=\"0.045 0.05 1.6\" pos=\"1.43 -0.05 1.6\" quat=\"1 0 0 0\" rgba=\"0.3 0.31 0.33 1\" contype=\"0\" conaffinity=\"0\"/>\n  <geom name=\"{name}_v13\" type=\"box\" size=\"0.045 0.05 1.6\" pos=\"-1.43 -0.05 1.6\" quat=\"1 0 0 0\" rgba=\"0.3 0.31 0.33 1\" contype=\"0\" conaffinity=\"0\"/>\n  <geom name=\"{name}_v14\" type=\"box\" size=\"1.5 0.12 0.15\" pos=\"0 -0.12 3.3\" quat=\"1 0 0 0\" rgba=\"0.3 0.31 0.33 1\" contype=\"0\" conaffinity=\"0\"/>\n  <geom name=\"{name}_v15\" type=\"box\" size=\"0.08 0.004 1.5\" pos=\"1.56 -0.004 1.5\" quat=\"1 0 0 0\" rgba=\"0.85 0.55 0 1\" contype=\"0\" conaffinity=\"0\"/>\n  <geom name=\"{name}_v16\" type=\"box\" size=\"0.08 0.004 1.5\" pos=\"-1.56 -0.004 1.5\" quat=\"1 0 0 0\" rgba=\"0.85 0.55 0 1\" contype=\"0\" conaffinity=\"0\"/>\n  <geom name=\"{name}_v17\" type=\"box\" size=\"1 0.9 0.003\" pos=\"0 -0.9 0.003\" quat=\"1 0 0 0\" rgba=\"0.22 0.23 0.25 1\" contype=\"0\" conaffinity=\"0\"/>\n  <geom name=\"{name}_v18\" type=\"box\" size=\"1 0.04 0.0035\" pos=\"0 -1.76 0.0035\" quat=\"1 0 0 0\" rgba=\"0.85 0.55 0 1\" contype=\"0\" conaffinity=\"0\"/>\n</body>"
+ },
+ "refrigerator": {
+  "name": "Refrigerator (30 in, top freezer)",
+  "category": "kitchen",
+  "mass": 70.0,
+  "movable": false,
+  "size": [
+   0.76,
+   0.761,
+   1.7
+  ],
+  "center": [
+   0.0,
+   -0.0205,
+   0.85
+  ],
+  "assets": [],
+  "body": "<body name=\"{name}\" pos=\"0 0 0\" quat=\"1 0 0 0\">\n  <geom name=\"{name}_v0\" type=\"box\" size=\"0.354 0.001 0.84\" pos=\"0 0.334 0.85\" quat=\"1 0 0 0\" rgba=\"0.9 0.9 0.88 1\" contype=\"0\" conaffinity=\"0\"/>\n  <geom name=\"{name}_v1\" type=\"box\" size=\"0.38 0.004 0.045\" pos=\"0 -0.296 0.05\" quat=\"1 0 0 0\" rgba=\"0.1 0.1 0.11 1\" contype=\"0\" conaffinity=\"0\"/>\n  <geom name=\"{name}_c0\" type=\"box\" size=\"0.0125 0.33 0.85\" pos=\"-0.3675 0.03 0.85\" quat=\"1 0 0 0\" rgba=\"0.62 0.63 0.65 1\" contype=\"1\" conaffinity=\"1\" friction=\"0.6 0.005 0.0001\"/>\n  <geom name=\"{name}_c1\" type=\"box\" size=\"0.0125 0.33 0.85\" pos=\"0.3675 0.03 0.85\" quat=\"1 0 0 0\" rgba=\"0.62 0.63 0.65 1\" contype=\"1\" conaffinity=\"1\" friction=\"0.6 0.005 0.0001\"/>\n  <geom name=\"{name}_c2\" type=\"box\" size=\"0.355 0.0125 0.85\" pos=\"0 0.3475 0.85\" quat=\"1 0 0 0\" rgba=\"0.62 0.63 0.65 1\" contype=\"1\" conaffinity=\"1\" friction=\"0.6 0.005 0.0001\"/>\n  <geom name=\"{name}_c3\" type=\"box\" size=\"0.355 0.3175 0.0125\" pos=\"0 0.0175 1.6875\" quat=\"1 0 0 0\" rgba=\"0.62 0.63 0.65 1\" contype=\"1\" conaffinity=\"1\" friction=\"0.6 0.005 0.0001\"/>\n  <geom name=\"{name}_c4\" type=\"box\" size=\"0.355 0.3175 0.05\" pos=\"0 0.0175 0.05\" quat=\"1 0 0 0\" rgba=\"0.9 0.9 0.88 1\" contype=\"1\" conaffinity=\"1\" friction=\"0.6 0.005 0.0001\"/>\n  <geom name=\"{name}_c5\" type=\"box\" size=\"0.355 0.3175 0.025\" pos=\"0 0.0175 1.24\" quat=\"1 0 0 0\" rgba=\"0.9 0.9 0.88 1\" contype=\"1\" conaffinity=\"1\" friction=\"0.6 0.005 0.0001\"/>\n  <geom name=\"{name}_c6\" type=\"box\" size=\"0.35 0.29 0.005\" pos=\"0 0.04 0.55\" quat=\"1 0 0 0\" rgba=\"0.8 0.9 0.95 0.35\" contype=\"1\" conaffinity=\"1\" friction=\"0.6 0.005 0.0001\"/>\n  <geom name=\"{name}_c7\" type=\"box\" size=\"0.35 0.29 0.005\" pos=\"0 0.04 0.88\" quat=\"1 0 0 0\" rgba=\"0.8 0.9 0.95 0.35\" contype=\"1\" conaffinity=\"1\" friction=\"0.6 0.005 0.0001\"/>\n  <body name=\"{name}_door\" pos=\"0.38 -0.304 0\">\n    <joint name=\"{name}_door_joint\" type=\"hinge\" axis=\"0 0 1\" range=\"0 2.094\" limited=\"true\" damping=\"2\" frictionloss=\"0.5\" armature=\"0.02\" solreflimit=\"0.005 1\"/>\n    <inertial pos=\"-0.38 -0.0485 0.668\" mass=\"9\" diaginertia=\"0.9749 1.397 0.4357\"/>\n    <geom name=\"{name}_door_c0\" type=\"box\" size=\"0.378 0.025 0.568\" pos=\"-0.38 -0.025 0.668\" quat=\"1 0 0 0\" rgba=\"0.66 0.67 0.69 1\" contype=\"8\" conaffinity=\"15\" condim=\"4\" priority=\"1\" friction=\"0.6 0.005 0.0001\"/>\n    <geom name=\"{name}_door_c1\" type=\"box\" size=\"0.012 0.012 0.25\" pos=\"-0.7 -0.085 0.95\" quat=\"1 0 0 0\" rgba=\"0.3 0.3 0.32 1\" contype=\"8\" conaffinity=\"15\" condim=\"4\" priority=\"1\" friction=\"0.6 0.005 0.0001\"/>\n    <geom name=\"{name}_door_c2\" type=\"box\" size=\"0.01 0.0175 0.012\" pos=\"-0.7 -0.0675 1.17\" quat=\"1 0 0 0\" rgba=\"0.3 0.3 0.32 1\" contype=\"8\" conaffinity=\"15\" condim=\"4\" priority=\"1\" friction=\"0.6 0.005 0.0001\"/>\n    <geom name=\"{name}_door_c3\" type=\"box\" size=\"0.01 0.0175 0.012\" pos=\"-0.7 -0.0675 0.73\" quat=\"1 0 0 0\" rgba=\"0.3 0.3 0.32 1\" contype=\"8\" conaffinity=\"15\" condim=\"4\" priority=\"1\" friction=\"0.6 0.005 0.0001\"/>\n  </body>\n  <body name=\"{name}_freezer_door\" pos=\"0.38 -0.304 0\">\n    <joint name=\"{name}_freezer_door_joint\" type=\"hinge\" axis=\"0 0 1\" range=\"0 2.094\" limited=\"true\" damping=\"1.5\" frictionloss=\"0.4\" armature=\"0.02\" solreflimit=\"0.005 1\"/>\n    <inertial pos=\"-0.38 -0.0485 1.472\" mass=\"5\" diaginertia=\"0.09056 0.3248 0.2421\"/>\n    <geom name=\"{name}_freezer_door_c0\" type=\"box\" size=\"0.378 0.025 0.228\" pos=\"-0.38 -0.025 1.472\" quat=\"1 0 0 0\" rgba=\"0.66 0.67 0.69 1\" contype=\"8\" conaffinity=\"15\" condim=\"4\" priority=\"1\" friction=\"0.6 0.005 0.0001\"/>\n    <geom name=\"{name}_freezer_door_c1\" type=\"box\" size=\"0.012 0.012 0.08\" pos=\"-0.7 -0.085 1.34\" quat=\"1 0 0 0\" rgba=\"0.3 0.3 0.32 1\" contype=\"8\" conaffinity=\"15\" condim=\"4\" priority=\"1\" friction=\"0.6 0.005 0.0001\"/>\n    <geom name=\"{name}_freezer_door_c2\" type=\"box\" size=\"0.01 0.0175 0.012\" pos=\"-0.7 -0.0675 1.4\" quat=\"1 0 0 0\" rgba=\"0.3 0.3 0.32 1\" contype=\"8\" conaffinity=\"15\" condim=\"4\" priority=\"1\" friction=\"0.6 0.005 0.0001\"/>\n    <geom name=\"{name}_freezer_door_c3\" type=\"box\" size=\"0.01 0.0175 0.012\" pos=\"-0.7 -0.0675 1.28\" quat=\"1 0 0 0\" rgba=\"0.3 0.3 0.32 1\" contype=\"8\" conaffinity=\"15\" condim=\"4\" priority=\"1\" friction=\"0.6 0.005 0.0001\"/>\n  </body>\n</body>"
+ },
+ "kitchen_base_cabinet": {
+  "name": "Base cabinet (24 in, drawer + door)",
+  "category": "kitchen",
+  "mass": 40.0,
+  "movable": false,
+  "size": [
+   0.64,
+   0.654,
+   0.918
+  ],
+  "center": [
+   0.0,
+   -0.007,
+   0.459
+  ],
+  "assets": [],
+  "body": "<body name=\"{name}\" pos=\"0 0 0\" quat=\"1 0 0 0\">\n  <geom name=\"{name}_c0\" type=\"box\" size=\"0.2865 0.25 0.05\" pos=\"0 0.05 0.05\" quat=\"1 0 0 0\" rgba=\"0.2 0.2 0.2 1\" contype=\"1\" conaffinity=\"1\" friction=\"0.6 0.005 0.0001\"/>\n  <geom name=\"{name}_c1\" type=\"box\" size=\"0.0095 0.29 0.44\" pos=\"-0.2955 0.01 0.44\" quat=\"1 0 0 0\" rgba=\"0.85 0.84 0.8 1\" contype=\"1\" conaffinity=\"1\" friction=\"0.6 0.005 0.0001\"/>\n  <geom name=\"{name}_c2\" type=\"box\" size=\"0.0095 0.29 0.44\" pos=\"0.2955 0.01 0.44\" quat=\"1 0 0 0\" rgba=\"0.85 0.84 0.8 1\" contype=\"1\" conaffinity=\"1\" friction=\"0.6 0.005 0.0001\"/>\n  <geom name=\"{name}_c3\" type=\"box\" size=\"0.2865 0.0095 0.39\" pos=\"0 0.2905 0.49\" quat=\"1 0 0 0\" rgba=\"0.85 0.84 0.8 1\" contype=\"1\" conaffinity=\"1\" friction=\"0.6 0.005 0.0001\"/>\n  <geom name=\"{name}_c4\" type=\"box\" size=\"0.2865 0.28 0.0095\" pos=\"0 0 0.1095\" quat=\"1 0 0 0\" rgba=\"0.85 0.84 0.8 1\" contype=\"1\" conaffinity=\"1\" friction=\"0.6 0.005 0.0001\"/>\n  <geom name=\"{name}_c5\" type=\"box\" size=\"0.2865 0.28 0.0095\" pos=\"0 0 0.7\" quat=\"1 0 0 0\" rgba=\"0.85 0.84 0.8 1\" contype=\"1\" conaffinity=\"1\" friction=\"0.6 0.005 0.0001\"/>\n  <geom name=\"{name}_c6\" type=\"box\" size=\"0.2865 0.26 0.0095\" pos=\"0 0.02 0.4\" quat=\"1 0 0 0\" rgba=\"0.85 0.84 0.8 1\" contype=\"1\" conaffinity=\"1\" friction=\"0.6 0.005 0.0001\"/>\n  <geom name=\"{name}_c7\" type=\"box\" size=\"0.32 0.32 0.019\" pos=\"0 0 0.899\" quat=\"1 0 0 0\" rgba=\"0.55 0.52 0.48 1\" contype=\"1\" conaffinity=\"1\" friction=\"0.6 0.005 0.0001\"/>\n  <body name=\"{name}_door\" pos=\"-0.305 -0.283 0\">\n    <joint name=\"{name}_door_joint\" type=\"hinge\" axis=\"0 0 -1\" range=\"0 1.92\" limited=\"true\" damping=\"0.5\" frictionloss=\"0.15\" armature=\"0.02\" solreflimit=\"0.005 1\"/>\n    <inertial pos=\"0.305 -0.0255 0.4\" mass=\"3\" diaginertia=\"0.08768 0.1788 0.09246\"/>\n    <geom name=\"{name}_door_c0\" type=\"box\" size=\"0.303 0.0095 0.295\" pos=\"0.305 -0.0095 0.4\" quat=\"1 0 0 0\" rgba=\"0.88 0.87 0.83 1\" contype=\"8\" conaffinity=\"15\" condim=\"4\" priority=\"1\" friction=\"0.6 0.005 0.0001\"/>\n    <geom name=\"{name}_door_c1\" type=\"box\" size=\"0.006 0.006 0.06\" pos=\"0.56 -0.045 0.6\" quat=\"1 0 0 0\" rgba=\"0.25 0.25 0.27 1\" contype=\"8\" conaffinity=\"15\" condim=\"4\" priority=\"1\" friction=\"0.6 0.005 0.0001\"/>\n    <geom name=\"{name}_door_c2\" type=\"box\" size=\"0.005 0.0125 0.005\" pos=\"0.56 -0.0315 0.55\" quat=\"1 0 0 0\" rgba=\"0.25 0.25 0.27 1\" contype=\"8\" conaffinity=\"15\" condim=\"4\" priority=\"1\" friction=\"0.6 0.005 0.0001\"/>\n    <geom name=\"{name}_door_c3\" type=\"box\" size=\"0.005 0.0125 0.005\" pos=\"0.56 -0.0315 0.65\" quat=\"1 0 0 0\" rgba=\"0.25 0.25 0.27 1\" contype=\"8\" conaffinity=\"15\" condim=\"4\" priority=\"1\" friction=\"0.6 0.005 0.0001\"/>\n  </body>\n  <body name=\"{name}_drawer\" pos=\"0 -0.283 0\">\n    <joint name=\"{name}_drawer_joint\" type=\"slide\" axis=\"0 -1 0\" range=\"0 0.42\" limited=\"true\" damping=\"4\" frictionloss=\"1\" armature=\"0.02\" solreflimit=\"0.005 1\"/>\n    <inertial pos=\"0 0.227 0.79\" mass=\"2.5\" diaginertia=\"0.07042 0.08253 0.1409\"/>\n    <geom name=\"{name}_drawer_c0\" type=\"box\" size=\"0.303 0.0095 0.085\" pos=\"0 -0.0095 0.79\" quat=\"1 0 0 0\" rgba=\"0.88 0.87 0.83 1\" contype=\"8\" conaffinity=\"15\" condim=\"4\" priority=\"1\" friction=\"0.6 0.005 0.0001\"/>\n    <geom name=\"{name}_drawer_c1\" type=\"box\" size=\"0.276 0.25 0.005\" pos=\"0 0.255 0.722\" quat=\"1 0 0 0\" rgba=\"0.78 0.72 0.62 1\" contype=\"8\" conaffinity=\"15\" condim=\"4\" priority=\"1\" friction=\"0.6 0.005 0.0001\"/>\n    <geom name=\"{name}_drawer_c2\" type=\"box\" size=\"0.005 0.25 0.05\" pos=\"-0.271 0.255 0.772\" quat=\"1 0 0 0\" rgba=\"0.78 0.72 0.62 1\" contype=\"8\" conaffinity=\"15\" condim=\"4\" priority=\"1\" friction=\"0.6 0.005 0.0001\"/>\n    <geom name=\"{name}_drawer_c3\" type=\"box\" size=\"0.005 0.25 0.05\" pos=\"0.271 0.255 0.772\" quat=\"1 0 0 0\" rgba=\"0.78 0.72 0.62 1\" contype=\"8\" conaffinity=\"15\" condim=\"4\" priority=\"1\" friction=\"0.6 0.005 0.0001\"/>\n    <geom name=\"{name}_drawer_c4\" type=\"box\" size=\"0.276 0.005 0.05\" pos=\"0 0.5 0.772\" quat=\"1 0 0 0\" rgba=\"0.78 0.72 0.62 1\" contype=\"8\" conaffinity=\"15\" condim=\"4\" priority=\"1\" friction=\"0.6 0.005 0.0001\"/>\n    <geom name=\"{name}_drawer_c5\" type=\"box\" size=\"0.07 0.006 0.006\" pos=\"0 -0.045 0.79\" quat=\"1 0 0 0\" rgba=\"0.25 0.25 0.27 1\" contype=\"8\" conaffinity=\"15\" condim=\"4\" priority=\"1\" friction=\"0.6 0.005 0.0001\"/>\n    <geom name=\"{name}_drawer_c6\" type=\"box\" size=\"0.005 0.0125 0.005\" pos=\"-0.06 -0.0315 0.79\" quat=\"1 0 0 0\" rgba=\"0.25 0.25 0.27 1\" contype=\"8\" conaffinity=\"15\" condim=\"4\" priority=\"1\" friction=\"0.6 0.005 0.0001\"/>\n    <geom name=\"{name}_drawer_c7\" type=\"box\" size=\"0.005 0.0125 0.005\" pos=\"0.06 -0.0315 0.79\" quat=\"1 0 0 0\" rgba=\"0.25 0.25 0.27 1\" contype=\"8\" conaffinity=\"15\" condim=\"4\" priority=\"1\" friction=\"0.6 0.005 0.0001\"/>\n  </body>\n</body>"
+ },
+ "file_cabinet": {
+  "name": "Filing cabinet (3-drawer)",
+  "category": "office",
+  "mass": 35.0,
+  "movable": false,
+  "size": [
+   0.38,
+   0.668,
+   1.02
+  ],
+  "center": [
+   0.0,
+   -0.014,
+   0.51
+  ],
+  "assets": [],
+  "body": "<body name=\"{name}\" pos=\"0 0 0\" quat=\"1 0 0 0\">\n  <geom name=\"{name}_c0\" type=\"box\" size=\"0.006 0.31 0.51\" pos=\"-0.184 0.01 0.51\" quat=\"1 0 0 0\" rgba=\"0.42 0.43 0.45 1\" contype=\"1\" conaffinity=\"1\" friction=\"0.5 0.005 0.0001\"/>\n  <geom name=\"{name}_c1\" type=\"box\" size=\"0.006 0.31 0.51\" pos=\"0.184 0.01 0.51\" quat=\"1 0 0 0\" rgba=\"0.42 0.43 0.45 1\" contype=\"1\" conaffinity=\"1\" friction=\"0.5 0.005 0.0001\"/>\n  <geom name=\"{name}_c2\" type=\"box\" size=\"0.178 0.006 0.51\" pos=\"0 0.314 0.51\" quat=\"1 0 0 0\" rgba=\"0.42 0.43 0.45 1\" contype=\"1\" conaffinity=\"1\" friction=\"0.5 0.005 0.0001\"/>\n  <geom name=\"{name}_c3\" type=\"box\" size=\"0.19 0.31 0.006\" pos=\"0 0.01 1.014\" quat=\"1 0 0 0\" rgba=\"0.42 0.43 0.45 1\" contype=\"1\" conaffinity=\"1\" friction=\"0.5 0.005 0.0001\"/>\n  <geom name=\"{name}_c4\" type=\"box\" size=\"0.178 0.31 0.03\" pos=\"0 0.01 0.03\" quat=\"1 0 0 0\" rgba=\"0.42 0.43 0.45 1\" contype=\"1\" conaffinity=\"1\" friction=\"0.5 0.005 0.0001\"/>\n  <geom name=\"{name}_c5\" type=\"box\" size=\"0.178 0.31 0.006\" pos=\"0 0.01 0.38\" quat=\"1 0 0 0\" rgba=\"0.42 0.43 0.45 1\" contype=\"1\" conaffinity=\"1\" friction=\"0.5 0.005 0.0001\"/>\n  <geom name=\"{name}_c6\" type=\"box\" size=\"0.178 0.31 0.006\" pos=\"0 0.01 0.7\" quat=\"1 0 0 0\" rgba=\"0.42 0.43 0.45 1\" contype=\"1\" conaffinity=\"1\" friction=\"0.5 0.005 0.0001\"/>\n  <body name=\"{name}_drawer_1\" pos=\"0 -0.302 0\">\n    <joint name=\"{name}_drawer_1_joint\" type=\"slide\" axis=\"0 -1 0\" range=\"0 0.5\" limited=\"true\" damping=\"4\" frictionloss=\"1\" armature=\"0.02\" solreflimit=\"0.005 1\"/>\n    <inertial pos=\"0 0.2495 0.217\" mass=\"3\" diaginertia=\"0.1129 0.06094 0.1227\"/>\n    <geom name=\"{name}_drawer_1_c0\" type=\"box\" size=\"0.188 0.009 0.16\" pos=\"0 -0.009 0.217\" quat=\"1 0 0 0\" rgba=\"0.45 0.46 0.48 1\" contype=\"8\" conaffinity=\"15\" condim=\"4\" priority=\"1\" friction=\"0.5 0.005 0.0001\"/>\n    <geom name=\"{name}_drawer_1_c1\" type=\"box\" size=\"0.17 0.27 0.004\" pos=\"0 0.275 0.072\" quat=\"1 0 0 0\" rgba=\"0.36 0.37 0.39 1\" contype=\"8\" conaffinity=\"15\" condim=\"4\" priority=\"1\" friction=\"0.5 0.005 0.0001\"/>\n    <geom name=\"{name}_drawer_1_c2\" type=\"box\" size=\"0.004 0.27 0.1\" pos=\"-0.166 0.275 0.176\" quat=\"1 0 0 0\" rgba=\"0.36 0.37 0.39 1\" contype=\"8\" conaffinity=\"15\" condim=\"4\" priority=\"1\" friction=\"0.5 0.005 0.0001\"/>\n    <geom name=\"{name}_drawer_1_c3\" type=\"box\" size=\"0.004 0.27 0.1\" pos=\"0.166 0.275 0.176\" quat=\"1 0 0 0\" rgba=\"0.36 0.37 0.39 1\" contype=\"8\" conaffinity=\"15\" condim=\"4\" priority=\"1\" friction=\"0.5 0.005 0.0001\"/>\n    <geom name=\"{name}_drawer_1_c4\" type=\"box\" size=\"0.17 0.004 0.1\" pos=\"0 0.541 0.176\" quat=\"1 0 0 0\" rgba=\"0.36 0.37 0.39 1\" contype=\"8\" conaffinity=\"15\" condim=\"4\" priority=\"1\" friction=\"0.5 0.005 0.0001\"/>\n    <geom name=\"{name}_drawer_1_c5\" type=\"box\" size=\"0.06 0.006 0.006\" pos=\"0 -0.04 0.3\" quat=\"1 0 0 0\" rgba=\"0.7 0.7 0.72 1\" contype=\"8\" conaffinity=\"15\" condim=\"4\" priority=\"1\" friction=\"0.5 0.005 0.0001\"/>\n    <geom name=\"{name}_drawer_1_c6\" type=\"box\" size=\"0.005 0.011 0.005\" pos=\"-0.05 -0.0285 0.3\" quat=\"1 0 0 0\" rgba=\"0.7 0.7 0.72 1\" contype=\"8\" conaffinity=\"15\" condim=\"4\" priority=\"1\" friction=\"0.5 0.005 0.0001\"/>\n    <geom name=\"{name}_drawer_1_c7\" type=\"box\" size=\"0.005 0.011 0.005\" pos=\"0.05 -0.0285 0.3\" quat=\"1 0 0 0\" rgba=\"0.7 0.7 0.72 1\" contype=\"8\" conaffinity=\"15\" condim=\"4\" priority=\"1\" friction=\"0.5 0.005 0.0001\"/>\n  </body>\n  <body name=\"{name}_drawer_2\" pos=\"0 -0.302 0\">\n    <joint name=\"{name}_drawer_2_joint\" type=\"slide\" axis=\"0 -1 0\" range=\"0 0.5\" limited=\"true\" damping=\"4\" frictionloss=\"1\" armature=\"0.02\" solreflimit=\"0.005 1\"/>\n    <inertial pos=\"0 0.2495 0.54\" mass=\"3\" diaginertia=\"0.112 0.05999 0.1227\"/>\n    <geom name=\"{name}_drawer_2_c0\" type=\"box\" size=\"0.188 0.009 0.157\" pos=\"0 -0.009 0.54\" quat=\"1 0 0 0\" rgba=\"0.45 0.46 0.48 1\" contype=\"8\" conaffinity=\"15\" condim=\"4\" priority=\"1\" friction=\"0.5 0.005 0.0001\"/>\n    <geom name=\"{name}_drawer_2_c1\" type=\"box\" size=\"0.17 0.27 0.004\" pos=\"0 0.275 0.398\" quat=\"1 0 0 0\" rgba=\"0.36 0.37 0.39 1\" contype=\"8\" conaffinity=\"15\" condim=\"4\" priority=\"1\" friction=\"0.5 0.005 0.0001\"/>\n    <geom name=\"{name}_drawer_2_c2\" type=\"box\" size=\"0.004 0.27 0.1\" pos=\"-0.166 0.275 0.502\" quat=\"1 0 0 0\" rgba=\"0.36 0.37 0.39 1\" contype=\"8\" conaffinity=\"15\" condim=\"4\" priority=\"1\" friction=\"0.5 0.005 0.0001\"/>\n    <geom name=\"{name}_drawer_2_c3\" type=\"box\" size=\"0.004 0.27 0.1\" pos=\"0.166 0.275 0.502\" quat=\"1 0 0 0\" rgba=\"0.36 0.37 0.39 1\" contype=\"8\" conaffinity=\"15\" condim=\"4\" priority=\"1\" friction=\"0.5 0.005 0.0001\"/>\n    <geom name=\"{name}_drawer_2_c4\" type=\"box\" size=\"0.17 0.004 0.1\" pos=\"0 0.541 0.502\" quat=\"1 0 0 0\" rgba=\"0.36 0.37 0.39 1\" contype=\"8\" conaffinity=\"15\" condim=\"4\" priority=\"1\" friction=\"0.5 0.005 0.0001\"/>\n    <geom name=\"{name}_drawer_2_c5\" type=\"box\" size=\"0.06 0.006 0.006\" pos=\"0 -0.04 0.62\" quat=\"1 0 0 0\" rgba=\"0.7 0.7 0.72 1\" contype=\"8\" conaffinity=\"15\" condim=\"4\" priority=\"1\" friction=\"0.5 0.005 0.0001\"/>\n    <geom name=\"{name}_drawer_2_c6\" type=\"box\" size=\"0.005 0.011 0.005\" pos=\"-0.05 -0.0285 0.62\" quat=\"1 0 0 0\" rgba=\"0.7 0.7 0.72 1\" contype=\"8\" conaffinity=\"15\" condim=\"4\" priority=\"1\" friction=\"0.5 0.005 0.0001\"/>\n    <geom name=\"{name}_drawer_2_c7\" type=\"box\" size=\"0.005 0.011 0.005\" pos=\"0.05 -0.0285 0.62\" quat=\"1 0 0 0\" rgba=\"0.7 0.7 0.72 1\" contype=\"8\" conaffinity=\"15\" condim=\"4\" priority=\"1\" friction=\"0.5 0.005 0.0001\"/>\n  </body>\n  <body name=\"{name}_drawer_3\" pos=\"0 -0.302 0\">\n    <joint name=\"{name}_drawer_3_joint\" type=\"slide\" axis=\"0 -1 0\" range=\"0 0.5\" limited=\"true\" damping=\"4\" frictionloss=\"1\" armature=\"0.02\" solreflimit=\"0.005 1\"/>\n    <inertial pos=\"0 0.2495 0.857\" mass=\"3\" diaginertia=\"0.111 0.05906 0.1227\"/>\n    <geom name=\"{name}_drawer_3_c0\" type=\"box\" size=\"0.188 0.009 0.154\" pos=\"0 -0.009 0.857\" quat=\"1 0 0 0\" rgba=\"0.45 0.46 0.48 1\" contype=\"8\" conaffinity=\"15\" condim=\"4\" priority=\"1\" friction=\"0.5 0.005 0.0001\"/>\n    <geom name=\"{name}_drawer_3_c1\" type=\"box\" size=\"0.17 0.27 0.004\" pos=\"0 0.275 0.718\" quat=\"1 0 0 0\" rgba=\"0.36 0.37 0.39 1\" contype=\"8\" conaffinity=\"15\" condim=\"4\" priority=\"1\" friction=\"0.5 0.005 0.0001\"/>\n    <geom name=\"{name}_drawer_3_c2\" type=\"box\" size=\"0.004 0.27 0.1\" pos=\"-0.166 0.275 0.822\" quat=\"1 0 0 0\" rgba=\"0.36 0.37 0.39 1\" contype=\"8\" conaffinity=\"15\" condim=\"4\" priority=\"1\" friction=\"0.5 0.005 0.0001\"/>\n    <geom name=\"{name}_drawer_3_c3\" type=\"box\" size=\"0.004 0.27 0.1\" pos=\"0.166 0.275 0.822\" quat=\"1 0 0 0\" rgba=\"0.36 0.37 0.39 1\" contype=\"8\" conaffinity=\"15\" condim=\"4\" priority=\"1\" friction=\"0.5 0.005 0.0001\"/>\n    <geom name=\"{name}_drawer_3_c4\" type=\"box\" size=\"0.17 0.004 0.1\" pos=\"0 0.541 0.822\" quat=\"1 0 0 0\" rgba=\"0.36 0.37 0.39 1\" contype=\"8\" conaffinity=\"15\" condim=\"4\" priority=\"1\" friction=\"0.5 0.005 0.0001\"/>\n    <geom name=\"{name}_drawer_3_c5\" type=\"box\" size=\"0.06 0.006 0.006\" pos=\"0 -0.04 0.93\" quat=\"1 0 0 0\" rgba=\"0.7 0.7 0.72 1\" contype=\"8\" conaffinity=\"15\" condim=\"4\" priority=\"1\" friction=\"0.5 0.005 0.0001\"/>\n    <geom name=\"{name}_drawer_3_c6\" type=\"box\" size=\"0.005 0.011 0.005\" pos=\"-0.05 -0.0285 0.93\" quat=\"1 0 0 0\" rgba=\"0.7 0.7 0.72 1\" contype=\"8\" conaffinity=\"15\" condim=\"4\" priority=\"1\" friction=\"0.5 0.005 0.0001\"/>\n    <geom name=\"{name}_drawer_3_c7\" type=\"box\" size=\"0.005 0.011 0.005\" pos=\"0.05 -0.0285 0.93\" quat=\"1 0 0 0\" rgba=\"0.7 0.7 0.72 1\" contype=\"8\" conaffinity=\"15\" condim=\"4\" priority=\"1\" friction=\"0.5 0.005 0.0001\"/>\n  </body>\n</body>"
+ },
+ "cardboard_box_ph": {
+  "name": "Cardboard box",
+  "category": "warehouse",
+  "mass": 3.0,
+  "movable": true,
+  "size": [
+   0.387,
+   0.5159,
+   0.3418
+  ],
+  "center": [
+   0.0,
+   0.0,
+   0.1709
+  ],
+  "assets": [
+   "  <mesh name=\"prop_cardboard_box_ph_cardboard_box_01_0\" file=\"props/cardboard_box_ph/prop_cardboard_box_ph_cardboard_box_01_0.stl\"/>"
+  ],
+  "body": "<body name=\"{name}\" pos=\"0 0 0\" quat=\"1 0 0 0\">\n  <freejoint name=\"{name}_free\"/>\n  <inertial pos=\"0 0 0.1709\" mass=\"3\" diaginertia=\"0.09574 0.06665 0.104\"/>\n  <geom name=\"{name}_v0\" type=\"mesh\" mesh=\"prop_cardboard_box_ph_cardboard_box_01_0\" rgba=\"0.3447 0.2584 0.1296 1\" contype=\"0\" conaffinity=\"0\"/>\n  <geom name=\"{name}_c0\" type=\"box\" size=\"0.1935 0.2579 0.1709\" pos=\"0 0 0.1709\" quat=\"1 0 0 0\" group=\"3\" rgba=\"0.5 0.5 0.5 0.3\" contype=\"8\" conaffinity=\"15\" condim=\"4\" priority=\"1\" friction=\"0.6 0.005 0.0001\"/>\n</body>"
+ },
+ "plastic_crate": {
+  "name": "Plastic crate",
+  "category": "warehouse",
+  "mass": 1.5,
+  "movable": true,
+  "size": [
+   0.5055,
+   0.4055,
+   0.2541
+  ],
+  "center": [
+   0.0,
+   0.0,
+   0.127
+  ],
+  "assets": [
+   "  <mesh name=\"prop_plastic_crate_plastic_crate_02_0\" file=\"props/plastic_crate/prop_plastic_crate_plastic_crate_02_0.stl\"/>"
+  ],
+  "body": "<body name=\"{name}\" pos=\"0 0 0\" quat=\"1 0 0 0\">\n  <freejoint name=\"{name}_free\"/>\n  <inertial pos=\"0 0 0.127\" mass=\"1.5\" diaginertia=\"0.02862 0.04001 0.0525\"/>\n  <geom name=\"{name}_v0\" type=\"mesh\" mesh=\"prop_plastic_crate_plastic_crate_02_0\" rgba=\"0.2964 0.0426 0 1\" contype=\"0\" conaffinity=\"0\"/>\n  <geom name=\"{name}_c0\" type=\"box\" size=\"0.2528 0.2028 0.004\" pos=\"0 0 0.004\" quat=\"1 0 0 0\" group=\"3\" rgba=\"0.5 0.5 0.5 0.3\" contype=\"8\" conaffinity=\"15\" condim=\"4\" priority=\"1\" friction=\"0.5 0.005 0.0001\"/>\n  <geom name=\"{name}_c1\" type=\"box\" size=\"0.2528 0.004 0.127\" pos=\"0 -0.1988 0.127\" quat=\"1 0 0 0\" group=\"3\" rgba=\"0.5 0.5 0.5 0.3\" contype=\"8\" conaffinity=\"15\" condim=\"4\" priority=\"1\" friction=\"0.5 0.005 0.0001\"/>\n  <geom name=\"{name}_c2\" type=\"box\" size=\"0.2528 0.004 0.127\" pos=\"0 0.1988 0.127\" quat=\"1 0 0 0\" group=\"3\" rgba=\"0.5 0.5 0.5 0.3\" contype=\"8\" conaffinity=\"15\" condim=\"4\" priority=\"1\" friction=\"0.5 0.005 0.0001\"/>\n  <geom name=\"{name}_c3\" type=\"box\" size=\"0.004 0.2028 0.127\" pos=\"-0.2488 0 0.127\" quat=\"1 0 0 0\" group=\"3\" rgba=\"0.5 0.5 0.5 0.3\" contype=\"8\" conaffinity=\"15\" condim=\"4\" priority=\"1\" friction=\"0.5 0.005 0.0001\"/>\n  <geom name=\"{name}_c4\" type=\"box\" size=\"0.004 0.2028 0.127\" pos=\"0.2488 0 0.127\" quat=\"1 0 0 0\" group=\"3\" rgba=\"0.5 0.5 0.5 0.3\" contype=\"8\" conaffinity=\"15\" condim=\"4\" priority=\"1\" friction=\"0.5 0.005 0.0001\"/>\n</body>"
+ }
+}
