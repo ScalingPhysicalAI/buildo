@@ -1,0 +1,4 @@
+<mujoco model="buildo_office">
+  <include file="humanoid.xml"/>
+  <include file="environments/office/scene.xml"/>
+</mujoco>

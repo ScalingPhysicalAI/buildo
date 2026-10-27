@@ -1,0 +1,4 @@
+<mujoco model="buildo_kitchen">
+  <include file="humanoid.xml"/>
+  <include file="environments/kitchen/scene.xml"/>
+</mujoco>
