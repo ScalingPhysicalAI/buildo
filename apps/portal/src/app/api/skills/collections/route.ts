@@ -69,6 +69,7 @@ export async function POST(request: Request) {
       status: "UPLOADED",
       fileName: parsed.data.fileName,
       durationSec: parsed.data.durationSec,
+      sizeBytes: parsed.data.sizeBytes,
     },
     include: { skill: true },
   });

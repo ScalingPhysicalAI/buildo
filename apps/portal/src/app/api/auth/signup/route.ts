@@ -20,15 +20,26 @@ export async function POST(request: Request) {
     );
   }
 
-  const { name, email, password, role } = parsed.data;
+  const { name, email, password, role, referralCode } = parsed.data;
   const passwordHash = await hashPassword(password);
   const emailVerifyToken = randomBytes(32).toString("hex");
   const emailVerifyExpiry = new Date(Date.now() + 24 * 60 * 60 * 1000); // 24 h
 
+  // An unknown/typo'd code is silently ignored rather than blocking signup --
+  // referral is a bonus, not a requirement.
+  let referredById: string | undefined;
+  if (referralCode) {
+    const referrer = await prisma.user.findUnique({
+      where: { referralCode },
+      select: { id: true },
+    });
+    referredById = referrer?.id;
+  }
+
   let user;
   try {
     user = await prisma.user.create({
-      data: { name, email, passwordHash, role, emailVerifyToken, emailVerifyExpiry },
+      data: { name, email, passwordHash, role, emailVerifyToken, emailVerifyExpiry, referredById },
     });
   } catch (err) {
     if (err instanceof Prisma.PrismaClientKnownRequestError && err.code === "P2002") {

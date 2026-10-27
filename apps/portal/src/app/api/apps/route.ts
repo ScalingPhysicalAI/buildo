@@ -16,14 +16,27 @@ export async function GET(request: Request) {
     where: { userId },
     include: {
       skills: { include: { skillCollection: { include: { skill: true } } } },
-      _count: { select: { installs: true } },
+      _count: {
+        select: {
+          installs: true,
+          // Live, not cumulative -- a lapsed robot-owner subscription drops
+          // out of this count the moment it expires (resolve-on-read, same
+          // as app testing windows elsewhere in this file). This is what
+          // creators see as "Subscribed" on their own app's detail page.
+          subscriptions: { where: { subscribedUntil: { gt: new Date() } } },
+        },
+      },
     },
     orderBy: { createdAt: "desc" },
   });
   const resolved = await resolveAppStatuses(apps);
 
   return NextResponse.json({
-    apps: resolved.map(({ _count, ...app }) => ({ ...app, installCount: _count.installs })),
+    apps: resolved.map(({ _count, ...app }) => ({
+      ...app,
+      installCount: _count.installs,
+      subscriberCount: _count.subscriptions,
+    })),
   });
 }
 

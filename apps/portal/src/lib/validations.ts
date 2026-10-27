@@ -8,6 +8,10 @@ export const signupSchema = z.object({
     .min(8, "Password must be at least 8 characters")
     .max(200),
   role: z.enum(["DEVELOPER", "RESEARCHER", "OWNER"]),
+  // Someone else's referral code, entered at signup -- optional, not
+  // validated against the DB here (that lookup needs an async query, done
+  // in the signup route itself; an unknown code is just silently ignored).
+  referralCode: z.string().trim().max(32).optional(),
 });
 
 export type SignupInput = z.infer<typeof signupSchema>;
@@ -46,6 +50,7 @@ export const skillCollectionCreateSchema = z.object({
   skillSlug: z.string().min(1),
   fileName: z.string().min(1).max(300).optional(),
   durationSec: z.number().int().positive().max(60 * 60).optional(),
+  sizeBytes: z.number().int().positive().max(2 * 1024 * 1024 * 1024).optional(),
 });
 
 export const customSkillCreateSchema = z.object({
@@ -66,6 +71,14 @@ export const appListingCreateSchema = z.object({
 // bounds a single top-up request, not lifetime balance.
 export const walletTopupSchema = z.object({
   amountUsd: z.number().int().positive().max(5000),
+});
+
+export const rentPlanSchema = z.object({
+  termMonths: z.union([z.literal(3), z.literal(6), z.literal(12)]),
+});
+
+export const skillSubscribeSchema = z.object({
+  months: z.number().int().min(1).max(12).default(1),
 });
 
 export const gadgetOrderSchema = z.object({

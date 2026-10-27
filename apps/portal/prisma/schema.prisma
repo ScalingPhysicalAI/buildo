@@ -46,7 +46,31 @@ model User {
   // ever changes via an owner-app top-up.
   ownerWalletBalance Int @default(0)
 
+  // KYC: a photo of any government ID, required before ordering the Buildo
+  // Development Kit (financed against the creator's own future earnings --
+  // see MIN_WALLET_BALANCE in the gadget order route -- so identity
+  // verification matters here). Stored in Vercel Blob; this is just the URL.
+  kycIdImageUrl  String?
+  kycSubmittedAt DateTime?
+
   referralCode String? @unique
+
+  // Set at signup if the new owner entered someone else's referral code --
+  // never changes after that. Drives the rent discount below: referred
+  // owners get ROBOT_RENT_DISCOUNT_USD/month off (see /api/robot-rental).
+  referredById String?
+  referredBy   User?   @relation("Referrals", fields: [referredById], references: [id])
+  referredUsers User[] @relation("Referrals")
+
+  // The owner's active robot rental plan (apps/owner). Term + referral
+  // status fix monthlyRentUsd at the moment a plan is (re)confirmed -- see
+  // RENT_PRICING in /api/robot-rental. Rent is paid one month at a time;
+  // rentPaidUntil is the real gate (computed, not a cron-flipped flag) for
+  // whether the store and installed skills are usable right now.
+  rentTermMonths Int?
+  monthlyRentUsd Int?
+  rentStartedAt  DateTime?
+  rentPaidUntil  DateTime?
 
   emailVerified       Boolean   @default(false)
   emailVerifyToken    String?   @unique
@@ -67,6 +91,8 @@ model User {
   appListings       AppListing[]
   customSkills      SkillDefinition[]
   gadgetOrders      GadgetOrder[]
+  skillSubscriptions SkillSubscription[]
+  skillSubscriptionPayments SkillSubscriptionPayment[]
 }
 
 enum TransactionType {
@@ -81,6 +107,8 @@ enum TransactionType {
   GADGET_PURCHASE
   AIRDROP
   WALLET_TOPUP
+  ROBOT_RENT
+  SKILL_SUBSCRIPTION
 }
 
 enum TransactionStatus {
@@ -200,12 +228,17 @@ model SkillCollectionSession {
 
   status CollectionStatus @default(UPLOADED)
 
-  // Recording storage is not wired to a blob provider yet -- fileName/
-  // durationSec are the client-reported metadata for what it has stored
-  // locally on-device. Swap in a real asset URL here once a storage
-  // provider (e.g. Vercel Blob) is provisioned.
+  // fileName/durationSec are client-reported metadata set when the
+  // collection row is created (before the upload itself starts). videoUrl
+  // is set after the fact, once the phone's zip (glasses JPEG frames + the
+  // frame-metadata NDJSON + episode.json) has actually landed in Vercel
+  // Blob -- see POST /api/skills/collections/upload-url. A row can
+  // legitimately exist with videoUrl still null (upload in progress or
+  // abandoned); the UI should treat that the same as "not uploaded yet".
   fileName    String?
   durationSec Int?
+  videoUrl    String?
+  sizeBytes   Int?
 
   rewardPaid Boolean @default(false)
 
@@ -274,13 +307,65 @@ model AppListing {
   // TokenTransaction each time someone installs it.
   earnings Int @default(0)
 
-  skills   AppListingSkill[]
-  installs AppInstall[]
+  // Robot-owner subscription price (apps/owner's Store -- separate from the
+  // free creator-side install/earnings-by-skill-reward model above). No
+  // per-app pricing UI exists yet for creators, so every app defaults to the
+  // same flat rate.
+  monthlySubscriptionPriceUsd Int @default(20)
+
+  skills              AppListingSkill[]
+  installs            AppInstall[]
+  subscriptions       SkillSubscription[]
+  subscriptionPayments SkillSubscriptionPayment[]
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
   @@index([userId])
+}
+
+// A robot owner's paid subscription to a skill (apps/owner Store), separate
+// from the free AppInstall above. monthlyPriceUsd is locked in at the
+// moment of each payment, from the app's current price at that time -- a
+// later price change on the app only affects the next renewal. Gates
+// whether the owner can apply this skill to their robot (see
+// isSkillSubscriptionActive in apps/owner/src/lib/api.ts) the same way
+// User.rentPaidUntil gates the whole store.
+model SkillSubscription {
+  id     String     @id @default(cuid())
+  userId String
+  user   User       @relation(fields: [userId], references: [id], onDelete: Cascade)
+  appId  String
+  app    AppListing @relation(fields: [appId], references: [id], onDelete: Cascade)
+
+  monthlyPriceUsd Int
+  subscribedUntil DateTime
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@unique([userId, appId])
+  @@index([appId])
+}
+
+// Append-only payment log behind SkillSubscription -- one row per
+// subscribe/renew call (POST /api/apps/[id]/subscribe), never updated or
+// deleted. SkillSubscription itself only holds current state (one row per
+// owner+app), so this is the only place a creator's earnings/subscriber
+// trend over time (GET /api/apps/[id]/history) can be computed from.
+model SkillSubscriptionPayment {
+  id     String     @id @default(cuid())
+  userId String
+  user   User       @relation(fields: [userId], references: [id], onDelete: Cascade)
+  appId  String
+  app    AppListing @relation(fields: [appId], references: [id], onDelete: Cascade)
+
+  amountUsd Int
+  months    Int
+
+  createdAt DateTime @default(now())
+
+  @@index([appId, createdAt])
 }
 
 // One user's install of a published app. Unique per (app, user) so the

@@ -49,6 +49,7 @@ export async function POST(request: Request) {
     const [updatedUser, order] = await prisma.$transaction(async (tx) => {
       const user = await tx.user.findUnique({ where: { id: userId } });
       if (!user) throw new Error("NOT_FOUND");
+      if (!user.kycIdImageUrl) throw new Error("KYC_REQUIRED");
 
       const newBalance = user.tokenBalance - GADGET_KIT_PRICE;
       if (newBalance < MIN_WALLET_BALANCE) {
@@ -100,6 +101,12 @@ export async function POST(request: Request) {
 
     return NextResponse.json({ user: toSafeUser(updatedUser), order });
   } catch (err) {
+    if (err instanceof Error && err.message === "KYC_REQUIRED") {
+      return NextResponse.json(
+        { error: "Upload a government ID to verify your identity before ordering" },
+        { status: 403 }
+      );
+    }
     if (err instanceof Error && err.message === "BALANCE_FLOOR") {
       return NextResponse.json(
         { error: `This order would take your wallet balance past the $${MIN_WALLET_BALANCE} limit` },
