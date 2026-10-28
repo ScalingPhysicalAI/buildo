@@ -7,6 +7,7 @@ import { formatDate, transactionLabel } from "@/lib/format";
 import { TOKEN_SYMBOL } from "@/lib/constants";
 import { StatCard } from "@/components/dashboard/StatCard";
 import { SimulationCard } from "@/components/dashboard/SimulationCard";
+import { ReferralBanner } from "@/components/dashboard/ReferralBanner";
 import { Button } from "@/components/ui/Button";
 
 export default async function DashboardOverviewPage({
@@ -65,6 +66,10 @@ export default async function DashboardOverviewPage({
         <h1 className="text-display text-4xl text-off-white">
           Welcome back, {user.name.split(" ")[0]}
         </h1>
+      </div>
+
+      <div className="mt-8 animate-fade-up [animation-delay:40ms]">
+        <ReferralBanner />
       </div>
 
       <div className="mt-8 grid gap-5 sm:grid-cols-2 animate-fade-up [animation-delay:60ms]">

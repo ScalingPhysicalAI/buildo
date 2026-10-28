@@ -10,13 +10,22 @@ generator client {
 }
 
 datasource db {
-  provider = "postgresql"
-  url      = env("DATABASE_URL")
+  provider  = "postgresql"
+  url       = env("DATABASE_URL")
+  // Migrations (prisma migrate deploy) need a direct, session-persistent
+  // connection to take the advisory lock they use to guard against two
+  // migrations running at once. DATABASE_URL points at Neon's pooled
+  // (PgBouncer) endpoint, which doesn't reliably hold that lock -- hence
+  // the P1002 "timed out acquiring advisory lock" failure. directUrl is
+  // used only for migrate/introspect commands; the app's runtime queries
+  // still go through the fast pooled DATABASE_URL above.
+  directUrl = env("DATABASE_URL_UNPOOLED")
 }
 
 enum Role {
   DEVELOPER
   RESEARCHER
+  OWNER
 }
 
 model User {
@@ -30,6 +39,39 @@ model User {
 
   tokenBalance Int @default(0)
 
+  // Separate pool from tokenBalance above -- that one is the creator/
+  // developer $ balance (earnings, skill purchases, GPU rental, ...). This
+  // is the robot owner's wallet (apps/owner): same account/login can have
+  // both, but the money is never shared between them. Starts at 0 and only
+  // ever changes via an owner-app top-up.
+  ownerWalletBalance Int @default(0)
+
+  // KYC: a photo of any government ID, required before ordering the Buildo
+  // Development Kit (financed against the creator's own future earnings --
+  // see MIN_WALLET_BALANCE in the gadget order route -- so identity
+  // verification matters here). Stored in Vercel Blob; this is just the URL.
+  kycIdImageUrl  String?
+  kycSubmittedAt DateTime?
+
+  referralCode String? @unique
+
+  // Set at signup if the new owner entered someone else's referral code --
+  // never changes after that. Drives the rent discount below: referred
+  // owners get ROBOT_RENT_DISCOUNT_USD/month off (see /api/robot-rental).
+  referredById String?
+  referredBy   User?   @relation("Referrals", fields: [referredById], references: [id])
+  referredUsers User[] @relation("Referrals")
+
+  // The owner's active robot rental plan (apps/owner). Term + referral
+  // status fix monthlyRentUsd at the moment a plan is (re)confirmed -- see
+  // RENT_PRICING in /api/robot-rental. Rent is paid one month at a time;
+  // rentPaidUntil is the real gate (computed, not a cron-flipped flag) for
+  // whether the store and installed skills are usable right now.
+  rentTermMonths Int?
+  monthlyRentUsd Int?
+  rentStartedAt  DateTime?
+  rentPaidUntil  DateTime?
+
   emailVerified       Boolean   @default(false)
   emailVerifyToken    String?   @unique
   emailVerifyExpiry   DateTime?
@@ -42,9 +84,15 @@ model User {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-  transactions TokenTransaction[]
-  gpuSessions  GpuSession[]
-  skillOrders  SkillOrder[]
+  transactions      TokenTransaction[]
+  gpuSessions       GpuSession[]
+  skillOrders       SkillOrder[]
+  skillCollections  SkillCollectionSession[]
+  appListings       AppListing[]
+  customSkills      SkillDefinition[]
+  gadgetOrders      GadgetOrder[]
+  skillSubscriptions SkillSubscription[]
+  skillSubscriptionPayments SkillSubscriptionPayment[]
 }
 
 enum TransactionType {
@@ -53,13 +101,28 @@ enum TransactionType {
   WALLET_CONNECT_BONUS
   GPU_RENTAL
   SKILL_PURCHASE
+  SKILL_COLLECTION_REWARD
+  APP_DEPLOY_FEE
+  APP_EARNINGS
+  GADGET_PURCHASE
   AIRDROP
+  WALLET_TOPUP
+  ROBOT_RENT
+  SKILL_SUBSCRIPTION
 }
 
 enum TransactionStatus {
   PENDING
   COMPLETED
   FAILED
+}
+
+// Which balance a TokenTransaction moved -- User.tokenBalance (creator) or
+// User.ownerWalletBalance (robot owner). Defaults to CREATOR since every
+// transaction type except WALLET_TOPUP only ever touches that one.
+enum WalletKind {
+  CREATOR
+  OWNER
 }
 
 // Ledger of $ credit movements for a user. This is an off-chain,
@@ -74,6 +137,7 @@ model TokenTransaction {
   type   TransactionType
   amount Int // positive = credit, negative = debit
   status TransactionStatus @default(COMPLETED)
+  wallet WalletKind         @default(CREATOR)
   txHash String? // populated once real on-chain transfers are wired up
 
   note String?
@@ -110,6 +174,243 @@ model SkillOrder {
   skillId   String
   skillName String
   price     Int
+
+  createdAt DateTime @default(now())
+
+  @@index([userId])
+}
+
+// A predefined, record-for-pay skill -- the catalog shown in the mobile
+// app's Record tab. Reward is the $ credit paid out once a user's recorded
+// session for this skill is uploaded.
+model SkillDefinition {
+  id           String  @id @default(cuid())
+  slug         String  @unique
+  name         String
+  summary      String
+  instructions String // shown to the user before they hit record
+  category     String
+  reward       Int // $ credit paid on upload -- always 0 for a custom skill
+  active       Boolean @default(true)
+
+  // A custom skill a developer typed in themselves (unpaid), visible only
+  // to its own creator -- as opposed to the predefined, paid catalog
+  // (isCustom: false, shown to everyone).
+  isCustom        Boolean @default(false)
+  createdByUserId String?
+  createdBy       User?   @relation(fields: [createdByUserId], references: [id])
+
+  createdAt DateTime @default(now())
+
+  collections SkillCollectionSession[]
+
+  @@index([createdByUserId])
+}
+
+enum CollectionStatus {
+  UPLOADED // recording uploaded, reward paid, not yet queued for training
+  TRAINING // 24h training timer running
+  TRAINED // training complete -- usable in an app listing
+  FAILED // training did not complete successfully
+}
+
+// One user's recorded data-collection session for a SkillDefinition. The
+// 24h "Train" timer is modeled as trainEndsAt rather than a background job
+// -- status is computed lazily (now >= trainEndsAt => TRAINED) by the API
+// reading it, so nothing else in the stack needs a scheduler yet.
+model SkillCollectionSession {
+  id     String @id @default(cuid())
+  userId String
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  skillId String
+  skill   SkillDefinition @relation(fields: [skillId], references: [id])
+
+  status CollectionStatus @default(UPLOADED)
+
+  // fileName/durationSec are client-reported metadata set when the
+  // collection row is created (before the upload itself starts). videoUrl
+  // is set after the fact, once the phone's zip (glasses JPEG frames + the
+  // frame-metadata NDJSON + episode.json) has actually landed in Vercel
+  // Blob -- see POST /api/skills/collections/upload-url. A row can
+  // legitimately exist with videoUrl still null (upload in progress or
+  // abandoned); the UI should treat that the same as "not uploaded yet".
+  fileName    String?
+  durationSec Int?
+  videoUrl    String?
+  sizeBytes   Int?
+
+  rewardPaid Boolean @default(false)
+
+  trainStartedAt DateTime?
+  trainEndsAt    DateTime?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  appListingSkills AppListingSkill[]
+
+  @@index([userId])
+  @@index([skillId])
+}
+
+enum AppCategory {
+  HOME
+  SHOP
+  OFFICE
+  WAREHOUSE
+  HOSPITAL
+}
+
+enum AppDeployStatus {
+  DRAFT
+  TESTING
+  PASSED
+  FAILED
+  LIVE
+}
+
+// A developer-built app bundling one or more trained skills. Status moves
+// DRAFT -> (certify) -> PASSED/FAILED -> (pay the $DEPLOY_FEE) -> LIVE on
+// the app store. Certifying and publishing are separate steps/routes on
+// purpose: certification is free and re-runnable, the $ fee is only ever
+// charged once, at the moment an app actually goes live.
+model AppListing {
+  id          String @id @default(cuid())
+  userId      String
+  user        User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  name        String
+  description String?
+  category    AppCategory
+
+  // Not wired to a storage provider yet -- same stub note as
+  // SkillCollectionSession.fileName. Set once asset upload exists.
+  iconUrl  String?
+  videoUrl String?
+
+  status      AppDeployStatus @default(DRAFT)
+  // Automated-certification result -- see services note in the deploy
+  // route: deterministic checks today (named skills all TRAINED, etc.),
+  // same "real pipeline, simulated backend" shape as GpuSession.
+  testReport  Json?
+  publishedAt DateTime?
+
+  // The 7-day "Train and Deploy" testing window is modeled the same way as
+  // SkillCollectionSession.trainEndsAt -- a TESTING app sitting past this
+  // timestamp is resolved to LIVE (and charged the deploy fee) the next
+  // time anything reads it, so no scheduler is needed.
+  testingEndsAt DateTime?
+
+  // Running total of $ credit this app has earned its creator from
+  // installs -- incremented alongside the matching APP_EARNINGS
+  // TokenTransaction each time someone installs it.
+  earnings Int @default(0)
+
+  // Robot-owner subscription price (apps/owner's Store -- separate from the
+  // free creator-side install/earnings-by-skill-reward model above). No
+  // per-app pricing UI exists yet for creators, so every app defaults to the
+  // same flat rate.
+  monthlySubscriptionPriceUsd Int @default(20)
+
+  skills              AppListingSkill[]
+  installs            AppInstall[]
+  subscriptions       SkillSubscription[]
+  subscriptionPayments SkillSubscriptionPayment[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([userId])
+}
+
+// A robot owner's paid subscription to a skill (apps/owner Store), separate
+// from the free AppInstall above. monthlyPriceUsd is locked in at the
+// moment of each payment, from the app's current price at that time -- a
+// later price change on the app only affects the next renewal. Gates
+// whether the owner can apply this skill to their robot (see
+// isSkillSubscriptionActive in apps/owner/src/lib/api.ts) the same way
+// User.rentPaidUntil gates the whole store.
+model SkillSubscription {
+  id     String     @id @default(cuid())
+  userId String
+  user   User       @relation(fields: [userId], references: [id], onDelete: Cascade)
+  appId  String
+  app    AppListing @relation(fields: [appId], references: [id], onDelete: Cascade)
+
+  monthlyPriceUsd Int
+  subscribedUntil DateTime
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@unique([userId, appId])
+  @@index([appId])
+}
+
+// Append-only payment log behind SkillSubscription -- one row per
+// subscribe/renew call (POST /api/apps/[id]/subscribe), never updated or
+// deleted. SkillSubscription itself only holds current state (one row per
+// owner+app), so this is the only place a creator's earnings/subscriber
+// trend over time (GET /api/apps/[id]/history) can be computed from.
+model SkillSubscriptionPayment {
+  id     String     @id @default(cuid())
+  userId String
+  user   User       @relation(fields: [userId], references: [id], onDelete: Cascade)
+  appId  String
+  app    AppListing @relation(fields: [appId], references: [id], onDelete: Cascade)
+
+  amountUsd Int
+  months    Int
+
+  createdAt DateTime @default(now())
+
+  @@index([appId, createdAt])
+}
+
+// One user's install of a published app. Unique per (app, user) so the
+// store's "downloaded by N users" count reflects distinct installers, not
+// repeat taps.
+model AppInstall {
+  id     String     @id @default(cuid())
+  appId  String
+  app    AppListing @relation(fields: [appId], references: [id], onDelete: Cascade)
+  userId String
+
+  createdAt DateTime @default(now())
+
+  @@unique([appId, userId])
+  @@index([appId])
+}
+
+model AppListingSkill {
+  id String @id @default(cuid())
+
+  appId String
+  app   AppListing @relation(fields: [appId], references: [id], onDelete: Cascade)
+
+  skillCollectionId String
+  skillCollection   SkillCollectionSession @relation(fields: [skillCollectionId], references: [id])
+
+  @@unique([appId, skillCollectionId])
+}
+
+// A "Use wallet" order for the Buildo Development Kit -- paid directly out
+// of the buyer's $ credit balance rather than a real checkout, same
+// simulated-but-real-ledger shape as GpuSession/SkillOrder. The balance is
+// allowed to go negative for this one purchase path (see MIN_WALLET_BALANCE
+// in the order route) rather than being blocked outright.
+model GadgetOrder {
+  id     String @id @default(cuid())
+  userId String
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  recipientName  String
+  recipientEmail String
+  phone          String?
+  shippingAddress String
+
+  price Int // $ credit charged, debited from tokenBalance
 
   createdAt DateTime @default(now())
 

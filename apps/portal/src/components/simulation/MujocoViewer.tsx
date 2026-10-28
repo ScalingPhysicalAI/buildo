@@ -5,7 +5,11 @@ import * as THREE from "three";
 import { OrbitControls } from "three/examples/jsm/controls/OrbitControls.js";
 import clsx from "clsx";
 
-import { buildSceneFromModel, getBodyAxisXY, getPosition, getQuaternion, loadHumanoidModel } from "@/lib/mujoco/loadHumanoidScene";
+import { buildSceneFromModel, getBodyAxisXY, getPosition, getQuaternion, applySpawn, loadHumanoidModel } from "@/lib/mujoco/loadHumanoidScene";
+import { DEFAULT_ENVIRONMENT_ID, ENVIRONMENTS, getEnvironment, type SimEnvironment } from "@/lib/mujoco/environments";
+import { loadPropCatalog, propIdForBody, withAddedProps, type AddedProp, type PropCatalogEntry } from "@/lib/mujoco/propCatalog";
+import { EnvironmentUploadPanel } from "./EnvironmentUploadPanel";
+import { ObjectEditor, type ObjectEditorApi, type SceneObjectInfo, type Vec3 as EditorVec3 } from "./ObjectEditor";
 
 // The MuJoCo WASM engine (mujoco.js + mujoco.wasm) is served as a static
 // asset from public/mujoco/ rather than bundled -- it's a precompiled
@@ -13,6 +17,35 @@ import { buildSceneFromModel, getBodyAxisXY, getPosition, getQuaternion, loadHum
 // resolves its .wasm relative to that URL by default. See
 // scripts/sync-mujoco-assets.sh for how these files get there.
 const ENGINE_URL = "/mujoco/engine/mujoco.js";
+
+async function loadEngine() {
+  const { default: loadMujoco } = await import(/* webpackIgnore: true */ ENGINE_URL);
+  return loadMujoco();
+}
+
+// One engine for every viewer rebuild (environment switch, object editor). Each
+// instance's heap can grow toward the 2 GB wasm cap and is only returned when
+// garbage collected, so a fresh instance per rebuild piles those heaps up.
+let viewerEngine: ReturnType<typeof loadEngine> | null = null;
+function loadViewerEngine() {
+  viewerEngine ??= loadEngine().catch((err) => {
+    viewerEngine = null;
+    throw err;
+  });
+  return viewerEngine;
+}
+
+const UPLOAD_OPTION = "__upload__";
+
+// MuJoCo-frame vectors and (w, x, y, z) quaternions, for moving a drawer's contents with it.
+type Vec3Tuple = [number, number, number];
+type QuatTuple = [number, number, number, number];
+const vec3At = (buf: Float64Array | Float32Array, i: number): Vec3Tuple => [buf[i * 3], buf[i * 3 + 1], buf[i * 3 + 2]];
+const quatAt = (buf: Float64Array | Float32Array, i: number): QuatTuple => [buf[i * 4], buf[i * 4 + 1], buf[i * 4 + 2], buf[i * 4 + 3]];
+const quatRotate = (q: QuatTuple, [x, y, z]: Vec3Tuple): Vec3Tuple => {
+  const [, rx, ry, rz] = quatMul(quatMul(q, [0, x, y, z]), quatConj(q));
+  return [rx, ry, rz];
+};
 
 // Drive/teleop tuning -- kept well inside the placeholder actuators' own
 // ctrlrange (see model/scripts/urdf_to_mjcf.py) so a held key never asks for
@@ -105,16 +138,32 @@ const LEFT_MIRROR_SIGN = -1;
 const GRIP_RATE = 1.2; // 0..1 (open..closed) per second while held
 const GRIP_ENGAGE_AT = 0.8; // grip fraction above which closing near the object grabs it
 const GRIP_RELEASE_AT = 0.2; // grip fraction below which it lets go
-const GRIP_RADIUS = 0.1; // m -- how close the grip anchor must be to the object to grab it. Was 0.2 ("loose: there's no on-screen distance readout") -- reported live as grabbing objects from noticeably far away, which combined with GRIP_SNUG_DIST's own old absence left a large, odd-looking gap between the hand and whatever it grabbed for the rest of the hold.
+// A gripped door/drawer is pulled toward the hand by a spring-damper with
+// this natural frequency (rad/s, scaled by the part's own inertia), capped at
+// roughly what a person pulls with (N*m for doors, N for drawers).
+const PULL_OMEGA = 25;
+const PULL_MAX_TORQUE = 30;
+const PULL_MAX_FORCE = 80;
+// How close the palm's center must be to the object's *surface* (nearest
+// point on any of its geoms' bounding boxes) to grab it -- measured to the
+// surface, not the object's center, so a large box can be grabbed by its
+// side. Was a 0.2m center distance -- reported live as grabbing objects from
+// noticeably far away.
+const GRIP_REACH = 0.06; // m
 // The hold itself is a kinematic follow (applyGripPose) that freezes
 // whatever the anchor-to-object offset happened to be *at the moment of
-// grab* -- so grabbing from anywhere within GRIP_RADIUS (up to 20cm, before
-// the tightening above) could freeze in a correspondingly large, permanent
-// gap for the whole hold, not just a one-off inaccuracy. Clamping the
-// captured relPos's own magnitude (direction preserved, distance capped)
-// guarantees a snug-looking hold regardless of exactly how close the grab
-// itself was, on top of GRIP_RADIUS's own tightening above.
-const GRIP_SNUG_DIST = 0.05; // m -- max allowed anchor-to-object distance once grabbed
+// grab* -- so grabbing from anywhere within GRIP_REACH would freeze that gap
+// for the whole hold. The captured offset is shifted toward the palm until
+// the surface gap is at most this, for a snug-looking hold.
+const GRIP_SNUG_GAP = 0.01; // m
+// Heaviest object a hand can pick up; heavier free bodies (chairs, drums,
+// pallets, the pallet jack) can only be pushed.
+const GRAB_MAX_MASS = 5; // kg
+// A held object's robot collision is off (see setRobotCollision) and stays
+// off after release until its surface is at least this far from both palms,
+// so letting go doesn't start it inside the fingers.
+const ROBOT_COLLISION_CLEARANCE = 0.15; // m
+const ROBOT_COLLISION_BIT = 2;
 // Which of base_link's own local axes points where the robot actually
 // faces -- see getBodyAxisXY's comment. Confirmed empirically (not
 // guessed): local X is the line straight through both hands (i.e. side to
@@ -122,41 +171,8 @@ const GRIP_SNUG_DIST = 0.05; // m -- max allowed anchor-to-object distance once 
 // front-back axis.
 const BASE_FORWARD_AXIS = 2 as const;
 
-// Fixed "security camera" presets, one per room corner, each looking back
-// toward the middle of the kitchen. Coordinates are three.js (Y-up).
-// Recomputed from the imported kitchen's own real, measured boundary via
-// the same swizzle loadHumanoidScene.ts's getPosition() uses (three.x=mj.x,
-// three.y=mj.z, three.z=-mj.y) -- NOT the old 12x12m procedural room's ±5
-// these used to be hardcoded to (that room no longer exists; those
-// positions sat well outside this kitchen's actual walls, hence needing to
-// zoom in just to see anything).
-//
-// This uses a *tighter* y-range (MuJoCo y: -2.75..6.0) than the kitchen's
-// own full collision-wall boundary (_KITCHEN_WALL_BOUNDS in
-// urdf_to_mjcf.py, y up to 7.71) on purpose: the imported asset's real
-// extent continues past the kitchen proper into a hallway/staircase (see
-// the reference renders, model/kitchen/kitchen-scene-*.webp, where it's
-// visible through the opening on the right) -- fine to leave in the
-// robot's walkable/collision area, but a "corner of the room" camera framed
-// against that full extent puts two of the four cameras staring at the
-// staircase instead of the kitchen (confirmed live: corner3 landed inside
-// the banister). 6.0 is the tall pantry/cabinet run's own far edge
-// (Wood_Mahogany_33_46_100cm's own y-max), i.e. roughly where the kitchen
-// itself actually ends.
-//
-// Inset 1.8m (not just enough to clear the walls) and raised to 3.2m (near
-// the 3.7m ceiling): a smaller inset/lower height both put the camera
-// clipping into the floor-to-ceiling pantry cabinets that run right along
-// these walls (confirmed live -- a 1m inset at 2.8m landed the camera
-// pressed right up against one). Update these if the kitchen import/its
-// offset in convert_kitchen_obj.py ever changes.
-const CORNER_VIEWS: { pos: [number, number, number]; lookAt: [number, number, number] }[] = [
-  { pos: [1.93, 3.2, 0.95], lookAt: [0, 0.9, -1.6] },
-  { pos: [-1.93, 3.2, 0.95], lookAt: [0, 0.9, -1.6] },
-  { pos: [-1.93, 3.2, -4.2], lookAt: [0, 0.9, -1.6] },
-  { pos: [1.93, 3.2, -4.2], lookAt: [0, 0.9, -1.6] },
-];
-
+// Corner camera presets and the Center Stage framing are per-environment --
+// see `camera` in lib/mujoco/environments.ts.
 type ViewMode = "orbit" | "corner1" | "corner2" | "corner3" | "corner4" | "fpp";
 const VIEW_OPTIONS: { value: ViewMode; label: string }[] = [
   { value: "orbit", label: "Center Stage" },
@@ -219,21 +235,6 @@ const FPP_MIN_PITCH = (-70 * Math.PI) / 180; // look down
 const FPP_MAX_PITCH = (60 * Math.PI) / 180; // look up
 const FPP_LOOK_SENSITIVITY = 0.006; // radians per pixel of drag
 const FPP_FORWARD_CLEARANCE = 0.22; // m -- clears the head geom's own ~0.158m bounding radius, see the render loop's own comment
-// Center Stage's own default framing -- reused both at startup and to
-// restore the view when switching back from a corner/FPP view (see the
-// render loop's isOrbitView handling: OrbitControls.update() re-derives its
-// internal orbit state from wherever camera.position *currently* is on
-// every call, rather than remembering a separately preserved state, so
-// leaving the camera at, say, an FPP position and re-enabling orbit
-// control produces a broken close-up view centered on that leftover
-// position instead of resuming the original framing).
-// Also recomputed against the kitchen's own real boundary (see
-// CORNER_VIEWS' own comment) -- was [5.5, 4, 5.5]/[0, 0.6, 0], framing the
-// old procedural room's center at the world origin; this room's real
-// center sits at three.js z=-2.48, not 0.
-const ORBIT_POSITION: [number, number, number] = [4.5, 3.5, 0.0];
-const ORBIT_TARGET: [number, number, number] = [0, 0.9, -2.48];
-
 // Wave gesture removed at the user's request (the joint-anchor fix -- see
 // recenter_arm_joint_anchors() in model/scripts/urdf_to_mjcf.py -- fixed the
 // "detached"-looking swing, but the resulting motion still didn't read as a
@@ -329,15 +330,50 @@ function computeGripRelpose(data: any, anchorGeom: number, objBody: number) {
   return { relPos, relQuat };
 }
 
-// Caps a freshly-captured grip relPos's own distance at GRIP_SNUG_DIST,
-// preserving direction -- see that constant's own comment for why (grabbing
-// from anywhere within GRIP_RADIUS would otherwise freeze in whatever gap
-// existed at that exact moment, for the whole hold).
-function snugRelPos(relPos: [number, number, number]): [number, number, number] {
-  const dist = Math.hypot(relPos[0], relPos[1], relPos[2]);
-  if (dist <= GRIP_SNUG_DIST || dist === 0) return relPos;
-  const scale = GRIP_SNUG_DIST / dist;
-  return [relPos[0] * scale, relPos[1] * scale, relPos[2] * scale];
+// Nearest point on geoms [first, first+count) to world point p, using each
+// geom's oriented bounding box (model.geom_aabb, in the geom's own frame).
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+function nearestSurfacePoint(model: any, data: any, first: number, count: number, p: [number, number, number]) {
+  let best = { dist: Infinity, point: [0, 0, 0] as [number, number, number] };
+  for (let g = first; g < first + count; g++) {
+    const m = g * 9;
+    const dx = p[0] - data.geom_xpos[g * 3];
+    const dy = p[1] - data.geom_xpos[g * 3 + 1];
+    const dz = p[2] - data.geom_xpos[g * 3 + 2];
+    const local = [0, 1, 2].map((i) => {
+      const v = data.geom_xmat[m + i] * dx + data.geom_xmat[m + 3 + i] * dy + data.geom_xmat[m + 6 + i] * dz;
+      const c = model.geom_aabb[g * 6 + i];
+      const h = model.geom_aabb[g * 6 + 3 + i];
+      return Math.min(c + h, Math.max(c - h, v));
+    });
+    const point: [number, number, number] = [0, 1, 2].map(
+      (r) =>
+        data.geom_xpos[g * 3 + r] +
+        data.geom_xmat[m + r * 3] * local[0] +
+        data.geom_xmat[m + r * 3 + 1] * local[1] +
+        data.geom_xmat[m + r * 3 + 2] * local[2]
+    ) as [number, number, number];
+    const dist = Math.hypot(point[0] - p[0], point[1] - p[1], point[2] - p[2]);
+    if (dist < best.dist) best = { dist, point };
+  }
+  return best;
+}
+
+// Shifts a freshly-captured grip relPos (object origin in the anchor's
+// frame) toward the anchor until the object's surface is GRIP_SNUG_GAP from
+// it -- see that constant's own comment.
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+function snugRelPos(data: any, anchorGeom: number, relPos: [number, number, number], surface: [number, number, number]) {
+  const a = [data.geom_xpos[anchorGeom * 3], data.geom_xpos[anchorGeom * 3 + 1], data.geom_xpos[anchorGeom * 3 + 2]];
+  const v = [surface[0] - a[0], surface[1] - a[1], surface[2] - a[2]];
+  const gap = Math.hypot(v[0], v[1], v[2]);
+  if (gap <= GRIP_SNUG_GAP) return relPos;
+  const k = (gap - GRIP_SNUG_GAP) / gap;
+  const m = anchorGeom * 9;
+  const shift = [0, 1, 2].map(
+    (i) => (data.geom_xmat[m + i] * v[0] + data.geom_xmat[m + 3 + i] * v[1] + data.geom_xmat[m + 6 + i] * v[2]) * k
+  );
+  return [relPos[0] - shift[0], relPos[1] - shift[1], relPos[2] - shift[2]] as [number, number, number];
 }
 
 // Scripted "Workflow": drives to the counter's own coffee cup
@@ -602,12 +638,52 @@ interface MujocoViewerProps {
   /** Enables orbit camera controls, WASD driving, the wave gesture, and the pause/reset/wave overlay. */
   interactive?: boolean;
   className?: string;
+  /** Environment to load first (see lib/mujoco/environments.ts); interactive viewers can switch from there. */
+  initialEnvironmentId?: string;
 }
 
 type Status = "loading" | "ready" | "error";
 
-export function MujocoViewer({ interactive = false, className }: MujocoViewerProps) {
+/** The object editor's changes to one room, kept for the session (Reset clears them). */
+interface SceneEdits {
+  added: AddedProp[];
+  /** Body names deleted in the editor. Bodies stay in the model, parked and collision-free. */
+  removed: Set<string>;
+  /** Fixtures (no free joint) moved/rotated in the editor; movable objects' poses live in qpos. */
+  staticPoses: Map<string, { pos: EditorVec3; quat: [number, number, number, number] }>;
+  nextId: number;
+}
+
+function editsIn(all: Map<string, SceneEdits>, envId: string): SceneEdits {
+  let edits = all.get(envId);
+  if (!edits) {
+    edits = { added: [], removed: new Set(), staticPoses: new Map(), nextId: 0 };
+    all.set(envId, edits);
+  }
+  return edits;
+}
+
+/** Running state carried across an editor rebuild (see withAddedProps for why array copies are enough). */
+interface SimSnapshot {
+  envId: string;
+  qpos: Float64Array;
+  qvel: Float64Array;
+  ctrl: Float64Array;
+  teleop: unknown;
+  camera: { pos: EditorVec3; target: EditorVec3 };
+}
+
+export function MujocoViewer({ interactive = false, className, initialEnvironmentId = DEFAULT_ENVIRONMENT_ID }: MujocoViewerProps) {
   const containerRef = useRef<HTMLDivElement>(null);
+  const [environmentId, setEnvironmentId] = useState(initialEnvironmentId);
+  // Only the most recent upload is kept (it can be up to a few hundred MB in memory).
+  const [uploadedEnvironment, setUploadedEnvironment] = useState<SimEnvironment | null>(null);
+  // Read by the init effect, which only re-runs on environmentId changes.
+  const uploadedEnvironmentRef = useRef<SimEnvironment | null>(null);
+  const [showUpload, setShowUpload] = useState(false);
+  const [uploadWarnings, setUploadWarnings] = useState<string[]>([]);
+  const uploadedList = uploadedEnvironment ? [uploadedEnvironment] : [];
+  const environment = getEnvironment(environmentId, uploadedList);
   const [status, setStatus] = useState<Status>("loading");
   const [paused, setPaused] = useState(false);
   const [view, setView] = useState<ViewMode>("orbit");
@@ -617,6 +693,18 @@ export function MujocoViewer({ interactive = false, className }: MujocoViewerPro
   const viewRef = useRef(view);
   const resetRef = useRef<() => void>(() => {});
   const pickRef = useRef<() => void>(() => {});
+  const isBusyRef = useRef<() => boolean>(() => false);
+  // Object editor: per-room edits for the session, the scene API the
+  // editor drives, and the state carried across the rebuild an add needs.
+  const sceneEditsRef = useRef(new Map<string, SceneEdits>());
+  const editorApiRef = useRef<ObjectEditorApi | null>(null);
+  const captureRef = useRef<(() => SimSnapshot) | null>(null);
+  const restoreRef = useRef<SimSnapshot | null>(null);
+  const [sceneVersion, setSceneVersion] = useState(0);
+  const [editing, setEditing] = useState(false);
+  const [editorNotice, setEditorNotice] = useState<string | null>(null);
+  const pausedBeforeEditRef = useRef(false);
+  const [addedCounts, setAddedCounts] = useState<Record<string, number>>({});
 
   useEffect(() => {
     pausedRef.current = paused;
@@ -636,16 +724,40 @@ export function MujocoViewer({ interactive = false, className }: MujocoViewerPro
     let data: any = null;
     let resizeObserver: ResizeObserver | null = null;
     let removeKeyListeners: (() => void) | null = null;
+    const env = getEnvironment(environmentId, uploadedEnvironmentRef.current ? [uploadedEnvironmentRef.current] : []);
+    const ORBIT_POSITION = env.camera.orbitPosition;
+    const ORBIT_TARGET = env.camera.orbitTarget;
+    const CORNER_VIEWS = env.camera.corners;
+    resetRef.current = () => {};
+    pickRef.current = () => {};
+    isBusyRef.current = () => false;
+    editorApiRef.current = null;
+    captureRef.current = null;
+    const edits = editsIn(sceneEditsRef.current, env.id);
+    const restore = restoreRef.current?.envId === env.id ? restoreRef.current : null;
+    restoreRef.current = null;
 
     async function init() {
       const container = containerRef.current;
       if (!container) return;
 
-      const { default: loadMujoco } = await import(/* webpackIgnore: true */ ENGINE_URL);
-      const mujoco = await loadMujoco();
+      const mujoco = await loadViewerEngine();
       if (disposed) return;
 
-      model = await loadHumanoidModel(mujoco);
+      const catalog: PropCatalogEntry[] = await loadPropCatalog().catch(() => []);
+      if (disposed) return;
+      const loaded = await loadHumanoidModel(mujoco, await withAddedProps(env, edits.added, catalog));
+      // The engine outlives this effect, so a model compiled after cleanup ran must be freed here.
+      if (disposed) {
+        loaded.delete?.();
+        return;
+      }
+      model = loaded;
+      // Spawn translates the body carrying virtual_base_x (a child of world),
+      // so Reset returns there. Not qpos0: slide joints measure displacement
+      // from qpos0, so the robot wouldn't move. Base qpos is therefore
+      // relative to the spawn point.
+      applySpawn(mujoco, model, env.spawn);
       data = new mujoco.MjData(model);
       mujoco.mj_forward(model, data);
       if (disposed) return;
@@ -653,12 +765,9 @@ export function MujocoViewer({ interactive = false, className }: MujocoViewerPro
       const { root, bodies } = buildSceneFromModel(mujoco, model);
 
       const scene = new THREE.Scene();
-      // Bright kitchen theme (see model/scripts/urdf_to_mjcf.py's _build_room()
-      // comment) -- this used to be a near-black 0x08090b matching the old
-      // dark lab room; the rest of the dashboard chrome around this canvas
-      // stays on its own dark theme (see DashboardChrome.tsx) unchanged, this
-      // color is scoped to the 3D scene alone.
-      scene.background = new THREE.Color(0xf3efe4);
+      // Scoped to the 3D scene alone -- the dashboard chrome around this
+      // canvas keeps its own dark theme (see DashboardChrome.tsx).
+      scene.background = new THREE.Color(env.background);
       scene.add(root);
       // Warm key light + soft shadows, matching the reference renders'
       // (model/kitchen/kitchen-scene-*.webp) warm daylight look -- shadows
@@ -676,17 +785,17 @@ export function MujocoViewer({ interactive = false, className }: MujocoViewerPro
 
       const topLight = new THREE.DirectionalLight(0xfff1d6, 1.5);
       topLight.position.set(1, 8, 3);
-      topLight.target.position.set(0, 0.6, -2.48);
+      topLight.target.position.set(...env.lighting.focus);
       topLight.castShadow = true;
       topLight.shadow.mapSize.set(2048, 2048);
-      // Orthographic shadow-camera frustum sized to the kitchen's own real
-      // footprint (see CORNER_VIEWS' own comment for how that boundary was
-      // measured) plus a margin -- the default frustum is far too tight for
-      // a room this size and would clip most of it out of shadow entirely.
-      topLight.shadow.camera.left = -5;
-      topLight.shadow.camera.right = 5;
-      topLight.shadow.camera.top = 6;
-      topLight.shadow.camera.bottom = -6;
+      // Orthographic shadow-camera frustum sized to the room's own footprint
+      // plus a margin -- the default frustum is far too tight for a room
+      // and would clip most of it out of shadow entirely.
+      const [shadowHalfX, shadowHalfZ] = env.lighting.shadowHalfExtent;
+      topLight.shadow.camera.left = -shadowHalfX;
+      topLight.shadow.camera.right = shadowHalfX;
+      topLight.shadow.camera.top = shadowHalfZ;
+      topLight.shadow.camera.bottom = -shadowHalfZ;
       topLight.shadow.camera.near = 0.5;
       topLight.shadow.camera.far = 20;
       topLight.shadow.bias = -0.0015;
@@ -701,7 +810,7 @@ export function MujocoViewer({ interactive = false, className }: MujocoViewerPro
 
       const fillLight = new THREE.DirectionalLight(0xcfe0ff, 0.4);
       fillLight.position.set(-5, 6, -5);
-      fillLight.target.position.set(0, 0.6, -2.48);
+      fillLight.target.position.set(...env.lighting.focus);
       fillLight.castShadow = false;
       scene.add(fillLight, fillLight.target);
 
@@ -771,6 +880,10 @@ export function MujocoViewer({ interactive = false, className }: MujocoViewerPro
         leftGripEngaged = false;
         rightHeldBody = -1;
         leftHeldBody = -1;
+        rightPull = null;
+        leftPull = null;
+        for (const obj of MOVABLE_OBJECTS) setRobotCollision(obj, true);
+        for (const part of ARTICULATED_PARTS) setRobotCollision(part, true);
         openBothHands();
       };
 
@@ -893,9 +1006,6 @@ export function MujocoViewer({ interactive = false, className }: MujocoViewerPro
       });
       const YAW_JOINT = jointId("virtual_base_yaw");
       const YAW_QPOS_ADR = YAW_JOINT >= 0 ? model.jnt_qposadr[YAW_JOINT] : -1;
-      const PICKUP_OBJECT_JOINT = jointId("pickup_object_free");
-      const PICKUP_OBJECT_DOF = PICKUP_OBJECT_JOINT >= 0 ? model.jnt_dofadr[PICKUP_OBJECT_JOINT] : -1;
-
       // --- Manual grip lookups -----------------------------------------
       // Right hand reuses PICK_FINGER_JOINTS/ACT_PICK_FINGERS/
       // PICK_FINGER_CLOSED/OPEN above -- same 15 joints Pick & Place
@@ -911,7 +1021,6 @@ export function MujocoViewer({ interactive = false, className }: MujocoViewerPro
         const jid = jointId(name);
         return jid >= 0 ? model.jnt_range[jid * 2 + 1] : 0;
       });
-      const PICKUP_OBJECT_BODY = mujoco.mj_name2id(model, OBJ_BODY, "pickup_object");
       // The counter's own coffee cup (see CUP_OBJECT_POS in
       // model/scripts/urdf_to_mjcf.py) -- a second, separate free body, not
       // a reskin of pickup_object, so both can exist (and in principle be
@@ -920,18 +1029,77 @@ export function MujocoViewer({ interactive = false, className }: MujocoViewerPro
       const CUP_OBJECT_DOF = CUP_OBJECT_JOINT >= 0 ? model.jnt_dofadr[CUP_OBJECT_JOINT] : -1;
       const CUP_OBJECT_QPOS_ADR = CUP_OBJECT_JOINT >= 0 ? model.jnt_qposadr[CUP_OBJECT_JOINT] : -1;
       const CUP_OBJECT_BODY = mujoco.mj_name2id(model, OBJ_BODY, "cup_object");
-      // Manual grip was originally pinned to pickup_object specifically;
-      // generalized into a list so grabbing checks whichever free body is
-      // actually closest. Holding is a kinematic follow (see
-      // applyGripPose below), not an equality constraint or finger
-      // contact -- see model/scripts/urdf_to_mjcf.py's own comment, right
-      // above where the manual-grip welds used to be declared, for why.
-      // Adding a third object (the coffee machine, per the user's own
-      // "let's start with the cup" ask) is one more entry here.
-      const GRABBABLE_OBJECTS = [
-        { body: PICKUP_OBJECT_BODY, dof: PICKUP_OBJECT_DOF, qposAdr: PICKUP_OBJECT_JOINT >= 0 ? model.jnt_qposadr[PICKUP_OBJECT_JOINT] : -1 },
-        { body: CUP_OBJECT_BODY, dof: CUP_OBJECT_DOF, qposAdr: CUP_OBJECT_QPOS_ADR },
-      ].filter((o) => o.body >= 0 && o.dof >= 0 && o.qposAdr >= 0);
+      // Every free body in the scene (environment props, the cup, the
+      // pickup block -- the robot itself has no free joint) is a movable
+      // object; the ones up to GRAB_MAX_MASS can also be grabbed. Holding is
+      // a kinematic follow (see applyGripPose below), not an equality
+      // constraint or finger contact.
+      const FREE_JOINT = mujoco.mjtJoint.mjJNT_FREE.value;
+      type MovableObject = { body: number; dof: number; qposAdr: number; geomAdr: number; geomNum: number };
+      const MOVABLE_OBJECTS: MovableObject[] = [];
+      for (let j = 0; j < model.njnt; j++) {
+        if (model.jnt_type[j] !== FREE_JOINT) continue;
+        const body = model.jnt_bodyid[j];
+        MOVABLE_OBJECTS.push({
+          body,
+          dof: model.jnt_dofadr[j],
+          qposAdr: model.jnt_qposadr[j],
+          geomAdr: model.body_geomadr[body],
+          geomNum: model.body_geomnum[body],
+        });
+      }
+      const GRABBABLE_OBJECTS = MOVABLE_OBJECTS.filter((o) => model.body_mass[o.body] <= GRAB_MAX_MASS && o.geomNum > 0);
+      // Doors and drawers: the hinge/slide joints outside the robot (whose
+      // own joints, virtual base included, all share one root body).
+      // Gripping one makes its joint follow the palm instead of the part
+      // following it freely (see drivePull).
+      const HINGE_JOINT = mujoco.mjtJoint.mjJNT_HINGE.value;
+      const SLIDE_JOINT = mujoco.mjtJoint.mjJNT_SLIDE.value;
+      const robotRootBody = (() => {
+        const b = mujoco.mj_name2id(model, OBJ_BODY, "base_link");
+        return b >= 0 ? model.body_rootid[b] : -1;
+      })();
+      type ArticulatedPart = MovableObject & { joint: number; hinge: boolean; lo: number; hi: number };
+      const ARTICULATED_PARTS: ArticulatedPart[] = [];
+      for (let j = 0; j < model.njnt; j++) {
+        const type = model.jnt_type[j];
+        if (type !== HINGE_JOINT && type !== SLIDE_JOINT) continue;
+        const body = model.jnt_bodyid[j];
+        if (model.body_rootid[body] === robotRootBody || model.body_geomnum[body] === 0) continue;
+        ARTICULATED_PARTS.push({
+          body,
+          joint: j,
+          dof: model.jnt_dofadr[j],
+          qposAdr: model.jnt_qposadr[j],
+          geomAdr: model.body_geomadr[body],
+          geomNum: model.body_geomnum[body],
+          hinge: type === HINGE_JOINT,
+          lo: model.jnt_range[j * 2],
+          hi: model.jnt_range[j * 2 + 1],
+        });
+      }
+      const cupObject = MOVABLE_OBJECTS.find((o) => o.body === CUP_OBJECT_BODY);
+      // Robot collision per movable object, toggled off while it's held
+      // (setRobotCollision). Model arrays survive mj_resetData, so reset
+      // turns it back on explicitly.
+      const robotCollisionOff = new Set<number>();
+      const setRobotCollision = (obj: MovableObject, on: boolean) => {
+        if (on ? !robotCollisionOff.has(obj.body) : robotCollisionOff.has(obj.body)) return;
+        for (let g = obj.geomAdr; g < obj.geomAdr + obj.geomNum; g++) {
+          if (model.geom_contype[g] === 0 && model.geom_conaffinity[g] === 0) continue;
+          model.geom_conaffinity[g] = on
+            ? model.geom_conaffinity[g] | ROBOT_COLLISION_BIT
+            : model.geom_conaffinity[g] & ~ROBOT_COLLISION_BIT;
+        }
+        if (on) robotCollisionOff.delete(obj.body);
+        else robotCollisionOff.add(obj.body);
+      };
+      const surfaceFrom = (anchorGeom: number, obj: MovableObject) =>
+        nearestSurfacePoint(model, data, obj.geomAdr, obj.geomNum, [
+          data.geom_xpos[anchorGeom * 3],
+          data.geom_xpos[anchorGeom * 3 + 1],
+          data.geom_xpos[anchorGeom * 3 + 2],
+        ]);
       // finger_tip_1/finger_tip_3's own body ORIGIN sits 0.7-0.9m from where
       // their mesh actually renders -- confirmed not just for these two but
       // for every single fingertip body in this hand rig (a systemic CAD-
@@ -958,29 +1126,116 @@ export function MujocoViewer({ interactive = false, className }: MujocoViewerPro
         ? model.body_geomadr[mujoco.mj_name2id(model, OBJ_BODY, "palm_left_1")]
         : -1;
       const canGripRight =
-        ACT_PICK_FINGERS.every((i) => i >= 0) && GRABBABLE_OBJECTS.length > 0 && RIGHT_GRIP_ANCHOR_GEOM >= 0;
+        ACT_PICK_FINGERS.every((i) => i >= 0) && GRABBABLE_OBJECTS.length + ARTICULATED_PARTS.length > 0 && RIGHT_GRIP_ANCHOR_GEOM >= 0;
       const canGripLeft =
-        ACT_LEFT_FINGERS.every((i) => i >= 0) && GRABBABLE_OBJECTS.length > 0 && LEFT_GRIP_ANCHOR_GEOM >= 0;
-      // Nearest grabbable object to `anchorBody`, excluding whatever the
-      // *other* hand is already holding (so both hands can each hold their
-      // own object, but not fight over one) -- null if nothing is within
-      // GRIP_RADIUS.
+        ACT_LEFT_FINGERS.every((i) => i >= 0) && GRABBABLE_OBJECTS.length + ARTICULATED_PARTS.length > 0 && LEFT_GRIP_ANCHOR_GEOM >= 0;
+      // Grabbable object whose surface is nearest the palm, excluding
+      // whatever the *other* hand is already holding (so both hands can
+      // each hold their own object, but not fight over one) -- null if
+      // nothing is within GRIP_REACH.
       const findGrabTarget = (anchorGeom: number, excludeBody: number) => {
-        let best: { body: number; dof: number; qposAdr: number } | null = null;
-        let bestDist = GRIP_RADIUS;
+        let best: { obj: MovableObject; surface: [number, number, number] } | null = null;
+        let bestDist = GRIP_REACH;
         for (const obj of GRABBABLE_OBJECTS) {
           if (obj.body === excludeBody) continue;
-          const dist = Math.hypot(
-            data.geom_xpos[anchorGeom * 3] - data.xpos[obj.body * 3],
-            data.geom_xpos[anchorGeom * 3 + 1] - data.xpos[obj.body * 3 + 1],
-            data.geom_xpos[anchorGeom * 3 + 2] - data.xpos[obj.body * 3 + 2]
-          );
+          const { dist, point } = surfaceFrom(anchorGeom, obj);
           if (dist < bestDist) {
-            best = obj;
+            best = { obj, surface: point };
             bestDist = dist;
           }
         }
         return best;
+      };
+      // A door/drawer near the palm. The pull point is the palm's own position
+      // in the part's frame, so the part doesn't jump to the hand on grabbing.
+      type Pull = { part: ArticulatedPart; local: [number, number, number] };
+      const findPull = (anchorGeom: number, excludeBody: number): Pull | null => {
+        let best: ArticulatedPart | null = null;
+        let bestDist = GRIP_REACH;
+        for (const part of ARTICULATED_PARTS) {
+          if (part.body === excludeBody) continue;
+          const { dist } = surfaceFrom(anchorGeom, part);
+          if (dist < bestDist) {
+            best = part;
+            bestDist = dist;
+          }
+        }
+        if (!best) return null;
+        const b = best.body;
+        const d = [0, 1, 2].map((i) => data.geom_xpos[anchorGeom * 3 + i] - data.xpos[b * 3 + i]);
+        const m = b * 9;
+        const local: [number, number, number] = [0, 1, 2].map(
+          (c) => data.xmat[m + c] * d[0] + data.xmat[m + 3 + c] * d[1] + data.xmat[m + 6 + c] * d[2]
+        ) as [number, number, number];
+        return { part: best, local };
+      };
+      // Drives the pulled part's joint so its pull point tracks the palm: the
+      // signed angle between the two about a hinge's axis, or the palm's offset
+      // along a slide's axis. It's a bounded force, not a pose, so contacts
+      // still win -- a door swung into a counter stops there instead of
+      // passing through, and a drawer carries what's in it by friction.
+      const drivePull = (anchorGeom: number, pull: Pull) => {
+        const { part, local } = pull;
+        const b = part.body;
+        const m = b * 9;
+        const g = [0, 1, 2].map(
+          (r) => data.xpos[b * 3 + r] + data.xmat[m + r * 3] * local[0] + data.xmat[m + r * 3 + 1] * local[1] + data.xmat[m + r * 3 + 2] * local[2]
+        );
+        const h = [0, 1, 2].map((i) => data.geom_xpos[anchorGeom * 3 + i]);
+        const ax = [0, 1, 2].map((i) => data.xaxis[part.joint * 3 + i]);
+        let delta: number;
+        if (part.hinge) {
+          const a = [0, 1, 2].map((i) => data.xanchor[part.joint * 3 + i]);
+          const flat = (v: number[]) => {
+            const along = v[0] * ax[0] + v[1] * ax[1] + v[2] * ax[2];
+            return v.map((x, i) => x - along * ax[i]);
+          };
+          const r1 = flat(g.map((x, i) => x - a[i]));
+          const r2 = flat(h.map((x, i) => x - a[i]));
+          if (Math.hypot(...r1) < 0.02 || Math.hypot(...r2) < 0.02) return;
+          const cross = [r1[1] * r2[2] - r1[2] * r2[1], r1[2] * r2[0] - r1[0] * r2[2], r1[0] * r2[1] - r1[1] * r2[0]];
+          delta = Math.atan2(cross[0] * ax[0] + cross[1] * ax[1] + cross[2] * ax[2], r1[0] * r2[0] + r1[1] * r2[1] + r1[2] * r2[2]);
+        } else {
+          delta = (h[0] - g[0]) * ax[0] + (h[1] - g[1]) * ax[1] + (h[2] - g[2]) * ax[2];
+        }
+        const q = data.qpos[part.qposAdr];
+        const reach = Math.max(part.lo, Math.min(part.hi, q + delta)) - q;
+        const inertia = model.dof_M0[part.dof];
+        const force = inertia * PULL_OMEGA * (PULL_OMEGA * reach - 2 * data.qvel[part.dof]);
+        const cap = part.hinge ? PULL_MAX_TORQUE : PULL_MAX_FORCE;
+        data.qfrc_applied[part.dof] = Math.max(-cap, Math.min(cap, force));
+      };
+      // Held objects don't collide with the robot (the kinematic follow
+      // would fight the contact -- see urdf_to_mjcf.py's
+      // _build_pickup_object()); everything else does once it's clear of
+      // both hands. During the scripted Workflow every object stays off:
+      // its arm targets were solved without props in the way.
+      // Objects deleted in the editor: collision off, hidden, and held
+      // still out of the way every step (removing a body needs a recompile).
+      const parkedFree: { qposAdr: number; dof: number }[] = [];
+      const syncRobotCollision = () => {
+        for (const p of parkedFree) {
+          data.qpos.set([0, 0, -50, 1, 0, 0, 0], p.qposAdr);
+          for (let k = 0; k < 6; k++) data.qvel[p.dof + k] = 0;
+        }
+        for (const obj of MOVABLE_OBJECTS) syncObjectCollision(obj);
+        for (const part of ARTICULATED_PARTS) syncObjectCollision(part);
+      };
+      const syncObjectCollision = (obj: MovableObject) => {
+        const held =
+          obj.body === rightHeldBody ||
+          obj.body === leftHeldBody ||
+          obj.body === rightPull?.part.body ||
+          obj.body === leftPull?.part.body ||
+          pickPhase !== "idle";
+        if (held) {
+          setRobotCollision(obj, false);
+        } else if (robotCollisionOff.has(obj.body)) {
+          const clear =
+            (RIGHT_GRIP_ANCHOR_GEOM < 0 || surfaceFrom(RIGHT_GRIP_ANCHOR_GEOM, obj).dist > ROBOT_COLLISION_CLEARANCE) &&
+            (LEFT_GRIP_ANCHOR_GEOM < 0 || surfaceFrom(LEFT_GRIP_ANCHOR_GEOM, obj).dist > ROBOT_COLLISION_CLEARANCE);
+          if (clear) setRobotCollision(obj, true);
+        }
       };
       // Kinematic follow: pose the held object at (anchor's current world
       // pose) composed with the fixed relPos/relQuat captured at grab time
@@ -1015,6 +1270,7 @@ export function MujocoViewer({ interactive = false, className }: MujocoViewerPro
         for (let k = 0; k < 6; k++) data.qvel[dof + k] = 0;
       };
       const canPick =
+        env.workflows.includes("serveCoffee") &&
         canDrive &&
         YAW_QPOS_ADR >= 0 &&
         CUP_OBJECT_DOF >= 0 &&
@@ -1023,7 +1279,7 @@ export function MujocoViewer({ interactive = false, className }: MujocoViewerPro
         RIGHT_GRIP_ANCHOR_GEOM >= 0 &&
         ACT_PICK_ARM.every((i) => i >= 0) &&
         ACT_PICK_FINGERS.every((i) => i >= 0);
-      if (!canPick) {
+      if (!canPick && env.workflows.includes("serveCoffee")) {
         // The Workflow dropdown always renders (see the wave button's own
         // precedent) and silently no-ops if unsupported -- fine for an old
         // build missing the feature entirely, but indistinguishable from
@@ -1149,6 +1405,10 @@ export function MujocoViewer({ interactive = false, className }: MujocoViewerPro
       let leftHeldRelQuat: [number, number, number, number] = [1, 0, 0, 0];
       let leftHeldDof = -1;
       let leftHeldQposAdr = -1;
+      // A door/drawer each hand is pulling instead (see drivePull); a hand
+      // holds either an object or a part, never both.
+      let rightPull: Pull | null = null;
+      let leftPull: Pull | null = null;
       // Cup's own pose at the start of "pullIn" (still resting on the
       // counter) or "placing" (wherever it was rigidly following the palm
       // to) -- captured once when each phase begins, so that phase can
@@ -1228,6 +1488,8 @@ export function MujocoViewer({ interactive = false, className }: MujocoViewerPro
                 rightGripEngaged = false;
                 rightHeldBody = -1;
               }
+              rightPull = null;
+              leftPull = null;
               if (leftGripEngaged) {
                 leftGripEngaged = false;
                 leftHeldBody = -1;
@@ -1240,6 +1502,363 @@ export function MujocoViewer({ interactive = false, className }: MujocoViewerPro
           };
         }
       }
+
+      // --- Object editor (see ObjectEditor.tsx) -------------------------
+      const BASE_LINK_BODY = mujoco.mj_name2id(model, OBJ_BODY, "base_link");
+      const ROBOT_ROOT = BASE_LINK_BODY >= 0 ? model.body_rootid[BASE_LINK_BODY] : -1;
+      const bodyOfGroup = new Map<THREE.Object3D, number>();
+      for (const [b, group] of Object.entries(bodies)) bodyOfGroup.set(group, Number(b));
+      const parkedBodies = new Set<number>();
+      const bodyName = (b: number): string => mujoco.mj_id2name(model, OBJ_BODY, b) ?? "";
+      // Inner faces of the room's four <room>_wall_<side> boxes (the built-in
+      // rooms all have them); the default camera sits outside the room, so
+      // rays can land on the walls' outside faces.
+      const roomBounds = (() => {
+        const OBJ_GEOM = mujoco.mjtObj.mjOBJ_GEOM.value;
+        const inner: Partial<Record<"south" | "north" | "east" | "west", number>> = {};
+        for (let g = 0; g < model.ngeom; g++) {
+          if (model.geom_bodyid[g] !== 0) continue;
+          const side = /_wall_(south|north|east|west)$/.exec(mujoco.mj_id2name(model, OBJ_GEOM, g) ?? "")?.[1] as keyof typeof inner | undefined;
+          if (!side) continue;
+          const axis = side === "east" || side === "west" ? 0 : 1;
+          const sign = side === "east" || side === "north" ? -1 : 1;
+          inner[side] = model.geom_pos[g * 3 + axis] + sign * model.geom_size[g * 3 + axis];
+        }
+        const { south, north, east, west } = inner;
+        return south !== undefined && north !== undefined && east !== undefined && west !== undefined ? { south, north, east, west } : null;
+      })();
+      const freeJointOf = (b: number) =>
+        model.body_jntnum[b] > 0 && model.jnt_type[model.body_jntadr[b]] === FREE_JOINT ? model.body_jntadr[b] : -1;
+      const isEditable = (b: number) =>
+        b > 0 && model.body_parentid[b] === 0 && model.body_rootid[b] !== ROBOT_ROOT && !parkedBodies.has(b);
+      // An editable object is a top-level body plus everything under it (a
+      // fridge's doors, a cabinet's drawers).
+      const bodiesOf = (b: number) => {
+        const out: number[] = [];
+        for (let k = b; k < model.nbody; k++) if (model.body_rootid[k] === b) out.push(k);
+        return out;
+      };
+      const partsOf = (b: number) => ARTICULATED_PARTS.filter((p) => model.body_rootid[p.body] === b);
+      const BOX_GEOM = mujoco.mjtGeom.mjGEOM_BOX.value;
+      // Free objects whose center is inside a part's box geoms' bounds (in the part's
+      // frame at `pos`/`quat`), with a little headroom for things sticking out of a drawer.
+      const contentsOf = (p: ArticulatedPart, pos: Vec3Tuple, quat: QuatTuple) => {
+        const lo = [Infinity, Infinity, Infinity];
+        const hi = [-Infinity, -Infinity, -Infinity];
+        for (let g = p.geomAdr; g < p.geomAdr + p.geomNum; g++) {
+          if (model.geom_type[g] !== BOX_GEOM) continue;
+          for (let i = 0; i < 3; i++) {
+            lo[i] = Math.min(lo[i], model.geom_pos[g * 3 + i] - model.geom_size[g * 3 + i]);
+            hi[i] = Math.max(hi[i], model.geom_pos[g * 3 + i] + model.geom_size[g * 3 + i]);
+          }
+        }
+        if (!(lo[0] < hi[0])) return [];
+        const inv = quatConj(quat);
+        return MOVABLE_OBJECTS.filter((o) => {
+          const c = vec3At(data.xipos, o.body);
+          const l = quatRotate(inv, [c[0] - pos[0], c[1] - pos[1], c[2] - pos[2]]);
+          return l.every((v, i) => v > lo[i] - 0.01 && v < hi[i] + (i === 2 ? 0.1 : 0.01));
+        });
+      };
+      const isOpen = (p: ArticulatedPart) => data.qpos[p.qposAdr] - p.lo > 0.05 * (p.hi - p.lo);
+      const describe = (b: number): SceneObjectInfo => {
+        const name = bodyName(b);
+        const propId = propIdForBody(name, catalog);
+        const entry = propId ? catalog.find((e) => e.id === propId) : undefined;
+        const label = entry?.name ?? (name === "cup_object" ? "Coffee cup" : name === "pickup_object" ? "Block" : name.replace(/^u_/, ""));
+        const parts = partsOf(b);
+        return {
+          body: b,
+          label,
+          mass: entry?.mass ?? model.body_mass[b],
+          movable: freeJointOf(b) >= 0,
+          deletable: !(b === CUP_OBJECT_BODY && env.workflows.includes("serveCoffee")),
+          openable: parts.length > 0,
+          open: parts.some(isOpen),
+        };
+      };
+      // The robot is most of the scene's triangles and is never a pick or
+      // placement target, so the editor's rays skip its groups entirely.
+      const castTargets: THREE.Object3D[] = [
+        ...(bodies[0]?.children.filter((c) => !bodyOfGroup.has(c)) ?? []),
+        ...Object.entries(bodies)
+          .filter(([b]) => Number(b) > 0 && model.body_rootid[Number(b)] !== ROBOT_ROOT)
+          .map(([, group]) => group),
+      ];
+      const raycaster = new THREE.Raycaster();
+      const pointerNdc = new THREE.Vector2();
+      // Top-level body a ray hit belongs to (a door resolves to its fridge), -1 if none.
+      const bodyOfHit = (obj: THREE.Object3D | null) => {
+        for (let o = obj; o; o = o.parent) {
+          const b = bodyOfGroup.get(o);
+          if (b !== undefined) return b > 0 ? model.body_rootid[b] : b;
+        }
+        return -1;
+      };
+      const isShown = (obj: THREE.Object3D | null) => {
+        for (let o = obj; o; o = o.parent) if (!o.visible) return false;
+        return true;
+      };
+      const castAt = (clientX: number, clientY: number) => {
+        const rect = renderer!.domElement.getBoundingClientRect();
+        pointerNdc.set(((clientX - rect.left) / rect.width) * 2 - 1, -((clientY - rect.top) / rect.height) * 2 + 1);
+        raycaster.setFromCamera(pointerNdc, camera);
+        return raycaster.intersectObjects(castTargets, true).filter((h) => isShown(h.object));
+      };
+      // Lowest point of a body's geoms below its origin, so moved objects rest on the surface.
+      const bottomOffset = (b: number) => {
+        let minZ = Infinity;
+        for (let g = model.body_geomadr[b]; g < model.body_geomadr[b] + model.body_geomnum[b]; g++) {
+          const m = g * 9;
+          let z = data.geom_xpos[g * 3 + 2];
+          for (let i = 0; i < 3; i++) {
+            const r = data.geom_xmat[m + 6 + i];
+            z += r * model.geom_aabb[g * 6 + i] - Math.abs(r) * model.geom_aabb[g * 6 + 3 + i];
+          }
+          minZ = Math.min(minZ, z);
+        }
+        return Number.isFinite(minZ) ? data.xpos[b * 3 + 2] - minZ : 0;
+      };
+      const recordStaticPose = (b: number) => {
+        edits.staticPoses.set(bodyName(b), {
+          pos: [model.body_pos[b * 3], model.body_pos[b * 3 + 1], model.body_pos[b * 3 + 2]],
+          quat: [model.body_quat[b * 4], model.body_quat[b * 4 + 1], model.body_quat[b * 4 + 2], model.body_quat[b * 4 + 3]],
+        });
+      };
+      const releaseIfHeld = (b: number) => {
+        if (b === rightHeldBody) {
+          rightGripEngaged = false;
+          rightHeldBody = -1;
+        }
+        if (b === leftHeldBody) {
+          leftGripEngaged = false;
+          leftHeldBody = -1;
+        }
+        if (rightPull && model.body_rootid[rightPull.part.body] === b) rightPull = null;
+        if (leftPull && model.body_rootid[leftPull.part.body] === b) leftPull = null;
+      };
+      const removeObject = (b: number) => {
+        if (!isEditable(b)) return;
+        releaseIfHeld(b);
+        for (const k of bodiesOf(b)) {
+          for (let g = model.body_geomadr[k]; g < model.body_geomadr[k] + model.body_geomnum[k]; g++) {
+            model.geom_contype[g] = 0;
+            model.geom_conaffinity[g] = 0;
+          }
+          robotCollisionOff.delete(k);
+          if (bodies[k]) bodies[k].visible = false;
+        }
+        const j = freeJointOf(b);
+        if (j >= 0) parkedFree.push({ qposAdr: model.jnt_qposadr[j], dof: model.jnt_dofadr[j] });
+        else model.body_pos[b * 3 + 2] = -50;
+        for (const list of [MOVABLE_OBJECTS, GRABBABLE_OBJECTS]) {
+          const i = list.findIndex((o) => o.body === b);
+          if (i >= 0) list.splice(i, 1);
+        }
+        for (const part of partsOf(b)) {
+          data.qfrc_applied[part.dof] = 0;
+          ARTICULATED_PARTS.splice(ARTICULATED_PARTS.indexOf(part), 1);
+        }
+        parkedBodies.add(b);
+        edits.removed.add(bodyName(b));
+        syncRobotCollision();
+        mujoco.mj_forward(model, data);
+      };
+
+      const ghost = new THREE.Mesh(
+        new THREE.BoxGeometry(1, 1, 1),
+        new THREE.MeshBasicMaterial({ color: 0x4ade80, transparent: true, opacity: 0.25, depthWrite: false })
+      );
+      const ghostEdges = new THREE.LineSegments(new THREE.EdgesGeometry(ghost.geometry), new THREE.LineBasicMaterial({ color: 0x4ade80 }));
+      ghost.add(ghostEdges);
+      ghost.visible = false;
+      scene.add(ghost);
+      // Selection outline around every group of the selected object (doors included), refit each frame.
+      const selectionBox = new THREE.Box3();
+      const selectionHelper = new THREE.Box3Helper(selectionBox, 0xf5c542);
+      selectionHelper.visible = false;
+      scene.add(selectionHelper);
+      let selectionGroups: THREE.Object3D[] = [];
+      const updateSelection = () => {
+        if (!selectionGroups.length) return;
+        selectionBox.makeEmpty();
+        for (const g of selectionGroups) selectionBox.expandByObject(g);
+      };
+
+      editorApiRef.current = {
+        pickObject(clientX, clientY) {
+          const hits = castAt(clientX, clientY);
+          const first = hits.find((h) => model.body_rootid[bodyOfHit(h.object)] !== ROBOT_ROOT);
+          const hitBody = first ? bodyOfHit(first.object) : -1;
+          if (isEditable(hitBody)) return describe(hitBody);
+          // Small items (forks, markers) are hard to hit exactly: take the
+          // nearest object within a few pixels of the cursor instead.
+          const rect = renderer!.domElement.getBoundingClientRect();
+          const v = new THREE.Vector3();
+          let best = -1;
+          let bestPx = 22;
+          for (let b = 1; b < model.nbody; b++) {
+            if (!isEditable(b)) continue;
+            getPosition(data.xipos, b, v).project(camera);
+            if (v.z > 1) continue;
+            const px = Math.hypot(rect.left + ((v.x + 1) / 2) * rect.width - clientX, rect.top + ((1 - v.y) / 2) * rect.height - clientY);
+            if (px < bestPx) {
+              best = b;
+              bestPx = px;
+            }
+          }
+          return best >= 0 ? describe(best) : null;
+        },
+        surfaceAt(clientX, clientY, excludeBody = -1) {
+          const hit = castAt(clientX, clientY).find((h) => {
+            const b = bodyOfHit(h.object);
+            return b !== excludeBody && model.body_rootid[b] !== ROBOT_ROOT;
+          });
+          if (!hit) return null;
+          const n = hit.face ? hit.face.normal.clone().transformDirection(hit.object.matrixWorld) : new THREE.Vector3(0, 1, 0);
+          if (n.dot(raycaster.ray.direction) > 0) n.negate();
+          return { point: [hit.point.x, -hit.point.z, hit.point.y], normal: [n.x, -n.z, n.y], facesUp: n.y > 0.7 };
+        },
+        insideRoom([x, y]) {
+          return !roomBounds || (x > roomBounds.west && x < roomBounds.east && y > roomBounds.south && y < roomBounds.north);
+        },
+        setGhost(g) {
+          ghost.visible = g !== null;
+          if (!g) return;
+          const [sx, sy, sz] = g.entry.size;
+          const [cx, cy, cz] = g.entry.center;
+          const yaw = (g.yawDeg * Math.PI) / 180;
+          const wx = g.pos[0] + Math.cos(yaw) * cx - Math.sin(yaw) * cy;
+          const wy = g.pos[1] + Math.sin(yaw) * cx + Math.cos(yaw) * cy;
+          ghost.scale.set(Math.max(sx, 0.01), Math.max(sz, 0.01), Math.max(sy, 0.01));
+          ghost.rotation.set(0, yaw, 0);
+          ghost.position.set(wx, g.pos[2] + cz, -wy);
+          const color = g.valid ? 0x4ade80 : 0xf87171;
+          (ghost.material as THREE.MeshBasicMaterial).color.setHex(color);
+          (ghostEdges.material as THREE.LineBasicMaterial).color.setHex(color);
+        },
+        setSelected(b) {
+          selectionGroups = b !== null && isEditable(b) ? bodiesOf(b).flatMap((k) => (bodies[k] ? [bodies[k]] : [])) : [];
+          selectionHelper.visible = selectionGroups.length > 0;
+          updateSelection();
+        },
+        toggleOpen(b) {
+          if (!isEditable(b)) return null;
+          releaseIfHeld(b);
+          const parts = partsOf(b);
+          const close = parts.some(isOpen);
+          // Snapping a part to its new position would leave what's in a drawer
+          // behind (inside the carcass once closed), so its contents move with it.
+          const carried = new Map<MovableObject, { part: ArticulatedPart; pos: Vec3Tuple; quat: QuatTuple }>();
+          for (const p of parts) {
+            const pos = vec3At(data.xpos, p.body);
+            const quat = quatAt(data.xquat, p.body);
+            for (const o of contentsOf(p, pos, quat)) if (!carried.has(o)) carried.set(o, { part: p, pos, quat });
+          }
+          for (const p of parts) {
+            // Doors open to a right angle (or their stop, if that's less); drawers all the way.
+            data.qpos[p.qposAdr] = close ? p.lo : p.hinge ? Math.min(p.hi, Math.PI / 2) : p.hi;
+            data.qvel[p.dof] = 0;
+          }
+          mujoco.mj_forward(model, data);
+          for (const [o, { part, pos, quat }] of carried) {
+            const rel = quatMul(quatAt(data.xquat, part.body), quatConj(quat));
+            const newPos = vec3At(data.xpos, part.body);
+            const a = o.qposAdr;
+            const offset = quatRotate(rel, [data.qpos[a] - pos[0], data.qpos[a + 1] - pos[1], data.qpos[a + 2] - pos[2]]);
+            for (let i = 0; i < 3; i++) data.qpos[a + i] = newPos[i] + offset[i];
+            const q = quatMul(rel, [data.qpos[a + 3], data.qpos[a + 4], data.qpos[a + 5], data.qpos[a + 6]]);
+            const n = Math.hypot(...q);
+            for (let i = 0; i < 4; i++) data.qpos[a + 3 + i] = q[i] / n;
+            for (let i = 0; i < 6; i++) data.qvel[o.dof + i] = 0;
+          }
+          if (carried.size) mujoco.mj_forward(model, data);
+          return describe(b);
+        },
+        moveObject(b, point) {
+          if (!isEditable(b)) return;
+          releaseIfHeld(b);
+          const j = freeJointOf(b);
+          if (j >= 0) {
+            const adr = model.jnt_qposadr[j];
+            const z = point[2] + bottomOffset(b) + 0.002;
+            data.qpos[adr] = point[0];
+            data.qpos[adr + 1] = point[1];
+            data.qpos[adr + 2] = z;
+            for (let k = 0; k < 6; k++) data.qvel[model.jnt_dofadr[j] + k] = 0;
+          } else {
+            model.body_pos[b * 3] = point[0];
+            model.body_pos[b * 3 + 1] = point[1];
+            recordStaticPose(b);
+          }
+          mujoco.mj_forward(model, data);
+        },
+        rotateObject(b, deg) {
+          if (!isEditable(b)) return;
+          releaseIfHeld(b);
+          const half = (deg * Math.PI) / 360;
+          const turn: [number, number, number, number] = [Math.cos(half), 0, 0, Math.sin(half)];
+          const j = freeJointOf(b);
+          const arr = j >= 0 ? data.qpos : model.body_quat;
+          const at = j >= 0 ? model.jnt_qposadr[j] + 3 : b * 4;
+          const q = quatMul(turn, [arr[at], arr[at + 1], arr[at + 2], arr[at + 3]]);
+          const n = Math.hypot(...q) || 1;
+          for (let k = 0; k < 4; k++) arr[at + k] = q[k] / n;
+          if (j < 0) recordStaticPose(b);
+          mujoco.mj_forward(model, data);
+        },
+        removeObject,
+        activeMovableCount: () => MOVABLE_OBJECTS.length,
+      };
+      isBusyRef.current = () => pickPhase !== "idle";
+
+      const captureTeleop = () => ({
+        liftHeight, bendAngle,
+        shoulderFwdAngle, shoulderLatAngle, armRollAngle, elbowAngle, wristAAngle, wristBAngle,
+        shoulderFwdAngleL, shoulderLatAngleL, armRollAngleL, elbowAngleL, wristAAngleL, wristBAngleL,
+        rightGripFraction, leftGripFraction, rightGripEngaged, leftGripEngaged, rightHeldBody, leftHeldBody,
+        rightHeldRelPos, rightHeldRelQuat, rightHeldDof, rightHeldQposAdr,
+        leftHeldRelPos, leftHeldRelQuat, leftHeldDof, leftHeldQposAdr,
+        fppYaw, fppPitch,
+      });
+      captureRef.current = () => ({
+        envId: env.id,
+        qpos: Float64Array.from(data.qpos),
+        qvel: Float64Array.from(data.qvel),
+        ctrl: Float64Array.from(data.ctrl),
+        teleop: captureTeleop(),
+        camera: {
+          pos: [camera.position.x, camera.position.y, camera.position.z],
+          target: controls ? [controls.target.x, controls.target.y, controls.target.z] : [ORBIT_TARGET[0], ORBIT_TARGET[1], ORBIT_TARGET[2]],
+        },
+      });
+      if (restore && restore.qpos.length <= model.nq && restore.qvel.length <= model.nv && restore.ctrl.length === model.nu) {
+        data.qpos.set(restore.qpos);
+        data.qvel.set(restore.qvel);
+        data.ctrl.set(restore.ctrl);
+        const t = restore.teleop as ReturnType<typeof captureTeleop>;
+        ({ liftHeight, bendAngle } = t);
+        ({ shoulderFwdAngle, shoulderLatAngle, armRollAngle, elbowAngle, wristAAngle, wristBAngle } = t);
+        ({ shoulderFwdAngleL, shoulderLatAngleL, armRollAngleL, elbowAngleL, wristAAngleL, wristBAngleL } = t);
+        ({ rightGripFraction, leftGripFraction, rightGripEngaged, leftGripEngaged, rightHeldBody, leftHeldBody } = t);
+        ({ rightHeldRelPos, rightHeldRelQuat, rightHeldDof, rightHeldQposAdr } = t);
+        ({ leftHeldRelPos, leftHeldRelQuat, leftHeldDof, leftHeldQposAdr } = t);
+        ({ fppYaw, fppPitch } = t);
+        camera.position.set(...restore.camera.pos);
+        controls?.target.set(...restore.camera.target);
+        controls?.update();
+      }
+      for (const [name, pose] of edits.staticPoses) {
+        const b = mujoco.mj_name2id(model, OBJ_BODY, name);
+        if (b < 0) continue;
+        model.body_pos.set(pose.pos, b * 3);
+        model.body_quat.set(pose.quat, b * 4);
+      }
+      for (const name of edits.removed) {
+        const b = mujoco.mj_name2id(model, OBJ_BODY, name);
+        if (b >= 0) removeObject(b);
+      }
+      mujoco.mj_forward(model, data);
 
       const tmpPos = new THREE.Vector3();
       const tmpQuat = new THREE.Quaternion();
@@ -1450,20 +2069,23 @@ export function MujocoViewer({ interactive = false, className }: MujocoViewerPro
               const fingerTarget = lerpArr(PICK_FINGER_OPEN, PICK_FINGER_CLOSED, rightGripFraction);
               for (let i = 0; i < ACT_PICK_FINGERS.length; i++) data.ctrl[ACT_PICK_FINGERS[i]] = fingerTarget[i];
 
-              if (!rightGripEngaged && rightGripFraction > GRIP_ENGAGE_AT) {
+              if (!rightGripEngaged && !rightPull && rightGripFraction > GRIP_ENGAGE_AT) {
                 const target = findGrabTarget(RIGHT_GRIP_ANCHOR_GEOM, leftHeldBody);
                 if (target) {
-                  const { relPos, relQuat } = computeGripRelpose(data, RIGHT_GRIP_ANCHOR_GEOM, target.body);
+                  const { relPos, relQuat } = computeGripRelpose(data, RIGHT_GRIP_ANCHOR_GEOM, target.obj.body);
                   rightGripEngaged = true;
-                  rightHeldBody = target.body;
-                  rightHeldRelPos = snugRelPos(relPos);
+                  rightHeldBody = target.obj.body;
+                  rightHeldRelPos = snugRelPos(data, RIGHT_GRIP_ANCHOR_GEOM, relPos, target.surface);
                   rightHeldRelQuat = relQuat;
-                  rightHeldDof = target.dof;
-                  rightHeldQposAdr = target.qposAdr;
+                  rightHeldDof = target.obj.dof;
+                  rightHeldQposAdr = target.obj.qposAdr;
+                } else {
+                  rightPull = findPull(RIGHT_GRIP_ANCHOR_GEOM, leftPull?.part.body ?? -1);
                 }
-              } else if (rightGripEngaged && rightGripFraction < GRIP_RELEASE_AT) {
+              } else if ((rightGripEngaged || rightPull) && rightGripFraction < GRIP_RELEASE_AT) {
                 rightGripEngaged = false;
                 rightHeldBody = -1;
+                rightPull = null;
               }
               // Following the held object itself (applyGripPose) happens
               // once, after mj_step, below -- see that block's own comment.
@@ -1474,20 +2096,23 @@ export function MujocoViewer({ interactive = false, className }: MujocoViewerPro
               const fingerTarget = lerpArr(LEFT_FINGER_OPEN, LEFT_FINGER_CLOSED, leftGripFraction);
               for (let i = 0; i < ACT_LEFT_FINGERS.length; i++) data.ctrl[ACT_LEFT_FINGERS[i]] = fingerTarget[i];
 
-              if (!leftGripEngaged && leftGripFraction > GRIP_ENGAGE_AT) {
+              if (!leftGripEngaged && !leftPull && leftGripFraction > GRIP_ENGAGE_AT) {
                 const target = findGrabTarget(LEFT_GRIP_ANCHOR_GEOM, rightHeldBody);
                 if (target) {
-                  const { relPos, relQuat } = computeGripRelpose(data, LEFT_GRIP_ANCHOR_GEOM, target.body);
+                  const { relPos, relQuat } = computeGripRelpose(data, LEFT_GRIP_ANCHOR_GEOM, target.obj.body);
                   leftGripEngaged = true;
-                  leftHeldBody = target.body;
-                  leftHeldRelPos = snugRelPos(relPos);
+                  leftHeldBody = target.obj.body;
+                  leftHeldRelPos = snugRelPos(data, LEFT_GRIP_ANCHOR_GEOM, relPos, target.surface);
                   leftHeldRelQuat = relQuat;
-                  leftHeldDof = target.dof;
-                  leftHeldQposAdr = target.qposAdr;
+                  leftHeldDof = target.obj.dof;
+                  leftHeldQposAdr = target.obj.qposAdr;
+                } else {
+                  leftPull = findPull(LEFT_GRIP_ANCHOR_GEOM, rightPull?.part.body ?? -1);
                 }
-              } else if (leftGripEngaged && leftGripFraction < GRIP_RELEASE_AT) {
+              } else if ((leftGripEngaged || leftPull) && leftGripFraction < GRIP_RELEASE_AT) {
                 leftGripEngaged = false;
                 leftHeldBody = -1;
+                leftPull = null;
               }
               // Following the held object itself (applyGripPose) happens
               // once, after mj_step, below -- see that block's own comment.
@@ -1620,7 +2245,8 @@ export function MujocoViewer({ interactive = false, className }: MujocoViewerPro
                   // real time instead -- now short enough (PICK_PULL_IN_S) to
                   // read as the hand settling onto the cup, not a slide.
                   const { relPos, relQuat } = computeGripRelpose(data, RIGHT_GRIP_ANCHOR_GEOM, CUP_OBJECT_BODY);
-                  rightHeldRelPos = snugRelPos(relPos);
+                  const cupSurface = cupObject ? surfaceFrom(RIGHT_GRIP_ANCHOR_GEOM, cupObject).point : null;
+                  rightHeldRelPos = cupSurface ? snugRelPos(data, RIGHT_GRIP_ANCHOR_GEOM, relPos, cupSurface) : relPos;
                   rightHeldRelQuat = relQuat;
                   rightHeldDof = CUP_OBJECT_DOF;
                   rightHeldQposAdr = CUP_OBJECT_QPOS_ADR;
@@ -1940,6 +2566,9 @@ export function MujocoViewer({ interactive = false, className }: MujocoViewerPro
               applyGripPose(LEFT_GRIP_ANCHOR_GEOM, leftHeldRelPos, leftHeldRelQuat, leftHeldQposAdr, leftHeldDof);
               neededForwardSync = true;
             }
+            for (const part of ARTICULATED_PARTS) data.qfrc_applied[part.dof] = 0;
+            if (rightPull) drivePull(RIGHT_GRIP_ANCHOR_GEOM, rightPull);
+            if (leftPull) drivePull(LEFT_GRIP_ANCHOR_GEOM, leftPull);
             // "pullIn"/"placing"'s own directly-scripted cup pose (see
             // those phases' own comments) -- set instead of, not alongside,
             // the two blocks above (neither is engaged during either
@@ -1955,6 +2584,7 @@ export function MujocoViewer({ interactive = false, className }: MujocoViewerPro
               for (let k = 0; k < 6; k++) data.qvel[CUP_OBJECT_DOF + k] = 0;
               neededForwardSync = true;
             }
+            syncRobotCollision();
 
             remaining -= timestepMs;
           }
@@ -1974,6 +2604,7 @@ export function MujocoViewer({ interactive = false, className }: MujocoViewerPro
           body.position.copy(getPosition(data.xpos, b, tmpPos));
           body.quaternion.copy(getQuaternion(data.xquat, b, tmpQuat));
         }
+        updateSelection();
 
         // FPP: camera mounted at the head, looking the same direction the
         // base's own drive logic (above) treats as "forward" -- so this is
@@ -2054,10 +2685,55 @@ export function MujocoViewer({ interactive = false, className }: MujocoViewerPro
       data?.delete?.();
       model?.delete?.();
     };
-    // `interactive` only changes camera controls, not worth re-initializing
-    // the whole WASM module/scene for -- it's fixed per mount in practice.
+    // Switching environment recompiles the whole model, so it re-runs this
+    // effect from scratch (new model on the shared engine). `interactive`
+    // only changes camera controls, not worth re-initializing for -- it's
+    // fixed per mount in practice.
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [environmentId, sceneVersion]);
+
+  const reloadScene = (carryState: boolean) => {
+    restoreRef.current = carryState ? (captureRef.current?.() ?? null) : null;
+    editorApiRef.current = null;
+    setStatus("loading");
+    setSceneVersion((v) => v + 1);
+  };
+
+  const addObject = (item: Omit<AddedProp, "name">) => {
+    const edits = editsIn(sceneEditsRef.current, environment.id);
+    edits.added.push({ ...item, name: `added_${item.propId}_${edits.nextId++}` });
+    setAddedCounts((c) => ({ ...c, [environment.id]: edits.added.length }));
+    reloadScene(true);
+  };
+
+  const toggleEditing = () => {
+    if (editing) {
+      setEditing(false);
+      setPaused(pausedBeforeEditRef.current);
+      return;
+    }
+    if (isBusyRef.current()) {
+      setEditorNotice("Wait for the workflow to finish before editing objects.");
+      return;
+    }
+    setEditorNotice(null);
+    pausedBeforeEditRef.current = paused;
+    setPaused(true);
+    setView("orbit");
+    setEditing(true);
+  };
+
+  // Reset restores the room as built: if the editor changed it, that means a rebuild.
+  const resetScene = () => {
+    const edits = sceneEditsRef.current.get(environment.id);
+    if (edits && (edits.added.length || edits.removed.size || edits.staticPoses.size)) {
+      sceneEditsRef.current.delete(environment.id);
+      setAddedCounts((c) => ({ ...c, [environment.id]: 0 }));
+      reloadScene(false);
+    } else {
+      resetRef.current();
+    }
+  };
 
   const showControls = interactive && status === "ready";
   const buttonClass =
@@ -2065,11 +2741,44 @@ export function MujocoViewer({ interactive = false, className }: MujocoViewerPro
 
   const controlButtons = (
     <>
+      <select
+        value={environmentId}
+        aria-label="Environment"
+        title={environment.description}
+        onChange={(e) => {
+          // Same type-ahead focus issue as the Workflow select below.
+          e.target.blur();
+          if (e.target.value === UPLOAD_OPTION) {
+            setShowUpload(true);
+            return;
+          }
+          setUploadWarnings([]);
+          if (editing) {
+            setEditing(false);
+            setPaused(pausedBeforeEditRef.current);
+          }
+          setStatus("loading");
+          setEnvironmentId(e.target.value);
+        }}
+        className={clsx(buttonClass, "appearance-none pr-8")}
+      >
+        {[...ENVIRONMENTS, ...uploadedList].map((env) => (
+          <option key={env.id} value={env.id} className="bg-panel text-off-white">
+            {env.name}
+          </option>
+        ))}
+        <option value={UPLOAD_OPTION} className="bg-panel text-off-white">
+          Upload your own…
+        </option>
+      </select>
       <button onClick={() => setPaused((p) => !p)} className={buttonClass}>
         {paused ? "Resume" : "Pause"}
       </button>
-      <button onClick={() => resetRef.current()} className={buttonClass}>
+      <button onClick={resetScene} className={buttonClass}>
         Reset
+      </button>
+      <button onClick={toggleEditing} className={clsx(buttonClass, editing && "bg-sand/30")} aria-pressed={editing}>
+        {editing ? "Done editing" : "Objects"}
       </button>
       <select
         value={view}
@@ -2087,29 +2796,33 @@ export function MujocoViewer({ interactive = false, className }: MujocoViewerPro
           "Pick & Place" button used) and the select snaps straight back to
           the placeholder, rather than staying "selected" on an action that
           already ran. */}
-      <select
-        value={workflowChoice}
-        onChange={(e) => {
-          const choice = e.target.value;
-          // A focused <select> intercepts the W/A/S/D keys that WASD drive
-          // listens for as its own type-ahead ("jump to the option starting
-          // with this letter") on some browsers, before the page's own
-          // keydown handling ever sees them -- reported live as "WASD
-          // stopped working" right after picking a workflow. Blurring hands
-          // keyboard focus back to the page the instant a choice is made.
-          e.target.blur();
-          setWorkflowChoice("");
-          if (choice === "pickupCoffee") pickRef.current();
-        }}
-        className={clsx(buttonClass, "appearance-none pr-8")}
-      >
-        <option value="" className="bg-panel text-off-white">
-          Workflow…
-        </option>
-        <option value="pickupCoffee" className="bg-panel text-off-white">
-          Pick up cup → coffee machine
-        </option>
-      </select>
+      {environment.workflows.length > 0 && (
+        <select
+          value={workflowChoice}
+          onChange={(e) => {
+            const choice = e.target.value;
+            // A focused <select> intercepts the W/A/S/D keys that WASD drive
+            // listens for as its own type-ahead ("jump to the option starting
+            // with this letter") on some browsers, before the page's own
+            // keydown handling ever sees them -- reported live as "WASD
+            // stopped working" right after picking a workflow. Blurring hands
+            // keyboard focus back to the page the instant a choice is made.
+            e.target.blur();
+            setWorkflowChoice("");
+            if (choice === "pickupCoffee") pickRef.current();
+          }}
+          className={clsx(buttonClass, "appearance-none pr-8")}
+        >
+          <option value="" className="bg-panel text-off-white">
+            Workflow…
+          </option>
+          {environment.workflows.includes("serveCoffee") && (
+            <option value="pickupCoffee" className="bg-panel text-off-white">
+              Serve coffee
+            </option>
+          )}
+        </select>
+      )}
     </>
   );
 
@@ -2121,12 +2834,67 @@ export function MujocoViewer({ interactive = false, className }: MujocoViewerPro
           resizing -- exactly the "views overlap" failure mode this avoids. */}
       <div className="flex h-full min-w-0 flex-1 flex-col">
         <div className="relative min-h-0 flex-1 overflow-hidden">
-          <div ref={containerRef} className="h-full w-full [&>canvas]:block [&>canvas]:h-full [&>canvas]:w-full" />
+          <div
+            ref={containerRef}
+            style={{ backgroundColor: environment.background }}
+            className="h-full w-full [&>canvas]:block [&>canvas]:h-full [&>canvas]:w-full"
+          />
 
           {status === "loading" && (
             <div className="absolute inset-0 flex flex-col items-center justify-center gap-2 bg-black/80">
               <span className="h-2 w-2 animate-pulse rounded-full bg-sand" />
               <p className="text-technical text-xs text-sand">LOADING PHYSICS ENGINE</p>
+            </div>
+          )}
+
+          {showUpload && (
+            <EnvironmentUploadPanel
+              loadEngine={loadEngine}
+              onClose={() => setShowUpload(false)}
+              onLoaded={(env, warnings) => {
+                uploadedEnvironmentRef.current = env;
+                setUploadedEnvironment(env);
+                setUploadWarnings(warnings);
+                setShowUpload(false);
+                setStatus("loading");
+                setEnvironmentId(env.id);
+              }}
+            />
+          )}
+
+          {interactive && editing && (
+            <ObjectEditor
+              apiRef={editorApiRef}
+              containerRef={containerRef}
+              sceneKey={`${environment.id}:${sceneVersion}:${status}`}
+              addedCount={addedCounts[environment.id] ?? 0}
+              onAdd={addObject}
+              onClose={toggleEditing}
+            />
+          )}
+
+          {showControls && editorNotice && !editing && (
+            <div className="absolute bottom-4 left-1/2 z-10 flex -translate-x-1/2 items-center gap-3 rounded-sm border border-border-strong bg-panel/90 px-3 py-2 text-xs text-off-white/80 backdrop-blur">
+              {editorNotice}
+              <button onClick={() => setEditorNotice(null)} aria-label="Dismiss" className="cursor-pointer text-off-white/60 hover:text-off-white">
+                ×
+              </button>
+            </div>
+          )}
+
+          {showControls && uploadWarnings.length > 0 && (
+            <div className="absolute top-4 right-4 z-10 max-w-sm rounded-sm border border-border-strong bg-panel/90 px-3 py-2 text-xs text-off-white/80 backdrop-blur">
+              <div className="mb-1 flex items-center justify-between gap-4">
+                <span className="text-technical text-sand">UPLOAD NOTES</span>
+                <button onClick={() => setUploadWarnings([])} aria-label="Dismiss" className="cursor-pointer text-off-white/60 hover:text-off-white">
+                  ×
+                </button>
+              </div>
+              <ul className="list-disc space-y-1 pl-4">
+                {uploadWarnings.map((w) => (
+                  <li key={w}>{w}</li>
+                ))}
+              </ul>
             </div>
           )}
 

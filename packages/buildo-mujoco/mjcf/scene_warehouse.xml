@@ -1,0 +1,4 @@
+<mujoco model="buildo_warehouse">
+  <include file="humanoid.xml"/>
+  <include file="environments/warehouse/scene.xml"/>
+</mujoco>

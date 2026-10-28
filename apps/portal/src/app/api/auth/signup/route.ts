@@ -7,6 +7,8 @@ import { createSessionCookie, hashPassword, toSafeUser } from "@/lib/auth";
 import { signupSchema } from "@/lib/validations";
 import { sendVerificationEmail } from "@/lib/mailer";
 
+const SIGNUP_CREDIT = 20;
+
 export async function POST(request: Request) {
   const body = await request.json().catch(() => null);
   const parsed = signupSchema.safeParse(body);
@@ -18,15 +20,26 @@ export async function POST(request: Request) {
     );
   }
 
-  const { name, email, password, role } = parsed.data;
+  const { name, email, password, role, referralCode } = parsed.data;
   const passwordHash = await hashPassword(password);
   const emailVerifyToken = randomBytes(32).toString("hex");
   const emailVerifyExpiry = new Date(Date.now() + 24 * 60 * 60 * 1000); // 24 h
 
+  // An unknown/typo'd code is silently ignored rather than blocking signup --
+  // referral is a bonus, not a requirement.
+  let referredById: string | undefined;
+  if (referralCode) {
+    const referrer = await prisma.user.findUnique({
+      where: { referralCode },
+      select: { id: true },
+    });
+    referredById = referrer?.id;
+  }
+
   let user;
   try {
     user = await prisma.user.create({
-      data: { name, email, passwordHash, role, emailVerifyToken, emailVerifyExpiry },
+      data: { name, email, passwordHash, role, emailVerifyToken, emailVerifyExpiry, referredById },
     });
   } catch (err) {
     if (err instanceof Prisma.PrismaClientKnownRequestError && err.code === "P2002") {
@@ -36,6 +49,28 @@ export async function POST(request: Request) {
       );
     }
     throw err;
+  }
+
+  // Instant signup bonus -- credited immediately, separate from the
+  // EMAIL_VERIFY_BONUS credited later on email confirmation. Creator-side
+  // only: it credits tokenBalance, which a robot-owner account (apps/owner)
+  // never reads, so OWNER signups skip it rather than silently stacking
+  // free $ into a wallet that's meant to start at exactly $0.
+  if (role !== "OWNER") {
+    [user] = await prisma.$transaction([
+      prisma.user.update({
+        where: { id: user.id },
+        data: { tokenBalance: { increment: SIGNUP_CREDIT } },
+      }),
+      prisma.tokenTransaction.create({
+        data: {
+          userId: user.id,
+          type: "SIGNUP_BONUS",
+          amount: SIGNUP_CREDIT,
+          note: "Instant signup reward",
+        },
+      }),
+    ]);
   }
 
   const token = await createSessionCookie(user.id);

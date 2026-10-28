@@ -1,0 +1,74 @@
+{
+  "room": {
+    "x": [-4.5, 4.5],
+    "y": [-3.5, 3.5],
+    "height": 2.8,
+    "floor_rgba": [0.16, 0.18, 0.21, 1],
+    "wall_rgba": [0.78, 0.77, 0.74, 1],
+    "baseboard_rgba": [0.22, 0.22, 0.22, 1]
+  },
+  "decals": [
+    { "name": "lounge_rug", "center": [3.25, -0.6, 0.002], "half": [1.1, 1.45, 0.002], "rgba": [0.42, 0.36, 0.3, 1] }
+  ],
+  "items": [
+    { "asset": "metal_office_desk", "pos": [-2.6, 2.75], "yaw": 0 },
+    { "asset": "metal_office_desk", "pos": [-0.4, 2.75], "yaw": 0 },
+    { "asset": "metal_office_desk", "pos": [-2.6, -2.75], "yaw": 180 },
+    { "asset": "metal_office_desk", "pos": [-0.4, -2.75], "yaw": 180 },
+    { "asset": "desk_lamp_arm_01", "pos": [-1.85, 3.0], "yaw": 180, "z": 0.79, "collide": false },
+    { "asset": "desk_lamp_arm_01", "pos": [0.35, 3.0], "yaw": 180, "z": 0.79, "collide": false },
+    { "asset": "desk_lamp_arm_01", "pos": [-3.35, -3.0], "yaw": 0, "z": 0.79, "collide": false },
+    { "asset": "desk_lamp_arm_01", "pos": [-1.15, -3.0], "yaw": 0, "z": 0.79, "collide": false },
+    { "asset": "wooden_bookshelf_worn", "pos": [-4.19, 0.0], "yaw": 90 },
+    { "asset": "painted_wooden_cabinet", "pos": [2.4, 3.17], "yaw": 0 },
+    { "asset": "sofa_02", "pos": [4.06, -0.6], "yaw": -90 },
+    { "asset": "modern_coffee_table_01", "pos": [3.0, -0.6], "yaw": 0 },
+    { "asset": "modern_arm_chair_01", "pos": [3.0, -2.45], "yaw": 180 },
+    { "asset": "potted_plant_02", "pos": [4.05, 3.05], "yaw": 0 },
+    { "asset": "potted_plant_02", "pos": [4.05, -3.05], "yaw": 45 },
+    { "asset": "potted_plant_02", "pos": [-4.05, -3.05], "yaw": 120 }
+  ],
+  "props": [
+    { "prop": "task_chair", "pos": [-2.6, 1.95], "yaw": 180, "repeat": { "count": 2, "step": [2.2, 0] } },
+    { "prop": "task_chair", "pos": [-2.6, -1.95], "yaw": 0, "repeat": { "count": 2, "step": [2.2, 0] } },
+
+    { "prop": "monitor_24in", "pos": [-2.6, 3.0], "z": 0.79, "yaw": 0, "repeat": { "count": 2, "step": [2.2, 0] } },
+    { "prop": "keyboard", "pos": [-2.6, 2.55], "z": 0.79, "yaw": 0, "repeat": { "count": 2, "step": [2.2, 0] } },
+    { "prop": "mouse", "pos": [-2.27, 2.55], "z": 0.79, "yaw": 0, "repeat": { "count": 2, "step": [2.2, 0] } },
+    { "prop": "legal_pad", "pos": [-3.15, 2.6], "z": 0.79, "yaw": 8, "repeat": { "count": 2, "step": [2.2, 0] } },
+    { "prop": "binder", "pos": [-3.35, 3.0], "z": 0.79, "yaw": 0 },
+    { "prop": "binder", "pos": [-3.35, 3.0], "z": 0.84, "yaw": 4 },
+    { "prop": "mug_white", "pos": [-2.0, 2.65], "z": 0.79 },
+    { "prop": "mug_navy", "pos": [0.2, 2.6], "z": 0.79, "yaw": 120 },
+
+    { "prop": "monitor_24in", "pos": [-2.6, -3.0], "z": 0.79, "yaw": 180, "repeat": { "count": 2, "step": [2.2, 0] } },
+    { "prop": "keyboard", "pos": [-2.6, -2.55], "z": 0.79, "yaw": 180, "repeat": { "count": 2, "step": [2.2, 0] } },
+    { "prop": "mouse", "pos": [-2.93, -2.55], "z": 0.79, "yaw": 180, "repeat": { "count": 2, "step": [2.2, 0] } },
+    { "prop": "legal_pad", "pos": [-2.05, -2.6], "z": 0.79, "yaw": 172, "repeat": { "count": 2, "step": [2.2, 0] } },
+    { "prop": "binder", "pos": [0.35, -3.0], "z": 0.79, "yaw": 180 },
+    { "prop": "mug_red", "pos": [-3.2, -2.65], "z": 0.79, "yaw": 200 },
+
+    { "prop": "mug_white", "pos": [2.8, -0.45], "z": 0.5, "yaw": 40 },
+    { "prop": "legal_pad", "pos": [3.15, -0.8], "z": 0.5, "yaw": -20 },
+
+    { "prop": "whiteboard", "pos": [-4.5, -2.2], "yaw": 90 },
+    { "prop": "dry_erase_marker_black", "pos": [-4.44, -2.45], "z": 0.88, "yaw": 90 },
+    { "prop": "dry_erase_marker_blue", "pos": [-4.44, -2.3], "z": 0.88, "yaw": 90 },
+    { "prop": "dry_erase_marker_red", "pos": [-4.44, -2.15], "z": 0.88, "yaw": 90 },
+    { "prop": "whiteboard_eraser", "pos": [-4.44, -1.95], "z": 0.88, "yaw": 90 },
+
+    { "prop": "water_cooler", "pos": [1.25, 3.33] },
+    { "prop": "wastebasket", "pos": [-3.85, 3.15] },
+    { "prop": "wastebasket", "pos": [0.8, 3.15] },
+    { "prop": "wastebasket", "pos": [-3.85, -2.05] },
+    { "prop": "wastebasket", "pos": [0.85, -3.15] },
+
+    { "prop": "fire_extinguisher", "pos": [4.5, 1.6], "yaw": -90 },
+    { "prop": "duplex_outlet", "pos": [-1.5, 3.5] },
+    { "prop": "duplex_outlet", "pos": [1.8, 3.5] },
+    { "prop": "duplex_outlet", "pos": [-1.5, -3.5], "yaw": 180 },
+    { "prop": "duplex_outlet", "pos": [1.6, -3.5], "yaw": 180 },
+    { "prop": "duplex_outlet", "pos": [-4.5, 1.5], "yaw": 90 },
+    { "prop": "duplex_outlet", "pos": [4.5, 2.4], "yaw": -90 }
+  ]
+}

@@ -1,0 +1,491 @@
+<mujoco model="office">
+<asset>
+  <mesh name="office_metal_office_desk_0" file="environments/office/meshes/office_metal_office_desk_0.stl"/>
+  <mesh name="office_desk_lamp_arm_01_0" file="environments/office/meshes/office_desk_lamp_arm_01_0.stl"/>
+  <mesh name="office_desk_lamp_arm_01_1" file="environments/office/meshes/office_desk_lamp_arm_01_1.stl"/>
+  <mesh name="office_wooden_bookshelf_worn_0" file="environments/office/meshes/office_wooden_bookshelf_worn_0.stl"/>
+  <mesh name="office_painted_wooden_cabinet_0" file="environments/office/meshes/office_painted_wooden_cabinet_0.stl"/>
+  <mesh name="office_sofa_02_0" file="environments/office/meshes/office_sofa_02_0.stl"/>
+  <mesh name="office_modern_coffee_table_01_0" file="environments/office/meshes/office_modern_coffee_table_01_0.stl"/>
+  <mesh name="office_modern_arm_chair_01_0" file="environments/office/meshes/office_modern_arm_chair_01_0.stl"/>
+  <mesh name="office_modern_arm_chair_01_1" file="environments/office/meshes/office_modern_arm_chair_01_1.stl"/>
+  <mesh name="office_potted_plant_02_0" file="environments/office/meshes/office_potted_plant_02_0.stl"/>
+  <mesh name="office_potted_plant_02_1" file="environments/office/meshes/office_potted_plant_02_1.stl"/>
+</asset>
+<worldbody>
+  <geom name="office_floor_visual" type="box" pos="0 0 -0.01" size="4.62 3.62 0.01" rgba="0.16 0.18 0.21 1" contype="0" conaffinity="0"/>
+  <geom name="office_floor" type="box" pos="0 0 -0.05" size="4.62 3.62 0.05" group="3" contype="4" conaffinity="4"/>
+  <geom name="office_wall_south" type="box" pos="0 -3.56 1.4" size="4.62 0.06 1.4" rgba="0.78 0.77 0.74 1" contype="1" conaffinity="1"/>
+  <geom name="office_wall_north" type="box" pos="0 3.56 1.4" size="4.62 0.06 1.4" rgba="0.78 0.77 0.74 1" contype="1" conaffinity="1"/>
+  <geom name="office_wall_west" type="box" pos="-4.56 0 1.4" size="0.06 3.5 1.4" rgba="0.78 0.77 0.74 1" contype="1" conaffinity="1"/>
+  <geom name="office_wall_east" type="box" pos="4.56 0 1.4" size="0.06 3.5 1.4" rgba="0.78 0.77 0.74 1" contype="1" conaffinity="1"/>
+  <geom name="office_baseboard_south" type="box" pos="0 -3.4925 0.05" size="4.5 0.0075 0.05" rgba="0.22 0.22 0.22 1" contype="0" conaffinity="0"/>
+  <geom name="office_baseboard_north" type="box" pos="0 3.4925 0.05" size="4.5 0.0075 0.05" rgba="0.22 0.22 0.22 1" contype="0" conaffinity="0"/>
+  <geom name="office_baseboard_west" type="box" pos="-4.4925 0 0.05" size="0.0075 3.5 0.05" rgba="0.22 0.22 0.22 1" contype="0" conaffinity="0"/>
+  <geom name="office_baseboard_east" type="box" pos="4.4925 0 0.05" size="0.0075 3.5 0.05" rgba="0.22 0.22 0.22 1" contype="0" conaffinity="0"/>
+  <geom name="office_lounge_rug" type="box" pos="3.25 -0.6 0.002" size="1.1 1.45 0.002" quat="1 0 0 0" rgba="0.42 0.36 0.3 1" contype="0" conaffinity="0"/>
+  <geom name="office_00_metal_office_desk_v0" type="mesh" mesh="office_metal_office_desk_0" pos="-2.6 2.75 0" quat="1 0 0 0" rgba="0.2636 0.2689 0.2876 1" contype="0" conaffinity="0"/>
+  <geom name="office_00_metal_office_desk_collider" type="box" pos="-2.6 2.75 0.3938" size="1 0.4736 0.3938" quat="1 0 0 0" group="3" contype="1" conaffinity="1"/>
+  <geom name="office_01_metal_office_desk_v0" type="mesh" mesh="office_metal_office_desk_0" pos="-0.4 2.75 0" quat="1 0 0 0" rgba="0.2636 0.2689 0.2876 1" contype="0" conaffinity="0"/>
+  <geom name="office_01_metal_office_desk_collider" type="box" pos="-0.4 2.75 0.3938" size="1 0.4736 0.3938" quat="1 0 0 0" group="3" contype="1" conaffinity="1"/>
+  <geom name="office_02_metal_office_desk_v0" type="mesh" mesh="office_metal_office_desk_0" pos="-2.6 -2.75 0" quat="0 0 0 1" rgba="0.2636 0.2689 0.2876 1" contype="0" conaffinity="0"/>
+  <geom name="office_02_metal_office_desk_collider" type="box" pos="-2.6 -2.75 0.3938" size="1 0.4736 0.3938" quat="0 0 0 1" group="3" contype="1" conaffinity="1"/>
+  <geom name="office_03_metal_office_desk_v0" type="mesh" mesh="office_metal_office_desk_0" pos="-0.4 -2.75 0" quat="0 0 0 1" rgba="0.2636 0.2689 0.2876 1" contype="0" conaffinity="0"/>
+  <geom name="office_03_metal_office_desk_collider" type="box" pos="-0.4 -2.75 0.3938" size="1 0.4736 0.3938" quat="0 0 0 1" group="3" contype="1" conaffinity="1"/>
+  <geom name="office_04_desk_lamp_arm_01_v0" type="mesh" mesh="office_desk_lamp_arm_01_0" pos="-1.85 3 0.79" quat="0 0 0 1" rgba="0.4419 0.2812 0.2155 1" contype="0" conaffinity="0"/>
+  <geom name="office_04_desk_lamp_arm_01_v1" type="mesh" mesh="office_desk_lamp_arm_01_1" pos="-1.85 3 0.79" quat="0 0 0 1" rgba="0.9949 0.9944 0.9934 1" contype="0" conaffinity="0"/>
+  <geom name="office_05_desk_lamp_arm_01_v0" type="mesh" mesh="office_desk_lamp_arm_01_0" pos="0.35 3 0.79" quat="0 0 0 1" rgba="0.4419 0.2812 0.2155 1" contype="0" conaffinity="0"/>
+  <geom name="office_05_desk_lamp_arm_01_v1" type="mesh" mesh="office_desk_lamp_arm_01_1" pos="0.35 3 0.79" quat="0 0 0 1" rgba="0.9949 0.9944 0.9934 1" contype="0" conaffinity="0"/>
+  <geom name="office_06_desk_lamp_arm_01_v0" type="mesh" mesh="office_desk_lamp_arm_01_0" pos="-3.35 -3 0.79" quat="1 0 0 0" rgba="0.4419 0.2812 0.2155 1" contype="0" conaffinity="0"/>
+  <geom name="office_06_desk_lamp_arm_01_v1" type="mesh" mesh="office_desk_lamp_arm_01_1" pos="-3.35 -3 0.79" quat="1 0 0 0" rgba="0.9949 0.9944 0.9934 1" contype="0" conaffinity="0"/>
+  <geom name="office_07_desk_lamp_arm_01_v0" type="mesh" mesh="office_desk_lamp_arm_01_0" pos="-1.15 -3 0.79" quat="1 0 0 0" rgba="0.4419 0.2812 0.2155 1" contype="0" conaffinity="0"/>
+  <geom name="office_07_desk_lamp_arm_01_v1" type="mesh" mesh="office_desk_lamp_arm_01_1" pos="-1.15 -3 0.79" quat="1 0 0 0" rgba="0.9949 0.9944 0.9934 1" contype="0" conaffinity="0"/>
+  <geom name="office_08_wooden_bookshelf_worn_v0" type="mesh" mesh="office_wooden_bookshelf_worn_0" pos="-4.19 0 0" quat="0.7071 0 0 0.7071" rgba="0.1805 0.1461 0.1314 1" contype="0" conaffinity="0"/>
+  <geom name="office_08_wooden_bookshelf_worn_collider" type="box" pos="-4.19 0 1.0317" size="0.687 0.2907 1.0317" quat="0.7071 0 0 0.7071" group="3" contype="1" conaffinity="1"/>
+  <geom name="office_09_painted_wooden_cabinet_v0" type="mesh" mesh="office_painted_wooden_cabinet_0" pos="2.4 3.17 0" quat="1 0 0 0" rgba="0.0724 0.0517 0.0391 1" contype="0" conaffinity="0"/>
+  <geom name="office_09_painted_wooden_cabinet_collider" type="box" pos="2.4 3.17 0.5909" size="0.5973 0.3083 0.5909" quat="1 0 0 0" group="3" contype="1" conaffinity="1"/>
+  <geom name="office_10_sofa_02_v0" type="mesh" mesh="office_sofa_02_0" pos="4.06 -0.6 0" quat="0.7071 0 0 -0.7071" rgba="0.0117 0.0054 0.0026 1" contype="0" conaffinity="0"/>
+  <geom name="office_10_sofa_02_collider" type="box" pos="4.06 -0.6 0.3547" size="0.9036 0.4089 0.3547" quat="0.7071 0 0 -0.7071" group="3" contype="1" conaffinity="1"/>
+  <geom name="office_11_modern_coffee_table_01_v0" type="mesh" mesh="office_modern_coffee_table_01_0" pos="3 -0.6 0" quat="1 0 0 0" rgba="0.2373 0.1312 0.0583 1" contype="0" conaffinity="0"/>
+  <geom name="office_11_modern_coffee_table_01_collider" type="box" pos="3 -0.6 0.195" size="0.3 0.6009 0.195" quat="1 0 0 0" group="3" contype="1" conaffinity="1"/>
+  <geom name="office_12_modern_arm_chair_01_v0" type="mesh" mesh="office_modern_arm_chair_01_0" pos="3 -2.45 0" quat="0 0 0 1" rgba="0.2014 0.098 0.0425 1" contype="0" conaffinity="0"/>
+  <geom name="office_12_modern_arm_chair_01_v1" type="mesh" mesh="office_modern_arm_chair_01_1" pos="3 -2.45 0" quat="0 0 0 1" rgba="0.0067 0.0066 0.0061 1" contype="0" conaffinity="0"/>
+  <geom name="office_12_modern_arm_chair_01_collider" type="box" pos="3 -2.45 0.5114" size="0.4102 0.4933 0.5114" quat="0 0 0 1" group="3" contype="1" conaffinity="1"/>
+  <geom name="office_13_potted_plant_02_v0" type="mesh" mesh="office_potted_plant_02_0" pos="4.05 3.05 0" quat="1 0 0 0" rgba="0.4239 0.1581 0.0696 1" contype="0" conaffinity="0"/>
+  <geom name="office_13_potted_plant_02_v1" type="mesh" mesh="office_potted_plant_02_1" pos="4.05 3.05 0" quat="1 0 0 0" rgba="0.0949 0.1452 0.0425 1" contype="0" conaffinity="0"/>
+  <geom name="office_13_potted_plant_02_collider" type="box" pos="4.05 3.05 0.4206" size="0.3506 0.3287 0.4206" quat="1 0 0 0" group="3" contype="1" conaffinity="1"/>
+  <geom name="office_14_potted_plant_02_v0" type="mesh" mesh="office_potted_plant_02_0" pos="4.05 -3.05 0" quat="0.9239 0 0 0.3827" rgba="0.4239 0.1581 0.0696 1" contype="0" conaffinity="0"/>
+  <geom name="office_14_potted_plant_02_v1" type="mesh" mesh="office_potted_plant_02_1" pos="4.05 -3.05 0" quat="0.9239 0 0 0.3827" rgba="0.0949 0.1452 0.0425 1" contype="0" conaffinity="0"/>
+  <geom name="office_14_potted_plant_02_collider" type="box" pos="4.05 -3.05 0.4206" size="0.3506 0.3287 0.4206" quat="0.9239 0 0 0.3827" group="3" contype="1" conaffinity="1"/>
+  <geom name="office_15_potted_plant_02_v0" type="mesh" mesh="office_potted_plant_02_0" pos="-4.05 -3.05 0" quat="0.5 0 0 0.866" rgba="0.4239 0.1581 0.0696 1" contype="0" conaffinity="0"/>
+  <geom name="office_15_potted_plant_02_v1" type="mesh" mesh="office_potted_plant_02_1" pos="-4.05 -3.05 0" quat="0.5 0 0 0.866" rgba="0.0949 0.1452 0.0425 1" contype="0" conaffinity="0"/>
+  <geom name="office_15_potted_plant_02_collider" type="box" pos="-4.05 -3.05 0.4206" size="0.3506 0.3287 0.4206" quat="0.5 0 0 0.866" group="3" contype="1" conaffinity="1"/>
+  <body name="prop_task_chair_0" pos="-2.6 1.95 0.0005" quat="0 0 0 1">
+    <freejoint name="prop_task_chair_0_free"/>
+    <inertial pos="0.02 0.0013 0.5259" mass="12" diaginertia="1.511 1.478 0.777"/>
+    <geom name="prop_task_chair_0_v0" type="box" size="0.15 0.022 0.014" pos="0.15 0 0.065" quat="1 0 0 0" rgba="0.02 0.02 0.022 1" contype="0" conaffinity="0"/>
+    <geom name="prop_task_chair_0_v1" type="box" size="0.15 0.022 0.014" pos="0.0464 0.1427 0.065" quat="0.809 0 0 0.5878" rgba="0.02 0.02 0.022 1" contype="0" conaffinity="0"/>
+    <geom name="prop_task_chair_0_v2" type="box" size="0.15 0.022 0.014" pos="-0.1214 0.0882 0.065" quat="0.309 0 0 0.9511" rgba="0.02 0.02 0.022 1" contype="0" conaffinity="0"/>
+    <geom name="prop_task_chair_0_v3" type="box" size="0.15 0.022 0.014" pos="-0.1214 -0.0882 0.065" quat="-0.309 0 0 0.9511" rgba="0.02 0.02 0.022 1" contype="0" conaffinity="0"/>
+    <geom name="prop_task_chair_0_v4" type="box" size="0.15 0.022 0.014" pos="0.0464 -0.1427 0.065" quat="-0.809 0 0 0.5878" rgba="0.02 0.02 0.022 1" contype="0" conaffinity="0"/>
+    <geom name="prop_task_chair_0_v5" type="cylinder" size="0.04 0.02" pos="0 0 0.075" quat="1 0 0 0" rgba="0.02 0.02 0.022 1" contype="0" conaffinity="0"/>
+    <geom name="prop_task_chair_0_v6" type="box" size="0.025 0.02 0.13" pos="0 0.235 0.56" quat="1 0 0 0" rgba="0.02 0.02 0.022 1" contype="0" conaffinity="0"/>
+    <geom name="prop_task_chair_0_v7" type="box" size="0.016 0.016 0.09" pos="0.25 0.04 0.57" quat="1 0 0 0" rgba="0.02 0.02 0.022 1" contype="0" conaffinity="0"/>
+    <geom name="prop_task_chair_0_v8" type="box" size="0.016 0.016 0.09" pos="-0.25 0.04 0.57" quat="1 0 0 0" rgba="0.02 0.02 0.022 1" contype="0" conaffinity="0"/>
+    <geom name="prop_task_chair_0_c0" type="sphere" size="0.025" pos="0.3 0 0.025" quat="1 0 0 0" rgba="0.01 0.01 0.01 1" contype="8" conaffinity="15" condim="4" priority="1" friction="0.05 0.005 0.0001"/>
+    <geom name="prop_task_chair_0_c1" type="sphere" size="0.025" pos="0.0927 0.2853 0.025" quat="0.809 0 0 0.5878" rgba="0.01 0.01 0.01 1" contype="8" conaffinity="15" condim="4" priority="1" friction="0.05 0.005 0.0001"/>
+    <geom name="prop_task_chair_0_c2" type="sphere" size="0.025" pos="-0.2427 0.1763 0.025" quat="0.309 0 0 0.9511" rgba="0.01 0.01 0.01 1" contype="8" conaffinity="15" condim="4" priority="1" friction="0.05 0.005 0.0001"/>
+    <geom name="prop_task_chair_0_c3" type="sphere" size="0.025" pos="-0.2427 -0.1763 0.025" quat="-0.309 0 0 0.9511" rgba="0.01 0.01 0.01 1" contype="8" conaffinity="15" condim="4" priority="1" friction="0.05 0.005 0.0001"/>
+    <geom name="prop_task_chair_0_c4" type="sphere" size="0.025" pos="0.0927 -0.2853 0.025" quat="-0.809 0 0 0.5878" rgba="0.01 0.01 0.01 1" contype="8" conaffinity="15" condim="4" priority="1" friction="0.05 0.005 0.0001"/>
+    <geom name="prop_task_chair_0_c5" type="cylinder" size="0.024 0.17" pos="0 0 0.26" quat="1 0 0 0" rgba="0.45 0.45 0.47 1" contype="8" conaffinity="15" condim="4" priority="1" friction="0.6 0.005 0.0001"/>
+    <geom name="prop_task_chair_0_c6" type="box" size="0.245 0.235 0.045" pos="0 -0.01 0.47" quat="1 0 0 0" rgba="0.025 0.025 0.03 1" contype="8" conaffinity="15" condim="4" priority="1" friction="0.6 0.005 0.0001"/>
+    <geom name="prop_task_chair_0_c7" type="box" size="0.225 0.03 0.25" pos="0 0.255 0.8" quat="0.9976 -0.0698 0 0" rgba="0.025 0.025 0.03 1" contype="8" conaffinity="15" condim="4" priority="1" friction="0.6 0.005 0.0001"/>
+    <geom name="prop_task_chair_0_c8" type="box" size="0.035 0.13 0.014" pos="0.25 0.02 0.67" quat="1 0 0 0" rgba="0.02 0.02 0.022 1" contype="8" conaffinity="15" condim="4" priority="1" friction="0.6 0.005 0.0001"/>
+    <geom name="prop_task_chair_0_c9" type="box" size="0.035 0.13 0.014" pos="-0.25 0.02 0.67" quat="1 0 0 0" rgba="0.02 0.02 0.022 1" contype="8" conaffinity="15" condim="4" priority="1" friction="0.6 0.005 0.0001"/>
+  </body>
+  <body name="prop_task_chair_1" pos="-0.4 1.95 0.0005" quat="0 0 0 1">
+    <freejoint name="prop_task_chair_1_free"/>
+    <inertial pos="0.02 0.0013 0.5259" mass="12" diaginertia="1.511 1.478 0.777"/>
+    <geom name="prop_task_chair_1_v0" type="box" size="0.15 0.022 0.014" pos="0.15 0 0.065" quat="1 0 0 0" rgba="0.02 0.02 0.022 1" contype="0" conaffinity="0"/>
+    <geom name="prop_task_chair_1_v1" type="box" size="0.15 0.022 0.014" pos="0.0464 0.1427 0.065" quat="0.809 0 0 0.5878" rgba="0.02 0.02 0.022 1" contype="0" conaffinity="0"/>
+    <geom name="prop_task_chair_1_v2" type="box" size="0.15 0.022 0.014" pos="-0.1214 0.0882 0.065" quat="0.309 0 0 0.9511" rgba="0.02 0.02 0.022 1" contype="0" conaffinity="0"/>
+    <geom name="prop_task_chair_1_v3" type="box" size="0.15 0.022 0.014" pos="-0.1214 -0.0882 0.065" quat="-0.309 0 0 0.9511" rgba="0.02 0.02 0.022 1" contype="0" conaffinity="0"/>
+    <geom name="prop_task_chair_1_v4" type="box" size="0.15 0.022 0.014" pos="0.0464 -0.1427 0.065" quat="-0.809 0 0 0.5878" rgba="0.02 0.02 0.022 1" contype="0" conaffinity="0"/>
+    <geom name="prop_task_chair_1_v5" type="cylinder" size="0.04 0.02" pos="0 0 0.075" quat="1 0 0 0" rgba="0.02 0.02 0.022 1" contype="0" conaffinity="0"/>
+    <geom name="prop_task_chair_1_v6" type="box" size="0.025 0.02 0.13" pos="0 0.235 0.56" quat="1 0 0 0" rgba="0.02 0.02 0.022 1" contype="0" conaffinity="0"/>
+    <geom name="prop_task_chair_1_v7" type="box" size="0.016 0.016 0.09" pos="0.25 0.04 0.57" quat="1 0 0 0" rgba="0.02 0.02 0.022 1" contype="0" conaffinity="0"/>
+    <geom name="prop_task_chair_1_v8" type="box" size="0.016 0.016 0.09" pos="-0.25 0.04 0.57" quat="1 0 0 0" rgba="0.02 0.02 0.022 1" contype="0" conaffinity="0"/>
+    <geom name="prop_task_chair_1_c0" type="sphere" size="0.025" pos="0.3 0 0.025" quat="1 0 0 0" rgba="0.01 0.01 0.01 1" contype="8" conaffinity="15" condim="4" priority="1" friction="0.05 0.005 0.0001"/>
+    <geom name="prop_task_chair_1_c1" type="sphere" size="0.025" pos="0.0927 0.2853 0.025" quat="0.809 0 0 0.5878" rgba="0.01 0.01 0.01 1" contype="8" conaffinity="15" condim="4" priority="1" friction="0.05 0.005 0.0001"/>
+    <geom name="prop_task_chair_1_c2" type="sphere" size="0.025" pos="-0.2427 0.1763 0.025" quat="0.309 0 0 0.9511" rgba="0.01 0.01 0.01 1" contype="8" conaffinity="15" condim="4" priority="1" friction="0.05 0.005 0.0001"/>
+    <geom name="prop_task_chair_1_c3" type="sphere" size="0.025" pos="-0.2427 -0.1763 0.025" quat="-0.309 0 0 0.9511" rgba="0.01 0.01 0.01 1" contype="8" conaffinity="15" condim="4" priority="1" friction="0.05 0.005 0.0001"/>
+    <geom name="prop_task_chair_1_c4" type="sphere" size="0.025" pos="0.0927 -0.2853 0.025" quat="-0.809 0 0 0.5878" rgba="0.01 0.01 0.01 1" contype="8" conaffinity="15" condim="4" priority="1" friction="0.05 0.005 0.0001"/>
+    <geom name="prop_task_chair_1_c5" type="cylinder" size="0.024 0.17" pos="0 0 0.26" quat="1 0 0 0" rgba="0.45 0.45 0.47 1" contype="8" conaffinity="15" condim="4" priority="1" friction="0.6 0.005 0.0001"/>
+    <geom name="prop_task_chair_1_c6" type="box" size="0.245 0.235 0.045" pos="0 -0.01 0.47" quat="1 0 0 0" rgba="0.025 0.025 0.03 1" contype="8" conaffinity="15" condim="4" priority="1" friction="0.6 0.005 0.0001"/>
+    <geom name="prop_task_chair_1_c7" type="box" size="0.225 0.03 0.25" pos="0 0.255 0.8" quat="0.9976 -0.0698 0 0" rgba="0.025 0.025 0.03 1" contype="8" conaffinity="15" condim="4" priority="1" friction="0.6 0.005 0.0001"/>
+    <geom name="prop_task_chair_1_c8" type="box" size="0.035 0.13 0.014" pos="0.25 0.02 0.67" quat="1 0 0 0" rgba="0.02 0.02 0.022 1" contype="8" conaffinity="15" condim="4" priority="1" friction="0.6 0.005 0.0001"/>
+    <geom name="prop_task_chair_1_c9" type="box" size="0.035 0.13 0.014" pos="-0.25 0.02 0.67" quat="1 0 0 0" rgba="0.02 0.02 0.022 1" contype="8" conaffinity="15" condim="4" priority="1" friction="0.6 0.005 0.0001"/>
+  </body>
+  <body name="prop_task_chair_2" pos="-2.6 -1.95 0.0005" quat="1 0 0 0">
+    <freejoint name="prop_task_chair_2_free"/>
+    <inertial pos="0.02 0.0013 0.5259" mass="12" diaginertia="1.511 1.478 0.777"/>
+    <geom name="prop_task_chair_2_v0" type="box" size="0.15 0.022 0.014" pos="0.15 0 0.065" quat="1 0 0 0" rgba="0.02 0.02 0.022 1" contype="0" conaffinity="0"/>
+    <geom name="prop_task_chair_2_v1" type="box" size="0.15 0.022 0.014" pos="0.0464 0.1427 0.065" quat="0.809 0 0 0.5878" rgba="0.02 0.02 0.022 1" contype="0" conaffinity="0"/>
+    <geom name="prop_task_chair_2_v2" type="box" size="0.15 0.022 0.014" pos="-0.1214 0.0882 0.065" quat="0.309 0 0 0.9511" rgba="0.02 0.02 0.022 1" contype="0" conaffinity="0"/>
+    <geom name="prop_task_chair_2_v3" type="box" size="0.15 0.022 0.014" pos="-0.1214 -0.0882 0.065" quat="-0.309 0 0 0.9511" rgba="0.02 0.02 0.022 1" contype="0" conaffinity="0"/>
+    <geom name="prop_task_chair_2_v4" type="box" size="0.15 0.022 0.014" pos="0.0464 -0.1427 0.065" quat="-0.809 0 0 0.5878" rgba="0.02 0.02 0.022 1" contype="0" conaffinity="0"/>
+    <geom name="prop_task_chair_2_v5" type="cylinder" size="0.04 0.02" pos="0 0 0.075" quat="1 0 0 0" rgba="0.02 0.02 0.022 1" contype="0" conaffinity="0"/>
+    <geom name="prop_task_chair_2_v6" type="box" size="0.025 0.02 0.13" pos="0 0.235 0.56" quat="1 0 0 0" rgba="0.02 0.02 0.022 1" contype="0" conaffinity="0"/>
+    <geom name="prop_task_chair_2_v7" type="box" size="0.016 0.016 0.09" pos="0.25 0.04 0.57" quat="1 0 0 0" rgba="0.02 0.02 0.022 1" contype="0" conaffinity="0"/>
+    <geom name="prop_task_chair_2_v8" type="box" size="0.016 0.016 0.09" pos="-0.25 0.04 0.57" quat="1 0 0 0" rgba="0.02 0.02 0.022 1" contype="0" conaffinity="0"/>
+    <geom name="prop_task_chair_2_c0" type="sphere" size="0.025" pos="0.3 0 0.025" quat="1 0 0 0" rgba="0.01 0.01 0.01 1" contype="8" conaffinity="15" condim="4" priority="1" friction="0.05 0.005 0.0001"/>
+    <geom name="prop_task_chair_2_c1" type="sphere" size="0.025" pos="0.0927 0.2853 0.025" quat="0.809 0 0 0.5878" rgba="0.01 0.01 0.01 1" contype="8" conaffinity="15" condim="4" priority="1" friction="0.05 0.005 0.0001"/>
+    <geom name="prop_task_chair_2_c2" type="sphere" size="0.025" pos="-0.2427 0.1763 0.025" quat="0.309 0 0 0.9511" rgba="0.01 0.01 0.01 1" contype="8" conaffinity="15" condim="4" priority="1" friction="0.05 0.005 0.0001"/>
+    <geom name="prop_task_chair_2_c3" type="sphere" size="0.025" pos="-0.2427 -0.1763 0.025" quat="-0.309 0 0 0.9511" rgba="0.01 0.01 0.01 1" contype="8" conaffinity="15" condim="4" priority="1" friction="0.05 0.005 0.0001"/>
+    <geom name="prop_task_chair_2_c4" type="sphere" size="0.025" pos="0.0927 -0.2853 0.025" quat="-0.809 0 0 0.5878" rgba="0.01 0.01 0.01 1" contype="8" conaffinity="15" condim="4" priority="1" friction="0.05 0.005 0.0001"/>
+    <geom name="prop_task_chair_2_c5" type="cylinder" size="0.024 0.17" pos="0 0 0.26" quat="1 0 0 0" rgba="0.45 0.45 0.47 1" contype="8" conaffinity="15" condim="4" priority="1" friction="0.6 0.005 0.0001"/>
+    <geom name="prop_task_chair_2_c6" type="box" size="0.245 0.235 0.045" pos="0 -0.01 0.47" quat="1 0 0 0" rgba="0.025 0.025 0.03 1" contype="8" conaffinity="15" condim="4" priority="1" friction="0.6 0.005 0.0001"/>
+    <geom name="prop_task_chair_2_c7" type="box" size="0.225 0.03 0.25" pos="0 0.255 0.8" quat="0.9976 -0.0698 0 0" rgba="0.025 0.025 0.03 1" contype="8" conaffinity="15" condim="4" priority="1" friction="0.6 0.005 0.0001"/>
+    <geom name="prop_task_chair_2_c8" type="box" size="0.035 0.13 0.014" pos="0.25 0.02 0.67" quat="1 0 0 0" rgba="0.02 0.02 0.022 1" contype="8" conaffinity="15" condim="4" priority="1" friction="0.6 0.005 0.0001"/>
+    <geom name="prop_task_chair_2_c9" type="box" size="0.035 0.13 0.014" pos="-0.25 0.02 0.67" quat="1 0 0 0" rgba="0.02 0.02 0.022 1" contype="8" conaffinity="15" condim="4" priority="1" friction="0.6 0.005 0.0001"/>
+  </body>
+  <body name="prop_task_chair_3" pos="-0.4 -1.95 0.0005" quat="1 0 0 0">
+    <freejoint name="prop_task_chair_3_free"/>
+    <inertial pos="0.02 0.0013 0.5259" mass="12" diaginertia="1.511 1.478 0.777"/>
+    <geom name="prop_task_chair_3_v0" type="box" size="0.15 0.022 0.014" pos="0.15 0 0.065" quat="1 0 0 0" rgba="0.02 0.02 0.022 1" contype="0" conaffinity="0"/>
+    <geom name="prop_task_chair_3_v1" type="box" size="0.15 0.022 0.014" pos="0.0464 0.1427 0.065" quat="0.809 0 0 0.5878" rgba="0.02 0.02 0.022 1" contype="0" conaffinity="0"/>
+    <geom name="prop_task_chair_3_v2" type="box" size="0.15 0.022 0.014" pos="-0.1214 0.0882 0.065" quat="0.309 0 0 0.9511" rgba="0.02 0.02 0.022 1" contype="0" conaffinity="0"/>
+    <geom name="prop_task_chair_3_v3" type="box" size="0.15 0.022 0.014" pos="-0.1214 -0.0882 0.065" quat="-0.309 0 0 0.9511" rgba="0.02 0.02 0.022 1" contype="0" conaffinity="0"/>
+    <geom name="prop_task_chair_3_v4" type="box" size="0.15 0.022 0.014" pos="0.0464 -0.1427 0.065" quat="-0.809 0 0 0.5878" rgba="0.02 0.02 0.022 1" contype="0" conaffinity="0"/>
+    <geom name="prop_task_chair_3_v5" type="cylinder" size="0.04 0.02" pos="0 0 0.075" quat="1 0 0 0" rgba="0.02 0.02 0.022 1" contype="0" conaffinity="0"/>
+    <geom name="prop_task_chair_3_v6" type="box" size="0.025 0.02 0.13" pos="0 0.235 0.56" quat="1 0 0 0" rgba="0.02 0.02 0.022 1" contype="0" conaffinity="0"/>
+    <geom name="prop_task_chair_3_v7" type="box" size="0.016 0.016 0.09" pos="0.25 0.04 0.57" quat="1 0 0 0" rgba="0.02 0.02 0.022 1" contype="0" conaffinity="0"/>
+    <geom name="prop_task_chair_3_v8" type="box" size="0.016 0.016 0.09" pos="-0.25 0.04 0.57" quat="1 0 0 0" rgba="0.02 0.02 0.022 1" contype="0" conaffinity="0"/>
+    <geom name="prop_task_chair_3_c0" type="sphere" size="0.025" pos="0.3 0 0.025" quat="1 0 0 0" rgba="0.01 0.01 0.01 1" contype="8" conaffinity="15" condim="4" priority="1" friction="0.05 0.005 0.0001"/>
+    <geom name="prop_task_chair_3_c1" type="sphere" size="0.025" pos="0.0927 0.2853 0.025" quat="0.809 0 0 0.5878" rgba="0.01 0.01 0.01 1" contype="8" conaffinity="15" condim="4" priority="1" friction="0.05 0.005 0.0001"/>
+    <geom name="prop_task_chair_3_c2" type="sphere" size="0.025" pos="-0.2427 0.1763 0.025" quat="0.309 0 0 0.9511" rgba="0.01 0.01 0.01 1" contype="8" conaffinity="15" condim="4" priority="1" friction="0.05 0.005 0.0001"/>
+    <geom name="prop_task_chair_3_c3" type="sphere" size="0.025" pos="-0.2427 -0.1763 0.025" quat="-0.309 0 0 0.9511" rgba="0.01 0.01 0.01 1" contype="8" conaffinity="15" condim="4" priority="1" friction="0.05 0.005 0.0001"/>
+    <geom name="prop_task_chair_3_c4" type="sphere" size="0.025" pos="0.0927 -0.2853 0.025" quat="-0.809 0 0 0.5878" rgba="0.01 0.01 0.01 1" contype="8" conaffinity="15" condim="4" priority="1" friction="0.05 0.005 0.0001"/>
+    <geom name="prop_task_chair_3_c5" type="cylinder" size="0.024 0.17" pos="0 0 0.26" quat="1 0 0 0" rgba="0.45 0.45 0.47 1" contype="8" conaffinity="15" condim="4" priority="1" friction="0.6 0.005 0.0001"/>
+    <geom name="prop_task_chair_3_c6" type="box" size="0.245 0.235 0.045" pos="0 -0.01 0.47" quat="1 0 0 0" rgba="0.025 0.025 0.03 1" contype="8" conaffinity="15" condim="4" priority="1" friction="0.6 0.005 0.0001"/>
+    <geom name="prop_task_chair_3_c7" type="box" size="0.225 0.03 0.25" pos="0 0.255 0.8" quat="0.9976 -0.0698 0 0" rgba="0.025 0.025 0.03 1" contype="8" conaffinity="15" condim="4" priority="1" friction="0.6 0.005 0.0001"/>
+    <geom name="prop_task_chair_3_c8" type="box" size="0.035 0.13 0.014" pos="0.25 0.02 0.67" quat="1 0 0 0" rgba="0.02 0.02 0.022 1" contype="8" conaffinity="15" condim="4" priority="1" friction="0.6 0.005 0.0001"/>
+    <geom name="prop_task_chair_3_c9" type="box" size="0.035 0.13 0.014" pos="-0.25 0.02 0.67" quat="1 0 0 0" rgba="0.02 0.02 0.022 1" contype="8" conaffinity="15" condim="4" priority="1" friction="0.6 0.005 0.0001"/>
+  </body>
+  <body name="prop_monitor_24in_0" pos="-2.6 3 0.7881" quat="1 0 0 0">
+    <freejoint name="prop_monitor_24in_0_free"/>
+    <inertial pos="0 0.02 0.273" mass="4.5" diaginertia="0.1239 0.2228 0.1231"/>
+    <geom name="prop_monitor_24in_0_v0" type="box" size="0.262 0.002 0.152" pos="0 -0.0025 0.386" quat="1 0 0 0" rgba="0.004 0.006 0.01 1" contype="0" conaffinity="0"/>
+    <geom name="prop_monitor_24in_0_c0" type="box" size="0.12 0.09 0.008" pos="0 0.02 0.008" quat="1 0 0 0" rgba="0.03 0.03 0.035 1" contype="8" conaffinity="15" condim="4" priority="1" friction="0.6 0.005 0.0001"/>
+    <geom name="prop_monitor_24in_0_c1" type="box" size="0.025 0.015 0.14" pos="0 0.05 0.15" quat="1 0 0 0" rgba="0.03 0.03 0.035 1" contype="8" conaffinity="15" condim="4" priority="1" friction="0.6 0.005 0.0001"/>
+    <geom name="prop_monitor_24in_0_c2" type="box" size="0.272 0.022 0.166" pos="0 0.02 0.38" quat="1 0 0 0" rgba="0.02 0.02 0.022 1" contype="8" conaffinity="15" condim="4" priority="1" friction="0.6 0.005 0.0001"/>
+  </body>
+  <body name="prop_monitor_24in_1" pos="-0.4 3 0.7881" quat="1 0 0 0">
+    <freejoint name="prop_monitor_24in_1_free"/>
+    <inertial pos="0 0.02 0.273" mass="4.5" diaginertia="0.1239 0.2228 0.1231"/>
+    <geom name="prop_monitor_24in_1_v0" type="box" size="0.262 0.002 0.152" pos="0 -0.0025 0.386" quat="1 0 0 0" rgba="0.004 0.006 0.01 1" contype="0" conaffinity="0"/>
+    <geom name="prop_monitor_24in_1_c0" type="box" size="0.12 0.09 0.008" pos="0 0.02 0.008" quat="1 0 0 0" rgba="0.03 0.03 0.035 1" contype="8" conaffinity="15" condim="4" priority="1" friction="0.6 0.005 0.0001"/>
+    <geom name="prop_monitor_24in_1_c1" type="box" size="0.025 0.015 0.14" pos="0 0.05 0.15" quat="1 0 0 0" rgba="0.03 0.03 0.035 1" contype="8" conaffinity="15" condim="4" priority="1" friction="0.6 0.005 0.0001"/>
+    <geom name="prop_monitor_24in_1_c2" type="box" size="0.272 0.022 0.166" pos="0 0.02 0.38" quat="1 0 0 0" rgba="0.02 0.02 0.022 1" contype="8" conaffinity="15" condim="4" priority="1" friction="0.6 0.005 0.0001"/>
+  </body>
+  <body name="prop_keyboard_0" pos="-2.6 2.55 0.7881" quat="1 0 0 0">
+    <freejoint name="prop_keyboard_0_free"/>
+    <inertial pos="0 0 0.011" mass="0.7" diaginertia="0.001107 0.01132 0.01237"/>
+    <geom name="prop_keyboard_0_v0" type="box" size="0.21 0.058 0.002" pos="0 0 0.023" quat="1 0 0 0" rgba="0.06 0.06 0.065 1" contype="0" conaffinity="0"/>
+    <geom name="prop_keyboard_0_c0" type="box" size="0.22 0.068 0.011" pos="0 0 0.011" quat="1 0 0 0" rgba="0.02 0.02 0.022 1" contype="8" conaffinity="15" condim="4" priority="1" friction="0.8 0.005 0.0001"/>
+  </body>
+  <body name="prop_keyboard_1" pos="-0.4 2.55 0.7881" quat="1 0 0 0">
+    <freejoint name="prop_keyboard_1_free"/>
+    <inertial pos="0 0 0.011" mass="0.7" diaginertia="0.001107 0.01132 0.01237"/>
+    <geom name="prop_keyboard_1_v0" type="box" size="0.21 0.058 0.002" pos="0 0 0.023" quat="1 0 0 0" rgba="0.06 0.06 0.065 1" contype="0" conaffinity="0"/>
+    <geom name="prop_keyboard_1_c0" type="box" size="0.22 0.068 0.011" pos="0 0 0.011" quat="1 0 0 0" rgba="0.02 0.02 0.022 1" contype="8" conaffinity="15" condim="4" priority="1" friction="0.8 0.005 0.0001"/>
+  </body>
+  <body name="prop_mouse_0" pos="-2.27 2.55 0.7881" quat="1 0 0 0">
+    <freejoint name="prop_mouse_0_free"/>
+    <inertial pos="0 0 0.019" mass="0.1" diaginertia="0.0001166 4.407e-05 0.0001366"/>
+    <geom name="prop_mouse_0_c0" type="ellipsoid" size="0.031 0.056 0.019" pos="0 0 0.019" quat="1 0 0 0" rgba="0.02 0.02 0.022 1" contype="8" conaffinity="15" condim="4" priority="1" friction="0.8 0.005 0.0001"/>
+  </body>
+  <body name="prop_mouse_1" pos="-0.07 2.55 0.7881" quat="1 0 0 0">
+    <freejoint name="prop_mouse_1_free"/>
+    <inertial pos="0 0 0.019" mass="0.1" diaginertia="0.0001166 4.407e-05 0.0001366"/>
+    <geom name="prop_mouse_1_c0" type="ellipsoid" size="0.031 0.056 0.019" pos="0 0 0.019" quat="1 0 0 0" rgba="0.02 0.02 0.022 1" contype="8" conaffinity="15" condim="4" priority="1" friction="0.8 0.005 0.0001"/>
+  </body>
+  <body name="prop_legal_pad_0" pos="-3.15 2.6 0.7881" quat="0.9976 0 0 0.0698">
+    <freejoint name="prop_legal_pad_0_free"/>
+    <inertial pos="0 0 0.006" mass="0.25" diaginertia="0.002643 0.000975 0.003612"/>
+    <geom name="prop_legal_pad_0_v0" type="box" size="0.108 0.014 0.0012" pos="0 0.164 0.0132" quat="1 0 0 0" rgba="0.25 0.04 0.02 1" contype="0" conaffinity="0"/>
+    <geom name="prop_legal_pad_0_c0" type="box" size="0.108 0.178 0.006" pos="0 0 0.006" quat="1 0 0 0" rgba="0.9 0.75 0.12 1" contype="8" conaffinity="15" condim="4" priority="1" friction="0.6 0.005 0.0001"/>
+  </body>
+  <body name="prop_legal_pad_1" pos="-0.95 2.6 0.7881" quat="0.9976 0 0 0.0698">
+    <freejoint name="prop_legal_pad_1_free"/>
+    <inertial pos="0 0 0.006" mass="0.25" diaginertia="0.002643 0.000975 0.003612"/>
+    <geom name="prop_legal_pad_1_v0" type="box" size="0.108 0.014 0.0012" pos="0 0.164 0.0132" quat="1 0 0 0" rgba="0.25 0.04 0.02 1" contype="0" conaffinity="0"/>
+    <geom name="prop_legal_pad_1_c0" type="box" size="0.108 0.178 0.006" pos="0 0 0.006" quat="1 0 0 0" rgba="0.9 0.75 0.12 1" contype="8" conaffinity="15" condim="4" priority="1" friction="0.6 0.005 0.0001"/>
+  </body>
+  <body name="prop_binder_0" pos="-3.35 3 0.7881" quat="1 0 0 0">
+    <freejoint name="prop_binder_0_free"/>
+    <inertial pos="0 0 0.025" mass="0.8" diaginertia="0.005544 0.005773 0.01098"/>
+    <geom name="prop_binder_0_v0" type="box" size="0.004 0.142 0.025" pos="-0.147 0 0.025" quat="1 0 0 0" rgba="0.015 0.03 0.12 1" contype="0" conaffinity="0"/>
+    <geom name="prop_binder_0_c0" type="box" size="0.145 0.142 0.025" pos="0 0 0.025" quat="1 0 0 0" rgba="0.02 0.04 0.16 1" contype="8" conaffinity="15" condim="4" priority="1" friction="0.6 0.005 0.0001"/>
+  </body>
+  <body name="prop_binder_1" pos="-3.35 3 0.8386" quat="0.9994 0 0 0.0349">
+    <freejoint name="prop_binder_1_free"/>
+    <inertial pos="0 0 0.025" mass="0.8" diaginertia="0.005544 0.005773 0.01098"/>
+    <geom name="prop_binder_1_v0" type="box" size="0.004 0.142 0.025" pos="-0.147 0 0.025" quat="1 0 0 0" rgba="0.015 0.03 0.12 1" contype="0" conaffinity="0"/>
+    <geom name="prop_binder_1_c0" type="box" size="0.145 0.142 0.025" pos="0 0 0.025" quat="1 0 0 0" rgba="0.02 0.04 0.16 1" contype="8" conaffinity="15" condim="4" priority="1" friction="0.6 0.005 0.0001"/>
+  </body>
+  <body name="prop_mug_white_0" pos="-2 2.65 0.7881" quat="1 0 0 0">
+    <freejoint name="prop_mug_white_0_free"/>
+    <inertial pos="0.011 0 0.0475" mass="0.35" diaginertia="0.0004593 0.0005787 0.0005116"/>
+    <geom name="prop_mug_white_0_v0" type="box" size="0.01 0.006 0.005" pos="0.047 0 0.074" quat="1 0 0 0" rgba="0.8 0.8 0.78 1" contype="0" conaffinity="0"/>
+    <geom name="prop_mug_white_0_v1" type="box" size="0.01 0.006 0.005" pos="0.047 0 0.026" quat="1 0 0 0" rgba="0.8 0.8 0.78 1" contype="0" conaffinity="0"/>
+    <geom name="prop_mug_white_0_c0" type="cylinder" size="0.041 0.0475" pos="0 0 0.0475" quat="1 0 0 0" rgba="0.8 0.8 0.78 1" contype="8" conaffinity="15" condim="4" priority="1" friction="0.8 0.005 0.0001"/>
+    <geom name="prop_mug_white_0_c1" type="box" size="0.006 0.006 0.028" pos="0.057 0 0.05" quat="1 0 0 0" rgba="0.8 0.8 0.78 1" contype="8" conaffinity="15" condim="4" priority="1" friction="0.8 0.005 0.0001"/>
+  </body>
+  <body name="prop_mug_navy_0" pos="0.2 2.6 0.7881" quat="0.5 0 0 0.866">
+    <freejoint name="prop_mug_navy_0_free"/>
+    <inertial pos="0.011 0 0.0475" mass="0.35" diaginertia="0.0004593 0.0005787 0.0005116"/>
+    <geom name="prop_mug_navy_0_v0" type="box" size="0.01 0.006 0.005" pos="0.047 0 0.074" quat="1 0 0 0" rgba="0.02 0.03 0.12 1" contype="0" conaffinity="0"/>
+    <geom name="prop_mug_navy_0_v1" type="box" size="0.01 0.006 0.005" pos="0.047 0 0.026" quat="1 0 0 0" rgba="0.02 0.03 0.12 1" contype="0" conaffinity="0"/>
+    <geom name="prop_mug_navy_0_c0" type="cylinder" size="0.041 0.0475" pos="0 0 0.0475" quat="1 0 0 0" rgba="0.02 0.03 0.12 1" contype="8" conaffinity="15" condim="4" priority="1" friction="0.8 0.005 0.0001"/>
+    <geom name="prop_mug_navy_0_c1" type="box" size="0.006 0.006 0.028" pos="0.057 0 0.05" quat="1 0 0 0" rgba="0.02 0.03 0.12 1" contype="8" conaffinity="15" condim="4" priority="1" friction="0.8 0.005 0.0001"/>
+  </body>
+  <body name="prop_monitor_24in_2" pos="-2.6 -3 0.7881" quat="0 0 0 1">
+    <freejoint name="prop_monitor_24in_2_free"/>
+    <inertial pos="0 0.02 0.273" mass="4.5" diaginertia="0.1239 0.2228 0.1231"/>
+    <geom name="prop_monitor_24in_2_v0" type="box" size="0.262 0.002 0.152" pos="0 -0.0025 0.386" quat="1 0 0 0" rgba="0.004 0.006 0.01 1" contype="0" conaffinity="0"/>
+    <geom name="prop_monitor_24in_2_c0" type="box" size="0.12 0.09 0.008" pos="0 0.02 0.008" quat="1 0 0 0" rgba="0.03 0.03 0.035 1" contype="8" conaffinity="15" condim="4" priority="1" friction="0.6 0.005 0.0001"/>
+    <geom name="prop_monitor_24in_2_c1" type="box" size="0.025 0.015 0.14" pos="0 0.05 0.15" quat="1 0 0 0" rgba="0.03 0.03 0.035 1" contype="8" conaffinity="15" condim="4" priority="1" friction="0.6 0.005 0.0001"/>
+    <geom name="prop_monitor_24in_2_c2" type="box" size="0.272 0.022 0.166" pos="0 0.02 0.38" quat="1 0 0 0" rgba="0.02 0.02 0.022 1" contype="8" conaffinity="15" condim="4" priority="1" friction="0.6 0.005 0.0001"/>
+  </body>
+  <body name="prop_monitor_24in_3" pos="-0.4 -3 0.7881" quat="0 0 0 1">
+    <freejoint name="prop_monitor_24in_3_free"/>
+    <inertial pos="0 0.02 0.273" mass="4.5" diaginertia="0.1239 0.2228 0.1231"/>
+    <geom name="prop_monitor_24in_3_v0" type="box" size="0.262 0.002 0.152" pos="0 -0.0025 0.386" quat="1 0 0 0" rgba="0.004 0.006 0.01 1" contype="0" conaffinity="0"/>
+    <geom name="prop_monitor_24in_3_c0" type="box" size="0.12 0.09 0.008" pos="0 0.02 0.008" quat="1 0 0 0" rgba="0.03 0.03 0.035 1" contype="8" conaffinity="15" condim="4" priority="1" friction="0.6 0.005 0.0001"/>
+    <geom name="prop_monitor_24in_3_c1" type="box" size="0.025 0.015 0.14" pos="0 0.05 0.15" quat="1 0 0 0" rgba="0.03 0.03 0.035 1" contype="8" conaffinity="15" condim="4" priority="1" friction="0.6 0.005 0.0001"/>
+    <geom name="prop_monitor_24in_3_c2" type="box" size="0.272 0.022 0.166" pos="0 0.02 0.38" quat="1 0 0 0" rgba="0.02 0.02 0.022 1" contype="8" conaffinity="15" condim="4" priority="1" friction="0.6 0.005 0.0001"/>
+  </body>
+  <body name="prop_keyboard_2" pos="-2.6 -2.55 0.7881" quat="0 0 0 1">
+    <freejoint name="prop_keyboard_2_free"/>
+    <inertial pos="0 0 0.011" mass="0.7" diaginertia="0.001107 0.01132 0.01237"/>
+    <geom name="prop_keyboard_2_v0" type="box" size="0.21 0.058 0.002" pos="0 0 0.023" quat="1 0 0 0" rgba="0.06 0.06 0.065 1" contype="0" conaffinity="0"/>
+    <geom name="prop_keyboard_2_c0" type="box" size="0.22 0.068 0.011" pos="0 0 0.011" quat="1 0 0 0" rgba="0.02 0.02 0.022 1" contype="8" conaffinity="15" condim="4" priority="1" friction="0.8 0.005 0.0001"/>
+  </body>
+  <body name="prop_keyboard_3" pos="-0.4 -2.55 0.7881" quat="0 0 0 1">
+    <freejoint name="prop_keyboard_3_free"/>
+    <inertial pos="0 0 0.011" mass="0.7" diaginertia="0.001107 0.01132 0.01237"/>
+    <geom name="prop_keyboard_3_v0" type="box" size="0.21 0.058 0.002" pos="0 0 0.023" quat="1 0 0 0" rgba="0.06 0.06 0.065 1" contype="0" conaffinity="0"/>
+    <geom name="prop_keyboard_3_c0" type="box" size="0.22 0.068 0.011" pos="0 0 0.011" quat="1 0 0 0" rgba="0.02 0.02 0.022 1" contype="8" conaffinity="15" condim="4" priority="1" friction="0.8 0.005 0.0001"/>
+  </body>
+  <body name="prop_mouse_2" pos="-2.93 -2.55 0.7881" quat="0 0 0 1">
+    <freejoint name="prop_mouse_2_free"/>
+    <inertial pos="0 0 0.019" mass="0.1" diaginertia="0.0001166 4.407e-05 0.0001366"/>
+    <geom name="prop_mouse_2_c0" type="ellipsoid" size="0.031 0.056 0.019" pos="0 0 0.019" quat="1 0 0 0" rgba="0.02 0.02 0.022 1" contype="8" conaffinity="15" condim="4" priority="1" friction="0.8 0.005 0.0001"/>
+  </body>
+  <body name="prop_mouse_3" pos="-0.73 -2.55 0.7881" quat="0 0 0 1">
+    <freejoint name="prop_mouse_3_free"/>
+    <inertial pos="0 0 0.019" mass="0.1" diaginertia="0.0001166 4.407e-05 0.0001366"/>
+    <geom name="prop_mouse_3_c0" type="ellipsoid" size="0.031 0.056 0.019" pos="0 0 0.019" quat="1 0 0 0" rgba="0.02 0.02 0.022 1" contype="8" conaffinity="15" condim="4" priority="1" friction="0.8 0.005 0.0001"/>
+  </body>
+  <body name="prop_legal_pad_2" pos="-2.05 -2.6 0.7881" quat="0.0698 0 0 0.9976">
+    <freejoint name="prop_legal_pad_2_free"/>
+    <inertial pos="0 0 0.006" mass="0.25" diaginertia="0.002643 0.000975 0.003612"/>
+    <geom name="prop_legal_pad_2_v0" type="box" size="0.108 0.014 0.0012" pos="0 0.164 0.0132" quat="1 0 0 0" rgba="0.25 0.04 0.02 1" contype="0" conaffinity="0"/>
+    <geom name="prop_legal_pad_2_c0" type="box" size="0.108 0.178 0.006" pos="0 0 0.006" quat="1 0 0 0" rgba="0.9 0.75 0.12 1" contype="8" conaffinity="15" condim="4" priority="1" friction="0.6 0.005 0.0001"/>
+  </body>
+  <body name="prop_legal_pad_3" pos="0.15 -2.6 0.7881" quat="0.0698 0 0 0.9976">
+    <freejoint name="prop_legal_pad_3_free"/>
+    <inertial pos="0 0 0.006" mass="0.25" diaginertia="0.002643 0.000975 0.003612"/>
+    <geom name="prop_legal_pad_3_v0" type="box" size="0.108 0.014 0.0012" pos="0 0.164 0.0132" quat="1 0 0 0" rgba="0.25 0.04 0.02 1" contype="0" conaffinity="0"/>
+    <geom name="prop_legal_pad_3_c0" type="box" size="0.108 0.178 0.006" pos="0 0 0.006" quat="1 0 0 0" rgba="0.9 0.75 0.12 1" contype="8" conaffinity="15" condim="4" priority="1" friction="0.6 0.005 0.0001"/>
+  </body>
+  <body name="prop_binder_2" pos="0.35 -3 0.7881" quat="0 0 0 1">
+    <freejoint name="prop_binder_2_free"/>
+    <inertial pos="0 0 0.025" mass="0.8" diaginertia="0.005544 0.005773 0.01098"/>
+    <geom name="prop_binder_2_v0" type="box" size="0.004 0.142 0.025" pos="-0.147 0 0.025" quat="1 0 0 0" rgba="0.015 0.03 0.12 1" contype="0" conaffinity="0"/>
+    <geom name="prop_binder_2_c0" type="box" size="0.145 0.142 0.025" pos="0 0 0.025" quat="1 0 0 0" rgba="0.02 0.04 0.16 1" contype="8" conaffinity="15" condim="4" priority="1" friction="0.6 0.005 0.0001"/>
+  </body>
+  <body name="prop_mug_red_0" pos="-3.2 -2.65 0.7881" quat="-0.1736 0 0 0.9848">
+    <freejoint name="prop_mug_red_0_free"/>
+    <inertial pos="0.011 0 0.0475" mass="0.35" diaginertia="0.0004593 0.0005787 0.0005116"/>
+    <geom name="prop_mug_red_0_v0" type="box" size="0.01 0.006 0.005" pos="0.047 0 0.074" quat="1 0 0 0" rgba="0.45 0.02 0.02 1" contype="0" conaffinity="0"/>
+    <geom name="prop_mug_red_0_v1" type="box" size="0.01 0.006 0.005" pos="0.047 0 0.026" quat="1 0 0 0" rgba="0.45 0.02 0.02 1" contype="0" conaffinity="0"/>
+    <geom name="prop_mug_red_0_c0" type="cylinder" size="0.041 0.0475" pos="0 0 0.0475" quat="1 0 0 0" rgba="0.45 0.02 0.02 1" contype="8" conaffinity="15" condim="4" priority="1" friction="0.8 0.005 0.0001"/>
+    <geom name="prop_mug_red_0_c1" type="box" size="0.006 0.006 0.028" pos="0.057 0 0.05" quat="1 0 0 0" rgba="0.45 0.02 0.02 1" contype="8" conaffinity="15" condim="4" priority="1" friction="0.8 0.005 0.0001"/>
+  </body>
+  <body name="prop_mug_white_1" pos="2.8 -0.45 0.3905" quat="0.9397 0 0 0.342">
+    <freejoint name="prop_mug_white_1_free"/>
+    <inertial pos="0.011 0 0.0475" mass="0.35" diaginertia="0.0004593 0.0005787 0.0005116"/>
+    <geom name="prop_mug_white_1_v0" type="box" size="0.01 0.006 0.005" pos="0.047 0 0.074" quat="1 0 0 0" rgba="0.8 0.8 0.78 1" contype="0" conaffinity="0"/>
+    <geom name="prop_mug_white_1_v1" type="box" size="0.01 0.006 0.005" pos="0.047 0 0.026" quat="1 0 0 0" rgba="0.8 0.8 0.78 1" contype="0" conaffinity="0"/>
+    <geom name="prop_mug_white_1_c0" type="cylinder" size="0.041 0.0475" pos="0 0 0.0475" quat="1 0 0 0" rgba="0.8 0.8 0.78 1" contype="8" conaffinity="15" condim="4" priority="1" friction="0.8 0.005 0.0001"/>
+    <geom name="prop_mug_white_1_c1" type="box" size="0.006 0.006 0.028" pos="0.057 0 0.05" quat="1 0 0 0" rgba="0.8 0.8 0.78 1" contype="8" conaffinity="15" condim="4" priority="1" friction="0.8 0.005 0.0001"/>
+  </body>
+  <body name="prop_legal_pad_4" pos="3.15 -0.8 0.3905" quat="0.9848 0 0 -0.1736">
+    <freejoint name="prop_legal_pad_4_free"/>
+    <inertial pos="0 0 0.006" mass="0.25" diaginertia="0.002643 0.000975 0.003612"/>
+    <geom name="prop_legal_pad_4_v0" type="box" size="0.108 0.014 0.0012" pos="0 0.164 0.0132" quat="1 0 0 0" rgba="0.25 0.04 0.02 1" contype="0" conaffinity="0"/>
+    <geom name="prop_legal_pad_4_c0" type="box" size="0.108 0.178 0.006" pos="0 0 0.006" quat="1 0 0 0" rgba="0.9 0.75 0.12 1" contype="8" conaffinity="15" condim="4" priority="1" friction="0.6 0.005 0.0001"/>
+  </body>
+  <body name="prop_whiteboard_0" pos="-4.5 -2.2 0.0005" quat="0.7071 0 0 0.7071">
+    <geom name="prop_whiteboard_0_v0" type="box" size="0.915 0.012 0.015" pos="0 -0.012 2.115" quat="1 0 0 0" rgba="0.55 0.56 0.58 1" contype="0" conaffinity="0"/>
+    <geom name="prop_whiteboard_0_v1" type="box" size="0.915 0.012 0.015" pos="0 -0.012 0.885" quat="1 0 0 0" rgba="0.55 0.56 0.58 1" contype="0" conaffinity="0"/>
+    <geom name="prop_whiteboard_0_v2" type="box" size="0.015 0.012 0.6" pos="0.915 -0.012 1.5" quat="1 0 0 0" rgba="0.55 0.56 0.58 1" contype="0" conaffinity="0"/>
+    <geom name="prop_whiteboard_0_v3" type="box" size="0.015 0.012 0.6" pos="-0.915 -0.012 1.5" quat="1 0 0 0" rgba="0.55 0.56 0.58 1" contype="0" conaffinity="0"/>
+    <geom name="prop_whiteboard_0_c0" type="box" size="0.9 0.008 0.6" pos="0 -0.012 1.5" quat="1 0 0 0" rgba="0.92 0.92 0.92 1" contype="1" conaffinity="1" friction="0.7 0.005 0.0001"/>
+    <geom name="prop_whiteboard_0_c1" type="box" size="0.4 0.04 0.008" pos="0 -0.06 0.87" quat="1 0 0 0" rgba="0.55 0.56 0.58 1" contype="1" conaffinity="1" friction="0.7 0.005 0.0001"/>
+  </body>
+  <body name="prop_dry_erase_marker_black_0" pos="-4.44 -2.45 0.88" quat="0.7071 0 0 0.7071">
+    <freejoint name="prop_dry_erase_marker_black_0_free"/>
+    <inertial pos="0 0 0.009" mass="0.015" diaginertia="8.1e-07 2.219e-05 2.219e-05"/>
+    <geom name="prop_dry_erase_marker_black_0_c0" type="cylinder" size="0.009 0.066" pos="0 0 0.009" quat="0.7071 0 0.7071 0" rgba="0.02 0.02 0.02 1" contype="8" conaffinity="15" condim="4" priority="1" friction="0.5 0.005 0.0001"/>
+  </body>
+  <body name="prop_dry_erase_marker_blue_0" pos="-4.44 -2.3 0.88" quat="0.7071 0 0 0.7071">
+    <freejoint name="prop_dry_erase_marker_blue_0_free"/>
+    <inertial pos="0 0 0.009" mass="0.015" diaginertia="8.1e-07 2.219e-05 2.219e-05"/>
+    <geom name="prop_dry_erase_marker_blue_0_c0" type="cylinder" size="0.009 0.066" pos="0 0 0.009" quat="0.7071 0 0.7071 0" rgba="0.01 0.04 0.45 1" contype="8" conaffinity="15" condim="4" priority="1" friction="0.5 0.005 0.0001"/>
+  </body>
+  <body name="prop_dry_erase_marker_red_0" pos="-4.44 -2.15 0.88" quat="0.7071 0 0 0.7071">
+    <freejoint name="prop_dry_erase_marker_red_0_free"/>
+    <inertial pos="0 0 0.009" mass="0.015" diaginertia="8.1e-07 2.219e-05 2.219e-05"/>
+    <geom name="prop_dry_erase_marker_red_0_c0" type="cylinder" size="0.009 0.066" pos="0 0 0.009" quat="0.7071 0 0.7071 0" rgba="0.5 0.01 0.01 1" contype="8" conaffinity="15" condim="4" priority="1" friction="0.5 0.005 0.0001"/>
+  </body>
+  <body name="prop_whiteboard_eraser_0" pos="-4.44 -1.95 0.88" quat="0.7071 0 0 0.7071">
+    <freejoint name="prop_whiteboard_eraser_0_free"/>
+    <inertial pos="0 0 0.017" mass="0.1" diaginertia="3.217e-05 0.0001971 0.00021"/>
+    <geom name="prop_whiteboard_eraser_0_c0" type="box" size="0.075 0.026 0.012" pos="0 0 0.022" quat="1 0 0 0" rgba="0.02 0.02 0.022 1" contype="8" conaffinity="15" condim="4" priority="1" friction="0.8 0.005 0.0001"/>
+    <geom name="prop_whiteboard_eraser_0_c1" type="box" size="0.075 0.026 0.005" pos="0 0 0.005" quat="1 0 0 0" rgba="0.25 0.25 0.27 1" contype="8" conaffinity="15" condim="4" priority="1" friction="0.8 0.005 0.0001"/>
+  </body>
+  <body name="prop_water_cooler_0" pos="1.25 3.33 0.0005" quat="1 0 0 0">
+    <geom name="prop_water_cooler_0_v0" type="cylinder" size="0.04 0.03" pos="0 0 1.03" quat="1 0 0 0" rgba="0.35 0.55 0.8 0.6" contype="0" conaffinity="0"/>
+    <geom name="prop_water_cooler_0_v1" type="box" size="0.012 0.012 0.015" pos="0.05 -0.16 0.86" quat="1 0 0 0" rgba="0.02 0.1 0.6 1" contype="0" conaffinity="0"/>
+    <geom name="prop_water_cooler_0_v2" type="box" size="0.012 0.012 0.015" pos="-0.05 -0.16 0.86" quat="1 0 0 0" rgba="0.6 0.02 0.02 1" contype="0" conaffinity="0"/>
+    <geom name="prop_water_cooler_0_c0" type="box" size="0.155 0.155 0.5" pos="0 0 0.5" quat="1 0 0 0" rgba="0.85 0.85 0.83 1" contype="1" conaffinity="1" friction="0.7 0.005 0.0001"/>
+    <geom name="prop_water_cooler_0_c1" type="cylinder" size="0.135 0.24" pos="0 0 1.26" quat="1 0 0 0" rgba="0.35 0.55 0.8 0.6" contype="1" conaffinity="1" friction="0.7 0.005 0.0001"/>
+    <geom name="prop_water_cooler_0_c2" type="box" size="0.1 0.03 0.006" pos="0 -0.17 0.62" quat="1 0 0 0" rgba="0.15 0.15 0.16 1" contype="1" conaffinity="1" friction="0.7 0.005 0.0001"/>
+  </body>
+  <body name="prop_wastebasket_0" pos="-3.85 3.15 0.0005" quat="1 0 0 0">
+    <freejoint name="prop_wastebasket_0_free"/>
+    <inertial pos="0 0 0.15" mass="0.6" diaginertia="0.008309 0.008309 0.007618"/>
+    <geom name="prop_wastebasket_0_c0" type="cylinder" size="0.13 0.004" pos="0 0 0.004" quat="1 0 0 0" rgba="0.02 0.02 0.022 1" contype="8" conaffinity="15" condim="4" priority="1" friction="0.6 0.005 0.0001"/>
+    <geom name="prop_wastebasket_0_c1" type="box" size="0.004 0.036 0.15" pos="0.134 0 0.15" quat="1 0 0 0" rgba="0.02 0.02 0.022 1" contype="8" conaffinity="15" condim="4" priority="1" friction="0.6 0.005 0.0001"/>
+    <geom name="prop_wastebasket_0_c2" type="box" size="0.004 0.036 0.15" pos="0.116 0.067 0.15" quat="0.9659 0 0 0.2588" rgba="0.02 0.02 0.022 1" contype="8" conaffinity="15" condim="4" priority="1" friction="0.6 0.005 0.0001"/>
+    <geom name="prop_wastebasket_0_c3" type="box" size="0.004 0.036 0.15" pos="0.067 0.116 0.15" quat="0.866 0 0 0.5" rgba="0.02 0.02 0.022 1" contype="8" conaffinity="15" condim="4" priority="1" friction="0.6 0.005 0.0001"/>
+    <geom name="prop_wastebasket_0_c4" type="box" size="0.004 0.036 0.15" pos="0 0.134 0.15" quat="0.7071 0 0 0.7071" rgba="0.02 0.02 0.022 1" contype="8" conaffinity="15" condim="4" priority="1" friction="0.6 0.005 0.0001"/>
+    <geom name="prop_wastebasket_0_c5" type="box" size="0.004 0.036 0.15" pos="-0.067 0.116 0.15" quat="0.5 0 0 0.866" rgba="0.02 0.02 0.022 1" contype="8" conaffinity="15" condim="4" priority="1" friction="0.6 0.005 0.0001"/>
+    <geom name="prop_wastebasket_0_c6" type="box" size="0.004 0.036 0.15" pos="-0.116 0.067 0.15" quat="0.2588 0 0 0.9659" rgba="0.02 0.02 0.022 1" contype="8" conaffinity="15" condim="4" priority="1" friction="0.6 0.005 0.0001"/>
+    <geom name="prop_wastebasket_0_c7" type="box" size="0.004 0.036 0.15" pos="-0.134 0 0.15" quat="0 0 0 1" rgba="0.02 0.02 0.022 1" contype="8" conaffinity="15" condim="4" priority="1" friction="0.6 0.005 0.0001"/>
+    <geom name="prop_wastebasket_0_c8" type="box" size="0.004 0.036 0.15" pos="-0.116 -0.067 0.15" quat="-0.2588 0 0 0.9659" rgba="0.02 0.02 0.022 1" contype="8" conaffinity="15" condim="4" priority="1" friction="0.6 0.005 0.0001"/>
+    <geom name="prop_wastebasket_0_c9" type="box" size="0.004 0.036 0.15" pos="-0.067 -0.116 0.15" quat="-0.5 0 0 0.866" rgba="0.02 0.02 0.022 1" contype="8" conaffinity="15" condim="4" priority="1" friction="0.6 0.005 0.0001"/>
+    <geom name="prop_wastebasket_0_c10" type="box" size="0.004 0.036 0.15" pos="0 -0.134 0.15" quat="-0.7071 0 0 0.7071" rgba="0.02 0.02 0.022 1" contype="8" conaffinity="15" condim="4" priority="1" friction="0.6 0.005 0.0001"/>
+    <geom name="prop_wastebasket_0_c11" type="box" size="0.004 0.036 0.15" pos="0.067 -0.116 0.15" quat="-0.866 0 0 0.5" rgba="0.02 0.02 0.022 1" contype="8" conaffinity="15" condim="4" priority="1" friction="0.6 0.005 0.0001"/>
+    <geom name="prop_wastebasket_0_c12" type="box" size="0.004 0.036 0.15" pos="0.116 -0.067 0.15" quat="-0.9659 0 0 0.2588" rgba="0.02 0.02 0.022 1" contype="8" conaffinity="15" condim="4" priority="1" friction="0.6 0.005 0.0001"/>
+  </body>
+  <body name="prop_wastebasket_1" pos="0.8 3.15 0.0005" quat="1 0 0 0">
+    <freejoint name="prop_wastebasket_1_free"/>
+    <inertial pos="0 0 0.15" mass="0.6" diaginertia="0.008309 0.008309 0.007618"/>
+    <geom name="prop_wastebasket_1_c0" type="cylinder" size="0.13 0.004" pos="0 0 0.004" quat="1 0 0 0" rgba="0.02 0.02 0.022 1" contype="8" conaffinity="15" condim="4" priority="1" friction="0.6 0.005 0.0001"/>
+    <geom name="prop_wastebasket_1_c1" type="box" size="0.004 0.036 0.15" pos="0.134 0 0.15" quat="1 0 0 0" rgba="0.02 0.02 0.022 1" contype="8" conaffinity="15" condim="4" priority="1" friction="0.6 0.005 0.0001"/>
+    <geom name="prop_wastebasket_1_c2" type="box" size="0.004 0.036 0.15" pos="0.116 0.067 0.15" quat="0.9659 0 0 0.2588" rgba="0.02 0.02 0.022 1" contype="8" conaffinity="15" condim="4" priority="1" friction="0.6 0.005 0.0001"/>
+    <geom name="prop_wastebasket_1_c3" type="box" size="0.004 0.036 0.15" pos="0.067 0.116 0.15" quat="0.866 0 0 0.5" rgba="0.02 0.02 0.022 1" contype="8" conaffinity="15" condim="4" priority="1" friction="0.6 0.005 0.0001"/>
+    <geom name="prop_wastebasket_1_c4" type="box" size="0.004 0.036 0.15" pos="0 0.134 0.15" quat="0.7071 0 0 0.7071" rgba="0.02 0.02 0.022 1" contype="8" conaffinity="15" condim="4" priority="1" friction="0.6 0.005 0.0001"/>
+    <geom name="prop_wastebasket_1_c5" type="box" size="0.004 0.036 0.15" pos="-0.067 0.116 0.15" quat="0.5 0 0 0.866" rgba="0.02 0.02 0.022 1" contype="8" conaffinity="15" condim="4" priority="1" friction="0.6 0.005 0.0001"/>
+    <geom name="prop_wastebasket_1_c6" type="box" size="0.004 0.036 0.15" pos="-0.116 0.067 0.15" quat="0.2588 0 0 0.9659" rgba="0.02 0.02 0.022 1" contype="8" conaffinity="15" condim="4" priority="1" friction="0.6 0.005 0.0001"/>
+    <geom name="prop_wastebasket_1_c7" type="box" size="0.004 0.036 0.15" pos="-0.134 0 0.15" quat="0 0 0 1" rgba="0.02 0.02 0.022 1" contype="8" conaffinity="15" condim="4" priority="1" friction="0.6 0.005 0.0001"/>
+    <geom name="prop_wastebasket_1_c8" type="box" size="0.004 0.036 0.15" pos="-0.116 -0.067 0.15" quat="-0.2588 0 0 0.9659" rgba="0.02 0.02 0.022 1" contype="8" conaffinity="15" condim="4" priority="1" friction="0.6 0.005 0.0001"/>
+    <geom name="prop_wastebasket_1_c9" type="box" size="0.004 0.036 0.15" pos="-0.067 -0.116 0.15" quat="-0.5 0 0 0.866" rgba="0.02 0.02 0.022 1" contype="8" conaffinity="15" condim="4" priority="1" friction="0.6 0.005 0.0001"/>
+    <geom name="prop_wastebasket_1_c10" type="box" size="0.004 0.036 0.15" pos="0 -0.134 0.15" quat="-0.7071 0 0 0.7071" rgba="0.02 0.02 0.022 1" contype="8" conaffinity="15" condim="4" priority="1" friction="0.6 0.005 0.0001"/>
+    <geom name="prop_wastebasket_1_c11" type="box" size="0.004 0.036 0.15" pos="0.067 -0.116 0.15" quat="-0.866 0 0 0.5" rgba="0.02 0.02 0.022 1" contype="8" conaffinity="15" condim="4" priority="1" friction="0.6 0.005 0.0001"/>
+    <geom name="prop_wastebasket_1_c12" type="box" size="0.004 0.036 0.15" pos="0.116 -0.067 0.15" quat="-0.9659 0 0 0.2588" rgba="0.02 0.02 0.022 1" contype="8" conaffinity="15" condim="4" priority="1" friction="0.6 0.005 0.0001"/>
+  </body>
+  <body name="prop_wastebasket_2" pos="-3.85 -2.05 0.0005" quat="1 0 0 0">
+    <freejoint name="prop_wastebasket_2_free"/>
+    <inertial pos="0 0 0.15" mass="0.6" diaginertia="0.008309 0.008309 0.007618"/>
+    <geom name="prop_wastebasket_2_c0" type="cylinder" size="0.13 0.004" pos="0 0 0.004" quat="1 0 0 0" rgba="0.02 0.02 0.022 1" contype="8" conaffinity="15" condim="4" priority="1" friction="0.6 0.005 0.0001"/>
+    <geom name="prop_wastebasket_2_c1" type="box" size="0.004 0.036 0.15" pos="0.134 0 0.15" quat="1 0 0 0" rgba="0.02 0.02 0.022 1" contype="8" conaffinity="15" condim="4" priority="1" friction="0.6 0.005 0.0001"/>
+    <geom name="prop_wastebasket_2_c2" type="box" size="0.004 0.036 0.15" pos="0.116 0.067 0.15" quat="0.9659 0 0 0.2588" rgba="0.02 0.02 0.022 1" contype="8" conaffinity="15" condim="4" priority="1" friction="0.6 0.005 0.0001"/>
+    <geom name="prop_wastebasket_2_c3" type="box" size="0.004 0.036 0.15" pos="0.067 0.116 0.15" quat="0.866 0 0 0.5" rgba="0.02 0.02 0.022 1" contype="8" conaffinity="15" condim="4" priority="1" friction="0.6 0.005 0.0001"/>
+    <geom name="prop_wastebasket_2_c4" type="box" size="0.004 0.036 0.15" pos="0 0.134 0.15" quat="0.7071 0 0 0.7071" rgba="0.02 0.02 0.022 1" contype="8" conaffinity="15" condim="4" priority="1" friction="0.6 0.005 0.0001"/>
+    <geom name="prop_wastebasket_2_c5" type="box" size="0.004 0.036 0.15" pos="-0.067 0.116 0.15" quat="0.5 0 0 0.866" rgba="0.02 0.02 0.022 1" contype="8" conaffinity="15" condim="4" priority="1" friction="0.6 0.005 0.0001"/>
+    <geom name="prop_wastebasket_2_c6" type="box" size="0.004 0.036 0.15" pos="-0.116 0.067 0.15" quat="0.2588 0 0 0.9659" rgba="0.02 0.02 0.022 1" contype="8" conaffinity="15" condim="4" priority="1" friction="0.6 0.005 0.0001"/>
+    <geom name="prop_wastebasket_2_c7" type="box" size="0.004 0.036 0.15" pos="-0.134 0 0.15" quat="0 0 0 1" rgba="0.02 0.02 0.022 1" contype="8" conaffinity="15" condim="4" priority="1" friction="0.6 0.005 0.0001"/>
+    <geom name="prop_wastebasket_2_c8" type="box" size="0.004 0.036 0.15" pos="-0.116 -0.067 0.15" quat="-0.2588 0 0 0.9659" rgba="0.02 0.02 0.022 1" contype="8" conaffinity="15" condim="4" priority="1" friction="0.6 0.005 0.0001"/>
+    <geom name="prop_wastebasket_2_c9" type="box" size="0.004 0.036 0.15" pos="-0.067 -0.116 0.15" quat="-0.5 0 0 0.866" rgba="0.02 0.02 0.022 1" contype="8" conaffinity="15" condim="4" priority="1" friction="0.6 0.005 0.0001"/>
+    <geom name="prop_wastebasket_2_c10" type="box" size="0.004 0.036 0.15" pos="0 -0.134 0.15" quat="-0.7071 0 0 0.7071" rgba="0.02 0.02 0.022 1" contype="8" conaffinity="15" condim="4" priority="1" friction="0.6 0.005 0.0001"/>
+    <geom name="prop_wastebasket_2_c11" type="box" size="0.004 0.036 0.15" pos="0.067 -0.116 0.15" quat="-0.866 0 0 0.5" rgba="0.02 0.02 0.022 1" contype="8" conaffinity="15" condim="4" priority="1" friction="0.6 0.005 0.0001"/>
+    <geom name="prop_wastebasket_2_c12" type="box" size="0.004 0.036 0.15" pos="0.116 -0.067 0.15" quat="-0.9659 0 0 0.2588" rgba="0.02 0.02 0.022 1" contype="8" conaffinity="15" condim="4" priority="1" friction="0.6 0.005 0.0001"/>
+  </body>
+  <body name="prop_wastebasket_3" pos="0.85 -3.15 0.0005" quat="1 0 0 0">
+    <freejoint name="prop_wastebasket_3_free"/>
+    <inertial pos="0 0 0.15" mass="0.6" diaginertia="0.008309 0.008309 0.007618"/>
+    <geom name="prop_wastebasket_3_c0" type="cylinder" size="0.13 0.004" pos="0 0 0.004" quat="1 0 0 0" rgba="0.02 0.02 0.022 1" contype="8" conaffinity="15" condim="4" priority="1" friction="0.6 0.005 0.0001"/>
+    <geom name="prop_wastebasket_3_c1" type="box" size="0.004 0.036 0.15" pos="0.134 0 0.15" quat="1 0 0 0" rgba="0.02 0.02 0.022 1" contype="8" conaffinity="15" condim="4" priority="1" friction="0.6 0.005 0.0001"/>
+    <geom name="prop_wastebasket_3_c2" type="box" size="0.004 0.036 0.15" pos="0.116 0.067 0.15" quat="0.9659 0 0 0.2588" rgba="0.02 0.02 0.022 1" contype="8" conaffinity="15" condim="4" priority="1" friction="0.6 0.005 0.0001"/>
+    <geom name="prop_wastebasket_3_c3" type="box" size="0.004 0.036 0.15" pos="0.067 0.116 0.15" quat="0.866 0 0 0.5" rgba="0.02 0.02 0.022 1" contype="8" conaffinity="15" condim="4" priority="1" friction="0.6 0.005 0.0001"/>
+    <geom name="prop_wastebasket_3_c4" type="box" size="0.004 0.036 0.15" pos="0 0.134 0.15" quat="0.7071 0 0 0.7071" rgba="0.02 0.02 0.022 1" contype="8" conaffinity="15" condim="4" priority="1" friction="0.6 0.005 0.0001"/>
+    <geom name="prop_wastebasket_3_c5" type="box" size="0.004 0.036 0.15" pos="-0.067 0.116 0.15" quat="0.5 0 0 0.866" rgba="0.02 0.02 0.022 1" contype="8" conaffinity="15" condim="4" priority="1" friction="0.6 0.005 0.0001"/>
+    <geom name="prop_wastebasket_3_c6" type="box" size="0.004 0.036 0.15" pos="-0.116 0.067 0.15" quat="0.2588 0 0 0.9659" rgba="0.02 0.02 0.022 1" contype="8" conaffinity="15" condim="4" priority="1" friction="0.6 0.005 0.0001"/>
+    <geom name="prop_wastebasket_3_c7" type="box" size="0.004 0.036 0.15" pos="-0.134 0 0.15" quat="0 0 0 1" rgba="0.02 0.02 0.022 1" contype="8" conaffinity="15" condim="4" priority="1" friction="0.6 0.005 0.0001"/>
+    <geom name="prop_wastebasket_3_c8" type="box" size="0.004 0.036 0.15" pos="-0.116 -0.067 0.15" quat="-0.2588 0 0 0.9659" rgba="0.02 0.02 0.022 1" contype="8" conaffinity="15" condim="4" priority="1" friction="0.6 0.005 0.0001"/>
+    <geom name="prop_wastebasket_3_c9" type="box" size="0.004 0.036 0.15" pos="-0.067 -0.116 0.15" quat="-0.5 0 0 0.866" rgba="0.02 0.02 0.022 1" contype="8" conaffinity="15" condim="4" priority="1" friction="0.6 0.005 0.0001"/>
+    <geom name="prop_wastebasket_3_c10" type="box" size="0.004 0.036 0.15" pos="0 -0.134 0.15" quat="-0.7071 0 0 0.7071" rgba="0.02 0.02 0.022 1" contype="8" conaffinity="15" condim="4" priority="1" friction="0.6 0.005 0.0001"/>
+    <geom name="prop_wastebasket_3_c11" type="box" size="0.004 0.036 0.15" pos="0.067 -0.116 0.15" quat="-0.866 0 0 0.5" rgba="0.02 0.02 0.022 1" contype="8" conaffinity="15" condim="4" priority="1" friction="0.6 0.005 0.0001"/>
+    <geom name="prop_wastebasket_3_c12" type="box" size="0.004 0.036 0.15" pos="0.116 -0.067 0.15" quat="-0.9659 0 0 0.2588" rgba="0.02 0.02 0.022 1" contype="8" conaffinity="15" condim="4" priority="1" friction="0.6 0.005 0.0001"/>
+  </body>
+  <body name="prop_fire_extinguisher_0" pos="4.5 1.6 0.0005" quat="0.7071 0 0 -0.7071">
+    <geom name="prop_fire_extinguisher_0_v0" type="box" size="0.04 0.012 0.06" pos="0 -0.012 1.02" quat="1 0 0 0" rgba="0.1 0.1 0.1 1" contype="0" conaffinity="0"/>
+    <geom name="prop_fire_extinguisher_0_v1" type="cylinder" size="0.02 0.025" pos="0 -0.09 1.165" quat="1 0 0 0" rgba="0.05 0.05 0.05 1" contype="0" conaffinity="0"/>
+    <geom name="prop_fire_extinguisher_0_v2" type="box" size="0.012 0.06 0.006" pos="0 -0.11 1.2" quat="0.9914 -0.1305 0 0" rgba="0.05 0.05 0.05 1" contype="0" conaffinity="0"/>
+    <geom name="prop_fire_extinguisher_0_v3" type="box" size="0.007 0.007 0.17" pos="0.07 -0.09 1" quat="1 0 0 0" rgba="0.02 0.02 0.02 1" contype="0" conaffinity="0"/>
+    <geom name="prop_fire_extinguisher_0_v4" type="box" size="0.05 0.003 0.03" pos="0 -0.157 0.97" quat="1 0 0 0" rgba="0.85 0.85 0.85 1" contype="0" conaffinity="0"/>
+    <geom name="prop_fire_extinguisher_0_c0" type="cylinder" size="0.065 0.19" pos="0 -0.09 0.95" quat="1 0 0 0" rgba="0.55 0.01 0.01 1" contype="1" conaffinity="1" friction="0.7 0.005 0.0001"/>
+  </body>
+  <body name="prop_duplex_outlet_0" pos="-1.5 3.5 0.0005" quat="1 0 0 0">
+    <geom name="prop_duplex_outlet_0_v0" type="box" size="0.035 0.003 0.057" pos="0 -0.003 0.4" quat="1 0 0 0" rgba="0.83 0.81 0.74 1" contype="0" conaffinity="0"/>
+    <geom name="prop_duplex_outlet_0_v1" type="box" size="0.018 0.002 0.017" pos="0 -0.007 0.432" quat="1 0 0 0" rgba="0.8 0.78 0.71 1" contype="0" conaffinity="0"/>
+    <geom name="prop_duplex_outlet_0_v2" type="box" size="0.018 0.002 0.017" pos="0 -0.007 0.368" quat="1 0 0 0" rgba="0.8 0.78 0.71 1" contype="0" conaffinity="0"/>
+    <geom name="prop_duplex_outlet_0_v3" type="box" size="0.0015 0.001 0.005" pos="-0.006 -0.0095 0.435" quat="1 0 0 0" rgba="0.05 0.05 0.05 1" contype="0" conaffinity="0"/>
+    <geom name="prop_duplex_outlet_0_v4" type="box" size="0.0015 0.001 0.0065" pos="0.006 -0.0095 0.435" quat="1 0 0 0" rgba="0.05 0.05 0.05 1" contype="0" conaffinity="0"/>
+    <geom name="prop_duplex_outlet_0_v5" type="box" size="0.0025 0.001 0.0025" pos="0 -0.0095 0.423" quat="1 0 0 0" rgba="0.05 0.05 0.05 1" contype="0" conaffinity="0"/>
+    <geom name="prop_duplex_outlet_0_v6" type="box" size="0.0015 0.001 0.005" pos="-0.006 -0.0095 0.371" quat="1 0 0 0" rgba="0.05 0.05 0.05 1" contype="0" conaffinity="0"/>
+    <geom name="prop_duplex_outlet_0_v7" type="box" size="0.0015 0.001 0.0065" pos="0.006 -0.0095 0.371" quat="1 0 0 0" rgba="0.05 0.05 0.05 1" contype="0" conaffinity="0"/>
+    <geom name="prop_duplex_outlet_0_v8" type="box" size="0.0025 0.001 0.0025" pos="0 -0.0095 0.359" quat="1 0 0 0" rgba="0.05 0.05 0.05 1" contype="0" conaffinity="0"/>
+  </body>
+  <body name="prop_duplex_outlet_1" pos="1.8 3.5 0.0005" quat="1 0 0 0">
+    <geom name="prop_duplex_outlet_1_v0" type="box" size="0.035 0.003 0.057" pos="0 -0.003 0.4" quat="1 0 0 0" rgba="0.83 0.81 0.74 1" contype="0" conaffinity="0"/>
+    <geom name="prop_duplex_outlet_1_v1" type="box" size="0.018 0.002 0.017" pos="0 -0.007 0.432" quat="1 0 0 0" rgba="0.8 0.78 0.71 1" contype="0" conaffinity="0"/>
+    <geom name="prop_duplex_outlet_1_v2" type="box" size="0.018 0.002 0.017" pos="0 -0.007 0.368" quat="1 0 0 0" rgba="0.8 0.78 0.71 1" contype="0" conaffinity="0"/>
+    <geom name="prop_duplex_outlet_1_v3" type="box" size="0.0015 0.001 0.005" pos="-0.006 -0.0095 0.435" quat="1 0 0 0" rgba="0.05 0.05 0.05 1" contype="0" conaffinity="0"/>
+    <geom name="prop_duplex_outlet_1_v4" type="box" size="0.0015 0.001 0.0065" pos="0.006 -0.0095 0.435" quat="1 0 0 0" rgba="0.05 0.05 0.05 1" contype="0" conaffinity="0"/>
+    <geom name="prop_duplex_outlet_1_v5" type="box" size="0.0025 0.001 0.0025" pos="0 -0.0095 0.423" quat="1 0 0 0" rgba="0.05 0.05 0.05 1" contype="0" conaffinity="0"/>
+    <geom name="prop_duplex_outlet_1_v6" type="box" size="0.0015 0.001 0.005" pos="-0.006 -0.0095 0.371" quat="1 0 0 0" rgba="0.05 0.05 0.05 1" contype="0" conaffinity="0"/>
+    <geom name="prop_duplex_outlet_1_v7" type="box" size="0.0015 0.001 0.0065" pos="0.006 -0.0095 0.371" quat="1 0 0 0" rgba="0.05 0.05 0.05 1" contype="0" conaffinity="0"/>
+    <geom name="prop_duplex_outlet_1_v8" type="box" size="0.0025 0.001 0.0025" pos="0 -0.0095 0.359" quat="1 0 0 0" rgba="0.05 0.05 0.05 1" contype="0" conaffinity="0"/>
+  </body>
+  <body name="prop_duplex_outlet_2" pos="-1.5 -3.5 0.0005" quat="0 0 0 1">
+    <geom name="prop_duplex_outlet_2_v0" type="box" size="0.035 0.003 0.057" pos="0 -0.003 0.4" quat="1 0 0 0" rgba="0.83 0.81 0.74 1" contype="0" conaffinity="0"/>
+    <geom name="prop_duplex_outlet_2_v1" type="box" size="0.018 0.002 0.017" pos="0 -0.007 0.432" quat="1 0 0 0" rgba="0.8 0.78 0.71 1" contype="0" conaffinity="0"/>
+    <geom name="prop_duplex_outlet_2_v2" type="box" size="0.018 0.002 0.017" pos="0 -0.007 0.368" quat="1 0 0 0" rgba="0.8 0.78 0.71 1" contype="0" conaffinity="0"/>
+    <geom name="prop_duplex_outlet_2_v3" type="box" size="0.0015 0.001 0.005" pos="-0.006 -0.0095 0.435" quat="1 0 0 0" rgba="0.05 0.05 0.05 1" contype="0" conaffinity="0"/>
+    <geom name="prop_duplex_outlet_2_v4" type="box" size="0.0015 0.001 0.0065" pos="0.006 -0.0095 0.435" quat="1 0 0 0" rgba="0.05 0.05 0.05 1" contype="0" conaffinity="0"/>
+    <geom name="prop_duplex_outlet_2_v5" type="box" size="0.0025 0.001 0.0025" pos="0 -0.0095 0.423" quat="1 0 0 0" rgba="0.05 0.05 0.05 1" contype="0" conaffinity="0"/>
+    <geom name="prop_duplex_outlet_2_v6" type="box" size="0.0015 0.001 0.005" pos="-0.006 -0.0095 0.371" quat="1 0 0 0" rgba="0.05 0.05 0.05 1" contype="0" conaffinity="0"/>
+    <geom name="prop_duplex_outlet_2_v7" type="box" size="0.0015 0.001 0.0065" pos="0.006 -0.0095 0.371" quat="1 0 0 0" rgba="0.05 0.05 0.05 1" contype="0" conaffinity="0"/>
+    <geom name="prop_duplex_outlet_2_v8" type="box" size="0.0025 0.001 0.0025" pos="0 -0.0095 0.359" quat="1 0 0 0" rgba="0.05 0.05 0.05 1" contype="0" conaffinity="0"/>
+  </body>
+  <body name="prop_duplex_outlet_3" pos="1.6 -3.5 0.0005" quat="0 0 0 1">
+    <geom name="prop_duplex_outlet_3_v0" type="box" size="0.035 0.003 0.057" pos="0 -0.003 0.4" quat="1 0 0 0" rgba="0.83 0.81 0.74 1" contype="0" conaffinity="0"/>
+    <geom name="prop_duplex_outlet_3_v1" type="box" size="0.018 0.002 0.017" pos="0 -0.007 0.432" quat="1 0 0 0" rgba="0.8 0.78 0.71 1" contype="0" conaffinity="0"/>
+    <geom name="prop_duplex_outlet_3_v2" type="box" size="0.018 0.002 0.017" pos="0 -0.007 0.368" quat="1 0 0 0" rgba="0.8 0.78 0.71 1" contype="0" conaffinity="0"/>
+    <geom name="prop_duplex_outlet_3_v3" type="box" size="0.0015 0.001 0.005" pos="-0.006 -0.0095 0.435" quat="1 0 0 0" rgba="0.05 0.05 0.05 1" contype="0" conaffinity="0"/>
+    <geom name="prop_duplex_outlet_3_v4" type="box" size="0.0015 0.001 0.0065" pos="0.006 -0.0095 0.435" quat="1 0 0 0" rgba="0.05 0.05 0.05 1" contype="0" conaffinity="0"/>
+    <geom name="prop_duplex_outlet_3_v5" type="box" size="0.0025 0.001 0.0025" pos="0 -0.0095 0.423" quat="1 0 0 0" rgba="0.05 0.05 0.05 1" contype="0" conaffinity="0"/>
+    <geom name="prop_duplex_outlet_3_v6" type="box" size="0.0015 0.001 0.005" pos="-0.006 -0.0095 0.371" quat="1 0 0 0" rgba="0.05 0.05 0.05 1" contype="0" conaffinity="0"/>
+    <geom name="prop_duplex_outlet_3_v7" type="box" size="0.0015 0.001 0.0065" pos="0.006 -0.0095 0.371" quat="1 0 0 0" rgba="0.05 0.05 0.05 1" contype="0" conaffinity="0"/>
+    <geom name="prop_duplex_outlet_3_v8" type="box" size="0.0025 0.001 0.0025" pos="0 -0.0095 0.359" quat="1 0 0 0" rgba="0.05 0.05 0.05 1" contype="0" conaffinity="0"/>
+  </body>
+  <body name="prop_duplex_outlet_4" pos="-4.5 1.5 0.0005" quat="0.7071 0 0 0.7071">
+    <geom name="prop_duplex_outlet_4_v0" type="box" size="0.035 0.003 0.057" pos="0 -0.003 0.4" quat="1 0 0 0" rgba="0.83 0.81 0.74 1" contype="0" conaffinity="0"/>
+    <geom name="prop_duplex_outlet_4_v1" type="box" size="0.018 0.002 0.017" pos="0 -0.007 0.432" quat="1 0 0 0" rgba="0.8 0.78 0.71 1" contype="0" conaffinity="0"/>
+    <geom name="prop_duplex_outlet_4_v2" type="box" size="0.018 0.002 0.017" pos="0 -0.007 0.368" quat="1 0 0 0" rgba="0.8 0.78 0.71 1" contype="0" conaffinity="0"/>
+    <geom name="prop_duplex_outlet_4_v3" type="box" size="0.0015 0.001 0.005" pos="-0.006 -0.0095 0.435" quat="1 0 0 0" rgba="0.05 0.05 0.05 1" contype="0" conaffinity="0"/>
+    <geom name="prop_duplex_outlet_4_v4" type="box" size="0.0015 0.001 0.0065" pos="0.006 -0.0095 0.435" quat="1 0 0 0" rgba="0.05 0.05 0.05 1" contype="0" conaffinity="0"/>
+    <geom name="prop_duplex_outlet_4_v5" type="box" size="0.0025 0.001 0.0025" pos="0 -0.0095 0.423" quat="1 0 0 0" rgba="0.05 0.05 0.05 1" contype="0" conaffinity="0"/>
+    <geom name="prop_duplex_outlet_4_v6" type="box" size="0.0015 0.001 0.005" pos="-0.006 -0.0095 0.371" quat="1 0 0 0" rgba="0.05 0.05 0.05 1" contype="0" conaffinity="0"/>
+    <geom name="prop_duplex_outlet_4_v7" type="box" size="0.0015 0.001 0.0065" pos="0.006 -0.0095 0.371" quat="1 0 0 0" rgba="0.05 0.05 0.05 1" contype="0" conaffinity="0"/>
+    <geom name="prop_duplex_outlet_4_v8" type="box" size="0.0025 0.001 0.0025" pos="0 -0.0095 0.359" quat="1 0 0 0" rgba="0.05 0.05 0.05 1" contype="0" conaffinity="0"/>
+  </body>
+  <body name="prop_duplex_outlet_5" pos="4.5 2.4 0.0005" quat="0.7071 0 0 -0.7071">
+    <geom name="prop_duplex_outlet_5_v0" type="box" size="0.035 0.003 0.057" pos="0 -0.003 0.4" quat="1 0 0 0" rgba="0.83 0.81 0.74 1" contype="0" conaffinity="0"/>
+    <geom name="prop_duplex_outlet_5_v1" type="box" size="0.018 0.002 0.017" pos="0 -0.007 0.432" quat="1 0 0 0" rgba="0.8 0.78 0.71 1" contype="0" conaffinity="0"/>
+    <geom name="prop_duplex_outlet_5_v2" type="box" size="0.018 0.002 0.017" pos="0 -0.007 0.368" quat="1 0 0 0" rgba="0.8 0.78 0.71 1" contype="0" conaffinity="0"/>
+    <geom name="prop_duplex_outlet_5_v3" type="box" size="0.0015 0.001 0.005" pos="-0.006 -0.0095 0.435" quat="1 0 0 0" rgba="0.05 0.05 0.05 1" contype="0" conaffinity="0"/>
+    <geom name="prop_duplex_outlet_5_v4" type="box" size="0.0015 0.001 0.0065" pos="0.006 -0.0095 0.435" quat="1 0 0 0" rgba="0.05 0.05 0.05 1" contype="0" conaffinity="0"/>
+    <geom name="prop_duplex_outlet_5_v5" type="box" size="0.0025 0.001 0.0025" pos="0 -0.0095 0.423" quat="1 0 0 0" rgba="0.05 0.05 0.05 1" contype="0" conaffinity="0"/>
+    <geom name="prop_duplex_outlet_5_v6" type="box" size="0.0015 0.001 0.005" pos="-0.006 -0.0095 0.371" quat="1 0 0 0" rgba="0.05 0.05 0.05 1" contype="0" conaffinity="0"/>
+    <geom name="prop_duplex_outlet_5_v7" type="box" size="0.0015 0.001 0.0065" pos="0.006 -0.0095 0.371" quat="1 0 0 0" rgba="0.05 0.05 0.05 1" contype="0" conaffinity="0"/>
+    <geom name="prop_duplex_outlet_5_v8" type="box" size="0.0025 0.001 0.0025" pos="0 -0.0095 0.359" quat="1 0 0 0" rgba="0.05 0.05 0.05 1" contype="0" conaffinity="0"/>
+  </body>
+</worldbody>
+</mujoco>

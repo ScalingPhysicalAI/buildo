@@ -1,5 +1,7 @@
 # Buildo
 
+<!-- Trivial touch commit: re-trigger a Vercel deploy after the GitHub repo's visibility was changed back to public. -->
+
 Monorepo for the Buildo developer platform (Starforge Robotics) — see
 `Buildo_MuJoCo_Developer_to_AppStore_Architecture_With_Simulation.pdf` at
 the repo root for the target architecture this is being built toward.
