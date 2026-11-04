@@ -10,18 +10,26 @@
 // rather than reimplementing SRTP from scratch here.
 //
 // Usage:
-//   tsx scripts/decrypt-episode.ts --collection <id> --key /path/to/enc_key.bin [--out dir] [--enc-tool /path/to/enc_tool.py] [--python python3]
+//   tsx scripts/decrypt-episode.ts --collection <id> --key /path/to/enc_key.bin [--out dir] [--enc-tool /path/to/enc_tool.py] [--python python3] [--admin-secret <secret>] [--server <url>]
 //   tsx scripts/decrypt-episode.ts --url <blob url>  --key /path/to/enc_key.bin [--out dir] ...
+//
+// --collection fetches the zip through /api/admin/episode-blob (needs
+// ADMIN_SECRET -- see that route) instead of the Blob storage URL directly:
+// the store is private, and its read token is marked "sensitive" on Vercel,
+// which means it can never be read back by anyone once set, by design --
+// not something a local script can ever be handed, so the portal server
+// itself proxies the bytes instead, using the token at request time where
+// it still works fine. --url (a blob URL you already have another way)
+// skips all of that and fetches directly -- only works if given a public
+// blob or your own already-authenticated URL.
 import { createDecipheriv, createHmac, hkdfSync, timingSafeEqual } from "node:crypto";
 import { execFileSync } from "node:child_process";
 import { existsSync, mkdirSync, readFileSync, writeFileSync } from "node:fs";
 import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
 
-import { PrismaClient } from "@prisma/client";
 import { unzipSync } from "fflate";
 
-const prisma = new PrismaClient();
 const HERE = dirname(fileURLToPath(import.meta.url));
 const DEFAULT_ENC_TOOL = join(HERE, "..", "..", "mobile", "enc_tool.py");
 
@@ -32,6 +40,8 @@ interface Args {
   out: string;
   encTool: string;
   python: string;
+  adminSecret?: string;
+  server: string;
 }
 
 function parseArgs(): Args {
@@ -52,6 +62,8 @@ function parseArgs(): Args {
     out: get("--out") ?? join(HERE, "..", ".decrypted-episodes", get("--collection") ?? "episode"),
     encTool: get("--enc-tool") ?? DEFAULT_ENC_TOOL,
     python: get("--python") ?? "python3",
+    adminSecret: get("--admin-secret") ?? process.env.ADMIN_SECRET,
+    server: get("--server") ?? process.env.NEXT_PUBLIC_APP_URL ?? "https://portal.starforgerobotics.com",
   };
 }
 
@@ -148,24 +160,30 @@ async function main() {
   const args = parseArgs();
   const key = readFileSync(args.key);
 
-  let videoUrl = args.url;
-  if (!videoUrl) {
+  let fetchUrl: string;
+  let fetchHeaders: Record<string, string> = {};
+  if (args.url) {
+    fetchUrl = args.url;
+  } else {
     if (!args.collection) {
       console.error("Pass either --collection <id> or --url <blob-url>.");
       process.exit(1);
     }
-    const collection = await prisma.skillCollectionSession.findUnique({ where: { id: args.collection } });
-    if (!collection?.videoUrl) {
-      console.error(`Collection ${args.collection} has no videoUrl yet -- upload may not have finished.`);
+    if (!args.adminSecret) {
+      console.error(
+        "Missing ADMIN_SECRET -- set it in apps/portal/.env.local and on the Vercel project (Production), " +
+          "or pass --admin-secret <value>. See /api/admin/episode-blob/route.ts."
+      );
       process.exit(1);
     }
-    videoUrl = collection.videoUrl;
+    fetchUrl = `${args.server}/api/admin/episode-blob?collection=${encodeURIComponent(args.collection)}`;
+    fetchHeaders = { "x-admin-secret": args.adminSecret };
   }
 
-  console.log(`Fetching ${videoUrl} ...`);
-  const res = await fetch(videoUrl);
+  console.log(`Fetching ${fetchUrl} ...`);
+  const res = await fetch(fetchUrl, { headers: fetchHeaders });
   if (!res.ok) {
-    console.error(`Download failed: ${res.status}`);
+    console.error(`Download failed: ${res.status} ${await res.text().catch(() => "")}`);
     process.exit(1);
   }
   const zipBytes = new Uint8Array(await res.arrayBuffer());
@@ -218,7 +236,6 @@ async function main() {
   }
 
   console.log(`\nDone. Raw: ${rawDir}\nDecrypted: ${decryptedDir}`);
-  await prisma.$disconnect();
 }
 
 main().catch((err) => {
