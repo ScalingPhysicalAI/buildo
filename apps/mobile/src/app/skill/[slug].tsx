@@ -7,7 +7,6 @@ import {
   ActivityIndicator,
   Animated,
   Easing,
-  Image,
   Pressable,
   ScrollView,
   StyleSheet,
@@ -26,8 +25,8 @@ import { formatDuration } from "../../lib/format";
 import { deleteLocalFile, EpisodeRecorder } from "../../lib/glasses/episode-storage";
 import { uploadEpisodeZip } from "../../lib/glasses/episode-upload";
 import type { SessionState } from "../../lib/glasses/glasses-session";
-import type { FrameMessage, HelloMessage, PeerMessage, StatusMessage } from "../../lib/glasses/protocol";
-import type { RtpJpegFrame } from "../../lib/glasses/rtsp-client";
+import type { HelloMessage, PeerMessage, StatusMessage } from "../../lib/glasses/protocol";
+import type { RawRtpPacket } from "../../lib/glasses/rtsp-client";
 import { getDisplayStatus } from "../../lib/skill-status";
 import { useSkills } from "../../lib/skills-context";
 import { colors, fonts, radii, spacing } from "../../theme";
@@ -77,8 +76,6 @@ export default function SkillDetailScreen() {
   const [ring] = useState(() => new Animated.Value(1));
   const episodeRef = useRef<string | null>(null);
   const recorderRef = useRef<EpisodeRecorder | null>(null);
-  const [previewUris, setPreviewUris] = useState<string[]>([]);
-  const [previewIndex, setPreviewIndex] = useState(0);
 
   const [sessionState, setSessionState] = useState<SessionState>(devices.glassesSession.state);
   const [hello, setHello] = useState<HelloMessage | null>(null);
@@ -91,14 +88,16 @@ export default function SkillDetailScreen() {
   }, []);
 
   // Stable identity (recorderRef, not state) -- GlassesVideoPanel's own
-  // RTSP-connect effect re-runs whenever onFrame's identity changes, so a
-  // fresh closure here on every render would restart the video connection
-  // on every frame.
-  const onLeftFrame = useCallback((frame: RtpJpegFrame) => {
-    recorderRef.current?.saveVideoFrame("left", frame.jpeg);
+  // RTSP-connect effect re-runs whenever onRawPacket's identity changes, so
+  // a fresh closure here on every render would restart the video
+  // connection on every frame. Raw, undecoded packets now -- see
+  // rtsp-client.ts and episode-storage.ts for why there's no decode step
+  // on this app anymore.
+  const onLeftPacket = useCallback((p: RawRtpPacket) => {
+    recorderRef.current?.saveVideoPacket("left", p.packet, p.encHeader);
   }, []);
-  const onRightFrame = useCallback((frame: RtpJpegFrame) => {
-    recorderRef.current?.saveVideoFrame("right", frame.jpeg);
+  const onRightPacket = useCallback((p: RawRtpPacket) => {
+    recorderRef.current?.saveVideoPacket("right", p.packet, p.encHeader);
   }, []);
 
   useEffect(() => {
@@ -106,28 +105,27 @@ export default function SkillDetailScreen() {
     const session = devices.glassesSession;
     const unsubState = session.on("state", ({ state }) => setSessionState(state));
     const unsubLog = session.on("log", ({ line }) => pushLog(line));
-    const unsubHello = session.link.on("hello", setHello);
-    const unsubStatus = session.link.on("status", setStatus);
+    const unsubHello = session.link.on("hello", (h) => {
+      setHello(h);
+      recorderRef.current?.setHello(h);
+    });
+    const unsubStatus = session.link.on("status", (s) => {
+      setStatus(s);
+      recorderRef.current?.setStatus(s);
+    });
     const unsubPeer = session.link.on("peer", (p: PeerMessage) => setPeerRtsp(p.rtsp));
-    const unsubFrame = session.link.on("frame", (f: FrameMessage) => recorderRef.current?.appendDataFrame(f));
+    const unsubDataHello = session.link.on("dataHello", (d) => recorderRef.current?.addDataHello(d));
+    const unsubRawLine = session.link.on("rawDataLine", ({ line }) => recorderRef.current?.appendRawDataLine(line));
     return () => {
       unsubState();
       unsubLog();
       unsubHello();
       unsubStatus();
       unsubPeer();
-      unsubFrame();
+      unsubDataHello();
+      unsubRawLine();
     };
   }, [phase, devices.glassesSession, pushLog]);
-
-  // Flipbook preview of the saved frames, above Delete/Upload -- cycles at
-  // a fixed rate since the saved frames don't carry their own playback
-  // timing (every-2nd-frame, RTSP video timestamps aren't preserved here).
-  useEffect(() => {
-    if (previewUris.length === 0) return;
-    const interval = setInterval(() => setPreviewIndex((i) => (i + 1) % previewUris.length), 180);
-    return () => clearInterval(interval);
-  }, [previewUris]);
 
   const isLive = sessionState === "recording";
 
@@ -181,8 +179,6 @@ export default function SkillDetailScreen() {
     setStatus(null);
     setPeerRtsp(null);
     setLogs([]);
-    setPreviewUris([]);
-    setPreviewIndex(0);
     setPhase("recording");
     try {
       await devices.glassesSession.startRecording(episodeName);
@@ -199,7 +195,6 @@ export default function SkillDetailScreen() {
       devices.glassesSession.stopRecording(episodeName).catch(() => undefined);
     }
     recorderRef.current?.finish();
-    setPreviewUris(recorderRef.current?.previewFrameUris("left") ?? []);
     setPhase("review");
   }
 
@@ -269,7 +264,7 @@ export default function SkillDetailScreen() {
                   localPort={15000}
                   localAddress={devices.glassesSession.gatewayIp}
                   onLog={pushLog}
-                  onFrame={onLeftFrame}
+                  onRawPacket={onLeftPacket}
                   hideLabel
                 />
               </View>
@@ -280,7 +275,7 @@ export default function SkillDetailScreen() {
                   localPort={15010}
                   localAddress={devices.glassesSession.gatewayIp}
                   onLog={pushLog}
-                  onFrame={onRightFrame}
+                  onRawPacket={onRightPacket}
                   hideLabel
                 />
               </View>
@@ -382,15 +377,14 @@ export default function SkillDetailScreen() {
           <Text style={styles.reviewTitle}>Recording ready</Text>
           <Text style={styles.reviewMeta}>{formatDuration(elapsed)} recorded</Text>
 
-          {previewUris.length > 0 ? (
-            <View style={styles.previewBox}>
-              <Image source={{ uri: previewUris[previewIndex] }} style={StyleSheet.absoluteFill} resizeMode="contain" />
-            </View>
-          ) : (
-            <View style={[styles.previewBox, styles.previewBoxEmpty]}>
-              <Text style={styles.reviewMeta}>No frames were saved for this recording.</Text>
-            </View>
-          )}
+          {/* No preview -- the video is encrypted on the wire now and this
+              app has no key to decode it with, by design (see
+              episode-storage.ts). The data is still captured and uploaded
+              exactly as received; it's just not visible until the server
+              decrypts it. */}
+          <View style={[styles.previewBox, styles.previewBoxEmpty]}>
+            <Text style={styles.reviewMeta}>Recording captured and encrypted -- no preview available.</Text>
+          </View>
 
           <View style={styles.reviewActions}>
             <Button

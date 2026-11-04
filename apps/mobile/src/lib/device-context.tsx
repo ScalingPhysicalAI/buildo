@@ -1,10 +1,10 @@
 // Pairing/connection state for the capture glasses and haptic gloves. The
-// one app-wide GlassesSession lives here, shared via context so every
-// screen talks to the exact same live connection. Gloves have no real
-// hardware yet -- still a timed simulation.
-import { createContext, useContext, useEffect, useRef, useState, type ReactNode } from "react";
+// one app-wide GlassesSession and GloveSession both live here, shared via
+// context so every screen talks to the exact same live connections.
+import { createContext, useContext, useEffect, useState, type ReactNode } from "react";
 
 import { GlassesSession, type SessionState } from "./glasses/glasses-session";
+import { GloveSession, type GloveSessionState } from "./gloves/glove-session";
 
 export type ConnectionStatus = "disconnected" | "connecting" | "connected";
 
@@ -27,16 +27,37 @@ function toConnectionStatus(state: SessionState): ConnectionStatus {
   }
 }
 
+// Same collapse, for GloveSession's own (differently-named) states.
+function gloveToConnectionStatus(state: GloveSessionState): ConnectionStatus {
+  switch (state) {
+    case "connecting_ble":
+      return "connecting";
+    case "ble_ready":
+    case "starting_wifi":
+    case "streaming":
+    case "stopping":
+      return "connected";
+    case "idle":
+    case "ble_disconnected":
+    default:
+      return "disconnected";
+  }
+}
+
 interface DeviceState {
   glasses: ConnectionStatus;
   glasses_battery: number | null;
   glasses_error: string | null;
+  // No battery reading exists for the glove in PROTOCOL_GLOVE.md -- always
+  // null, not a fabricated number.
   gloves: ConnectionStatus;
   gloves_battery: number | null;
+  gloves_error: string | null;
   connectGlasses: () => void;
   connectGloves: () => void;
   disconnect: (device: "glasses" | "gloves") => void;
   glassesSession: GlassesSession;
+  glovesSession: GloveSession;
 }
 
 const DeviceContext = createContext<DeviceState | null>(null);
@@ -76,14 +97,33 @@ export function DeviceProvider({ children }: { children: ReactNode }) {
     };
   }, [glassesSession]);
 
-  const [gloves, setGloves] = useState<ConnectionStatus>("disconnected");
-  const [glovesBattery, setGlovesBattery] = useState<number | null>(null);
-  const timers = useRef<ReturnType<typeof setTimeout>[]>([]);
+  const [glovesSession] = useState(() => new GloveSession());
 
-  function after(ms: number, fn: () => void) {
-    const t = setTimeout(fn, ms);
-    timers.current.push(t);
-  }
+  const [gloves, setGloves] = useState<ConnectionStatus>("disconnected");
+  const [glovesError, setGlovesError] = useState<string | null>(null);
+
+  useEffect(() => {
+    const session = glovesSession;
+    session.start();
+
+    const unsubState = session.on("state", ({ state }) => {
+      setGloves(gloveToConnectionStatus(state));
+      if (state === "ble_ready") setGlovesError(null);
+    });
+    const unsubConnectError = session.on("bleConnectError", ({ notFound }) => {
+      setGlovesError(
+        notFound
+          ? "Gloves not found -- check they're within Bluetooth range and powered on, then try again."
+          : "Couldn't connect to the gloves. Try again."
+      );
+    });
+
+    return () => {
+      unsubState();
+      unsubConnectError();
+      session.destroy();
+    };
+  }, [glovesSession]);
 
   function connectGlasses() {
     setGlassesError(null);
@@ -91,11 +131,8 @@ export function DeviceProvider({ children }: { children: ReactNode }) {
   }
 
   function connectGloves() {
-    setGloves("connecting");
-    after(1900, () => {
-      setGloves("connected");
-      setGlovesBattery(64);
-    });
+    setGlovesError(null);
+    glovesSession.connectBleManually().catch(() => undefined);
   }
 
   function disconnect(device: "glasses" | "gloves") {
@@ -103,8 +140,7 @@ export function DeviceProvider({ children }: { children: ReactNode }) {
       glassesSession.disconnectBleManually().catch(() => undefined);
     }
     if (device === "gloves") {
-      setGloves("disconnected");
-      setGlovesBattery(null);
+      glovesSession.disconnectBleManually().catch(() => undefined);
     }
   }
 
@@ -115,11 +151,13 @@ export function DeviceProvider({ children }: { children: ReactNode }) {
         glasses_battery: glassesBattery,
         glasses_error: glassesError,
         gloves,
-        gloves_battery: glovesBattery,
+        gloves_battery: null,
+        gloves_error: glovesError,
         connectGlasses,
         connectGloves,
         disconnect,
         glassesSession,
+        glovesSession,
       }}
     >
       {children}

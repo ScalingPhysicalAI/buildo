@@ -38,7 +38,8 @@ interface SkillsState {
     skillSlug: string,
     fileName?: string,
     durationSec?: number,
-    sizeBytes?: number
+    sizeBytes?: number,
+    debug?: boolean
   ) => Promise<SkillCollectionSession>;
   startTraining: (collectionId: string) => Promise<void>;
   createCustomSkill: (name: string) => Promise<SkillDefinition>;
@@ -96,12 +97,18 @@ export function SkillsProvider({ children }: { children: ReactNode }) {
       .finally(() => setIsLoading(false));
   }, [user, refreshCatalog, refreshApps, refreshAppStore]);
 
-  async function recordUpload(skillSlug: string, fileName?: string, durationSec?: number, sizeBytes?: number) {
+  async function recordUpload(
+    skillSlug: string,
+    fileName?: string,
+    durationSec?: number,
+    sizeBytes?: number,
+    debug?: boolean
+  ) {
     // Uploading doesn't move the user's balance anymore -- a skill's reward
     // is only ever realized later, per install, once it's bundled into a
     // published app someone else installs. Returns the created row so the
     // caller can drive the actual blob upload against its id.
-    const collection = await apiCreateSkillCollection(skillSlug, fileName, durationSec, sizeBytes);
+    const collection = await apiCreateSkillCollection(skillSlug, fileName, durationSec, sizeBytes, debug);
     await refreshCatalog();
     return collection;
   }

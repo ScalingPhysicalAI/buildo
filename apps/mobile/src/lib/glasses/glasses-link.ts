@@ -4,8 +4,11 @@
 // glasses join someone else's router instead.
 import TcpSocket from "react-native-tcp-socket";
 
-import { startHotspot, stopHotspot, type LocalHotspotReservation } from "./hotspot";
+import { type LocalHotspotReservation } from "./hotspot";
 import { NordicUartLink, type Device } from "../ble/nordic-uart-link";
+import { withScanLock } from "../ble/scan-lock";
+import { sharedCommandPort } from "../shared-command-port";
+import { acquireHotspot, releaseHotspot } from "../shared-hotspot";
 import {
   buildCommandLine,
   buildDataAckLine,
@@ -59,6 +62,12 @@ interface GlassesLinkEvents {
   commandMessage: CommandChannelMessage;
   dataHello: { boot: number; nextSeq: number; resendFrom: number };
   frame: FrameMessage;
+  // Every non-hello, non-marker data-channel line, verbatim -- the one this
+  // app actually stores now that frame content is encrypted and this app
+  // has no key to look inside it. Still fires for legacy plaintext `frame`
+  // lines too (both "frame" and this fire together in that case), so a
+  // firmware with encryption off keeps working the same way it always did.
+  rawDataLine: { line: string };
   peer: PeerMessage;
   episodeEvent: EpisodeEventMessage;
   connectionStateChange: { connected: boolean };
@@ -70,7 +79,7 @@ export class GlassesLink extends TinyEmitter<GlassesLinkEvents> {
   private bleUnsub: (() => void) | null = null;
   private bleDisconnectUnsub: (() => void) | null = null;
 
-  private commandServer: InstanceType<typeof TcpSocket.Server> | null = null;
+  private unregisterCommandPort: (() => void) | null = null;
   private dataServer: InstanceType<typeof TcpSocket.Server> | null = null;
   private commandSocket: TcpSocketInstance | null = null;
   private dataSocket: TcpSocketInstance | null = null;
@@ -107,10 +116,17 @@ export class GlassesLink extends TinyEmitter<GlassesLinkEvents> {
   }
 
   // -- Phone-hosted hotspot (the normal case) -------------------------------
+  // Goes through shared-hotspot.ts's reference-counted acquire/release
+  // rather than calling the native module directly -- Android only allows
+  // one LocalOnlyHotspot reservation system-wide, and the glove may need
+  // to share this exact reservation now too. Used alone (glasses is still
+  // the only caller in a given recording), this behaves identically to
+  // calling the native module directly: first acquire actually starts it,
+  // the matching release actually stops it.
 
   async startHotspot(): Promise<LocalHotspotReservation> {
     this.log("Hotspot: starting…");
-    const reservation = await startHotspot();
+    const reservation = await acquireHotspot();
     this.hotspotActive = true;
     this.log(`Hotspot: up, ssid="${reservation.ssid}" gateway=${reservation.gatewayIp}`);
     return reservation;
@@ -118,16 +134,21 @@ export class GlassesLink extends TinyEmitter<GlassesLinkEvents> {
 
   async stopHotspot(): Promise<void> {
     if (!this.hotspotActive) return;
-    await stopHotspot();
+    await releaseHotspot();
     this.hotspotActive = false;
     this.log("Hotspot: stopped");
   }
 
   // -- BLE setup (Nordic UART, "Glasses-L") --------------------------------
 
+  // withScanLock() serializes this against any other device link sharing
+  // the one native BLE manager (currently just the glove) -- see
+  // scan-lock.ts's comment for why running two scans at once is unsafe.
+  // With nothing else ever scanning, this behaves exactly as before: the
+  // lock is uncontended and adds no real delay.
   async connectBle(timeoutMs = 10000): Promise<void> {
     this.log(`BLE: scanning for "${GLASSES_BLE_DEVICE_NAME}"…`);
-    await this.ble.connectByName(GLASSES_BLE_DEVICE_NAME, timeoutMs);
+    await withScanLock(() => this.ble.connectByName(GLASSES_BLE_DEVICE_NAME, timeoutMs));
     this.log("BLE: connected");
     this.wireBleWifiEvents();
   }
@@ -135,7 +156,7 @@ export class GlassesLink extends TinyEmitter<GlassesLinkEvents> {
   // Unfiltered scan, for when connectBle() can't find the board by name.
   async startBleScan(onDevice: (device: Device) => void): Promise<void> {
     this.log("BLE: scanning for all nearby devices…");
-    await this.ble.startScan(onDevice);
+    await withScanLock(() => this.ble.startScan(onDevice));
   }
 
   stopBleScan(): void {
@@ -144,7 +165,7 @@ export class GlassesLink extends TinyEmitter<GlassesLinkEvents> {
 
   async connectBleToDevice(device: Device): Promise<void> {
     this.log(`BLE: connecting to "${device.name ?? device.localName ?? device.id}"…`);
-    await this.ble.connectToDevice(device);
+    await withScanLock(() => this.ble.connectToDevice(device));
     this.log("BLE: connected");
     this.wireBleWifiEvents();
   }
@@ -221,12 +242,22 @@ export class GlassesLink extends TinyEmitter<GlassesLinkEvents> {
 
   startTcp() {
     // Guards against ever double-binding the command/data ports.
-    if (this.commandServer || this.dataServer) {
+    if (this.unregisterCommandPort || this.dataServer) {
       this.log("TCP: startTcp() called again while already listening -- ignoring");
       return;
     }
-    this.commandServer = TcpSocket.createServer((socket) => this.handleCommandConnection(socket));
-    this.commandServer.listen({ port: COMMAND_PORT, host: "0.0.0.0", reuseAddress: true });
+    // Command port (5010) is shared with the glove -- PROTOCOL_GLOVE.md
+    // hardcodes the exact same port, not configurable from the app side.
+    // See shared-command-port.ts's comment for why this has to be one
+    // listener routing by the board's own `hello.device` field, not a
+    // second server bound to the same port. Used alone (glasses is the
+    // only device ever registering), this is exactly the same listen()
+    // call, same port, same reuseAddress, just relocated to one place.
+    this.unregisterCommandPort = sharedCommandPort.register(
+      "glasses",
+      (socket, initialData) => this.handleCommandConnection(socket, initialData),
+      (line) => this.log(line)
+    );
 
     this.dataServer = TcpSocket.createServer((socket) => this.handleDataConnection(socket));
     this.dataServer.listen({ port: DATA_PORT, host: "0.0.0.0", reuseAddress: true });
@@ -239,7 +270,7 @@ export class GlassesLink extends TinyEmitter<GlassesLinkEvents> {
       }
     }, 1000);
 
-    this.log(`TCP: listening on ${COMMAND_PORT} (command) + ${DATA_PORT} (data)`);
+    this.log(`TCP: registered on shared command port + listening on ${DATA_PORT} (data)`);
   }
 
   stopTcp() {
@@ -250,9 +281,9 @@ export class GlassesLink extends TinyEmitter<GlassesLinkEvents> {
 
     if (this.commandSocket) this.safeSocketOp("command", () => this.commandSocket!.destroy());
     if (this.dataSocket) this.safeSocketOp("data", () => this.dataSocket!.destroy());
-    this.commandServer?.close();
+    this.unregisterCommandPort?.();
+    this.unregisterCommandPort = null;
     this.dataServer?.close();
-    this.commandServer = null;
     this.dataServer = null;
     this.commandSocket = null;
     this.dataSocket = null;
@@ -273,7 +304,11 @@ export class GlassesLink extends TinyEmitter<GlassesLinkEvents> {
     return this.connected;
   }
 
-  private handleCommandConnection(socket: TcpSocketInstance) {
+  // `initialData` is whatever the shared command port already buffered
+  // from this socket while identifying it as glasses (at minimum, the
+  // `hello` line it read to make that call) -- must be processed exactly
+  // like any other received chunk, not dropped.
+  private handleCommandConnection(socket: TcpSocketInstance, initialData: string) {
     const previous = this.commandSocket;
     this.commandSocket = socket;
     if (previous) this.safeSocketOp("command", () => previous.destroy());
@@ -281,17 +316,11 @@ export class GlassesLink extends TinyEmitter<GlassesLinkEvents> {
     socket.setEncoding("utf8");
     this.log("TCP command: glasses connected");
 
+    this.consumeCommandChunk(initialData);
+
     socket.on("data", (data) => {
       const chunk = typeof data === "string" ? data : data.toString("utf8");
-      // Raw, unconditional -- proves what actually hit the socket, not just what the board claims to have sent.
-      this.log(`TCP command: recv ${chunk.length}B: ${JSON.stringify(chunk).slice(0, 300)}`);
-      this.commandBuffer += chunk;
-      let newlineIndex: number;
-      while ((newlineIndex = this.commandBuffer.indexOf("\n")) !== -1) {
-        const line = this.commandBuffer.slice(0, newlineIndex);
-        this.commandBuffer = this.commandBuffer.slice(newlineIndex + 1);
-        this.handleCommandLine(line);
-      }
+      this.consumeCommandChunk(chunk);
     });
 
     const onClose = (reason: string) => {
@@ -307,6 +336,18 @@ export class GlassesLink extends TinyEmitter<GlassesLinkEvents> {
     socket.on("close", () => onClose("close"));
     // Separate from "close" so a silently-failed write surfaces as an error, not silence.
     socket.on("error", (err: unknown) => onClose(`error: ${err}`));
+  }
+
+  private consumeCommandChunk(chunk: string) {
+    // Raw, unconditional -- proves what actually hit the socket, not just what the board claims to have sent.
+    this.log(`TCP command: recv ${chunk.length}B: ${JSON.stringify(chunk).slice(0, 300)}`);
+    this.commandBuffer += chunk;
+    let newlineIndex: number;
+    while ((newlineIndex = this.commandBuffer.indexOf("\n")) !== -1) {
+      const line = this.commandBuffer.slice(0, newlineIndex);
+      this.commandBuffer = this.commandBuffer.slice(newlineIndex + 1);
+      this.handleCommandLine(line);
+    }
   }
 
   private markAlive() {
@@ -507,6 +548,11 @@ export class GlassesLink extends TinyEmitter<GlassesLinkEvents> {
     const message = parseDataLine(line);
     if (!message) return;
 
+    // Every recognized line, unconditionally, including data_hello and
+    // episode markers -- matches enc_tool.py's App._data_conn, which writes
+    // data.jsonl before it even looks at the line's type.
+    this.emit("rawDataLine", { line });
+
     if (message.type === "data_hello") {
       if (this.dataBoot !== message.boot) {
         this.dataBoot = message.boot; // new boot -- seq restarts from 0
@@ -522,10 +568,13 @@ export class GlassesLink extends TinyEmitter<GlassesLinkEvents> {
       return;
     }
 
-    // frame -- skip anything already seen (duplicate/replay), per spec.
+    // frame (plaintext, unencrypted firmware) or the encrypted envelope --
+    // either way: skip anything already seen (duplicate/replay), and ACK
+    // via the visible `seq` (still readable on an encrypted envelope --
+    // only the real content inside `ct` is opaque to this app).
     if (message.seq <= this.highestDataSeq) return;
     this.highestDataSeq = message.seq;
-    this.emit("frame", message);
+    if (message.type === "frame") this.emit("frame", message);
   }
 
   destroy() {

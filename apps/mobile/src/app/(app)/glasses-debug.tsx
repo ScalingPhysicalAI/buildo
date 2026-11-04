@@ -7,19 +7,22 @@ import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { Button } from "../../components/Button";
 import { Row, Section, STATE_LABEL } from "../../components/DebugPanels";
 import { GlassesVideoPanel } from "../../components/GlassesVideoPanel";
+import { GloveHandView } from "../../components/GloveHandView";
 import { isLikelyGlasses, type Device } from "../../lib/ble/nordic-uart-link";
 import { useDevices } from "../../lib/device-context";
 import { deleteLocalFile, EpisodeRecorder } from "../../lib/glasses/episode-storage";
 import { uploadEpisodeZip } from "../../lib/glasses/episode-upload";
 import type { SessionState } from "../../lib/glasses/glasses-session";
+import type { EpisodeEventMessage, HelloMessage, PeerMessage, StatusMessage } from "../../lib/glasses/protocol";
+import type { RawRtpPacket } from "../../lib/glasses/rtsp-client";
+import type { GloveSessionState } from "../../lib/gloves/glove-session";
+import { GLOVE_STATE_LABEL } from "../../lib/gloves/glove-session";
 import type {
-  EpisodeEventMessage,
-  FrameMessage,
-  HelloMessage,
-  PeerMessage,
-  StatusMessage,
-} from "../../lib/glasses/protocol";
-import type { RtpJpegFrame } from "../../lib/glasses/rtsp-client";
+  HelloMessage as GloveHelloMessage,
+  StatusMessage as GloveStatusMessage,
+  WireHandPacket,
+} from "../../lib/gloves/protocol";
+import { generateDummyHandPacket } from "../../lib/gloves/dummy-hand-data";
 import { useSkills } from "../../lib/skills-context";
 import { colors, fonts, radii, spacing } from "../../theme";
 
@@ -31,8 +34,10 @@ export default function GlassesDebugScreen() {
   // construct a second one here, it'll double-bind the TCP servers.
   const devices = useDevices();
   const session = devices.glassesSession;
+  const gloves = devices.glovesSession;
   const { recordUpload } = useSkills();
   const recorderRef = useRef<EpisodeRecorder | null>(null);
+  const lastDurationSecRef = useRef<number | undefined>(undefined);
 
   // Lazy initializers: the session may already be past "idle".
   const [sessionState, setSessionState] = useState<SessionState>(() => session.state);
@@ -63,18 +68,28 @@ export default function GlassesDebugScreen() {
   const [uploadError, setUploadError] = useState<string | null>(null);
   const [hasRecording, setHasRecording] = useState(false);
 
+  const [gloveState, setGloveState] = useState<GloveSessionState>(() => gloves.state);
+  const [gloveHello, setGloveHello] = useState<GloveHelloMessage | null>(null);
+  const [gloveStatus, setGloveStatus] = useState<GloveStatusMessage | null>(null);
+  const [glovePacketCount, setGlovePacketCount] = useState(0);
+  const [glovePacket, setGlovePacket] = useState<WireHandPacket | null>(null);
+  const lastGlovePacketUiUpdateRef = useRef(0);
+  const [gloveDemoMode, setGloveDemoMode] = useState(false);
+  const [dummyGlovePacket, setDummyGlovePacket] = useState<WireHandPacket | null>(null);
+
   const pushLog = useCallback((line: string) => {
     setLog((prev) => [`${new Date().toLocaleTimeString()}  ${line}`, ...prev].slice(0, 80));
   }, []);
 
   // Stable identity -- GlassesVideoPanel's own RTSP-connect effect re-runs
-  // whenever onFrame's identity changes, same reason the Skill recording
-  // screen's own onFrame callbacks are useCallback'd.
-  const onLeftFrame = useCallback((frame: RtpJpegFrame) => {
-    recorderRef.current?.saveVideoFrame("left", frame.jpeg);
+  // whenever onRawPacket's identity changes, same reason the Skill
+  // recording screen's own callbacks are useCallback'd. Raw, undecoded
+  // packets -- see rtsp-client.ts and episode-storage.ts.
+  const onLeftPacket = useCallback((p: RawRtpPacket) => {
+    recorderRef.current?.saveVideoPacket("left", p.packet, p.encHeader);
   }, []);
-  const onRightFrame = useCallback((frame: RtpJpegFrame) => {
-    recorderRef.current?.saveVideoFrame("right", frame.jpeg);
+  const onRightPacket = useCallback((p: RawRtpPacket) => {
+    recorderRef.current?.saveVideoPacket("right", p.packet, p.encHeader);
   }, []);
 
   useEffect(() => {
@@ -94,14 +109,24 @@ export default function GlassesDebugScreen() {
       setGatewayIp(session.gatewayIp);
     });
     const unsubLog = session.on("log", ({ line }) => pushLog(line));
-    const unsubHello = session.link.on("hello", setHello);
-    const unsubStatus = session.link.on("status", setStatus);
-    const unsubFrame = session.link.on("frame", (f: FrameMessage) => {
-      setFrameCount((c) => c + 1);
-      recorderRef.current?.appendDataFrame(f);
+    const unsubHello = session.link.on("hello", (h) => {
+      setHello(h);
+      recorderRef.current?.setHello(h);
+    });
+    const unsubStatus = session.link.on("status", (s) => {
+      setStatus(s);
+      recorderRef.current?.setStatus(s);
     });
     const unsubPeer = session.link.on("peer", (p: PeerMessage) => setPeerRtsp(p.rtsp));
     const unsubEpisode = session.link.on("episodeEvent", (e: EpisodeEventMessage) => pushLog(`episode: ${e.event}`));
+    const unsubDataHello = session.link.on("dataHello", (d) => recorderRef.current?.addDataHello(d));
+    // Counts every data-channel line (hello/marker/frame-or-encrypted) --
+    // was "frames received" when the content was readable; now that it's
+    // encrypted, a per-line count is all this app can still show.
+    const unsubRawLine = session.link.on("rawDataLine", ({ line }) => {
+      setFrameCount((c) => c + 1);
+      recorderRef.current?.appendRawDataLine(line);
+    });
 
     return () => {
       if (scanTimerRef.current) clearTimeout(scanTimerRef.current);
@@ -109,11 +134,67 @@ export default function GlassesDebugScreen() {
       unsubLog();
       unsubHello();
       unsubStatus();
-      unsubFrame();
       unsubPeer();
       unsubEpisode();
+      unsubDataHello();
+      unsubRawLine();
     };
   }, [session, pushLog]);
+
+  // Entirely separate from the glasses effect above, on purpose -- this
+  // screen's glove wiring must never risk touching glasses' own listeners.
+  useEffect(() => {
+    const unsubState = gloves.on("state", ({ state }) => {
+      setGloveState((prev) => {
+        if (prev === "streaming" && state !== "streaming") {
+          setGloveHello(null);
+          setGloveStatus(null);
+          setGlovePacketCount(0);
+          setGlovePacket(null);
+        }
+        return state;
+      });
+    });
+    const unsubLog = gloves.on("log", ({ line }) => pushLog(line));
+    const unsubHello = gloves.link.on("hello", setGloveHello);
+    const unsubStatus = gloves.link.on("status", setGloveStatus);
+    const unsubPacket = gloves.link.on("packet", (packet) => {
+      setGlovePacketCount((c) => c + 1);
+      // Packets can arrive at 50-100Hz -- re-rendering the whole debug
+      // screen on every single one would hitch the UI thread for no visual
+      // benefit. ~15fps is plenty smooth for a hand rig on screen.
+      const now = Date.now();
+      if (now - lastGlovePacketUiUpdateRef.current >= 66) {
+        lastGlovePacketUiUpdateRef.current = now;
+        setGlovePacket(packet);
+      }
+    });
+
+    return () => {
+      unsubState();
+      unsubLog();
+      unsubHello();
+      unsubStatus();
+      unsubPacket();
+    };
+  }, [gloves, pushLog]);
+
+  // Preview-only: generates synthetic packets in the exact shape a real
+  // glove sends, so the hand rig below can be demoed/tested with no
+  // physical glove connected at all. Never touches glovePacket/glove state
+  // above -- GloveHandView just gets fed whichever source is on.
+  useEffect(() => {
+    if (!gloveDemoMode) return;
+    const startedAt = Date.now();
+    let seq = 0;
+    const timer = setInterval(() => {
+      setDummyGlovePacket(generateDummyHandPacket(Date.now() - startedAt, seq++));
+    }, 66);
+    return () => {
+      clearInterval(timer);
+      setDummyGlovePacket(null);
+    };
+  }, [gloveDemoMode]);
 
   async function onStartRecording() {
     setRecordingError(null);
@@ -127,13 +208,36 @@ export default function GlassesDebugScreen() {
       skillName: skillSlugInput || "debug",
     });
     setHasRecording(false);
-    try {
-      await session.startRecording(episodeName);
-    } catch (err) {
-      setRecordingError(err instanceof Error ? err.message : String(err));
+
+    // Glasses and gloves start independently now -- for testing the glove
+    // data path alone, gloves no longer needs glasses connected too (and
+    // vice versa). Each gets its own try/catch so one failing, or simply
+    // not being BLE-ready, never blocks the other.
+    const glassesReady = sessionState === "ble_ready";
+    const glovesReady = gloveState === "ble_ready";
+
+    if (!glassesReady && !glovesReady) {
+      setRecordingError("Neither glasses nor gloves are connected (BLE ready) -- connect at least one first.");
       setUserWantsRecording(false);
-    } finally {
       setCommandBusy(null);
+      return;
+    }
+
+    if (glassesReady) {
+      try {
+        await session.startRecording(episodeName);
+      } catch (err) {
+        setRecordingError(err instanceof Error ? err.message : String(err));
+      }
+    } else {
+      pushLog("glasses: not connected -- skipping (gloves-only start)");
+    }
+    setCommandBusy(null);
+
+    if (glovesReady) {
+      gloves.startRecording(episodeName).catch((err) => {
+        pushLog(`gloves: failed to start Wi-Fi (${err instanceof Error ? err.message : String(err)})`);
+      });
     }
   }
 
@@ -141,8 +245,13 @@ export default function GlassesDebugScreen() {
     setCommandBusy("stop");
     try {
       await session.stopRecording(episodeName);
+    } catch (err) {
+      // Caught, not left to propagate -- an exception here used to skip
+      // the gloves stop below entirely, since this used to be a bare
+      // try/finally with no catch.
+      pushLog(`glasses: stop failed (${err instanceof Error ? err.message : String(err)})`);
     } finally {
-      recorderRef.current?.finish();
+      lastDurationSecRef.current = recorderRef.current?.finish().durationSec;
       setHasRecording(true);
       setCommandBusy(null);
       setUserWantsRecording(false);
@@ -150,6 +259,14 @@ export default function GlassesDebugScreen() {
       setStatus(null);
       setPeerRtsp(null);
       setFrameCount(0);
+    }
+
+    // Independent of glasses' own stop above -- best-effort, never throws
+    // into it. Not gated on glasses having been started at all.
+    if (gloveState === "streaming" || gloveState === "starting_wifi") {
+      gloves.stopRecording(episodeName).catch((err) => {
+        pushLog(`gloves: failed to stop cleanly (${err instanceof Error ? err.message : String(err)})`);
+      });
     }
   }
 
@@ -164,7 +281,13 @@ export default function GlassesDebugScreen() {
     setUploadBusy(true);
     try {
       const { file: zipFile, sizeBytes } = recorder.buildZip();
-      const collection = await recordUpload(skillSlugInput.trim(), `${episodeName}.zip`, undefined, sizeBytes);
+      const collection = await recordUpload(
+        skillSlugInput.trim(),
+        `${episodeName}.zip`,
+        lastDurationSecRef.current,
+        sizeBytes,
+        true // debug -- skips the server's real-recording minimum-length rule
+      );
       await uploadEpisodeZip(zipFile, collection.id, environmentInput.trim(), skillSlugInput.trim());
       deleteLocalFile(zipFile);
       recorder.delete();
@@ -255,8 +378,22 @@ export default function GlassesDebugScreen() {
     await session.connectBleManually();
   }
 
+  // connectBleManually() never throws (same as glasses' own version) --
+  // failures surface as a "log" line, already routed into pushLog above.
+  async function onGloveConnectBle() {
+    await gloves.connectBleManually();
+  }
+
+  async function onGloveDisconnectBle() {
+    await gloves.disconnectBleManually();
+  }
+
   const isRecording = sessionState === "recording";
-  const canStart = sessionState === "ble_ready";
+  // Either device being BLE-ready is enough to enable Start now -- gloves
+  // can be tested on its own, without glasses connected at all. Used to be
+  // gated on glasses alone, which left the button disabled with gloves-only
+  // connected even though onStartRecording() itself already handles that.
+  const canStart = sessionState === "ble_ready" || gloveState === "ble_ready";
   const leftRtsp = hello?.rtsp ?? null;
 
   return (
@@ -296,6 +433,30 @@ export default function GlassesDebugScreen() {
           />
         </View>
         {bleError ? <Text style={styles.errorText}>{bleError}</Text> : null}
+      </Section>
+
+      <Section title="Gloves connection">
+        <Row label="State" value={GLOVE_STATE_LABEL[gloveState]} />
+        <Text style={styles.sectionHint}>
+          Same manual-only BLE as glasses above -- connect once before recording. &ldquo;Start recording&rdquo; below
+          brings both glasses and the gloves onto the same Wi-Fi hotspot together, if the gloves are connected here.
+        </Text>
+        <View style={styles.commandRow}>
+          <Button
+            label={gloveState === "connecting_ble" ? "Connecting…" : "Connect BLE"}
+            loading={gloveState === "connecting_ble"}
+            disabled={gloveState === "ble_ready" || gloveState === "streaming" || gloveState === "starting_wifi"}
+            onPress={onGloveConnectBle}
+            style={styles.commandBtn}
+          />
+          <Button
+            label="Disconnect BLE"
+            variant="secondary"
+            disabled={gloveState === "streaming" || gloveState === "starting_wifi"}
+            onPress={onGloveDisconnectBle}
+            style={styles.commandBtn}
+          />
+        </View>
       </Section>
 
       <Section title="Recording">
@@ -377,7 +538,7 @@ export default function GlassesDebugScreen() {
               localPort={15000}
               localAddress={gatewayIp}
               onLog={pushLog}
-              onFrame={onLeftFrame}
+              onRawPacket={onLeftPacket}
             />
             <GlassesVideoPanel
               label="Right (slave)"
@@ -385,7 +546,7 @@ export default function GlassesDebugScreen() {
               localPort={15010}
               localAddress={gatewayIp}
               onLog={pushLog}
-              onFrame={onRightFrame}
+              onRawPacket={onRightPacket}
             />
           </View>
         </Section>
@@ -424,7 +585,60 @@ export default function GlassesDebugScreen() {
             />
           </>
         ) : null}
-        <Row label="Frames received (data channel)" value={String(frameCount)} />
+        <Row label="Data lines received (data channel)" value={String(frameCount)} />
+      </Section>
+
+      <Section title="Gloves live state">
+        {gloveHello ? (
+          <>
+            <Row label="Firmware" value={gloveHello.fw} />
+            <Row label="Wi-Fi" value={`${gloveHello.wifi.connected} / ssid=${gloveHello.wifi.ssid ?? "?"}`} />
+            <Row label="Reconnected" value={String(gloveHello.reconnected)} />
+          </>
+        ) : (
+          <Text style={styles.sectionHint}>No hello yet.</Text>
+        )}
+        {gloveStatus ? (
+          <>
+            <Row label="Wi-Fi RSSI" value={gloveStatus.wifi.rssi != null ? `${gloveStatus.wifi.rssi} dBm` : "?"} />
+            <Row
+              label="Data sent / dropped / replayed"
+              value={`${gloveStatus.data.sent} / ${gloveStatus.data.dropped} / ${gloveStatus.data.replay_dropped}`}
+            />
+          </>
+        ) : null}
+        <Row label="Packets received (data channel)" value={String(glovePacketCount)} />
+      </Section>
+
+      <Section title="Gloves hand view">
+        <View style={styles.commandRow}>
+          <Button
+            label={gloveDemoMode ? "Stop dummy-data preview" : "Preview with dummy data (no glove needed)"}
+            variant="secondary"
+            onPress={() => setGloveDemoMode((v) => !v)}
+            style={styles.commandBtn}
+          />
+        </View>
+        {gloveDemoMode ? (
+          <>
+            <Text style={styles.errorText}>Showing synthetic dummy data -- not from a real glove. Preview only.</Text>
+            <Text style={styles.sectionHint}>
+              Only one physical glove exists today -- both hands below are driven from the same dummy stream (the
+              left is just a mirror image) so the hand design can be previewed for both sides ahead of a second
+              glove. Once real gloves connect, each will show here the same way, one real hand per glove.
+            </Text>
+            <View style={styles.handsRow}>
+              <View style={styles.handsCol}>
+                <GloveHandView key="demo-left" packet={dummyGlovePacket} autoCalibrate handedness="left" compact label="Left (dummy)" />
+              </View>
+              <View style={styles.handsCol}>
+                <GloveHandView key="demo-right" packet={dummyGlovePacket} autoCalibrate handedness="right" compact label="Right (dummy)" />
+              </View>
+            </View>
+          </>
+        ) : (
+          <GloveHandView key="live" packet={glovePacket} handedness="right" />
+        )}
       </Section>
 
       <Section title="Commands">
@@ -582,6 +796,14 @@ const styles = StyleSheet.create({
     marginTop: spacing.sm,
   },
   commandBtn: {
+    flex: 1,
+  },
+  handsRow: {
+    flexDirection: "row",
+    gap: spacing.sm,
+    marginTop: spacing.sm,
+  },
+  handsCol: {
     flex: 1,
   },
   deviceRow: {

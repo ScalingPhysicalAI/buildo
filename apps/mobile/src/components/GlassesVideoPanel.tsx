@@ -3,7 +3,7 @@
 import { useEffect, useRef, useState } from "react";
 import { Image, StyleSheet, Text, View, type StyleProp, type ViewStyle } from "react-native";
 
-import { RtspJpegClient, type RtpJpegFrame } from "../lib/glasses/rtsp-client";
+import { RtspJpegClient, type RawRtpPacket, type RtpJpegFrame } from "../lib/glasses/rtsp-client";
 import { colors, fonts, radii, spacing } from "../theme";
 
 // Keeps the last decoded frame visible until the next one finishes decoding
@@ -35,6 +35,7 @@ export function GlassesVideoPanel({
   localAddress,
   onLog,
   onFrame,
+  onRawPacket,
   style,
   hideLabel = false,
 }: {
@@ -45,8 +46,13 @@ export function GlassesVideoPanel({
   onLog: (line: string) => void;
   // Fires alongside the panel's own display update, same frame -- lets a
   // caller (the Skill recording screen) save every frame to disk without
-  // opening a second RTSP connection of its own.
+  // opening a second RTSP connection of its own. Only ever fires for
+  // unencrypted video now (see rtsp-client.ts) -- onRawPacket below is
+  // what real recordings actually use.
   onFrame?: (frame: RtpJpegFrame) => void;
+  // Every UDP packet, undecoded -- what gets saved now that video is
+  // encrypted and this app has no key to decode it with.
+  onRawPacket?: (packet: RawRtpPacket) => void;
   style?: StyleProp<ViewStyle>;
   hideLabel?: boolean;
 }) {
@@ -79,7 +85,8 @@ export function GlassesVideoPanel({
         setFrameUri(`data:image/jpeg;base64,${frame.jpeg.toString("base64")}`);
         onFrame?.(frame);
       },
-      (line) => onLog(`${label}: ${line}`)
+      (line) => onLog(`${label}: ${line}`),
+      onRawPacket
     );
     clientRef.current = client;
     client.start().catch((err) => {
@@ -93,7 +100,7 @@ export function GlassesVideoPanel({
       client.stop().catch(() => undefined);
       clientRef.current = null;
     };
-  }, [url, label, localPort, localAddress, onLog, onFrame]);
+  }, [url, label, localPort, localAddress, onLog, onFrame, onRawPacket]);
 
   if (!url) return null;
 

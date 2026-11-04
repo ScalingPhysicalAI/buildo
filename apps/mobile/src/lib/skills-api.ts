@@ -55,11 +55,15 @@ export async function createSkillCollection(
   skillSlug: string,
   fileName?: string,
   durationSec?: number,
-  sizeBytes?: number
+  sizeBytes?: number,
+  // Debug screen's uploads only -- skips the server's real-recording
+  // minimum-length rule, since this is testing the pipeline, not actually
+  // recording a paid skill.
+  debug?: boolean
 ): Promise<SkillCollectionSession> {
   const data = await request<{ collection: SkillCollectionSession }>("/api/skills/collections", {
     method: "POST",
-    body: JSON.stringify({ skillSlug, fileName, durationSec, sizeBytes }),
+    body: JSON.stringify({ skillSlug, fileName, durationSec, sizeBytes, debug }),
   });
   return data.collection;
 }

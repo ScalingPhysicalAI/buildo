@@ -1,14 +1,14 @@
-// Minimal RTSP client + RTP/JPEG receiver for the glasses' video. Does the
-// real wire negotiation PROTOCOL_GLASSES.md describes ("Standard RTSP:
-// OPTIONS, DESCRIBE, SETUP, PLAY... Transport: UDP... keepalive (OPTIONS)
-// every ≤ 30 s") and reassembles RFC 2435 JPEG-over-RTP frames via
-// rtp-jpeg.ts into real, displayable JPEG files.
-//
-// This has not been validated against real hardware yet -- the RTP/JPEG
-// reconstruction logic was checked structurally (marker/length
-// self-consistency) but not against an actual decoded image, and RTSP
-// server behavior varies enough between implementations that the exact
-// request sequence below may need adjusting once tested for real.
+// Minimal RTSP client for the glasses' video. Does the real wire
+// negotiation PROTOCOL_GLASSES.md describes ("Standard RTSP: OPTIONS,
+// DESCRIBE, SETUP, PLAY... Transport: UDP... keepalive (OPTIONS) every
+// ≤ 30 s"). Two independent consumers of the UDP stream: `onFrame`
+// reassembles RFC 2435 JPEG-over-RTP into displayable JPEGs via
+// rtp-jpeg.ts (kept for when video isn't encrypted -- see
+// GlassesVideoPanel's own comment), and `onRawPacket` hands every packet
+// to the caller untouched, which is what actually gets saved and uploaded
+// now that the glasses encrypt video (see enc_tool.py / docs on the
+// device side): this app has no key, can't decode it, and isn't supposed
+// to try.
 import TcpSocket from "react-native-tcp-socket";
 import dgram from "react-native-udp";
 // Explicit import, not the bare global -- see rtp-jpeg.ts's comment.
@@ -54,10 +54,22 @@ export interface RtpJpegFrame {
   receivedAt: number;
 }
 
+// A UDP packet exactly as received, still SRTP-encrypted -- this app has no
+// key, so it's stored as-is for the server to decrypt, never decoded here.
+// encHeader is the RTSP PLAY response's X-Glasses-Enc value in effect when
+// this packet arrived, which changes (new SRTP session/keys) on every PLAY
+// -- same session-boundary bookkeeping enc_tool.py's RawVideo does.
+export interface RawRtpPacket {
+  packet: Buffer;
+  encHeader: string | null;
+}
+
 export class RtspJpegClient {
   private url: string;
   private onFrame: (frame: RtpJpegFrame) => void;
   private onLog: (line: string) => void;
+  private onRawPacket?: (packet: RawRtpPacket) => void;
+  private currentEncHeader: string | null = null;
 
   private tcp: TcpSocketInstance | null = null;
   private udp: UdpSocketInstance | null = null;
@@ -113,11 +125,13 @@ export class RtspJpegClient {
     private readonly localPort: number,
     private readonly localAddress: string | undefined,
     onFrame: (frame: RtpJpegFrame) => void,
-    onLog: (line: string) => void = () => {}
+    onLog: (line: string) => void = () => {},
+    onRawPacket?: (packet: RawRtpPacket) => void
   ) {
     this.url = url;
     this.onFrame = onFrame;
     this.onLog = onLog;
+    this.onRawPacket = onRawPacket;
   }
 
   // Same race as glasses-link.ts's identically-named helper: these native
@@ -169,8 +183,13 @@ export class RtspJpegClient {
     if (!this.session) throw new Error("RTSP SETUP didn't return a Session header");
     this.onLog(`RTSP: session ${this.session}, transport: ${setupResponse.headers.transport ?? "?"}`);
 
-    await this.request("PLAY", this.url, { Session: this.session });
-    this.onLog("RTSP: playing");
+    const playResponse = await this.request("PLAY", this.url, { Session: this.session });
+    // New SRTP keys get derived from this per PLAY (test_enc.py: "each PLAY
+    // gets new keys") -- null if encryption is off, which the server-side
+    // decrypt step treats as "this whole recording failed" per its own
+    // leaks counter, not something to paper over here.
+    this.currentEncHeader = playResponse.headers["x-glasses-enc"] ?? null;
+    this.onLog(`RTSP: playing${this.currentEncHeader ? " (encrypted)" : ""}`);
 
     this.keepaliveTimer = setInterval(() => {
       this.request("OPTIONS", this.url, this.session ? { Session: this.session } : {}).catch((err) =>
@@ -257,6 +276,20 @@ export class RtspJpegClient {
   }
 
   private handleRtpPacket(packet: Buffer) {
+    // Every UDP datagram, unconditionally, before any of the parsing below.
+    this.onRawPacket?.({ packet, encHeader: this.currentEncHeader });
+
+    // Raw-capture mode (onRawPacket provided) means the payload is
+    // encrypted and this app has no key -- running the JPEG path below
+    // against it would just fail on every single packet (SRTP only
+    // encrypts the payload, not the RTP header, so it still parses as
+    // structurally valid RTP, it's the JPEG content inside that's opaque),
+    // flooding the log with "frame had no fragment-0 info" /
+    // "incomplete frame" for no reason. Skip it entirely in that case;
+    // it still runs exactly as before for an onFrame-only (unencrypted)
+    // caller.
+    if (this.onRawPacket) return;
+
     const header = parseRtpHeader(packet);
     if (!header || header.payloadType !== 26) return; // 26 = JPEG, per the spec
     // .slice(), not .subarray() -- see rtp-jpeg.ts's comment on the same

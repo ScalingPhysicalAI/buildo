@@ -72,6 +72,11 @@ export interface HelloMessage {
   slave: SlaveStatus;
   battery: BatteryInfo;
   t_us: number;
+  // Present once the board has encryption on (enc_tool.py's record() prints
+  // this). Exact shape not pinned down yet -- the firmware team's own
+  // ENCRYPTION.md isn't in this repo -- so left loose rather than guessed.
+  // Only ever read for a log line; nothing branches on its shape.
+  enc?: unknown;
 }
 
 export interface StatusMessage {
@@ -231,7 +236,28 @@ export interface DataEpisodeMarker {
   [key: string]: unknown;
 }
 
-export type DataChannelMessage = DataHelloMessage | FrameMessage | DataEpisodeMarker;
+// With encryption on, every per-frame data-channel message arrives as this
+// instead of a plaintext FrameMessage -- enc_tool.py's decrypt_data() is the
+// reference: v/sid/src/seq/t_us/tag stay visible (seq is still used for
+// dedup/ACK below), the real content (type, N, left, right, depth, ...) is
+// opaque inside `ct` and only the server's key can open it. data_hello
+// stays plaintext (decrypt_data() skips it before checking for `ct`).
+export interface EncryptedDataEnvelope {
+  // Never actually present on the wire (there's no "type" field at all --
+  // the real one is inside `ct`) -- declared as undefined so TypeScript can
+  // still discriminate this union on `.type` the same way as every other
+  // member, instead of erroring that the property doesn't exist here.
+  type?: undefined;
+  v: 3;
+  sid: string; // hex session id, changes per `start`
+  src: "master" | "slave";
+  seq: number;
+  t_us: number;
+  ct: string; // base64 AES-CTR ciphertext of the real JSON message
+  tag: string; // base64 HMAC-SHA256 (first 16 bytes)
+}
+
+export type DataChannelMessage = DataHelloMessage | FrameMessage | DataEpisodeMarker | EncryptedDataEnvelope;
 
 export function parseDataLine(line: string): DataChannelMessage | null {
   const trimmed = line.trim();
@@ -248,6 +274,9 @@ export function parseDataLine(line: string): DataChannelMessage | null {
   const msg = parsed as Record<string, unknown>;
   if (msg.type === "data_hello" || msg.type === "frame" || msg.type === "episode") {
     return msg as unknown as DataChannelMessage;
+  }
+  if (msg.v === 3 && typeof msg.ct === "string" && typeof msg.sid === "string" && typeof msg.seq === "number") {
+    return msg as unknown as EncryptedDataEnvelope;
   }
   return null;
 }

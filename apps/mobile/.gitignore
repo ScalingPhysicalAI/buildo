@@ -51,5 +51,9 @@ modules/*/android/local.properties
 /EPISODES.md
 /PROTOCOL_GLASSES.md
 /PROTOCOL_GLOVE.md
+/PROTOCOL_GLOVES_UPDATED.md
 /ble_client.py
 /laptop_client.py
+/enc_tool.py
+/test_enc.py
+*.bin

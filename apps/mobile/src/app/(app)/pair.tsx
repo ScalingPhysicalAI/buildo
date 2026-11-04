@@ -1,7 +1,6 @@
 import { useCallback, useEffect, useRef, useState } from "react";
-import { useFocusEffect } from "expo-router";
-// import { router } from "expo-router"; // only used by the hidden Debug entry below
-import { Bluetooth, ChevronDown, ChevronRight, Glasses, Hand, Battery, X } from "lucide-react-native";
+import { router, useFocusEffect } from "expo-router";
+import { Bluetooth, Bug, ChevronDown, ChevronRight, Glasses, Hand, Battery, X } from "lucide-react-native";
 import { Animated, Easing, Linking, Platform, Pressable, ScrollView, StyleSheet, Text, View } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
@@ -291,7 +290,6 @@ export default function PairScreen() {
         ) : null}
       </Card>
 
-      {/* Debug entry hidden for deployment -- not deleted, just unreachable from the UI.
       <Pressable onPress={() => router.push("/glasses-debug")}>
         <Card style={styles.debugCard}>
           <View style={styles.debugIconWrap}>
@@ -306,7 +304,6 @@ export default function PairScreen() {
           <ChevronRight size={18} color={colors.textMuted} />
         </Card>
       </Pressable>
-      */}
     </ScrollView>
   );
 }
