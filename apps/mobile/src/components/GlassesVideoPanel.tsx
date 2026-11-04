@@ -61,6 +61,13 @@ export function GlassesVideoPanel({
   const [error, setError] = useState<string | null>(null);
   const [frameUri, setFrameUri] = useState<string | null>(null);
   const [frameCount, setFrameCount] = useState(0);
+  // Raw-capture mode (onRawPacket set) never gets an onFrame callback --
+  // video is encrypted, this app can't decode it -- so frameCount above
+  // would otherwise stay 0 forever. Tracked separately so the panel can
+  // still show *something* moving instead of "Waiting for the first
+  // frame…" forever.
+  const [rawPacketCount, setRawPacketCount] = useState(0);
+  const [lastEncHeader, setLastEncHeader] = useState<string | null>(null);
 
   useEffect(() => {
     if (!url) return;
@@ -69,6 +76,8 @@ export function GlassesVideoPanel({
     setError(null);
     setFrameCount(0);
     setFrameUri(null);
+    setRawPacketCount(0);
+    setLastEncHeader(null);
 
     // Makes a torn-down client's own callbacks inert, since stop() doesn't
     // cancel an already in-flight request that could resolve afterwards.
@@ -87,6 +96,14 @@ export function GlassesVideoPanel({
       },
       (line) => onLog(`${label}: ${line}`),
       onRawPacket
+        ? (packet) => {
+            if (cancelled) return;
+            setState("streaming");
+            setRawPacketCount((c) => c + 1);
+            setLastEncHeader(packet.encHeader);
+            onRawPacket(packet);
+          }
+        : undefined
     );
     clientRef.current = client;
     client.start().catch((err) => {
@@ -108,11 +125,30 @@ export function GlassesVideoPanel({
     <View style={[styles.panel, style]}>
       {hideLabel ? null : (
         <Text style={styles.panelLabel}>
-          {label} · {state} · {frameCount} frames
+          {label} · {state} · {onRawPacket ? `${rawPacketCount} packets` : `${frameCount} frames`}
         </Text>
       )}
       {frameUri ? (
         <FlickerFreeFrame uri={frameUri} style={styles.video} />
+      ) : onRawPacket ? (
+        // No preview is possible here -- the payload is encrypted and this
+        // app has no key to decode it with -- so show that data is actually
+        // flowing instead of a preview box that can never fill in.
+        <View style={[styles.video, styles.videoEmpty, styles.rawBox]}>
+          <Text style={styles.panelHint}>
+            {state === "connecting"
+              ? "Connecting…"
+              : rawPacketCount === 0
+                ? "Waiting for the first encrypted packet…"
+                : "Encrypted -- no preview available"}
+          </Text>
+          {rawPacketCount > 0 ? (
+            <>
+              <Text style={styles.rawStat}>{rawPacketCount} raw packets received</Text>
+              <Text style={styles.rawStat}>session: {lastEncHeader ?? "(none)"}</Text>
+            </>
+          ) : null}
+        </View>
       ) : (
         <View style={[styles.video, styles.videoEmpty]}>
           <Text style={styles.panelHint}>{state === "connecting" ? "Connecting…" : "Waiting for the first frame…"}</Text>
@@ -152,6 +188,16 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     borderWidth: 1,
     borderColor: colors.border,
+  },
+  rawBox: {
+    gap: 4,
+    paddingHorizontal: spacing.sm,
+  },
+  rawStat: {
+    fontFamily: fonts.technical,
+    fontSize: 11,
+    color: colors.textMuted,
+    textAlign: "center",
   },
   errorText: {
     fontFamily: fonts.body,

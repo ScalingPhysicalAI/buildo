@@ -48,8 +48,12 @@ export async function POST(request: Request) {
     );
   }
 
-  const skill = await prisma.skillDefinition.findUnique({
-    where: { slug: parsed.data.skillSlug },
+  // findFirst + insensitive, not findUnique -- the Debug screen's slug is a
+  // free-text field (no catalog picker there), so a stray case mismatch
+  // (e.g. "Wash-Dish" vs the real "wash-dish") must still resolve instead of
+  // bouncing as "Unknown skill".
+  const skill = await prisma.skillDefinition.findFirst({
+    where: { slug: { equals: parsed.data.skillSlug, mode: "insensitive" } },
   });
   if (!skill || !skill.active) {
     return NextResponse.json({ error: "Unknown skill" }, { status: 400 });

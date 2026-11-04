@@ -47,7 +47,7 @@ export const skillBuySchema = z.object({
 });
 
 export const skillCollectionCreateSchema = z.object({
-  skillSlug: z.string().min(1),
+  skillSlug: z.string().trim().min(1),
   fileName: z.string().min(1).max(300).optional(),
   durationSec: z.number().int().positive().max(60 * 60).optional(),
   sizeBytes: z.number().int().positive().max(2 * 1024 * 1024 * 1024).optional(),

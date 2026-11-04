@@ -24,6 +24,7 @@ import type {
 } from "../../lib/gloves/protocol";
 import { generateDummyHandPacket } from "../../lib/gloves/dummy-hand-data";
 import { useSkills } from "../../lib/skills-context";
+import type { SkillCatalogEntry } from "../../lib/skills-api";
 import { colors, fonts, radii, spacing } from "../../theme";
 
 const SCAN_DURATION_MS = 15000;
@@ -35,7 +36,7 @@ export default function GlassesDebugScreen() {
   const devices = useDevices();
   const session = devices.glassesSession;
   const gloves = devices.glovesSession;
-  const { recordUpload } = useSkills();
+  const { catalog, recordUpload } = useSkills();
   const recorderRef = useRef<EpisodeRecorder | null>(null);
   const lastDurationSecRef = useRef<number | undefined>(undefined);
 
@@ -67,6 +68,13 @@ export default function GlassesDebugScreen() {
   const [uploadBusy, setUploadBusy] = useState(false);
   const [uploadError, setUploadError] = useState<string | null>(null);
   const [hasRecording, setHasRecording] = useState(false);
+  // Last few raw data-channel lines, newest first -- shown as-is (still
+  // encrypted JSON envelopes once the board's encryption is on) so you can
+  // see that *something* is actually arriving, since "Live video" can't
+  // show a preview anymore either.
+  const [rawLines, setRawLines] = useState<string[]>([]);
+  const [leftPacketCount, setLeftPacketCount] = useState(0);
+  const [rightPacketCount, setRightPacketCount] = useState(0);
 
   const [gloveState, setGloveState] = useState<GloveSessionState>(() => gloves.state);
   const [gloveHello, setGloveHello] = useState<GloveHelloMessage | null>(null);
@@ -87,9 +95,11 @@ export default function GlassesDebugScreen() {
   // packets -- see rtsp-client.ts and episode-storage.ts.
   const onLeftPacket = useCallback((p: RawRtpPacket) => {
     recorderRef.current?.saveVideoPacket("left", p.packet, p.encHeader);
+    setLeftPacketCount((c) => c + 1);
   }, []);
   const onRightPacket = useCallback((p: RawRtpPacket) => {
     recorderRef.current?.saveVideoPacket("right", p.packet, p.encHeader);
+    setRightPacketCount((c) => c + 1);
   }, []);
 
   useEffect(() => {
@@ -103,6 +113,9 @@ export default function GlassesDebugScreen() {
           setStatus(null);
           setPeerRtsp(null);
           setFrameCount(0);
+          setRawLines([]);
+          setLeftPacketCount(0);
+          setRightPacketCount(0);
         }
         return state;
       });
@@ -125,6 +138,7 @@ export default function GlassesDebugScreen() {
     // encrypted, a per-line count is all this app can still show.
     const unsubRawLine = session.link.on("rawDataLine", ({ line }) => {
       setFrameCount((c) => c + 1);
+      setRawLines((prev) => [line, ...prev].slice(0, 20));
       recorderRef.current?.appendRawDataLine(line);
     });
 
@@ -259,6 +273,9 @@ export default function GlassesDebugScreen() {
       setStatus(null);
       setPeerRtsp(null);
       setFrameCount(0);
+      setRawLines([]);
+      setLeftPacketCount(0);
+      setRightPacketCount(0);
     }
 
     // Independent of glasses' own stop above -- best-effort, never throws
@@ -495,8 +512,29 @@ export default function GlassesDebugScreen() {
 
         <Text style={[styles.sectionHint, { marginTop: spacing.md }]}>
           Must match a real skill in the catalog (its slug) and an existing environment -- same upload path the
-          Skill recording screen uses.
+          Skill recording screen uses. Tap one below to fill both fields exactly (no typos), or type your own.
         </Text>
+        {catalog.length > 0 ? (
+          <ScrollView horizontal showsHorizontalScrollIndicator={false} style={{ marginTop: spacing.sm }}>
+            <View style={{ flexDirection: "row", gap: spacing.sm }}>
+              {catalog.map((entry: SkillCatalogEntry) => (
+                <Pressable
+                  key={entry.id}
+                  disabled={userWantsRecording}
+                  onPress={() => {
+                    setSkillSlugInput(entry.slug);
+                    setEnvironmentInput(entry.category.toLowerCase());
+                  }}
+                  style={[styles.skillChip, skillSlugInput === entry.slug ? styles.skillChipActive : null]}
+                >
+                  <Text style={styles.skillChipText}>{entry.slug}</Text>
+                </Pressable>
+              ))}
+            </View>
+          </ScrollView>
+        ) : (
+          <Text style={styles.sectionHint}>No skills in the catalog yet -- type the environment/slug manually.</Text>
+        )}
         <TextInput
           style={styles.input}
           placeholder="Environment (e.g. hospital)"
@@ -526,7 +564,12 @@ export default function GlassesDebugScreen() {
       </Section>
 
       {leftRtsp || peerRtsp ? (
-        <Section title="Live video">
+        <Section title="Raw video (encrypted -- no preview)">
+          <Text style={styles.sectionHint}>
+            Video is encrypted on the board and this app has no key, so there is nothing to show as a picture --
+            these panels just confirm packets are actually arriving. Decode happens later, on the server
+            (decrypt-episode.ts).
+          </Text>
           {/* Kept up by hello/peer, not isRecording, on purpose -- a brief
               state flicker (e.g. a status-heartbeat gap during the Wi-Fi
               handoff) shouldn't yank the video view out from under you
@@ -549,8 +592,27 @@ export default function GlassesDebugScreen() {
               onRawPacket={onRightPacket}
             />
           </View>
+          <Row label="Left packets saved" value={String(leftPacketCount)} />
+          <Row label="Right packets saved" value={String(rightPacketCount)} />
         </Section>
       ) : null}
+
+      <Section title="Raw data channel">
+        <Text style={styles.sectionHint}>
+          Every line received on the data channel (TCP 5005), newest first -- still encrypted JSON envelopes
+          (<Text style={styles.logLine}>{"{v,sid,src,seq,ct,tag}"}</Text>) once the board&apos;s encryption is on;
+          only `data_hello` stays readable. This is what gets decrypted later by decrypt-episode.ts.
+        </Text>
+        {rawLines.length === 0 ? (
+          <Text style={styles.sectionHint}>Nothing received yet -- start a recording.</Text>
+        ) : (
+          rawLines.map((line, i) => (
+            <Text key={i} style={styles.logLine} numberOfLines={1}>
+              {line}
+            </Text>
+          ))
+        )}
+      </Section>
 
       <Section title="Live state">
         {hello ? (
@@ -833,6 +895,23 @@ const styles = StyleSheet.create({
     fontFamily: fonts.bodySemiBold,
     fontSize: 12,
     color: colors.sandDark,
+  },
+  skillChip: {
+    paddingHorizontal: spacing.sm,
+    paddingVertical: 6,
+    borderRadius: radii.sm,
+    borderWidth: 1,
+    borderColor: colors.border,
+    backgroundColor: colors.surface,
+  },
+  skillChipActive: {
+    borderColor: colors.sandDark,
+    backgroundColor: colors.background,
+  },
+  skillChipText: {
+    fontFamily: fonts.technical,
+    fontSize: 12,
+    color: colors.textPrimary,
   },
   errorText: {
     fontFamily: fonts.body,
