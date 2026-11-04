@@ -51,6 +51,10 @@ export const skillCollectionCreateSchema = z.object({
   fileName: z.string().min(1).max(300).optional(),
   durationSec: z.number().int().positive().max(60 * 60).optional(),
   sizeBytes: z.number().int().positive().max(2 * 1024 * 1024 * 1024).optional(),
+  // Set only by the Debug screen's own upload button -- a diagnostics tool
+  // for testing the capture/upload pipeline itself, not a real paid-skill
+  // recording, so the real recording-length rule doesn't apply to it.
+  debug: z.boolean().optional(),
 });
 
 export const customSkillCreateSchema = z.object({

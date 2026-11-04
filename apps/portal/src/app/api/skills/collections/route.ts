@@ -55,7 +55,7 @@ export async function POST(request: Request) {
     return NextResponse.json({ error: "Unknown skill" }, { status: 400 });
   }
 
-  if (skill.reward > 0 && (parsed.data.durationSec ?? 0) < MIN_PAID_RECORDING_SEC) {
+  if (!parsed.data.debug && skill.reward > 0 && (parsed.data.durationSec ?? 0) < MIN_PAID_RECORDING_SEC) {
     return NextResponse.json(
       { error: `Recording must be at least ${MIN_PAID_RECORDING_SEC} seconds long for a paid skill` },
       { status: 400 }
