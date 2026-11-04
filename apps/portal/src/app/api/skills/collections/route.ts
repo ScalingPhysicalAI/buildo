@@ -48,9 +48,41 @@ export async function POST(request: Request) {
     );
   }
 
-  const skill = await prisma.skillDefinition.findUnique({
-    where: { slug: parsed.data.skillSlug },
+  // findFirst + insensitive, not findUnique -- the Debug screen's slug is a
+  // free-text field (no catalog picker there), so a stray case mismatch
+  // (e.g. "Wash-Dish" vs the real "wash-dish") must still resolve instead of
+  // bouncing as "Unknown skill".
+  let skill = await prisma.skillDefinition.findFirst({
+    where: { slug: { equals: parsed.data.skillSlug, mode: "insensitive" } },
   });
+
+  if ((!skill || !skill.active) && parsed.data.debug) {
+    // Debug screen is testing the capture/upload pipeline itself, not
+    // recording a real catalog skill -- an unused slug here shouldn't block
+    // the upload, it should just become a throwaway custom skill (same
+    // shape POST /api/skills/custom creates). Idempotent: a second debug
+    // upload with the same slug finds this one via the lookup above instead
+    // of hitting the unique constraint.
+    try {
+      skill = await prisma.skillDefinition.create({
+        data: {
+          slug: parsed.data.skillSlug.toLowerCase(),
+          name: parsed.data.skillSlug,
+          summary: "Debug screen test upload",
+          instructions: "N/A -- created automatically for a Debug-screen test recording.",
+          category: "GENERAL",
+          reward: 0,
+          isCustom: true,
+          createdByUserId: userId,
+        },
+      });
+    } catch {
+      skill = await prisma.skillDefinition.findFirst({
+        where: { slug: { equals: parsed.data.skillSlug, mode: "insensitive" } },
+      });
+    }
+  }
+
   if (!skill || !skill.active) {
     return NextResponse.json({ error: "Unknown skill" }, { status: 400 });
   }
