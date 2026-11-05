@@ -7,11 +7,20 @@
 // checks the Python implementation against); video is SRTP (RFC 3711),
 // which has no Node equivalent of the hardware team's own verified
 // pylibsrtp-based tool, so that part shells out to enc_tool.py itself
-// rather than reimplementing SRTP from scratch here.
+// rather than reimplementing SRTP from scratch here. glove-data.bin (fixed
+// 318-byte frames) is a separate, independent encryption scheme from
+// glasses -- see temp_test_device/DATA_ENCRYPTION.md and glove_enc.py --
+// decrypted here in Node too, same HKDF/AES-CTR/HMAC primitives, different
+// key/label/frame layout, its own --glove-key.
 //
 // Usage:
-//   tsx scripts/decrypt-episode.ts --collection <id> --key /path/to/enc_key.bin [--out dir] [--enc-tool /path/to/enc_tool.py] [--python python3] [--admin-secret <secret>] [--server <url>]
-//   tsx scripts/decrypt-episode.ts --url <blob url>  --key /path/to/enc_key.bin [--out dir] ...
+//   tsx scripts/decrypt-episode.ts --collection <id> --key /path/to/enc_key.bin [--glove-key /path/to/glove_enc_key.bin] [--out dir] [--enc-tool /path/to/enc_tool.py] [--frames-tool /path/to/extract_glasses_frames.py] [--python python3] [--admin-secret <secret>] [--server <url>]
+//   tsx scripts/decrypt-episode.ts --url <blob url>  --key /path/to/enc_key.bin [--glove-key ...] [--out dir] ...
+//
+// enc_tool.py's own `decrypt` only keeps a first/last frame per side as a
+// quick sanity check (see its decrypt_video()) -- extract_glasses_frames.py
+// (this script's own addition, reusing enc_tool.py's hkdf()/rtp_jpeg.py)
+// saves every frame instead, which is what an actual training pipeline needs.
 //
 // --collection fetches the zip through /api/admin/episode-blob (needs
 // ADMIN_SECRET -- see that route) instead of the Blob storage URL directly:
@@ -32,13 +41,26 @@ import { unzipSync } from "fflate";
 
 const HERE = dirname(fileURLToPath(import.meta.url));
 const DEFAULT_ENC_TOOL = join(HERE, "..", "..", "mobile", "enc_tool.py");
+const DEFAULT_FRAMES_TOOL = join(HERE, "extract_glasses_frames.py");
+
+// Nothing else in this script touches Prisma/the DB anymore (it talks to
+// the portal over HTTP instead) -- loading PrismaClient used to pull in
+// .env as a side effect, which is the only reason ADMIN_SECRET/env vars
+// ever worked here before. Load it explicitly now that that side effect is
+// gone.
+for (const envFile of [".env", ".env.local"]) {
+  const path = join(HERE, "..", envFile);
+  if (existsSync(path)) process.loadEnvFile(path);
+}
 
 interface Args {
   collection?: string;
   url?: string;
   key: string;
+  gloveKey?: string;
   out: string;
   encTool: string;
+  framesTool: string;
   python: string;
   adminSecret?: string;
   server: string;
@@ -59,8 +81,10 @@ function parseArgs(): Args {
     collection: get("--collection"),
     url: get("--url"),
     key,
+    gloveKey: get("--glove-key"),
     out: get("--out") ?? join(HERE, "..", ".decrypted-episodes", get("--collection") ?? "episode"),
     encTool: get("--enc-tool") ?? DEFAULT_ENC_TOOL,
+    framesTool: get("--frames-tool") ?? DEFAULT_FRAMES_TOOL,
     python: get("--python") ?? "python3",
     adminSecret: get("--admin-secret") ?? process.env.ADMIN_SECRET,
     server: get("--server") ?? process.env.NEXT_PUBLIC_APP_URL ?? "https://portal.starforgerobotics.com",
@@ -156,6 +180,98 @@ function decryptDataChannel(rawLines: string[], key: Buffer): { decrypted: strin
   return { decrypted, stats };
 }
 
+// -- Glove data channel (glove-data.bin) -----------------------------------
+// Independent scheme from glasses above -- see temp_test_device's
+// DATA_ENCRYPTION.md and glove_enc.py (the reference this ports). One key
+// per board (dev: tools/glove_enc_key.bin, shared); one session id (`sid`,
+// from the glove's own hello, read from meta.json here -- never repeated
+// per frame the way glasses repeats `sid` on every JSON line); fixed
+// 318-byte frames, no JSON.
+
+const GLOVE_HKDF_INFO = "glove data v1"; // must match dataCipher.cpp's kHkdfInfo
+const GLOVE_HMAC_LABEL = Buffer.from("glove-data-v1\0"); // + its trailing NUL
+const GLOVE_CLEAR_LEN = 16; // bootId(4) + seq(4) + assembledAtMs(8)
+const GLOVE_PLAIN_LEN = 302; // sizeof(WireHandPacket)
+const GLOVE_WIRE_LEN = GLOVE_PLAIN_LEN + 16; // 318 bytes, what's actually in glove-data.bin per frame
+const GLOVE_IMU_SLOTS = 12;
+const GLOVE_FSR_FINGERS = 5;
+const GLOVE_IMU_SECTION_OFFSET = GLOVE_CLEAR_LEN; // 16
+const GLOVE_IMU_SLOT_SIZE = 18; // present(1) + w,x,y,z f32(16) + accuracy(1)
+const GLOVE_FSR_SECTION_OFFSET = GLOVE_IMU_SECTION_OFFSET + GLOVE_IMU_SLOTS * GLOVE_IMU_SLOT_SIZE; // 232
+const GLOVE_FSR_FINGER_SIZE = 14; // present(1) + buttons(1) + channels int16 x6(12)
+
+interface GloveStats {
+  good: number;
+  bad: number;
+}
+
+// Byte-for-byte port of glove_enc.py's open_data_frame() + parse_wire_packet()
+// from glove_decrypt_tool.py -- same field names/offsets, same MAC domain,
+// same IV construction (identical scheme to glasses' own, just a different
+// label/info string -- see decryptDataChannel above).
+function decryptGloveFrames(raw: Buffer, boardKey: Buffer, sidHex: string): { decrypted: string[]; stats: GloveStats } {
+  const stats: GloveStats = { good: 0, bad: 0 };
+  const decrypted: string[] = [];
+  const sid = Buffer.from(sidHex, "hex");
+  const okm = hkdf(boardKey, sid, GLOVE_HKDF_INFO, 48);
+  const aesKey = okm.subarray(0, 16);
+  const hmacKey = okm.subarray(16, 48);
+
+  for (let off = 0; off + GLOVE_WIRE_LEN <= raw.length; off += GLOVE_WIRE_LEN) {
+    const frame = raw.subarray(off, off + GLOVE_WIRE_LEN);
+    const clearHeader = frame.subarray(0, GLOVE_CLEAR_LEN);
+    const ciphertext = frame.subarray(GLOVE_CLEAR_LEN, GLOVE_PLAIN_LEN);
+    const tag = frame.subarray(GLOVE_PLAIN_LEN);
+    const seq = clearHeader.readUInt32LE(4);
+
+    const mac = createHmac("sha256", hmacKey)
+      .update(GLOVE_HMAC_LABEL)
+      .update(sid)
+      .update(clearHeader)
+      .update(ciphertext)
+      .digest()
+      .subarray(0, 16);
+    if (mac.length !== tag.length || !timingSafeEqual(mac, tag)) {
+      stats.bad++;
+      continue;
+    }
+
+    const iv = Buffer.alloc(16);
+    iv.writeBigUInt64BE(BigInt(seq), 6); // same construction as glasses' nonce
+    const decipher = createDecipheriv("aes-128-ctr", aesKey, iv);
+    const plainTail = Buffer.concat([decipher.update(ciphertext), decipher.final()]);
+    const plain = Buffer.concat([clearHeader, plainTail]);
+
+    const bootId = plain.readUInt32LE(0);
+    const assembledAtMs = plain.readBigUInt64LE(8);
+    const imu: Record<string, unknown>[] = [];
+    for (let i = 0; i < GLOVE_IMU_SLOTS; i++) {
+      const o = GLOVE_IMU_SECTION_OFFSET + i * GLOVE_IMU_SLOT_SIZE;
+      imu.push({
+        present: plain.readUInt8(o) === 1,
+        w: plain.readFloatLE(o + 1),
+        x: plain.readFloatLE(o + 5),
+        y: plain.readFloatLE(o + 9),
+        z: plain.readFloatLE(o + 13),
+        accuracy: plain.readUInt8(o + 17),
+      });
+    }
+    const fsr: Record<string, unknown>[] = [];
+    for (let i = 0; i < GLOVE_FSR_FINGERS; i++) {
+      const o = GLOVE_FSR_SECTION_OFFSET + i * GLOVE_FSR_FINGER_SIZE;
+      fsr.push({
+        present: plain.readUInt8(o) === 1,
+        buttons: plain.readUInt8(o + 1),
+        channels: [0, 1, 2, 3, 4, 5].map((c) => plain.readInt16LE(o + 2 + c * 2)),
+      });
+    }
+
+    stats.good++;
+    decrypted.push(JSON.stringify({ bootId, seq, assembledAtMs: assembledAtMs.toString(), imu, fsr }));
+  }
+  return { decrypted, stats };
+}
+
 async function main() {
   const args = parseArgs();
   const key = readFileSync(args.key);
@@ -194,7 +310,9 @@ async function main() {
   mkdirSync(rawDir, { recursive: true });
   mkdirSync(decryptedDir, { recursive: true });
   for (const [path, bytes] of Object.entries(files)) {
-    writeFileSync(join(rawDir, path), bytes);
+    const dest = join(rawDir, path);
+    mkdirSync(dirname(dest), { recursive: true });
+    writeFileSync(dest, bytes);
   }
   console.log(`Unzipped ${Object.keys(files).length} files to ${rawDir}`);
 
@@ -215,6 +333,33 @@ async function main() {
     console.log("No data.jsonl in this capture.");
   }
 
+  // Glove data channel: decrypted here, in Node -- independent scheme and
+  // key from glasses above (see decryptGloveFrames's own comment).
+  const gloveDataPath = join(rawDir, "glove-data.bin");
+  if (existsSync(gloveDataPath)) {
+    if (!args.gloveKey) {
+      console.log("\nSkipping glove decrypt -- glove-data.bin is present but no --glove-key was given.");
+    } else {
+      const metaPath = join(rawDir, "meta.json");
+      const meta = existsSync(metaPath) ? JSON.parse(readFileSync(metaPath, "utf8")) : null;
+      const sidHex = meta?.glove?.hello?.sid;
+      if (typeof sidHex !== "string") {
+        console.log("\nSkipping glove decrypt -- meta.json has no glove.hello.sid (hello never arrived, or this capture predates glove support).");
+      } else {
+        const gloveKey = readFileSync(args.gloveKey);
+        const gloveRaw = readFileSync(gloveDataPath);
+        const { decrypted, stats } = decryptGloveFrames(gloveRaw, gloveKey, sidHex);
+        writeFileSync(join(decryptedDir, "glove-data.jsonl"), decrypted.join("\n") + (decrypted.length ? "\n" : ""));
+        console.log(`glove: ${stats.good} frames verified and decrypted, ${stats.bad} rejected (sid=${sidHex})`);
+        if (stats.bad > 0) {
+          console.log("  ^ any rejected count above means either the wrong --glove-key or a real protocol problem -- not expected on a clean capture.");
+        }
+      }
+    }
+  } else {
+    console.log("No glove-data.bin in this capture.");
+  }
+
   // Video: SRTP, shelled out to the hardware team's own tested tool --
   // see this file's header comment for why that's deliberate, not a
   // shortcut. This also re-decrypts data.jsonl (redundant with the Node
@@ -232,6 +377,28 @@ async function main() {
     } catch (err) {
       const message = err instanceof Error ? err.message : String(err);
       console.error(`enc_tool.py decrypt failed -- is Python set up with "cryptography" and "pylibsrtp" installed? (${message})`);
+    }
+  }
+
+  // Every frame, not just enc_tool.py's own first/last sanity-check pair --
+  // this is what a training pipeline actually needs. Separate script, same
+  // verified crypto/depacketizer (see extract_glasses_frames.py's header).
+  if (!existsSync(args.framesTool)) {
+    console.log(`\nSkipping full frame extraction -- ${args.framesTool} not found.`);
+  } else if (!existsSync(args.encTool)) {
+    console.log("\nSkipping full frame extraction -- needs enc_tool.py (for hkdf()) and rtp_jpeg.py alongside it, see above.");
+  } else {
+    console.log(`\nExtracting every frame via ${args.framesTool} ...`);
+    try {
+      const output = execFileSync(
+        args.python,
+        [args.framesTool, rawDir, "--key", args.key, "--out", join(decryptedDir, "frames"), "--enc-tool", args.encTool],
+        { encoding: "utf8" }
+      );
+      console.log(output);
+    } catch (err) {
+      const message = err instanceof Error ? err.message : String(err);
+      console.error(`extract_glasses_frames.py failed (${message})`);
     }
   }
 

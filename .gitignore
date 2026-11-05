@@ -61,3 +61,6 @@ GLASSES_BLE_WIFI_HANDOFF.md
 
 # admin-only script, not meant to ship
 apps/portal/scripts/adjust-wallet-balance.ts
+
+# decrypt-episode.ts's own output -- decrypted user telemetry/video, never committed
+apps/portal/.decrypted-episodes/
