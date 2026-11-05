@@ -80,8 +80,6 @@ export default function GlassesDebugScreen() {
   const [gloveHello, setGloveHello] = useState<GloveHelloMessage | null>(null);
   const [gloveStatus, setGloveStatus] = useState<GloveStatusMessage | null>(null);
   const [glovePacketCount, setGlovePacketCount] = useState(0);
-  const [glovePacket, setGlovePacket] = useState<WireHandPacket | null>(null);
-  const lastGlovePacketUiUpdateRef = useRef(0);
   const [gloveDemoMode, setGloveDemoMode] = useState(false);
   const [dummyGlovePacket, setDummyGlovePacket] = useState<WireHandPacket | null>(null);
 
@@ -164,24 +162,22 @@ export default function GlassesDebugScreen() {
           setGloveHello(null);
           setGloveStatus(null);
           setGlovePacketCount(0);
-          setGlovePacket(null);
         }
         return state;
       });
     });
     const unsubLog = gloves.on("log", ({ line }) => pushLog(line));
-    const unsubHello = gloves.link.on("hello", setGloveHello);
+    const unsubHello = gloves.link.on("hello", (h) => {
+      setGloveHello(h);
+      recorderRef.current?.setGloveHello(h);
+    });
     const unsubStatus = gloves.link.on("status", setGloveStatus);
-    const unsubPacket = gloves.link.on("packet", (packet) => {
+    // Bytes 16-317 are encrypted (DATA_ENCRYPTION.md) -- this app has no key,
+    // so unlike the old plaintext path, there's nothing to decode and show
+    // live here. Store the raw frame for later server-side decrypt instead.
+    const unsubRawPacket = gloves.link.on("rawPacket", (p) => {
       setGlovePacketCount((c) => c + 1);
-      // Packets can arrive at 50-100Hz -- re-rendering the whole debug
-      // screen on every single one would hitch the UI thread for no visual
-      // benefit. ~15fps is plenty smooth for a hand rig on screen.
-      const now = Date.now();
-      if (now - lastGlovePacketUiUpdateRef.current >= 66) {
-        lastGlovePacketUiUpdateRef.current = now;
-        setGlovePacket(packet);
-      }
+      recorderRef.current?.saveGloveFrame(p.frame);
     });
 
     return () => {
@@ -189,7 +185,7 @@ export default function GlassesDebugScreen() {
       unsubLog();
       unsubHello();
       unsubStatus();
-      unsubPacket();
+      unsubRawPacket();
     };
   }, [gloves, pushLog]);
 
@@ -699,7 +695,19 @@ export default function GlassesDebugScreen() {
             </View>
           </>
         ) : (
-          <GloveHandView key="live" packet={glovePacket} handedness="right" />
+          <>
+            <Text style={styles.sectionHint}>
+              The data channel is encrypted (DATA_ENCRYPTION.md) and this app has no key, so a real glove&apos;s
+              frames can&apos;t be decoded here to drive a live hand -- same tradeoff as glasses&apos; video.
+              &ldquo;Packets received&rdquo; above still counts real encrypted frames arriving and being saved;
+              decoding happens later, server-side.
+            </Text>
+            <View style={styles.glovePreviewBox}>
+              <Text style={styles.glovePreviewHint}>
+                {glovePacketCount > 0 ? `${glovePacketCount} encrypted frames received -- no preview available` : "Waiting for the first frame…"}
+              </Text>
+            </View>
+          </>
         )}
       </Section>
 
@@ -934,5 +942,20 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderColor: colors.border,
     backgroundColor: colors.black,
+  },
+  glovePreviewBox: {
+    marginTop: spacing.sm,
+    padding: spacing.lg,
+    borderRadius: radii.md,
+    borderWidth: 1,
+    borderColor: colors.border,
+    alignItems: "center",
+    justifyContent: "center",
+  },
+  glovePreviewHint: {
+    fontFamily: fonts.body,
+    fontSize: 12,
+    color: colors.textMuted,
+    textAlign: "center",
   },
 });

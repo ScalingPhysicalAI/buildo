@@ -1,15 +1,19 @@
-// Saves an episode's glasses data to the phone's own storage as it's
-// recorded, instead of discarding it after display. Video is now encrypted
-// (see rtsp-client.ts) and this app has no key, so it saves exactly what
-// came off the wire -- raw RTP packets, raw data-channel lines -- in the
-// same layout enc_tool.py's own `record` command produces, so its
-// `decrypt`/`decrypt_video` (server-side only, never in this app) work
-// against a real phone capture unmodified:
-//   video-left.rtp / video-right.rtp   4-byte-BE-length-prefixed RTP packets
-//   data.jsonl                         every data-channel line, as received
-//   meta.json                          hello/data_hellos/summary/sessions/status
-// episode.json is this app's own addition (environment/skill/timestamps) --
-// enc_tool.py doesn't know about those, so it's kept separate from meta.json.
+// Saves an episode's glasses AND glove data to the phone's own storage as
+// it's recorded, instead of discarding it after display -- one combined
+// recorder/zip/upload for the whole debug session, not two. Both are
+// encrypted and this app has no key for either, so it saves exactly what
+// came off each wire, undecoded:
+//   video-left.rtp / video-right.rtp   4-byte-BE-length-prefixed RTP packets (glasses)
+//   data.jsonl                         every glasses data-channel line, as received
+//   glove-data.bin                     every glove frame (318 bytes each), concatenated raw
+//   meta.json                          hello/data_hellos/summary/sessions/status/glove
+// The glasses portion matches enc_tool.py's own `record` command layout
+// exactly, so its decrypt/decrypt_video (server-side only, never in this
+// app) work against a real phone capture unmodified; glove-data.bin is this
+// app's own addition, decrypted server-side by porting glove_decrypt_tool.py
+// (see apps/portal/scripts/decrypt-episode.ts).
+// episode.json is this app's own bookkeeping (environment/skill/timestamps)
+// -- enc_tool.py doesn't know about those, so it's kept separate from meta.json.
 import { Directory, File, FileMode, Paths, type FileHandle } from "expo-file-system";
 import { zipSync, type Zippable } from "fflate";
 
@@ -26,6 +30,7 @@ export interface EpisodeSummary {
   durationSec: number;
   packetCount: { left: number; right: number };
   dataLineCount: number;
+  gloveFrameCount: number;
 }
 
 interface VideoSessionBoundary {
@@ -51,12 +56,15 @@ export class EpisodeRecorder {
   private videoHandles: { left: FileHandle | null; right: FileHandle | null } = { left: null, right: null };
   private dataHandle: FileHandle | null = null;
   private dataLineCount = 0;
+  private gloveHandle: FileHandle | null = null;
+  private gloveFrameCount = 0;
   private readonly startedAtMs = Date.now();
 
   private hello: unknown = null;
   private dataHellos: unknown[] = [];
   private summary: unknown = null;
   private lastStatus: unknown = null;
+  private gloveHello: unknown = null;
 
   constructor(private readonly meta: EpisodeMeta) {
     this.directory = new Directory(Paths.document, EPISODES_ROOT, meta.episodeName);
@@ -65,6 +73,10 @@ export class EpisodeRecorder {
     const dataFile = new File(this.directory, "data.jsonl");
     dataFile.create({ overwrite: true });
     this.dataHandle = dataFile.open(FileMode.Append);
+
+    const gloveFile = new File(this.directory, "glove-data.bin");
+    gloveFile.create({ overwrite: true });
+    this.gloveHandle = gloveFile.open(FileMode.Append);
 
     // Both created up front, even if one side never gets a single packet
     // (e.g. no slave camera this episode) -- meta.json always lists both
@@ -95,6 +107,10 @@ export class EpisodeRecorder {
 
   setHello(hello: unknown) {
     this.hello = hello;
+  }
+
+  setGloveHello(hello: unknown) {
+    this.gloveHello = hello;
   }
 
   addDataHello(message: unknown) {
@@ -133,6 +149,15 @@ export class EpisodeRecorder {
     this.dataLineCount++;
   }
 
+  // Raw 318-byte glove frame, still encrypted, never decoded -- see
+  // glove-link.ts's RawGlovePacket. Fixed size, so no length prefix is
+  // needed (unlike video-*.rtp's variable-length RTP packets) -- the server
+  // just reads 318 bytes at a time.
+  saveGloveFrame(frame: Uint8Array) {
+    this.gloveHandle?.writeBytes(frame);
+    this.gloveFrameCount++;
+  }
+
   packetCountFor(side: "left" | "right") {
     return this.packetCount[side];
   }
@@ -141,8 +166,10 @@ export class EpisodeRecorder {
     this.videoHandles.left?.close();
     this.videoHandles.right?.close();
     this.dataHandle?.close();
+    this.gloveHandle?.close();
     this.videoHandles = { left: null, right: null };
     this.dataHandle = null;
+    this.gloveHandle = null;
 
     const stoppedAtMs = Date.now();
     const summary: EpisodeSummary = {
@@ -151,10 +178,13 @@ export class EpisodeRecorder {
       durationSec: Math.round((stoppedAtMs - this.startedAtMs) / 1000),
       packetCount: { ...this.packetCount },
       dataLineCount: this.dataLineCount,
+      gloveFrameCount: this.gloveFrameCount,
     };
 
-    // meta.json -- same shape enc_tool.py's record() writes, so its
-    // decrypt/decrypt_video (server-side) read a phone capture unmodified.
+    // meta.json -- the glasses portion matches enc_tool.py's record() shape
+    // exactly, so its decrypt/decrypt_video (server-side) read a phone
+    // capture unmodified; `glove` is this app's own addition, read by
+    // apps/portal/scripts/decrypt-episode.ts's glove decrypt port instead.
     const meta = {
       hello: this.hello,
       data_hellos: this.dataHellos,
@@ -164,6 +194,7 @@ export class EpisodeRecorder {
         right: { packets: this.packetCount.right, sessions: this.sessions.right.map((s) => [s.index, s.enc]) },
       },
       status: this.lastStatus,
+      glove: { hello: this.gloveHello, frameCount: this.gloveFrameCount },
     };
     new File(this.directory, "meta.json").write(JSON.stringify(meta, null, 1));
 
@@ -202,6 +233,7 @@ export class EpisodeRecorder {
     this.videoHandles.left?.close();
     this.videoHandles.right?.close();
     this.dataHandle?.close();
+    this.gloveHandle?.close();
     if (this.directory.exists) this.directory.delete();
   }
 }
